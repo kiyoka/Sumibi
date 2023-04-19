@@ -36,6 +36,7 @@ class GptTest:
     def kanji_to_yomigana(self,kanji):
         response = openai.ChatCompletion.create(
             model=self.model,
+            temperature=0.8,
             messages=[
                 {"role": "system", "content":
                 "あなたは漢字が与えられると、ひらがなに変換するアシスタントです。"
@@ -49,6 +50,7 @@ class GptTest:
     def romaji_to_kanji(self,romaji):
         response = openai.ChatCompletion.create(
             model=self.model,
+            temperature=0.8,
             messages=[
                 {"role": "system", "content":
                  "あなたはローマ字と日本語を変換するアシスタントです。"
