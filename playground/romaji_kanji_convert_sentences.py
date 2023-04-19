@@ -40,7 +40,7 @@ class GptTest:
                 {"role": "system", "content":
                 "あなたは漢字が与えられると、ひらがなに変換するアシスタントです。"
                 },
-                {"role": "user", "content": '次をひらがなのみで表記してください。 : "{0}"'.format(kanji)}
+                {"role": "user", "content": '次をひらがなのみで表記してください。 : {0}'.format(kanji)}
                 ]
             )
         return(response['choices'][0]['message']['content'])
@@ -53,7 +53,7 @@ class GptTest:
                 {"role": "system", "content":
                  "あなたはローマ字と日本語を変換するアシスタントです。"
                 },
-                {"role": "user", "content": 'ローマ字の文を漢字仮名混じり文にしてください。 : "{0}"'.format(romaji)}
+                {"role": "user", "content": 'ローマ字の文を漢字仮名混じり文にしてください。 : {0}'.format(romaji)}
             ]
         )
         return(response['choices'][0]['message']['content'])
