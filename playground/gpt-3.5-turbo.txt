@@ -4,7 +4,7 @@ OUT2: 私の名前は中野です。
 OUT3: 私の名前は中野です。
 
 IN  : watashinonamaehanakanodesu .
-OUT1: 私の名前は「中野」です。
+OUT1: 私の名前は中野です。
 OUT2: 私の名前は中野です。
 OUT3: 私の名前は中野です。
 
@@ -14,9 +14,9 @@ OUT2: 1年は1月3日から始まります。
 OUT3: 1年は1月3日から始まります。
 
 IN  : kagikakko ha [ to ] de kakomimasu . 
-OUT1: 「かぎかっこは『と』でかこみます。」
-OUT2: かぎかっこは「と」で囲みます。
-OUT3: かぎかっこは「　」で囲みます。
+OUT1: 角括弧は「と」で囲みます。
+OUT2: 角括弧は「[ 」と「] 」で囲みます。
+OUT3: 角括弧は「と」で囲みます。
 
 IN  : ringo ga 1ko to mikan ga 3ko arimasu . 
 OUT1: りんごが1個とみかんが3個あります。
@@ -24,13 +24,13 @@ OUT2: りんごが1個とみかんが3個あります。
 OUT3: りんごが1個とみかんが3個あります。
 
 IN  : koyuu meishi ha tokui deha arimasen . tanaka san to satou san ha yuumei nanode daijyoubu desu . 
-OUT1: 公用名は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
+OUT1: 公務員である名刺は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
 OUT2: 公有名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
-OUT3: 「公有名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。」
+OUT3: こうゆう名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
 
 IN  : AWS Systems Manager no kanritaisyou insutansu nisuru
-OUT1: AWSシステムズマネージャーの管理対象インスタンスにする。
-OUT2: AWS Systems Managerの管理対象インスタンスにする
+OUT1: AWS Systems Managerの管理対象インスタンスにする。
+OUT2: AWS Systems Managerの管理対象インスタンスにする。
 OUT3: AWS Systems Managerの管理対象インスタンスにする。
 
 IN  : honkijiha , EC2 insutansu wo Systems Manager no Kanritaisyou insutansu ni surumadeno tejyun desu . 
@@ -39,14 +39,14 @@ OUT2: 本記事は、EC2インスタンスをSystems Managerの管理対象イ�
 OUT3: 本記事は、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
 
 IN  : AWS komyunithi- AMI de teikyou sareteiru Windows Server 2019 no AMI niha, hajimekara SSM Agent ga insuto-ru sareteimasu .
-OUT1: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、初めからSSM Agentがインストールされています。
-OUT2: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、初めからSSM Agentがインストールされています。
+OUT1: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、始めからSSM Agentがインストールされています。
+OUT2: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、始めからSSM Agentがインストールされています。
 OUT3: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、初めからSSM Agentがインストールされています。
 
 IN  : watashi ha nihongo wo syaberu kotoga dekimasu .
-OUT1: 私は日本語を話すことができます。 (わたしはにほんごをはなすことができます。)
-OUT2: 私は日本語をしゃべることができます。
-OUT3: 私は日本語を話すことができます。　（私は　にほんごを　しゃべる　ことが　できます。）
+OUT1: 私は日本語をしゃべることができます。
+OUT2: 私は日本語を話すことができます。
+OUT3: 私は日本語をしゃべることができます。
 
 IN  : 漢字
 OUT1: かんじ

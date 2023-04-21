@@ -38,9 +38,9 @@ class GptTest:
             model=self.model,
             temperature=0.8,
             messages=[
-                {"role": "system", "content":
-                "あなたは漢字が与えられると、ひらがなに変換するアシスタントです。"
-                },
+                {"role": "system", "content": "あなたは漢字が与えられると、ひらがなに変換するアシスタントです。"},
+                {"role": "user", "content": '次をひらがなのみで表記してください。 : 東西南北'},
+                {"role": "assistant", "content": 'とうざいなんぼく'},
                 {"role": "user", "content": '次をひらがなのみで表記してください。 : {0}'.format(kanji)}
                 ]
             )
@@ -52,9 +52,9 @@ class GptTest:
             model=self.model,
             temperature=0.8,
             messages=[
-                {"role": "system", "content":
-                 "あなたはローマ字と日本語を変換するアシスタントです。"
-                },
+                {"role": "system", "content": "あなたはローマ字を日本語に変換するアシスタントです。"},
+                {"role": "user", "content": 'ローマ字の文を漢字仮名混じり文にしてください。 : watashi no namae ha nakano desu .'},
+                {"role": "assistant", "content": "私の名前は中野です。"},
                 {"role": "user", "content": 'ローマ字の文を漢字仮名混じり文にしてください。 : {0}'.format(romaji)}
             ]
         )
