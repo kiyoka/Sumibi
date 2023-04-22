@@ -1,85 +1,85 @@
-IN  : watashi no namae ha nakano desu .
-OUT1: 私の名前は中野です。
-OUT2: 私の名前は中野です。
-OUT3: 私の名前は中野です。
+IN : watashi no namae ha nakano desu .
+OUT: 私の名前は中野です。
+OUT: 私の名前は中野です。
+OUT: 私の名前は中野です。
 
-IN  : watashinonamaehanakanodesu .
-OUT1: 私の名前は中野です。
-OUT2: 私の名前は中野です。
-OUT3: 「わたしのなまえはなかのです。」
+IN : watashinonamaehanakanodesu .
+OUT: 「わたしのなまえはなかのです。」
+OUT: 私の名前は中野です。
+OUT: 私の名前は中野です。
 
-IN  : 1nen ha 1gatu3ka kara hajimarimasu .
-OUT1: 1年は1月3日から始まります。
-OUT2: 1年は1月3日から始まります。
-OUT3: 1年は1月3日から始まります。
+IN : 1nen ha 1gatu3ka kara hajimarimasu .
+OUT: 1年は1月3日から始まります。
+OUT: 1年は1月3日から始まります。
+OUT: 1年は1月3日から始まります。
 
-IN  : kagikakko ha [ to ] de kakomimasu . 
-OUT1: 角括弧は「と」で囲みます。
-OUT2: 角括弧は「と」で囲みます。
-OUT3: 角括弧は「と」で囲みます。
+IN : kagikakko ha [ to ] de kakomimasu . 
+OUT: 角括弧は「と」で囲みます。
+OUT: 「かぎかっこ」は「[ ]」で囲みます。
+OUT: 角括弧は [と] で囲みます。
 
-IN  : ringo ga 1ko to mikan ga 3ko arimasu . 
-OUT1: りんごが1個とみかんが3個あります。
-OUT2: りんごが1個とみかんが3個あります。
-OUT3: りんごが1個とみかんが3個あります。
+IN : ringo ga 1ko to mikan ga 3ko arimasu . 
+OUT: りんごが1個とみかんが3個あります。
+OUT: りんごが1個とみかんが3個あります。
+OUT: りんごが1個とみかんが3個あります。
 
-IN  : koyuu meishi ha tokui deha arimasen . tanaka san to satou san ha yuumei nanode daijyoubu desu . 
-OUT1: 好語名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
-OUT2: 一般名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
-OUT3: 公有名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
+IN : koyuu meishi ha tokui deha arimasen . tanaka san to satou san ha yuumei nanode daijyoubu desu . 
+OUT: ここでは名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
+OUT: 公用名は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
+OUT: 好語句は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
 
-IN  : AWS Systems Manager no kanritaisyou insutansu nisuru
-OUT1: AWSシステムマネージャーの管理対象インスタンスにする。
-OUT2: AWS Systems Managerの管理対象インスタンスにする。
-OUT3: AWS Systems Managerの管理対象インスタンスにする。
+IN : AWS Systems Manager no kanritaisyou insutansu nisuru
+OUT: AWS Systems Managerの管理対象インスタンスにする。
+OUT: AWS Systems Managerの管理対象インスタンスにする。
+OUT: AWS Systems Managerの管理対象インスタンスにする
 
-IN  : honkijiha , EC2 insutansu wo Systems Manager no Kanritaisyou insutansu ni surumadeno tejyun desu . 
-OUT1: 本記事は、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
-OUT2: 本記事は、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
-OUT3: 本記事は、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
+IN : honkijiha , EC2 insutansu wo Systems Manager no Kanritaisyou insutansu ni surumadeno tejyun desu . 
+OUT: 本日時は、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
+OUT: 本記事は、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
+OUT: 本記事は、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
 
-IN  : AWS komyunithi- AMI de teikyou sareteiru Windows Server 2019 no AMI niha, hajimekara SSM Agent ga insuto-ru sareteimasu .
-OUT1: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、始めからSSM Agentがインストールされています。
-OUT2: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、始めからSSM Agentがインストールされています。
-OUT3: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、始めからSSM Agentがインストールされています。
+IN : AWS komyunithi- AMI de teikyou sareteiru Windows Server 2019 no AMI niha, hajimekara SSM Agent ga insuto-ru sareteimasu .
+OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、始めからSSM Agentがインストールされています。
+OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、初めからSSM Agentがインストールされています。
+OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、始めからSSM Agentがインストールされています。
 
-IN  : watashi ha nihongo wo syaberu kotoga dekimasu .
-OUT1: 私は日本語を話すことができます。
-OUT2: 私は日本語を話すことができます。
-OUT3: 私は日本語を話すことができます。
+IN : watashi ha nihongo wo syaberu kotoga dekimasu .
+OUT: 私は日本語を話すことができます。
+OUT: 私は日本語をしゃべることができます。
+OUT: 私は日本語を話すことができます。
 
-IN  : Emacs kuraianto kara riyou dekiruyouni narimashita .
-OUT1: Emacsクライアントから利用できるようになりました。
-OUT2: Emacsクライアントから利用できるようになりました。
-OUT3: Emacsクライアントから利用できるようになりました。
+IN : Emacs kuraianto kara riyou dekiruyouni narimashita .
+OUT: Emacsクライアントから利用できるようになりました。
+OUT: Emacsクライアントから利用できるようになりました。
+OUT: Emacsクライアントから利用できるようになりました。
 
-IN  : Emacs kara riyou dekiru kanji henkan enjin desu .
-OUT1: Emacsから利用できる漢字変換エンジンです。
-OUT2: Emacsから利用できる漢字変換エンジンです。
-OUT3: Emacsから利用できる漢字変換エンジンです。
+IN : Emacs kara riyou dekiru kanji henkan enjin desu .
+OUT: Emacsから利用できる漢字変換エンジンです。
+OUT: Emacsから利用できる漢字変換エンジンです。
+OUT: Emacsから利用できる漢字変換エンジンです。
 
-IN  : toriaezu , ugokuyouni narimashita .
-OUT1: とりあえず、動くようになりました。
-OUT2: とりあえず、動くようになりました。
-OUT3: とりあえず、動くようになりました。
+IN : toriaezu , ugokuyouni narimashita .
+OUT: とりあえず、動くようになりました。
+OUT: とりあえず、動くようになりました。
+OUT: とりあえず、動くようになりました。
 
-IN  : 漢字
-OUT1: かんじ
-OUT2: かんじ
-OUT3: かんじ
+IN : 漢字
+OUT: かんじ
+OUT: かんじ
+OUT: かんじ
 
-IN  : 東西南北
-OUT1: とうざいなんぼく
-OUT2: とうざいなんぼく
-OUT3: とうざいなんぼく
+IN : 東西南北
+OUT: とうざいなんぼく
+OUT: とうざいなんぼく
+OUT: とうざいなんぼく
 
-IN  : 行う
-OUT1: おこなう
-OUT2: おこなう
-OUT3: おこなう
+IN : 行う
+OUT: おこなう
+OUT: おこなう
+OUT: おこなう
 
-IN  : 東京特許許可局
-OUT1: とうきょうとっきょきょかきょく
-OUT2: とうきょうとっきょきょかきょく
-OUT3: とうきょうとっきょきょかきょく
+IN : 東京特許許可局
+OUT: とうきょうとっきょきょかきょく
+OUT: とうきょうとっきょきょかきょく
+OUT: とうきょうとっきょきょかきょく
 

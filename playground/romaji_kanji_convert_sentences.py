@@ -36,10 +36,11 @@ class GptTest:
     def set_model(self,model):
         self.model = model
 
-    def kanji_to_yomigana(self,kanji):
+    def kanji_to_yomigana(self,kanji,arg_n):
         response = openai.ChatCompletion.create(
             model=self.model,
             temperature=0.8,
+            n=arg_n,
             messages=[
                 {"role": "system", "content": "あなたは漢字が与えられると、ひらがなに変換するアシスタントです。"},
                 {"role": "user", "content": '次をひらがなのみで表記してください。 : 東西南北'},
@@ -47,13 +48,16 @@ class GptTest:
                 {"role": "user", "content": '次をひらがなのみで表記してください。 : {0}'.format(kanji)}
                 ]
             )
-        return(response['choices'][0]['message']['content'])
+        arr = []
+        for i in range(arg_n):
+            arr.append(response['choices'][i]['message']['content'])
+        return(arr)
     
-    
-    def romaji_to_kanji(self,romaji):
+    def romaji_to_kanji(self,romaji,arg_n):
         response = openai.ChatCompletion.create(
             model=self.model,
             temperature=0.8,
+            n=arg_n,
             messages=[
                 {"role": "system", "content": "あなたはローマ字を日本語に変換するアシスタントです。"},
                 {"role": "user", "content": 'ローマ字の文を漢字仮名混じり文にしてください。 : watashi no namae ha nakano desu .'},
@@ -61,22 +65,25 @@ class GptTest:
                 {"role": "user", "content": 'ローマ字の文を漢字仮名混じり文にしてください。 : {0}'.format(romaji)}
             ]
         )
-        return(response['choices'][0]['message']['content'])
+        arr = []
+        for i in range(arg_n):
+            arr.append(response['choices'][i]['message']['content'])
+        return(arr)
 
     def romaji_func(self):
         for romaji in self.romaji_list:
-            print('IN  : {0}'.format(romaji))
-            print('OUT1: {0}'.format(self.romaji_to_kanji(romaji)))
-            print('OUT2: {0}'.format(self.romaji_to_kanji(romaji)))
-            print('OUT3: {0}'.format(self.romaji_to_kanji(romaji)))
+            result = self.romaji_to_kanji(romaji,3)
+            print('IN : {0}'.format(romaji))
+            for s in result:
+                print('OUT: {0}'.format(s))
             print()
 
-    def kanji_func(self):
+    def yomigana_func(self):
         for kanji in self.kanji_list:
-            print('IN  : {0}'.format(kanji))
-            print('OUT1: {0}'.format(self.kanji_to_yomigana(kanji)))
-            print('OUT2: {0}'.format(self.kanji_to_yomigana(kanji)))
-            print('OUT3: {0}'.format(self.kanji_to_yomigana(kanji)))
+            result = self.kanji_to_yomigana(kanji,3)
+            print('IN : {0}'.format(kanji))
+            for s in result:
+                print('OUT: {0}'.format(s))
             print()
 
 def main(argv):
@@ -84,7 +91,7 @@ def main(argv):
     if(1 < len(argv)):
         gptTest.set_model(argv[1])
     gptTest.romaji_func()
-    gptTest.kanji_func()
+    gptTest.yomigana_func()
 
 if __name__ == "__main__":
      main(sys.argv)
