@@ -19,6 +19,9 @@ class GptTest:
     'honkijiha , EC2 insutansu wo Systems Manager no Kanritaisyou insutansu ni surumadeno tejyun desu . ',
     'AWS komyunithi- AMI de teikyou sareteiru Windows Server 2019 no AMI niha, hajimekara SSM Agent ga insuto-ru sareteimasu .',
     'watashi ha nihongo wo syaberu kotoga dekimasu .',
+    'Emacs kuraianto kara riyou dekiruyouni narimashita .',
+    'Emacs kara riyou dekiru kanji henkan enjin desu .',
+    'toriaezu , ugokuyouni narimashita .',
     ]
 
     kanji_list = [
