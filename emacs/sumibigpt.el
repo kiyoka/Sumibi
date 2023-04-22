@@ -1,4 +1,4 @@
-;;; sumibigpt.el --- A roman to japanese input method.
+;;; sumibigpt.el --- Japanese input method using OpenAI GPT.
 ;;
 ;; Copyright (C) 2023 Kiyoka Nishiyama
 ;;
@@ -49,11 +49,6 @@
   :group 'input-method
   :group 'Japanese)
 
-(defcustom sumibigpt-server-timeout 10
-  "OpenAPIサーバーと通信する時のタイムアウトを指定する。(秒数)"
-  :type  'integer
-  :group 'sumibigpt)
- 
 (defcustom sumibigpt-stop-chars "(){}<>"
   "*漢字変換文字列を取り込む時に変換範囲に含めない文字を設定する"
   :type  'string
@@ -278,7 +273,10 @@
 ;; ローマ字で書かれた文章を複数候補作成して返す
 ;;
 (defun sumibigpt-henkan-request (roman)
-  (sumibigpt-roman-to-kanji roman 3))
+  (append
+   (sumibigpt-roman-to-kanji roman 3)
+   ;;原文のまま
+   (list (list roman "原文まま" 0 'l 3))))
 
 (when nil
 ;; unit test
