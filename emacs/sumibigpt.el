@@ -193,20 +193,22 @@
 (defun openai-http-post (system-content1
 			 user-content1
 			 assistant-content1
-			 user-content2)
+			 user-content2
+			 arg-n)
   "call OpenAI completions API."
   (progn
     (setq url "https://api.openai.com/v1/chat/completions")
     (setq url-request-method "POST")
     (setq url-http-version "1.1")
     (setq url-request-extra-headers
-	  `(("Content-Type" . "application/json")
+	  `(("Content-Type" . "application/json; charset=utf-8")
 	    ("Authorization" . ,(concat "Bearer " (getenv "OPENAI_API_KEY")))))
     (setq url-request-data
 	  (concat
 	   "{"
 	   (format "  \"model\": \"%s\"," sumibigpt-current-model)
 	   "  \"temperature\": 0.8,"
+	   (format  "  \"n\": %d," arg-n)
 	   "  \"messages\": [ "
 	   (format " {\"role\": \"system\",    \"content\": \"%s\"}," (url-hexify-string system-content1))
 	   (format " {\"role\": \"user\",      \"content\": \"%s\"}," (url-hexify-string user-content1))
@@ -241,30 +243,41 @@
 ;;
 ;; ローマ字で書かれた文章をOpenAIサーバーを使って変換し、結果を文字列で返す。
 ;; roman: "bunsyou no mojiretu"
-;; return: "文章の文字列"
+;; arg-n: 候補を何件返すか
+;; return: (("文章の文字列" "候補N" 0 j index) ...)
 ;;
-(defun sumibigpt-roman-to-kanji (roman)
+(defun sumibigpt-roman-to-kanji (roman arg-n)
   (let* ((json-str (openai-http-post
 		    "あなたはローマ字を日本語に変換するアシスタントです。"
 		    "ローマ字の文を漢字仮名混じり文にしてください。 : watashi no namae ha nakano desu ."
 		    "私の名前は中野です。"
-		    (format "ローマ字の文を漢字仮名混じり文にしてください。 : %s" roman)))
+		    (format "ローマ字の文を漢字仮名混じり文にしてください。 : %s" roman)
+		    arg-n))
 	 (json-obj (json-parse-string json-str))
-	 (hex-str
-	  (gethash "content"
-		   (gethash "message"
-			    (aref (gethash "choices" json-obj) 0))))
-	 (utf8-str
-	  (decode-coding-string (url-unhex-string hex-str) 'utf-8)))
-    utf8-str))
+	 (result '())
+	 (count 0))
+    (while (< count arg-n)
+      (let* ((hex-str
+	      (gethash "content"
+		       (gethash "message"
+				(aref (gethash "choices" json-obj) count))))
+	     (utf8-str
+	      (decode-coding-string (url-unhex-string hex-str) 'utf-8)))
+	(setq result (append result
+			     (list (list
+				    utf8-str
+				    (format "候補%d" (+ count 1))
+				    0
+				    'j
+				    count)))))
+      (setq count (1+ count)))
+    result))
 
 ;;
 ;; ローマ字で書かれた文章を複数候補作成して返す
 ;;
 (defun sumibigpt-henkan-request (roman)
-  (list
-   (list (sumibigpt-roman-to-kanji roman) "変換候補1")
-   (list (sumibigpt-roman-to-kanji roman) "変換候補2")))
+  (sumibigpt-roman-to-kanji roman 3))
 
 (when nil
 ;; unit test
