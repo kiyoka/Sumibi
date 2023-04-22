@@ -5,7 +5,7 @@
 ;; Author: Kiyoka Nishiyama <kiyoka@sumibi.org>
 ;; Version: 1.0.0          ;;SUMIBIGPT-VERSION
 ;; Keywords: ime, japanese
-;; Package-Requires: ((cl-lib "1.0") (popup "0.5.9"))
+;; Package-Requires: ((cl-lib "1.0") (popup "0.5.9") (unicode-escape "1.1"))
 ;; URL: https://github.com/kiyoka/SumibiGPT
 ;;
 ;; This file is part of SumibiGPT
@@ -38,6 +38,7 @@
 (require 'cl)
 (require 'popup)
 (require 'url-parse)
+(require 'unicode-escape)
 
 ;;; 
 ;;;
@@ -210,10 +211,10 @@
 	   "  \"temperature\": 0.8,"
 	   (format  "  \"n\": %d," arg-n)
 	   "  \"messages\": [ "
-	   (format " {\"role\": \"system\",    \"content\": \"%s\"}," (url-hexify-string system-content1))
-	   (format " {\"role\": \"user\",      \"content\": \"%s\"}," (url-hexify-string user-content1))
-	   (format " {\"role\": \"assistant\", \"content\": \"%s\"}," (url-hexify-string assistant-content1))
-	   (format " {\"role\": \"user\",      \"content\": \"%s\"} " (url-hexify-string user-content2))
+	   (format " {\"role\": \"system\",    \"content\": \"%s\"}," (unicode-escape system-content1))
+	   (format " {\"role\": \"user\",      \"content\": \"%s\"}," (unicode-escape user-content1))
+	   (format " {\"role\": \"assistant\", \"content\": \"%s\"}," (unicode-escape assistant-content1))
+	   (format " {\"role\": \"user\",      \"content\": \"%s\"} " (unicode-escape user-content2))
 	   "  ] "
 	   "}"))
     (sumibigpt-debug-print (format "user-content2 [%s]" user-content2))
