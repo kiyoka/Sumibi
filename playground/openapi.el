@@ -1,15 +1,12 @@
 (require 'cl)
 (require 'url-parse)
 
-(setq openai-debug t)
-
 (defun openai-debug-print (string)
-  (if openai-debug
-      (let
-	  ((buffer (get-buffer-create "*openai-debug*")))
-	(with-current-buffer buffer
-	  (goto-char (point-max))
-	  (insert string)))))
+  (let
+      ((buffer (get-buffer-create "*openai-debug*")))
+    (with-current-buffer buffer
+      (goto-char (point-max))
+      (insert string))))
 
 (defun openai-url-http-post (system-content1
 			     user-content1
@@ -50,15 +47,15 @@
                          (openai-debug-print (format "<<<%s>>>\n" str))
                          str)
                         (t
-                         "curl: (28) Time out\n" ;; Emulate curl Operation timed out.
+                         "<<TIMEOUT>>\n"
                          )))
                      'utf-8))
-                "curl: (7)  Couldn't connect to host 'localhost'\n"))) ;; Emulate curl error.
+                "<<CONNECTION ERROR>>\n")))
            (line-list
             (split-string lines "\n")))
       (cadr (reverse line-list)))))
 
-(when t
+(defun api-test ()
   (let* ((json-str (openai-url-http-post
 		    "あなたはローマ字を日本語に変換するアシスタントです。"
 		    "ローマ字の文を漢字仮名混じり文にしてください。 : watashi no namae ha nakano desu ."
@@ -72,3 +69,6 @@
 	 (utf8-str
 	  (decode-coding-string (url-unhex-string hex-str) 'utf-8)))
     utf8-str))
+
+(when t
+  (api-test))
