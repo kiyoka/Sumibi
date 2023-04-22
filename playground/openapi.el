@@ -1,5 +1,6 @@
 (require 'cl)
 (require 'url-parse)
+(require 'unicode-escape)
 
 (defun openai-debug-print (string)
   (let
@@ -26,10 +27,10 @@
 	   "  \"model\": \"gpt-3.5-turbo\","
 	   "  \"temperature\": 0.8,"
 	   "  \"messages\": [ "
-	   (format " {\"role\": \"system\",    \"content\": \"%s\"}," (url-hexify-string system-content1))
-	   (format " {\"role\": \"user\",      \"content\": \"%s\"}," (url-hexify-string user-content1))
-	   (format " {\"role\": \"assistant\", \"content\": \"%s\"}," (url-hexify-string assistant-content1))
-	   (format " {\"role\": \"user\",      \"content\": \"%s\"} " (url-hexify-string user-content2))
+	   (format " {\"role\": \"system\",    \"content\": \"%s\"}," (unicode-escape system-content1))
+	   (format " {\"role\": \"user\",      \"content\": \"%s\"}," (unicode-escape user-content1))
+	   (format " {\"role\": \"assistant\", \"content\": \"%s\"}," (unicode-escape assistant-content1))
+	   (format " {\"role\": \"user\",      \"content\": \"%s\"} " (unicode-escape user-content2))
 	   "  ] "
 	   "}"))
     (let* ((lines
@@ -60,7 +61,7 @@
 		    "あなたはローマ字を日本語に変換するアシスタントです。"
 		    "ローマ字の文を漢字仮名混じり文にしてください。 : watashi no namae ha nakano desu ."
 		    "私の名前は中野です。"
-		    "ローマ字の文を漢字仮名混じり文にしてください。 : nihongo wo henkan surukotoga dekimasu ."))
+		    "ローマ字の文を漢字仮名混じり文にしてください。 : taihen muzukashii tasuku desu ."))
 	 (json-obj (json-parse-string json-str))
 	 (hex-str
 	  (gethash "content"
