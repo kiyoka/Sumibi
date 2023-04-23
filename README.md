@@ -5,12 +5,14 @@ Japanese input method using OpenAI GPT
 ## SumibiGPTとは
 
 Emacs用の日本語入力システム(IME)です。
+
 SumibiGPTはモードレスです。
 日本語入力モードに切り替えることなく日本語を入力できます。
 
 ## 利用可能なEmacsバージョン
 
 Emacs version 28.x (Windows/Linux/macOS)
+
 Emacs以外の追加ソフトウェアは不要です。
 
 ## Emacsクライアントのインストール
@@ -23,8 +25,10 @@ SumibiGPTを使ったOpenAI API使用料の目安としては1ドキュメント
 
 3. melpa から以下のパッケージをインストールします。
 
+```
 popup 0.5.9
 unicode-escapeo 20230109.1222
+```
 
 4. sumibigpt.el を ~/.emacs.d/ に保存します。
 
@@ -37,8 +41,7 @@ unicode-escapeo 20230109.1222
 
 ## インストールが成功したかどうかの確認方法
 
-1. Emacsを再起動するとSumibiGPTがステータスバーに表示されます。
-
+Emacsを再起動するとSumibiGPTがステータスバーに表示されます。
 [gpt-3.5-turbo] は使用しているGPTのモデルです。
 
 ## 変換方法
