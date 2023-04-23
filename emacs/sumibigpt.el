@@ -5,7 +5,7 @@
 ;; Author: Kiyoka Nishiyama <kiyoka@sumibi.org>
 ;; Version: 1.0.0          ;;SUMIBIGPT-VERSION
 ;; Keywords: ime, japanese
-;; Package-Requires: ((cl-lib "1.0") (popup "0.5.9") (unicode-escape "1.1"))
+;; Package-Requires: ((cl-lib "1.0") (popup "0.5.9") (unicode-escapeo "20230109.1222"))
 ;; URL: https://github.com/kiyoka/SumibiGPT
 ;;
 ;; This file is part of SumibiGPT
