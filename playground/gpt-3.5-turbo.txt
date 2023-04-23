@@ -4,9 +4,9 @@ OUT: 私の名前は中野です。
 OUT: 私の名前は中野です。
 
 IN : watashinonamaehanakanodesu .
-OUT: 「わたしのなまえはなかのです。」
 OUT: 私の名前は中野です。
-OUT: 私の名前は中野です。
+OUT: わたしのなまえは中野です。
+OUT: わたしのなまえはなかのです。
 
 IN : 1nen ha 1gatu3ka kara hajimarimasu .
 OUT: 1年は1月3日から始まります。
@@ -15,38 +15,38 @@ OUT: 1年は1月3日から始まります。
 
 IN : kagikakko ha [ to ] de kakomimasu . 
 OUT: 角括弧は「と」で囲みます。
-OUT: 「かぎかっこ」は「[ ]」で囲みます。
-OUT: 角括弧は [と] で囲みます。
+OUT: 角括弧は「と」で囲みます。
+OUT: 角括弧は「と」で囲みます。
 
 IN : ringo ga 1ko to mikan ga 3ko arimasu . 
-OUT: りんごが1個とみかんが3個あります。
+OUT: りんごが１個とみかんが３個あります。
 OUT: りんごが1個とみかんが3個あります。
 OUT: りんごが1個とみかんが3個あります。
 
 IN : koyuu meishi ha tokui deha arimasen . tanaka san to satou san ha yuumei nanode daijyoubu desu . 
-OUT: ここでは名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
-OUT: 公用名は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
-OUT: 好語句は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
+OUT: 好有名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
+OUT: 好友名詞は得意ではありません。田中さんと佐藤さんは有名なので、大丈夫です。
+OUT: こうゆう名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
 
 IN : AWS Systems Manager no kanritaisyou insutansu nisuru
 OUT: AWS Systems Managerの管理対象インスタンスにする。
 OUT: AWS Systems Managerの管理対象インスタンスにする。
-OUT: AWS Systems Managerの管理対象インスタンスにする
+OUT: AWS Systems Managerの管理対象インスタンスにする。
 
 IN : honkijiha , EC2 insutansu wo Systems Manager no Kanritaisyou insutansu ni surumadeno tejyun desu . 
-OUT: 本日時は、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
+OUT: 本記事は、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
 OUT: 本記事は、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
 OUT: 本記事は、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
 
 IN : AWS komyunithi- AMI de teikyou sareteiru Windows Server 2019 no AMI niha, hajimekara SSM Agent ga insuto-ru sareteimasu .
-OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、始めからSSM Agentがインストールされています。
 OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、初めからSSM Agentがインストールされています。
+OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、始めからSSM Agentがインストールされています。
 OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、始めからSSM Agentがインストールされています。
 
 IN : watashi ha nihongo wo syaberu kotoga dekimasu .
 OUT: 私は日本語を話すことができます。
-OUT: 私は日本語をしゃべることができます。
 OUT: 私は日本語を話すことができます。
+OUT: 私は日本語をしゃべることができます。
 
 IN : Emacs kuraianto kara riyou dekiruyouni narimashita .
 OUT: Emacsクライアントから利用できるようになりました。
@@ -64,22 +64,22 @@ OUT: とりあえず、動くようになりました。
 OUT: とりあえず、動くようになりました。
 
 IN : 漢字
-OUT: かんじ
-OUT: かんじ
-OUT: かんじ
+OUT: かんじ カンジ
+OUT: かんじ カンジ
+OUT: かんじ カンジ
 
 IN : 東西南北
-OUT: とうざいなんぼく
-OUT: とうざいなんぼく
-OUT: とうざいなんぼく
+OUT: とうざいなんぼく トウザイナンボク
+OUT: とうざいなんぼく トウザイナンボク
+OUT: とうざいなんぼく トウザイナンボク
 
 IN : 行う
-OUT: おこなう
-OUT: おこなう
-OUT: おこなう
+OUT: おこなう オコナウ
+OUT: おこなう オコナウ
+OUT: おこなう オコナウ
 
 IN : 東京特許許可局
-OUT: とうきょうとっきょきょかきょく
-OUT: とうきょうとっきょきょかきょく
-OUT: とうきょうとっきょきょかきょく
+OUT: とうきょうとっきょきょかきょく トウキョウトッキョキョカキョク
+OUT: とうきょうとっきょきょかきょく トウキョウトッキョキョカキョク
+OUT: とうきょうとっきょきょかきょく トウキョウトッキョキョカキョク
 

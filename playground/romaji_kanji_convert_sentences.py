@@ -42,10 +42,10 @@ class GptTest:
             temperature=0.8,
             n=arg_n,
             messages=[
-                {"role": "system", "content": "あなたは漢字が与えられると、ひらがなに変換するアシスタントです。"},
-                {"role": "user", "content": '次をひらがなのみで表記してください。 : 東西南北'},
-                {"role": "assistant", "content": 'とうざいなんぼく'},
-                {"role": "user", "content": '次をひらがなのみで表記してください。 : {0}'.format(kanji)}
+                {"role": "system", "content": "あなたは漢字が与えられると、ひらがなとカタカナに変換するアシスタントです。"},
+                {"role": "user", "content": 'ひらがなとカタカナで表記してください。 : 東西南北'},
+                {"role": "assistant", "content": 'とうざいなんぼく トウザイナンボク'},
+                {"role": "user", "content": 'ひらがなとカタカナで表記してください。 : {0}'.format(kanji)}
                 ]
             )
         arr = []
