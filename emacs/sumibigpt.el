@@ -89,6 +89,22 @@
 		  minor-mode-map-alist)))
 
 
+;; OpenAPIを呼び出さずに固定文字列の結果を返すもの
+(defvar sumibigpt-fixed-henkan-houho
+  '(
+    ("[" . "「")
+    ("]" . "」")
+    ("." . "。")
+    ("," . "、")
+    ("-" . "ー")
+    ("de" . "で")
+    ("ni" . "に")
+    ("wo" . "を")
+    ("ha" . "は")
+    ("no" . "の")
+    ("ga" . "が")
+    ("to" . "と")))
+
 ;;;
 ;;; hooks
 ;;;
@@ -273,10 +289,17 @@
 ;; ローマ字で書かれた文章を複数候補作成して返す
 ;;
 (defun sumibigpt-henkan-request (roman)
-  (append
-   (sumibigpt-roman-to-kanji roman 3)
-   ;;原文のまま
-   (list (list roman "原文まま" 0 'l 3))))
+  (let ((fixed-kouho
+	 (-filter
+	  (lambda (x)
+	    (string= roman (car x)))
+	  sumibigpt-fixed-henkan-houho)))
+    (if (< 0 (length fixed-kouho))
+	(list (list (cdr (car fixed-kouho)) "固定文字列" 0 'j 0))
+      (append
+       (sumibigpt-roman-to-kanji roman 3)
+       ;;原文のまま
+       (list (list roman "原文まま" 0 'l 3))))))
 
 (when nil
 ;; unit test
