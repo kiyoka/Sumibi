@@ -11,15 +11,13 @@ SumibiGPTはモードレスです。
 
 ## 利用可能なEmacsバージョン
 
-Emacs version 28.x (Windows/Linux/macOS)
-
-Emacs以外の追加ソフトウェアは不要です。
+Emacs version 28.x (Windows/Linux/macOS) で動作します。Emacs以外の追加ソフトウェアは不要です。
 
 ## Emacsクライアントのインストール
 
 1. OpenAI AIのサブスクリプションを契約します。
 
-SumibiGPTを使ったOpenAI API使用料の目安としては1ドキュメントを書くのに約5円から10円程度です。
+SumibiGPTを使ったOpenAI API使用料の目安としては1ドキュメントを書くのに約1円から5円程度です。
 
 2. 環境変数 OPENAI_API_KEY にOpenAPIのAPIキーを登録します。
 
@@ -42,7 +40,7 @@ unicode-escapeo 20230109.1222
 ## インストールが成功したかどうかの確認方法
 
 Emacsを再起動するとSumibiGPTがステータスバーに表示されます。
-[gpt-3.5-turbo] は使用しているGPTのモデルです。
+[gpt-3.5-turbo] はOpenAI API 呼び出しで使用しているGPTのモデルです。
 
 ## 変換方法
 
