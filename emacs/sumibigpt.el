@@ -262,7 +262,7 @@
   (let* ((json-str (openai-http-post
 		    "あなたはローマ字を日本語に変換するアシスタントです。"
 		    "ローマ字の文を漢字仮名混じり文にしてください。 : watashi no namae ha nakano desu ."
-		    "私の名前は中野です。"
+                    "私の名前は中野です。"
 		    (format "ローマ字の文を漢字仮名混じり文にしてください。 : %s" roman)
 		    arg-n))
 	 (json-obj (json-parse-string json-str))
@@ -476,14 +476,13 @@
 (define-key sumibigpt-select-mode-map "\C-a"                   'sumibigpt-select-kanji)
 (define-key sumibigpt-select-mode-map "\C-p"                   'sumibigpt-select-prev)
 (define-key sumibigpt-select-mode-map "\C-n"                   'sumibigpt-select-next)
-(define-key sumibigpt-select-mode-map sumibigpt-rK-trans-key       'sumibigpt-select-next)
+(define-key sumibigpt-select-mode-map sumibigpt-rK-trans-key   'sumibigpt-select-next)
 (define-key sumibigpt-select-mode-map (kbd "SPC")              'sumibigpt-select-next)
 (define-key sumibigpt-select-mode-map "\C-u"                   'sumibigpt-select-hiragana)
 (define-key sumibigpt-select-mode-map "\C-i"                   'sumibigpt-select-katakana)
 (define-key sumibigpt-select-mode-map "\C-k"                   'sumibigpt-select-katakana)
 (define-key sumibigpt-select-mode-map "\C-l"                   'sumibigpt-select-hankaku)
 (define-key sumibigpt-select-mode-map "\C-e"                   'sumibigpt-select-zenkaku)
-(define-key sumibigpt-select-mode-map "\C-r"                   'sumibigpt-add-new-word)
 
 
 (defvar sumibigpt-popup-menu-keymap
@@ -695,46 +694,6 @@
   (sumibigpt-enable-undo))
 
 
-(defun sumibigpt-add-new-word ()
-  "変換候補のよみ(平仮名)に対応する新しい単語を追加する"
-  (interactive)
-  (setq case-fold-search nil)
-  (let ((type
-	 (cond
-	  ((string-match-p "^[A-Z][^A-Z]+$" sumibigpt-last-roman)
-	   (if (sumibigpt-select-by-type 'h) ;; 平仮名候補に自動切り替え
-	       'H
-	     nil))
-	  ((string-match-p "^[a-z][^A-Z]+$" sumibigpt-last-roman)
-	   'h)
-	  (t
-	   nil))))
-    (let* ((kouho      (nth sumibigpt-cand-cur sumibigpt-henkan-kouho-list))
-	   (hiragana   (car kouho)))
-      (sumibigpt-debug-print (format "sumibigpt-register-new-word: sumibigpt-last-roman=[%s] hiragana=%s result=%S\n" sumibigpt-last-roman hiragana (string-match-p "^[A-Z][^A-Z]+$" sumibigpt-last-roman)))
-      (cond
-       ;; 漢字語彙をgoogleimeで取得
-       ((eq 'H type)
-	(sumibigpt-select-kakutei)
-	(sumibigpt-add-new-word-sub
-	 hiragana
-	 (sumibigpt-googleime-request hiragana)
-	 '()))
-       ;; 平仮名フレーズから選択
-       ((eq 'h type)
-	(sumibigpt-select-kakutei)
-	(let ((kouho (sumibigpt-select-by-type-filter 'h)))
-	  (sumibigpt-debug-print (format "sumibigpt-register-new-word: kouho=%S\n" kouho))
-	  (sumibigpt-add-new-word-sub
-	   hiragana
-	   '()
-	   (cons
-	    hiragana ;; 確定値の平仮名文言を先頭に追加。
-	    (mapcar
-	     (lambda (x) (car x)) kouho))))))
-      )))
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 変換履歴操作関数
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -878,16 +837,7 @@
 	      (insert (sumibigpt-get-display-string))
 	      (setq e (point))
 	      (sumibigpt-display-function b e nil)
-	      (sumibigpt-select-kakutei)
-	      (cond
-	       ((string-match-p "^[A-Z][^A-Z]+$" sumibigpt-last-roman)
-		;; 漢字語彙
-		(when sumibigpt-use-googleime
-		  (if (not (sumibigpt-include-typep 'j))
-		      (sumibigpt-add-new-word))))
-	       (t
-		;; 平仮名フレーズはGoogleIMEの問い合わせの自動起動はしない
-		)))))))
+	      (sumibigpt-select-kakutei))))))
 	      
      ((sumibigpt-kanji (preceding-char))
       (sumibigpt-debug-print (format "sumibigpt-kanji(%s) => t\n" (preceding-char)))
@@ -908,41 +858,6 @@
      (t
       (sumibigpt-debug-print (format "<<OTHER:non-ascii,non-kanji>> (%s)\n" (preceding-char))))))))
       
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; キャピタライズ/アンキャピタライズ変換
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun sumibigpt-capitalize-trans ()
-  "キャピタライズ変換を行う
-・カーソルから行頭方向にローマ字列を見つけ、先頭文字の大文字小文字を反転する"
-  (interactive)
-
-  (cond
-   (sumibigpt-select-mode
-    ;; 候補選択モードでは反応しない。
-    ;; do nothing
-    )
-   ((eq (sumibigpt-char-charset (preceding-char)) 'ascii)
-    ;; カーソル直前が alphabet だったら
-    (sumibigpt-debug-print "capitalize(2)!\n")
-
-    (let ((end (point))
-	  (gap (sumibigpt-skip-chars-backward)))
-      (when (/= gap 0)
-	;; 意味のある入力が見つかったので変換する
-	(let* (
-	       (b (+ end gap))
-	       (e end)
-	       (roman-str (buffer-substring-no-properties b e)))
-	  (sumibigpt-debug-print (format "capitalize %d %d [%s]" b e roman-str))
-	  (setq case-fold-search nil)
-	  (cond
-	   ((string-match-p "^[A-Z]" roman-str)
-	    (downcase-region b (+ b 1)))
-	   ((string-match-p "^[a-z]" roman-str)
-	    (upcase-region   b (+ b 1))))))))
-   ))
 
 
 ;; 全角で漢字以外の判定関数
