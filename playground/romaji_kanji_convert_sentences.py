@@ -11,9 +11,12 @@ class GptTest:
     romaji_list = [
     'watashi no namae ha nakano desu .',
     'watashinonamaehanakanodesu .',
+    'わたしのなかえはなかのです。',
     '1nen ha 1gatu3ka kara hajimarimasu .',
+    '1ねんは1がつ3かからはじまります。',
     'kagikakko ha [ to ] de kakomimasu . ',
     'ringo ga 1ko to mikan ga 3ko arimasu . ',
+    'りんごが1ことみかんが3こあります。',
     'koyuu meishi ha tokui deha arimasen . tanaka san to satou san ha yuumei nanode daijyoubu desu . ',
     'AWS Systems Manager no kanritaisyou insutansu nisuru',
     'honkijiha , EC2 insutansu wo Systems Manager no Kanritaisyou insutansu ni surumadeno tejyun desu . ',
@@ -21,6 +24,7 @@ class GptTest:
     'watashi ha nihongo wo syaberu kotoga dekimasu .',
     'Emacs kuraianto kara riyou dekiruyouni narimashita .',
     'Emacs kara riyou dekiru kanji henkan enjin desu .',
+    'Emacsからりようできるかんじへんかんえんじんです。',
     'toriaezu , ugokuyouni narimashita .',
     ]
 
@@ -36,6 +40,25 @@ class GptTest:
     def set_model(self,model):
         self.model = model
 
+    def romaji_to_kanji(self,romaji,arg_n):
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            temperature=0.8,
+            n=arg_n,
+            messages=[
+                {"role": "system", "content": "あなたはローマ字とひらがなを日本語に変換するアシスタントです。"},
+                {"role": "user", "content": 'ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : watashi no namae ha nakano desu .'},
+                {"role": "assistant", "content": "私の名前は中野です。"},
+                {"role": "user", "content": 'ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : わたしのなまえはなかのです。'},
+                {"role": "assistant", "content": "私の名前は中野です。"},
+                {"role": "user", "content": 'ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : {0}'.format(romaji)}
+            ]
+        )
+        arr = []
+        for i in range(arg_n):
+            arr.append(response['choices'][i]['message']['content'])
+        return(arr)
+
     def kanji_to_yomigana(self,kanji,arg_n):
         response = openai.ChatCompletion.create(
             model=self.model,
@@ -48,23 +71,6 @@ class GptTest:
                 {"role": "user", "content": 'ひらがなとカタカナで表記してください。 : {0}'.format(kanji)}
                 ]
             )
-        arr = []
-        for i in range(arg_n):
-            arr.append(response['choices'][i]['message']['content'])
-        return(arr)
-    
-    def romaji_to_kanji(self,romaji,arg_n):
-        response = openai.ChatCompletion.create(
-            model=self.model,
-            temperature=0.8,
-            n=arg_n,
-            messages=[
-                {"role": "system", "content": "あなたはローマ字を日本語に変換するアシスタントです。"},
-                {"role": "user", "content": 'ローマ字の文を漢字仮名混じり文にしてください。 : watashi no namae ha nakano desu .'},
-                {"role": "assistant", "content": "私の名前は中野です。"},
-                {"role": "user", "content": 'ローマ字の文を漢字仮名混じり文にしてください。 : {0}'.format(romaji)}
-            ]
-        )
         arr = []
         for i in range(arg_n):
             arr.append(response['choices'][i]['message']['content'])
