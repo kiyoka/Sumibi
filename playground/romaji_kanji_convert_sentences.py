@@ -26,6 +26,7 @@ class GptTest:
     'Emacs kara riyou dekiru kanji henkan enjin desu .',
     'Emacsからりようできるかんじへんかんえんじんです。',
     'toriaezu , ugokuyouni narimashita .',
+    'hannisentaku shimasu'
     ]
 
     kanji_list = [
@@ -46,11 +47,13 @@ class GptTest:
             temperature=0.8,
             n=arg_n,
             messages=[
-                {"role": "system", "content": "あなたはローマ字とひらがなを日本語に変換するアシスタントです。"},
+                {"role": "system", "content": "あなたはローマ字とひらがなを日本語に変換するアシスタントです。ローマ字の 「nn」 は 「ん」と読んでください。"},
                 {"role": "user", "content": 'ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : watashi no namae ha nakano desu .'},
                 {"role": "assistant", "content": "私の名前は中野です。"},
                 {"role": "user", "content": 'ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : わたしのなまえはなかのです。'},
                 {"role": "assistant", "content": "私の名前は中野です。"},
+                {"role": "user", "content": 'ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : hannishitei shimasu'},
+                {"role": "assistant", "content": "範囲指定します"},
                 {"role": "user", "content": 'ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : {0}'.format(romaji)}
             ]
         )

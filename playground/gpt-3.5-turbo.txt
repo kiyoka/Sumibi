@@ -10,8 +10,10 @@ OUT: 私の名前は中野です。
 
 IN : わたしのなかえはなかのです。
 OUT: 私の名前は中野です。
-OUT: 私の仲間は中野です。
-OUT: 私の仲間は中野です。
+OUT: 私の仲悪いは中野です。 
+
+※おそらく「名前」を「なかえ」と誤字してしまったのだと思われます。「仲悪い」は「なかわるい」と表記するのが正しいですが、同音異義語として「なかえ」と表記されることもあるため、このような解釈になってしまいました。もし間違いがあれば、いつでもお伝えください。
+OUT: 私の仲江は中野です。
 
 IN : 1nen ha 1gatu3ka kara hajimarimasu .
 OUT: 1年は1月3日から始まります。
@@ -19,14 +21,14 @@ OUT: 1年は1月3日から始まります。
 OUT: 1年は1月3日から始まります。
 
 IN : 1ねんは1がつ3かからはじまります。
-OUT: 1年は1月3日から始まります。
+OUT: １年は１月３日から始まります。
 OUT: 1年は1月3日から始まります。
 OUT: 1年は1月3日から始まります。
 
 IN : kagikakko ha [ to ] de kakomimasu . 
-OUT: 角括弧は「と」で囲みます。
-OUT: 角括弧は「と」で囲みます。
-OUT: 角括弧は「と」で囲みます。
+OUT: 角括弧は「[ 」と「]」で囲みます。
+OUT: 角括弧は「[ 」と「]」で囲みます。
+OUT: 角括弧は「[ ]」で囲んでいます。
 
 IN : ringo ga 1ko to mikan ga 3ko arimasu . 
 OUT: りんごが1個とみかんが3個あります。
@@ -39,9 +41,9 @@ OUT: りんごが1個とみかんが3個あります。
 OUT: りんごが1個とみかんが3個あります。
 
 IN : koyuu meishi ha tokui deha arimasen . tanaka san to satou san ha yuumei nanode daijyoubu desu . 
-OUT: 好様名詞は得意ではありません。田中さんと佐藤さんは有名なので、大丈夫です。
-OUT: 好遇名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
-OUT: 好遊名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
+OUT: 好きな名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
+OUT: 好きな名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
+OUT: 好悪名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
 
 IN : AWS Systems Manager no kanritaisyou insutansu nisuru
 OUT: AWS Systems Managerの管理対象インスタンスにする。
@@ -49,14 +51,14 @@ OUT: AWS Systems Managerの管理対象インスタンスにする。
 OUT: AWS Systems Managerの管理対象インスタンスにする。
 
 IN : honkijiha , EC2 insutansu wo Systems Manager no Kanritaisyou insutansu ni surumadeno tejyun desu . 
-OUT: 本記事は、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
-OUT: 本気持ちは、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
-OUT: 本気字破、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
+OUT: 本番環境では、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
+OUT: 本番環境は、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
+OUT: 本番環境では、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
 
 IN : AWS komyunithi- AMI de teikyou sareteiru Windows Server 2019 no AMI niha, hajimekara SSM Agent ga insuto-ru sareteimasu .
-OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、初めからSSM Agentがインストールされています。
-OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、初めからSSM Agentがインストールされています。
 OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、始めからSSM Agentがインストールされています。
+OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、初めからSSM Agentがインストールされています。
+OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、初めからSSM Agentがインストールされています。
 
 IN : watashi ha nihongo wo syaberu kotoga dekimasu .
 OUT: 私は日本語をしゃべることができます。
@@ -83,6 +85,11 @@ OUT: とりあえず、動くようになりました。
 OUT: とりあえず、動くようになりました。
 OUT: とりあえず、動くようになりました。
 
+IN : hannisentaku shimasu
+OUT: 範囲選択します。
+OUT: 範囲選択します
+OUT: 範囲選択します。
+
 IN : 漢字
 OUT: かんじ カンジ
 OUT: かんじ カンジ
@@ -101,5 +108,5 @@ OUT: おこなう オコナウ
 IN : 東京特許許可局
 OUT: とうきょうとっきょきょかきょく トウキョウトッキョキョカキョク
 OUT: とうきょうとっきょきょかきょく トウキョウトッキョキョカキョク
-OUT: とうきょうとっきょきょかきょく トウキョウトッキョキョカキョク
+OUT: とうきょうとっきょきょかきょく ドウキョウトッキョキョカキョク
 
