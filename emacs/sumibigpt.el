@@ -3,7 +3,7 @@
 ;; Copyright (C) 2023 Kiyoka Nishiyama
 ;;
 ;; Author: Kiyoka Nishiyama <kiyoka@sumibi.org>
-;; Version: 1.0.0          ;;SUMIBIGPT-VERSION
+;; Version: 1.1.0          ;;SUMIBIGPT-VERSION
 ;; Keywords: ime, japanese
 ;; Package-Requires: ((cl-lib "1.0") (popup "0.5.9") (unicode-escapeo "20230109.1222"))
 ;; URL: https://github.com/kiyoka/SumibiGPT
@@ -203,11 +203,7 @@
 ;;
 ;; OpenAPIにプロンプトを発行する
 ;;
-(defun openai-http-post (system-content1
-			 user-content1
-			 assistant-content1
-			 user-content2
-			 arg-n)
+(defun openai-http-post (message-lst arg-n)
   "call OpenAI completions API."
   (progn
     (setq url "https://api.openai.com/v1/chat/completions")
@@ -223,13 +219,16 @@
 	   "  \"temperature\": 0.8,"
 	   (format  "  \"n\": %d," arg-n)
 	   "  \"messages\": [ "
-	   (format " {\"role\": \"system\",    \"content\": \"%s\"}," (unicode-escape system-content1))
-	   (format " {\"role\": \"user\",      \"content\": \"%s\"}," (unicode-escape user-content1))
-	   (format " {\"role\": \"assistant\", \"content\": \"%s\"}," (unicode-escape assistant-content1))
-	   (format " {\"role\": \"user\",      \"content\": \"%s\"} " (unicode-escape user-content2))
+	   (string-join
+	    (-map
+	     (lambda (x)
+	       (format " {\"role\": \"%s\",    \"content\": \"%s\"}"
+		       (car x)
+		       (unicode-escape (cdr x))))
+	     message-lst)
+	    ",")
 	   "  ] "
 	   "}"))
-    (sumibigpt-debug-print (format "user-content2 [%s]" user-content2))
     (let* ((lines
 	    (let ((buf (url-retrieve-synchronously url)))
 	      (sumibigpt-debug-print (buffer-name buf))
@@ -249,26 +248,13 @@
                          )))
                      'utf-8))
                 "<<CONNECTION ERROR>>\n")))
-           (line-list
-            (split-string lines "\n")))
+	   (line-list
+	    (split-string lines "\n")))
       (cadr (reverse line-list)))))
 
-;;
-;; ローマ字で書かれた文章をOpenAIサーバーを使って変換し、結果を文字列で返す。
-;; roman: "bunsyou no mojiretu"
-;; arg-n: 候補を何件返すか
-;; return: (("文章の文字列" "候補N" 0 j index) ...)
-;;
-(defun sumibigpt-roman-to-kanji (roman arg-n)
-  (let* ((json-str (openai-http-post
-		    "あなたはローマ字を日本語に変換するアシスタントです。"
-		    "ローマ字の文を漢字仮名混じり文にしてください。 : watashi no namae ha nakano desu ."
-                    "私の名前は中野です。"
-		    (format "ローマ字の文を漢字仮名混じり文にしてください。 : %s" roman)
-		    arg-n))
-	 (json-obj (json-parse-string json-str))
-	 (result '())
-	 (count 0))
+
+(defun analyze-openai-json-obj (json-obj arg-n)
+  (let ((result '()))
     (while (< count arg-n)
       (let* ((hex-str
 	      (gethash "content"
@@ -287,6 +273,54 @@
     result))
 
 ;;
+;; ローマ字で書かれた文章をOpenAIサーバーを使って変換し、結果を文字列で返す。
+;; roman: "bunsyou no mojiretu"
+;; arg-n: 候補を何件返すか
+;; return: (("文章の文字列" "候補N" 0 j index) ...)
+;;
+(defun sumibigpt-roman-to-kanji (roman arg-n)
+  (let* ((json-str (openai-http-post
+		    (list
+		     (cons "system"
+			   "あなたはローマ字とひらがなを日本語に変換するアシスタントです。ローマ字の 「nn」 は 「ん」と読んでください。")
+		     (cons "user" 
+			   "ローマ字の文を漢字仮名混じり文にしてください。 : watashi no namae ha nakano desu .")
+		     (cons "assistant"
+			   "私の名前は中野です。")
+		     (cons "user" 
+			   "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : hannishitei shimasu")
+		     (cons "assistant"
+			   "範囲指定します")
+		     (cons "user"
+			   (format "ローマ字の文を漢字仮名混じり文にしてください。 : %s" roman)))
+		    arg-n))
+	 (json-obj (json-parse-string json-str))
+	 (count 0))
+    (analyze-openai-json-obj json-obj arg-n)))
+
+;;
+;; ローマ字で書かれた文章をOpenAIサーバーを使って読み仮名を返す。
+;; roman: "日本語"
+;; arg-n: 候補を何件返すか
+;; return: (("にほんご ニホンゴ" "候補N" 0 j index) ...)
+;;
+(defun sumibigpt-kanji-to-yomigana (kanji arg-n)
+  (let* ((json-str (openai-http-post
+		    (list
+		     (cons "system"
+			   "あなたは漢字が与えられると、ひらがなとカタカナに変換するアシスタントです。")
+		     (cons "user"
+			   "ひらがなとカタカナで表記してください。 : 東西南北")
+		     (cons "assistant"
+			   "とうざいなんぼく トウザイナンボク")
+		     (cons "user"
+			   (format "ひらがなとカタカナで表記してください。 : %s" kanji)))
+		    arg-n))
+	 (json-obj (json-parse-string json-str))
+	 (count 0))
+    (analyze-openai-json-obj json-obj arg-n)))
+
+;;
 ;; ローマ字で書かれた文章を複数候補作成して返す
 ;;
 (defun sumibigpt-henkan-request (roman)
@@ -295,17 +329,21 @@
 	  (lambda (x)
 	    (string= roman (car x)))
 	  sumibigpt-fixed-henkan-houho)))
-    (if (< 0 (length fixed-kouho))
-	(list (list (cdr (car fixed-kouho)) "固定文字列" 0 'j 0))
+    (cond
+     ;; 固定の変換キーワードの場合(wo ha ga...)
+     ((< 0 (length fixed-kouho))
+      (list (list (cdr (car fixed-kouho)) "固定文字列" 0 'j 0)))
+     ;; 漢字を含む場合
+     ((sumibigpt-string-include-kanji roman)
+      (append
+       (sumibigpt-kanji-to-yomigana roman 3)
+       ;;原文のまま
+       (list (list roman "原文まま" 0 'l 3))))
+     (t
       (append
        (sumibigpt-roman-to-kanji roman 3)
        ;;原文のまま
-       (list (list roman "原文まま" 0 'l 3))))))
-
-(when nil
-;; unit test
-  (sumibigpt-henkan-request "watashi no namae ha nakano desu ."))
-
+       (list (list roman "原文まま" 0 'l 3)))))))
 
 (defun sumibigpt-file-existp (file)
   "FILE が存在するかどうかをチェックする。 t か nil で結果を返す"
@@ -351,7 +389,6 @@
 ;; カーソル前の文字種を返却する関数
 (defun sumibigpt-char-charset (ch)
   (let ((result (char-charset ch)))
-    (sumibigpt-debug-print (format "sumibigpt-char-charset:1(%s) => %s\n" ch result))
     (if (multibyte-string-p (char-to-string ch)) 
 	'japanese-jisx0208
       result)))
@@ -807,68 +844,98 @@
   (interactive)
   (sumibigpt-debug-print "sumibigpt-rK-trans()")
 
-  ;; 最後に変換した行番号の更新
-  (setq sumibigpt-last-lineno (line-number-at-pos (point)))
-
   (cond
-   (sumibigpt-select-mode
-    (sumibigpt-debug-print "<<sumibigpt-select-mode>>\n")
-    ;; 候補選択モード中に呼出されたら、keymapから再度候補選択モードに入る
-    (funcall (lookup-key sumibigpt-select-mode-map sumibigpt-rK-trans-key)))
+   ;; region指定している場合
+   ((region-active-p)
+    (let ((b (region-beginning))
+	  (e (region-end)))
+      (when (sumibigpt-henkan-region b e)
+	(if (eq (char-before b) ?/)
+	    (setq b (- b 1)))
+	(setq sumibigpt-last-roman (buffer-substring-no-properties b e))
+	(delete-region b e)
+	(goto-char b)
+	(insert (sumibigpt-get-display-string))
+	(setq e (point))
+	(sumibigpt-display-function b e nil)
+	(sumibigpt-select-kakutei))))
 
+   ;; region指定していない場合
    (t
-    (cond
+    ;; 最後に変換した行番号の更新
+    (setq sumibigpt-last-lineno (line-number-at-pos (point)))
 
-     ((eq (sumibigpt-char-charset (preceding-char)) 'ascii)
-      (sumibigpt-debug-print (format "ascii? (%s) => t\n" (preceding-char)))
-      ;; カーソル直前が alphabet だったら
-      (let ((end (point))
-	    (gap (sumibigpt-skip-chars-backward)))
-	(when (/= gap 0)
-	  ;; 意味のある入力が見つかったので変換する
-	  (let (
-		(b (+ end gap))
-		(e end))
-	    (when (sumibigpt-henkan-region b e)
-	      (if (eq (char-before b) ?/)
-		  (setq b (- b 1)))
-	      (setq sumibigpt-last-roman (buffer-substring-no-properties b e))
-	      (delete-region b e)
-	      (goto-char b)
-	      (insert (sumibigpt-get-display-string))
-	      (setq e (point))
-	      (sumibigpt-display-function b e nil)
-	      (sumibigpt-select-kakutei))))))
-	      
-     ((sumibigpt-kanji (preceding-char))
-      (sumibigpt-debug-print (format "sumibigpt-kanji(%s) => t\n" (preceding-char)))
-    
-      ;; カーソル直前が 全角で漢字以外 だったら候補選択モードに移行する。
-      ;; また、最後に確定した文字列と同じかどうかも確認する。
-      (when (sumibigpt-history-search (point) t)
-	;; 直前に変換したfenceの範囲に入っていたら、候補選択モードに移行する。
-	(setq sumibigpt-select-mode t)
-	(sumibigpt-debug-print "henkan mode ON\n")
-	
-	;; 表示状態を候補選択モードに切替える。
-	(sumibigpt-display-function
-	 (marker-position (car sumibigpt-markers))
-	 (marker-position (cdr sumibigpt-markers))
-	 t)))
+    (cond
+     (sumibigpt-select-mode
+      (sumibigpt-debug-print "<<sumibigpt-select-mode>>\n")
+      ;; 候補選択モード中に呼出されたら、keymapから再度候補選択モードに入る
+      (funcall (lookup-key sumibigpt-select-mode-map sumibigpt-rK-trans-key)))
 
      (t
-      (sumibigpt-debug-print (format "<<OTHER:non-ascii,non-kanji>> (%s)\n" (preceding-char))))))))
+      (cond
+
+       ((eq (sumibigpt-char-charset (preceding-char)) 'ascii)
+	(sumibigpt-debug-print (format "ascii? (%s) => t\n" (preceding-char)))
+	;; カーソル直前が alphabet だったら
+	(let ((end (point))
+	      (gap (sumibigpt-skip-chars-backward)))
+	  (when (/= gap 0)
+	    ;; 意味のある入力が見つかったので変換する
+	    (let (
+		  (b (+ end gap))
+		  (e end))
+	      (when (sumibigpt-henkan-region b e)
+		(if (eq (char-before b) ?/)
+		    (setq b (- b 1)))
+		(setq sumibigpt-last-roman (buffer-substring-no-properties b e))
+		(delete-region b e)
+		(goto-char b)
+		(insert (sumibigpt-get-display-string))
+		(setq e (point))
+		(sumibigpt-display-function b e nil)
+		(sumibigpt-select-kakutei))))))
+       
+       ((sumibigpt-kanji (preceding-char))
+	(sumibigpt-debug-print (format "sumibigpt-kanji(%s) => t\n" (preceding-char)))
+	
+	;; カーソル直前が 全角で漢字以外 だったら候補選択モードに移行する。
+	;; また、最後に確定した文字列と同じかどうかも確認する。
+	(when (sumibigpt-history-search (point) t)
+	  ;; 直前に変換したfenceの範囲に入っていたら、候補選択モードに移行する。
+	  (setq sumibigpt-select-mode t)
+	  (sumibigpt-debug-print "henkan mode ON\n")
+	  
+	  ;; 表示状態を候補選択モードに切替える。
+	  (sumibigpt-display-function
+	   (marker-position (car sumibigpt-markers))
+	   (marker-position (cdr sumibigpt-markers))
+	   t)))
+
+       (t
+	(sumibigpt-debug-print (format "<<OTHER:non-ascii,non-kanji>> (%s)\n" (preceding-char))))))))))
       
 
+
+;; 漢字を含む文字列であるかどうかの判断関数
+(defun sumibigpt-string-include-kanji (str)
+  (let ((kanji-lst
+	 (-filter
+	  (lambda (x)
+	    (if (string-equal x "")
+		nil
+	      (sumibigpt-kanji (string-to-char x))))
+	  (split-string str ""))))
+    (< 0 (length kanji-lst))))
 
 ;; 全角で漢字以外の判定関数
 (defun sumibigpt-nkanji (ch)
   (and (eq (sumibigpt-char-charset ch) 'japanese-jisx0208)
        (not (string-match "[亜-瑤]" (char-to-string ch)))))
 
+;; 全角で漢字の判定関数
 (defun sumibigpt-kanji (ch)
-  (eq (sumibigpt-char-charset ch) 'japanese-jisx0208))
-
+  (and (eq (sumibigpt-char-charset ch) 'japanese-jisx0208)
+       (string-match "[亜-瑤]" (char-to-string ch))))
 
 ;; ローマ字漢字変換時、変換対象とするローマ字を読み飛ばす関数
 (defun sumibigpt-skip-chars-backward ()
@@ -1062,7 +1129,7 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
 (setq default-input-method "japanese-sumibigpt")
 
 (defconst sumibigpt-version
-  "1.0.0" ;;SUMIBIGPT-VERSION
+  "1.1.0" ;;SUMIBIGPT-VERSION
   )
 (defun sumibigpt-version (&optional arg)
   "入力モード変更"
@@ -1070,6 +1137,16 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
   (message sumibigpt-version))
 
 (provide 'sumibigpt)
+
+
+(when nil
+;; unti test
+  (sumibigpt-henkan-request "watashi no namae ha nakano desu ."))
+
+(when nil
+;; unit test
+  (sumibigpt-henkan-request "読みがな"))
+
 
 ;; Local Variables:
 ;; coding: utf-8
