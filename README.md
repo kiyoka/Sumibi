@@ -17,7 +17,6 @@ Emacs version 28.x (Windows/Linux/macOS) で動作します。Emacs以外の追�
 
 1. OpenAI AIのサブスクリプションを契約します。
 
-SumibiGPTを使ったOpenAI API使用料の目安としてはgpt-3.5-turboを使って1ドキュメントを書くのに約1円から5円程度です。
 [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys)
 ![image.png](./images/img_8.png)
 
