@@ -64,6 +64,11 @@
   :type  'integer
   :group 'sumibigpt)
 
+(defcustom sumibigpt-api-timeout 60
+  "OpenAIサーバーと通信する時のタイムアウトを指定する。(秒数)"
+  :type  'integer
+  :group 'sumibigpt)
+
 (defvar sumibigpt-mode nil             "漢字変換トグル変数")
 (defun sumibigpt-modeline-string ()
   ;; 接続先sumibigpt-serverのホスト名を表示する。
@@ -230,7 +235,7 @@
 	   "  ] "
 	   "}"))
     (let* ((lines
-	    (let ((buf (url-retrieve-synchronously url)))
+	    (let ((buf (url-retrieve-synchronously url t t sumibigpt-api-timeout)))
 	      (sumibigpt-debug-print (buffer-name buf))
 	      (sumibigpt-debug-print "\n")
 	      (if buf
@@ -344,7 +349,8 @@
 	(-zip
 	 (sumibigpt-roman-to-kanji roman 3)
 	 '(0 1 2)))
-       (list (list roman "原文まま" 0 'l 3)))))))
+       (list 
+	(list roman "原文まま" 0 'l 3)))))))
 
 (defun sumibigpt-file-existp (file)
   "FILE が存在するかどうかをチェックする。 t か nil で結果を返す"
