@@ -262,13 +262,7 @@
 				(aref (gethash "choices" json-obj) count))))
 	     (utf8-str
 	      (decode-coding-string (url-unhex-string hex-str) 'utf-8)))
-	(setq result (append result
-			     (list (list
-				    utf8-str
-				    (format "候補%d" (+ count 1))
-				    0
-				    'j
-				    count)))))
+	(setq result (cons utf8-str result)))
       (setq count (1+ count)))
     result))
 
@@ -276,7 +270,7 @@
 ;; ローマ字で書かれた文章をOpenAIサーバーを使って変換し、結果を文字列で返す。
 ;; roman: "bunsyou no mojiretu"
 ;; arg-n: 候補を何件返すか
-;; return: (("文章の文字列" "候補N" 0 j index) ...)
+;; return: ("1番目の文章の文字列" "2番目の文章の文字列" "3番目の文章の文字列" ...)
 ;;
 (defun sumibigpt-roman-to-kanji (roman arg-n)
   (let* ((json-str (openai-http-post
@@ -302,9 +296,9 @@
 ;; ローマ字で書かれた文章をOpenAIサーバーを使って読み仮名を返す。
 ;; roman: "日本語"
 ;; arg-n: 候補を何件返すか
-;; return: (("にほんご ニホンゴ" "候補N" 0 j index) ...)
+;; return: ("にほんご" "ニホンゴ")
 ;;
-(defun sumibigpt-kanji-to-yomigana (kanji arg-n)
+(defun sumibigpt-kanji-to-yomigana (kanji)
   (let* ((json-str (openai-http-post
 		    (list
 		     (cons "system"
@@ -315,10 +309,10 @@
 			   "とうざいなんぼく トウザイナンボク")
 		     (cons "user"
 			   (format "ひらがなとカタカナで表記してください。 : %s" kanji)))
-		    arg-n))
+		    1))
 	 (json-obj (json-parse-string json-str))
 	 (count 0))
-    (analyze-openai-json-obj json-obj arg-n)))
+    (split-string (car (analyze-openai-json-obj json-obj 1)))))
 
 ;;
 ;; ローマ字で書かれた文章を複数候補作成して返す
@@ -335,14 +329,21 @@
       (list (list (cdr (car fixed-kouho)) "固定文字列" 0 'j 0)))
      ;; 漢字を含む場合
      ((sumibigpt-string-include-kanji roman)
-      (append
-       (sumibigpt-kanji-to-yomigana roman 3)
-       ;;原文のまま
-       (list (list roman "原文まま" 0 'l 3))))
+      (let ((lst (sumibigpt-kanji-to-yomigana roman)))
+	(list
+	 (list (car lst) "ひらがな" 0 'h 0)
+	 (list (cadr lst) "カタカナ" 0 'k 1)
+	 (list roman "原文まま" 0 'l 2))))
      (t
       (append
-       (sumibigpt-roman-to-kanji roman 3)
-       ;;原文のまま
+       (-map
+	(lambda (x)
+	  (list (car x)
+		(format "候補%d" (+ 1 (cdr x)))
+		0 'l (cdr x)))
+	(-zip
+	 (sumibigpt-roman-to-kanji roman 3)
+	 '(0 1 2)))
        (list (list roman "原文まま" 0 'l 3)))))))
 
 (defun sumibigpt-file-existp (file)
@@ -895,9 +896,11 @@
 		(sumibigpt-display-function b e nil)
 		(sumibigpt-select-kakutei))))))
        
-       ((sumibigpt-kanji (preceding-char))
-	(sumibigpt-debug-print (format "sumibigpt-kanji(%s) => t\n" (preceding-char)))
-	
+       ((or (sumibigpt-kanji (preceding-char))
+	    (sumibigpt-nkanji (preceding-char)))
+	(sumibigpt-debug-print (format "sumibigpt-kanji(%s) or sumibigpt-nkanji(%s) => t\n"
+				       (preceding-char)
+				       (preceding-char)))
 	;; カーソル直前が 全角で漢字以外 だったら候補選択モードに移行する。
 	;; また、最後に確定した文字列と同じかどうかも確認する。
 	(when (sumibigpt-history-search (point) t)
