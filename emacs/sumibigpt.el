@@ -249,27 +249,32 @@
                          (sumibigpt-debug-print (format "<<<%s>>>\n" str))
                          str)
                         (t
-                         "<<TIMEOUT>>\n"
-                         )))
-                     'utf-8))
-                "<<CONNECTION ERROR>>\n")))
+                         (sumibigpt-debug-print (format "<<<%s>>>\n" sumibigpt-timeout-error-json))
+			 "{\"err\": \"!!HTTP ERROR!!\"}\n")))
+		     'utf-8))
+		"{\"err\": \"!!TIMEOUT ERROR!!\"}\n")))
 	   (line-list
 	    (split-string lines "\n")))
       (cadr (reverse line-list)))))
 
 
 (defun analyze-openai-json-obj (json-obj arg-n)
-  (let ((result '()))
-    (while (< count arg-n)
-      (let* ((hex-str
-	      (gethash "content"
-		       (gethash "message"
-				(aref (gethash "choices" json-obj) count))))
-	     (utf8-str
-	      (decode-coding-string (url-unhex-string hex-str) 'utf-8)))
-	(setq result (cons utf8-str result)))
-      (setq count (1+ count)))
-    result))
+  (let ((result '())
+	(count 0))
+    (cond
+     ((gethash "err" json-obj)
+      (list (gethash "err" json-obj)))
+     (t
+      (while (< count arg-n)
+	(let* ((hex-str
+		(gethash "content"
+			 (gethash "message"
+				  (aref (gethash "choices" json-obj) count))))
+	       (utf8-str
+		(decode-coding-string (url-unhex-string hex-str) 'utf-8)))
+	  (setq result (cons utf8-str result)))
+	(setq count (1+ count)))
+      result))))
 
 ;;
 ;; ローマ字で書かれた文章をOpenAIサーバーを使って変換し、結果を文字列で返す。
@@ -293,8 +298,7 @@
 		     (cons "user"
 			   (format "ローマ字の文を漢字仮名混じり文にしてください。 : %s" roman)))
 		    arg-n))
-	 (json-obj (json-parse-string json-str))
-	 (count 0))
+	 (json-obj (json-parse-string json-str)))
     (analyze-openai-json-obj json-obj arg-n)))
 
 ;;
@@ -315,8 +319,7 @@
 		     (cons "user"
 			   (format "ひらがなとカタカナで表記してください。 : %s" kanji)))
 		    1))
-	 (json-obj (json-parse-string json-str))
-	 (count 0))
+	 (json-obj (json-parse-string json-str)))
     (split-string (car (analyze-openai-json-obj json-obj 1)))))
 
 ;;
