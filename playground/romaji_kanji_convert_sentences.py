@@ -33,7 +33,10 @@ class GptTest:
         '漢字',
         '東西南北',
         '行う',
-        '東京特許許可局'
+        '東京特許許可局',
+        '要約',
+        '体制',
+        '制度'
     ]
 
     model = "gpt-3.5-turbo"
@@ -68,10 +71,12 @@ class GptTest:
             temperature=0.8,
             n=arg_n,
             messages=[
-                {"role": "system", "content": "あなたは漢字が与えられると、ひらがなとカタカナに変換するアシスタントです。"},
-                {"role": "user", "content": 'ひらがなとカタカナで表記してください。 : 東西南北'},
-                {"role": "assistant", "content": 'とうざいなんぼく トウザイナンボク'},
-                {"role": "user", "content": 'ひらがなとカタカナで表記してください。 : {0}'.format(kanji)}
+                {"role": "system", "content": "あなたは漢字が与えられると、ひらがなとカタカナとその漢字の同音異義語を返すアシスタントです。"},
+                {"role": "user", "content": "ひらがなとカタカナと同音異義語をなるべく多く列挙してください。 : 東西南北"},
+                {"role": "assistant", "content": "とうざいなんぼく トウザイナンボク 東西南北"},
+                {"role": "user", "content": "ひらがなとカタカナと同音異義語をなるべく多く列挙してください。 : 漢字"},
+                {"role": "assistant", "content": "かんじ カンジ 漢字 感じ 幹事 監事 寛二"},
+                {"role": "user", "content": "ひらがなとカタカナと同音異義語をなるべく多く列挙してください。 : {0}".format(kanji)}
                 ]
             )
         arr = []
