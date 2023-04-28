@@ -205,6 +205,12 @@
     (setq sumibigpt-init t)))
 
 
+(defun escape-for-json (str)
+  (let* ((str1
+	  (unicode-escape (string-replace "\"" "\\\"" str)))
+	 (str2 (string-replace "\n" "\\n" str1)))
+    str2))
+
 ;;
 ;; OpenAPIにプロンプトを発行する
 ;;
@@ -229,7 +235,7 @@
 	     (lambda (x)
 	       (format " {\"role\": \"%s\",    \"content\": \"%s\"}"
 		       (car x)
-		       (unicode-escape (cdr x))))
+		       (escape-for-json (cdr x))))
 	     message-lst)
 	    ",")
 	   "  ] "
@@ -311,13 +317,17 @@
   (let* ((json-str (openai-http-post
 		    (list
 		     (cons "system"
-			   "あなたは漢字が与えられると、ひらがなとカタカナに変換するアシスタントです。")
+			   "あなたは漢字が与えられると、ひらがなとカタカナとその漢字の同音異義語を返すアシスタントです。")
 		     (cons "user"
-			   "ひらがなとカタカナで表記してください。 : 東西南北")
+			   "ひらがなとカタカナと同音異義語をなるべく多く列挙してください。 : 東西南北")
 		     (cons "assistant"
-			   "とうざいなんぼく トウザイナンボク")
+			   "とうざいなんぼく トウザイナンボク 東西南北")
 		     (cons "user"
-			   (format "ひらがなとカタカナで表記してください。 : %s" kanji)))
+			   "ひらがなとカタカナと同音異義語をなるべく多く列挙してください。 : 漢字")
+		     (cons "assistant"
+			   "かんじ カンジ 漢字 感じ 幹事 監事 寛二")
+		     (cons "user"
+			   (format "ひらがなとカタカナと同音異義語をなるべく多く列挙してください。 : %s" kanji)))
 		    1))
 	 (json-obj (json-parse-string json-str)))
     (split-string (car (analyze-openai-json-obj json-obj 1)))))
@@ -337,11 +347,19 @@
       (list (list (cdr (car fixed-kouho)) "固定文字列" 0 'j 0)))
      ;; 漢字を含む場合
      ((sumibigpt-string-include-kanji roman)
-      (let ((lst (sumibigpt-kanji-to-yomigana roman)))
-	(list
-	 (list (car lst) "ひらがな" 0 'h 0)
-	 (list (cadr lst) "カタカナ" 0 'k 1)
-	 (list roman "原文まま" 0 'l 2))))
+      (let* ((lst (sumibigpt-kanji-to-yomigana roman))
+	     (kouho-lst
+	      (-map
+	       (lambda (x)
+		 (list (car x)
+		       (format "候補%d" (+ 1 (cdr x)))
+		       0 'h (cdr x)))
+	       (-zip
+		lst
+		'(0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19)))))
+	(append
+	 kouho-lst
+	 (list (list roman "原文まま" 0 'l (length kouho-lst))))))
      (t
       (append
        (-map
