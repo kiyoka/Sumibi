@@ -66,4 +66,3 @@ A. はい、カスタマイズ変数 sumibigpt-api-timeout を60秒から変更�
 ## Q. gpt-3.5-turbo 以外のモデルを利用したいのですが、どのようにすれば良いですか？
 
 A. カスタマイズ変数 sumibigpt-current-model を "gpt-4" などに変更してください。
-
