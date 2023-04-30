@@ -8,25 +8,32 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
 class GptTest:
-    romaji_list = [
-    'watashi no namae ha nakano desu .',
-    'watashinonamaehanakanodesu .',
-    'わたしのなかえはなかのです。',
-    '1nen ha 1gatu3ka kara hajimarimasu .',
-    '1ねんは1がつ3かからはじまります。',
-    'kagikakko ha [ to ] de kakomimasu . ',
-    'ringo ga 1ko to mikan ga 3ko arimasu . ',
-    'りんごが1ことみかんが3こあります。',
-    'koyuu meishi ha tokui deha arimasen . tanaka san to satou san ha yuumei nanode daijyoubu desu . ',
-    'AWS Systems Manager no kanritaisyou insutansu nisuru',
-    'honkijiha , EC2 insutansu wo Systems Manager no Kanritaisyou insutansu ni surumadeno tejyun desu . ',
-    'AWS komyunithi- AMI de teikyou sareteiru Windows Server 2019 no AMI niha, hajimekara SSM Agent ga insuto-ru sareteimasu .',
-    'watashi ha nihongo wo syaberu kotoga dekimasu .',
-    'Emacs kuraianto kara riyou dekiruyouni narimashita .',
-    'Emacs kara riyou dekiru kanji henkan enjin desu .',
-    'Emacsからりようできるかんじへんかんえんじんです。',
-    'toriaezu , ugokuyouni narimashita .',
-    'hannisentaku shimasu'
+    romaji_list1 = [
+        'watashi no namae ha nakano desu .',
+        'watashinonamaehanakanodesu .',
+        'わたしのなかえはなかのです。',
+        '1nen ha 1gatu3ka kara hajimarimasu .',
+        '1ねんは1がつ3かからはじまります。',
+        'kagikakko ha [ to ] de kakomimasu . ',
+        'ringo ga 1ko to mikan ga 3ko arimasu . ', 
+        'りんごが1ことみかんが3こあります。',
+        'koyuu meishi ha tokui deha arimasen . tanaka san to satou san ha yuumei nanode daijyoubu desu . ',
+        'AWS Systems Manager no kanritaisyou insutansu nisuru',
+        'honkijiha , EC2 insutansu wo Systems Manager no Kanritaisyou insutansu ni surumadeno tejyun desu . ',
+        'AWS komyunithi- AMI de teikyou sareteiru Windows Server 2019 no AMI niha, hajimekara SSM Agent ga insuto-ru sareteimasu .',
+        'watashi ha nihongo wo syaberu kotoga dekimasu .',
+        'Emacs kuraianto kara riyou dekiruyouni narimashita .',
+        'Emacs kara riyou dekiru kanji henkan enjin desu .',
+        'Emacsからりようできるかんじへんかんえんじんです。',
+        'toriaezu , ugokuyouni narimashita .',
+        'hannisentaku shimasu'
+    ]
+    
+    romaji_list2 = [
+        'hannisentaku shimasu',
+        'nano',
+        'shita',
+        'aiueokakikukeko'
     ]
 
     kanji_list = [
@@ -57,13 +64,34 @@ class GptTest:
             n=arg_n,
             messages=[
                 {"role": "system", "content": "あなたはローマ字とひらがなを日本語に変換するアシスタントです。ローマ字の 「nn」 は 「ん」と読んでください。"},
-                {"role": "user", "content": 'ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : watashi no namae ha nakano desu .'},
+                {"role": "user", "content": "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : watashi no namae ha nakano desu ."},
                 {"role": "assistant", "content": "私の名前は中野です。"},
-                {"role": "user", "content": 'ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : わたしのなまえはなかのです。'},
+                {"role": "user", "content": "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : わたしのなまえはなかのです。"},
                 {"role": "assistant", "content": "私の名前は中野です。"},
-                {"role": "user", "content": 'ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : hannishitei shimasu'},
+                {"role": "user", "content": "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : hannishitei shimasu"},
                 {"role": "assistant", "content": "範囲指定します"},
-                {"role": "user", "content": 'ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : {0}'.format(romaji)}
+                {"role": "user", "content": "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : {0}".format(romaji)}
+            ]
+        )
+        arr = []
+        for i in range(arg_n):
+            arr.append(response['choices'][i]['message']['content'])
+        return(arr)
+
+    def romaji_to_yomigana(self,romaji,arg_n):
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            temperature=0.8,
+            n=arg_n,
+            messages=[
+                {"role": "system", "content": "あなたはローマ字をひらがなとカタカナに変換するアシスタントです。ローマ字の 「nn」 は 「ん」と読んでください。"},
+                {"role": "user", "content": "ローマ字をひらがなとカタカナにしてください : shita"},
+                {"role": "assistant", "content": "した シタ"},
+                {"role": "user", "content": "ローマ字をひらがなとカタカナにしてください : nano"},
+                {"role": "assistant", "content": "なの ナノ"},
+                {"role": "user", "content": "ローマ字をひらがなとカタカナにしてください : aiueokakikukeko"},
+                {"role": "assistant", "content": "あいうえおかきくけこ アイウエオカキクケコ"},
+                {"role": "user", "content": "ローマ字をひらがなとカタカナにしてください : {0}".format(romaji)}
             ]
         )
         arr = []
@@ -109,9 +137,17 @@ class GptTest:
             arr.append(response['choices'][i]['message']['content'])
         return(arr)
 
-    def romaji_task(self):
-        for romaji in self.romaji_list:
+    def romaji_1_task(self):
+        for romaji in self.romaji_list1:
             result = self.romaji_to_kanji(romaji,3)
+            print('IN : {0}'.format(romaji))
+            for s in result:
+                print('OUT: {0}'.format(s))
+            print()
+
+    def romaji_2_task(self):
+        for romaji in self.romaji_list2:
+            result = self.romaji_to_yomigana(romaji,3)
             print('IN : {0}'.format(romaji))
             for s in result:
                 print('OUT: {0}'.format(s))
@@ -137,7 +173,8 @@ def main(argv):
     gptTest = GptTest()
     if(1 < len(argv)):
         gptTest.set_model(argv[1])
-    gptTest.romaji_task()
+    gptTest.romaji_1_task()
+    gptTest.romaji_2_task()    
     gptTest.yomigana_task()
     gptTest.to_english_task()
 
