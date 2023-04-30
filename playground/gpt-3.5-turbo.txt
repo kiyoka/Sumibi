@@ -10,8 +10,8 @@ OUT: 私の名前は中野です。
 
 IN : わたしのなかえはなかのです。
 OUT: 私の名前は中野です。
-OUT: 私の仲栄は中野です。
-OUT: 私の仲間は中野です。
+OUT: 私の名前は中野です。
+OUT: 私の名前は中根です。
 
 IN : 1nen ha 1gatu3ka kara hajimarimasu .
 OUT: 1年は1月3日から始まります。
@@ -24,9 +24,9 @@ OUT: 1年は1月3日から始まります。
 OUT: 1年は1月3日から始まります。
 
 IN : kagikakko ha [ to ] de kakomimasu . 
-OUT: 角括弧は「[」と「]」で囲みます。
 OUT: 角括弧は「[ 」と「] 」で囲みます。
-OUT: 角括弧は「[ ]」で囲みます。
+OUT: 括弧は「[」と「]」で囲みます。
+OUT: 括弧は「[ 」と「]」で囲みます。
 
 IN : ringo ga 1ko to mikan ga 3ko arimasu . 
 OUT: りんごが1個とみかんが3個あります。
@@ -34,14 +34,14 @@ OUT: りんごが1個とみかんが3個あります。
 OUT: りんごが1個とみかんが3個あります。
 
 IN : りんごが1ことみかんが3こあります。
-OUT: りんごが1個とみかんが3個あります。
+OUT: リンゴが1個とみかんが3個あります。
 OUT: りんごが1個とみかんが3個あります。
 OUT: りんごが1個とみかんが3個あります。
 
 IN : koyuu meishi ha tokui deha arimasen . tanaka san to satou san ha yuumei nanode daijyoubu desu . 
-OUT: こころあたりの名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
-OUT: こゆう名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
-OUT: 公有名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
+OUT: 好遇名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
+OUT: 好きな名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
+OUT: 固有名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
 
 IN : AWS Systems Manager no kanritaisyou insutansu nisuru
 OUT: AWS Systems Managerの管理対象インスタンスにする。
@@ -50,18 +50,18 @@ OUT: AWS Systems Managerの管理対象インスタンスにする。
 
 IN : honkijiha , EC2 insutansu wo Systems Manager no Kanritaisyou insutansu ni surumadeno tejyun desu . 
 OUT: 本番環境では、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
-OUT: 本番環境では、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
-OUT: 本番環境では、EC2インスタンスをSystems Managerの管轄内インスタンスにするまでの手順です。
+OUT: 本番環境は、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
+OUT: 本番環境は、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
 
 IN : AWS komyunithi- AMI de teikyou sareteiru Windows Server 2019 no AMI niha, hajimekara SSM Agent ga insuto-ru sareteimasu .
 OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、初めからSSM Agentがインストールされています。
 OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、初めからSSM Agentがインストールされています。
-OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、初めからSSM Agentがインストールされています。
+OUT: AWSコミュニティーのAMIで提供されているWindows Server 2019のAMIには、初めからSSM Agentがインストールされています。
 
 IN : watashi ha nihongo wo syaberu kotoga dekimasu .
 OUT: 私は日本語をしゃべることができます。
 OUT: 私は日本語をしゃべることができます。
-OUT: 私は日本語をしゃべることができます。
+OUT: 私は日本語を話せることができます。
 
 IN : Emacs kuraianto kara riyou dekiruyouni narimashita .
 OUT: Emacsクライアントから利用できるようになりました。
@@ -76,7 +76,7 @@ OUT: Emacsから利用できる漢字変換エンジンです。
 IN : Emacsからりようできるかんじへんかんえんじんです。
 OUT: Emacsから利用できる漢字変換エンジンです。
 OUT: Emacsから利用できる漢字変換エンジンです。
-OUT: Emacsから利用できる感じ変換エンジンです。
+OUT: Emacsから利用できる漢字変換エンジンです。
 
 IN : toriaezu , ugokuyouni narimashita .
 OUT: とりあえず、動くようになりました。
@@ -89,50 +89,68 @@ OUT: 範囲選択します。
 OUT: 範囲選択します。
 
 IN : 漢字
-OUT: かんじ カンジ 漢字 感じ 幹事 監事 寛二
-OUT: かんじ カンジ 漢字 感じ 干事 監事 寛児 管理人 関克治 勘次 甘治 間違い 接地 感じる 神事 神子 かいじ 会計事務 階級史 海賊 歌詞 開示 開示書 界次 魁次 火事 過時 下司 佳子 華子 香子 加護峰 賀正 家事 面白い 仮字 火事場の馬鹿力 過失致死 過去帳 過去形 かつらぎ 桂木 活字 活路 括弧 括子 活火山 広宣流布 楽譜 確率 滑稽 覚書 陥穽 感情 感想 簡素 緩速 看護師 看板 漢方薬 関数 関西弁 関節 管制塔 管弦楽 看病 顔色 漢文 感慨 関数解析 漢習字 感染 感覚 感傷 感覚器 かもめ カモメ 鴎 亀山女史 毛深い 冠婚葬祭 兜 隠居 小舟 近江八幡 今日は
-OUT: かんじ カンジ 漢字 感じ 幹事 監事 寛二
+OUT: かんじ カンジ 漢字 かんじる カンジル 感じる かんじょう カンジョウ 管制 かんじん カンジン 患者 かんしつ カンシツ 寒室 かんじゅう カンジュウ 環境 かんじょ カンジョ 監獄
+OUT: かんじ カンジ 漢字 感じ 幹事 監事 寛二 管理者 間違い 簡易 甘路 韓国地方
+OUT: かんじ カンジ 漢字 感じ 幹事 監事 寛二 間違い 願事 甘茶 還暦 韓国語 管理 関数
 
 IN : 東西南北
-OUT: とうざいなんぼく トウザイナンボク 東西南北 南北 東南西北 ひがしにし なんしょうほく トンナンホク 分かれ道 みち かど 方角
-OUT: とうざいなんぼく トウザイナンボク 東西南北 東西南北 方角 四方 極点 極楽 洞爺湖
-OUT: とうざいなんぼく トウザイナンボク 東西南北 北西南東 ひがしなんし かずさ
+OUT: とうざいなんぼく トウザイナンボク 東西南北
+とうさいなんぼく トウサイナンボク 東斉南北
+ひがしにし ひがシニ 東西
+あずまきた あずマキタ 東北
+なんきた なんキタ 南北
+しょうなん しょウナン 小南
+おおさか おおサカ 大阪
+OUT: とうざいなんぼく トウザイナンボク 東西南北
+とうざいほくせい トウザイホクセイ 東西北西
+とうなんほくさい トウナンホクサイ 東南北西
+あずまきたみなみ アズマキタミナミ 東北南南
+しょうじきじゅんじ  ショウジキジュンジ 上司君子
+とうざいしょうなん トウザイショウナン 東西昇降
+とうざいてんしゅう トウザイテンシュウ 東西展習
+とうざいりゅうおう トウザイリュウオウ 東西流桜
+OUT: とうざいなんぼく　とうざいなんぼっこう　トウザイナンボク　トウザイナンボッコウ　東西南北
+
 
 IN : 行う
-OUT: おこなう オコナウ 行う 行なう 行為する 成し遂げる 実行する 実施する 履行する 遂行する 執り行う 実行なす 行き届かせる
-OUT: おこなう オコナウ 行う 為す 成す なす なかたる
-OUT: おこなう オコナウ 行う 行なう 行為する 行き交う 行列する 行先 行動する
+OUT: おこなう オコナウ 行う 行なう 行為する 為す 実施する 執り行う
+OUT: おこなう オコナウ 行う 為す 成す なす つかまつる 修める 執り行う 遂行する こなう（子猫）ごなう（御講）算う 食う（方言）
+OUT: おこなう オコナウ 行う 執行 大工
 
 IN : 東京特許許可局
 OUT: とうきょうとっきょきょかきょく トウキョウトッキョキョカキョク 東京特許許可局
 
-(Note: This is a proper noun, so there are no same sound homophones.)
-OUT: とうきょうとっきょきょかきょく トウキョウトッキョキョカキョク 東京特許許可局 東京特許許可局
-OUT: とうきょうとっきょきょかきょく トウキョウトッキョキョカキョク 東京特許許可局
-
-- 東京都厚生労働局
-- 東京都工業技術センター
-- 東京都公安委員会
-- 東京都交通局
-- 東京都庁舎
-- 東京都教育委員会
-- 東京都渋谷区役所
-- 東京駅前郵便局
-- 東銀座郵便局
-- 東京ミッドタウンクリニック
+※「とっきょ」や「きょか」の部分については同音異義語がありません。
+OUT: とうきょうとっきょきょかきょく トウキョウトッキョキョカキョク 東京特許許可局 東京督促局 東京徳川局 東京独立局 東京読書局 東京篤志局 東京特畜許可局 東京特産許可局 東京徳川許可局 東京興業銀行
+OUT: とうきょうとっきょきょかきょく トウキョウトッキョキョカキョク 東京特許許可局 透去許可局 濤波殊更句 倒括特剋局
 
 IN : 要約
-OUT: ようやく ヨウヤク 要約 洋服 利益 溶岩鍋
-OUT: ようやく ヨウヤク 要約 腰痛 陽夕 曜夜 山葵
-OUT: ようやく ヨウヤク 要約 様役 容易 窯油 踊躍 養育 陽翳
+OUT: ようやく ヨウヤク 要約 様役 四六時中
+OUT: ようやく ヨウヤク 要約 要約する 洋服 葉っぱ 利益多減 羊蹄根
+OUT: ようやく ヨウヤク 要約 洋服 容易 窯沸かし
 
 IN : 体制
-OUT: たいせい タイセイ 体制 泰政 大成 退職 正政 対政 台静 大勢 多勢 大星 大政翼賛
-OUT: たいせい タイセイ 体制 泰成 大成 泰政 大政 大星 大正 大清 太政 大制 大性 大青 大盛 大誓 泰政 大正 大清 大製 大勢 太性 大聖 大誠 太静 大世 滞留
-OUT: たいせい タイセイ 体制 泰政 大成 大西 胎盛 态势 看护姓
+OUT: たいせい タイセイ 体制 泰正 大成 退職制度 大声
+OUT: たいせい タイセイ 体制 泰政 大成 大盛 大西 大勢 大清 大政 着生 退職 退正 太姓 体性	     
+OUT: たいせい タイセイ 体制 泰盛 大政 大成 大星 大勢 大盛 大清 大制 大正 大青 大世 大歳 大聖 大勢 大誠
 
 IN : 制度
-OUT: せいど セイド 制度 生土 聖堂 正道 西洞 精度 成同
-OUT: せいど セイド 制度 生渡 征度 性度 聖土 精度 青年団制度 世帯主制度 製銅所制度
-OUT: せいど セイド 制度 生土 西洞
+OUT: せいど セイド 制度 聖堂 西洞 精度 生動 製銅性発熱デバイス
+OUT: せいど セイド 制度 声優 聖堂 静止 精度 生徒 西洞 精神動物
+OUT: せいど セイド 制度 生涯学習制度 世帯主制度 課税制度 軽減税率制度 税制改正
+
+IN : 私の名前は中野です。
+OUT: My name is Nakano.
+OUT: My name is Nakano.
+OUT: My name is Nakano.
+
+IN : Emacsから利用できる漢字変換エンジンです。
+OUT: This is a Chinese character conversion engine that can be used from Emacs.
+OUT: It is a kanji conversion engine that can be used from Emacs.
+OUT: It is a kanji conversion engine that can be used from Emacs.
+
+IN : GPTはOpenAIから2018年に以下の論文で提案されたモデルで、基本的にはTransformerをベースに、事前学習-ファインチューニングをすることで非常に高い精度を達成したモデルです。
+OUT: GPT is a model proposed by OpenAI in 2018 in the following paper, which is basically based on Transformer and achieves very high accuracy by pre-training and fine-tuning.
+OUT: GPT is a model proposed by OpenAI in 2018 in the following paper, which is basically based on Transformer and achieves very high accuracy by pre-training and fine-tuning.
+OUT: GPT is a model proposed by OpenAI in 2018 in the following paper, which is basically based on Transformer and achieves very high accuracy by pre-training and fine-tuning.
 

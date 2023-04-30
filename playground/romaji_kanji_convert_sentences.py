@@ -39,6 +39,12 @@ class GptTest:
         '制度'
     ]
 
+    japanese_list = [
+        '私の名前は中野です。',
+        'Emacsから利用できる漢字変換エンジンです。',
+        'GPTはOpenAIから2018年に以下の論文で提案されたモデルで、基本的にはTransformerをベースに、事前学習-ファインチューニングをすることで非常に高い精度を達成したモデルです。'
+    ]
+    
     model = "gpt-3.5-turbo"
 
     def set_model(self,model):
@@ -84,7 +90,26 @@ class GptTest:
             arr.append(response['choices'][i]['message']['content'])
         return(arr)
 
-    def romaji_func(self):
+    def japanese_to_english(self,japanese,arg_n):
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            temperature=0.8,
+            n=arg_n,
+            messages=[
+                {"role": "system", "content": "あなたは、与えられた文章を英語に翻訳するアシスタントです。"},
+                {"role": "user", "content": "文章を英語に翻訳してください。 : 私の名前は中野です。"},
+                {"role": "assistant", "content": "My name is Nakano."},
+                {"role": "user", "content": "文章を英語に翻訳してください。 : GPTはOpenAIから2018年に以下の論文で提案されたモデルで、基本的にはTransformerをベースに、事前学習-ファインチューニングをすることで非常に高い精度を達成したモデルです。"},
+                {"role": "assistant", "content": "GPT is a model proposed by OpenAI in 2018 in the following paper, which is basically based on Transformer and achieves very high accuracy by pre-training - fine tuning."},
+                {"role": "user", "content": "文章を英語に翻訳してください。 : {0}".format(japanese)}
+                ]
+            )
+        arr = []
+        for i in range(arg_n):
+            arr.append(response['choices'][i]['message']['content'])
+        return(arr)
+
+    def romaji_task(self):
         for romaji in self.romaji_list:
             result = self.romaji_to_kanji(romaji,3)
             print('IN : {0}'.format(romaji))
@@ -92,10 +117,18 @@ class GptTest:
                 print('OUT: {0}'.format(s))
             print()
 
-    def yomigana_func(self):
+    def yomigana_task(self):
         for kanji in self.kanji_list:
             result = self.kanji_to_yomigana(kanji,3)
             print('IN : {0}'.format(kanji))
+            for s in result:
+                print('OUT: {0}'.format(s))
+            print()
+
+    def to_english_task(self):
+        for j in self.japanese_list:
+            result = self.japanese_to_english(j,3)
+            print('IN : {0}'.format(j))
             for s in result:
                 print('OUT: {0}'.format(s))
             print()
@@ -104,8 +137,9 @@ def main(argv):
     gptTest = GptTest()
     if(1 < len(argv)):
         gptTest.set_model(argv[1])
-    gptTest.romaji_func()
-    gptTest.yomigana_func()
+    gptTest.romaji_task()
+    gptTest.yomigana_task()
+    gptTest.to_english_task()
 
 if __name__ == "__main__":
      main(sys.argv)
