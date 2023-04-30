@@ -3,7 +3,7 @@
 ;; Copyright (C) 2023 Kiyoka Nishiyama
 ;;
 ;; Author: Kiyoka Nishiyama <kiyoka@sumibi.org>
-;; Version: 1.1.0          ;;SUMIBIGPT-VERSION
+;; Version: 1.2.0          ;;SUMIBIGPT-VERSION
 ;; Keywords: ime, japanese
 ;; Package-Requires: ((cl-lib "1.0") (popup "0.5.9") (unicode-escapeo "20230109.1222"))
 ;; URL: https://github.com/kiyoka/SumibiGPT
@@ -310,6 +310,35 @@
 
 ;;
 ;; ローマ字で書かれた文章をOpenAIサーバーを使って読み仮名を返す。
+;; roman: "shita" や "nano"
+;; arg-n: 候補を何件返すか
+;; return: ("した" "シタ") や ("なの" "ナノ")
+;;
+(defun sumibigpt-roman-to-yomigana (roman)
+  (let* ((json-str (openai-http-post
+		    (list
+		     (cons "system"
+			   "あなたはローマ字をひらがなとカタカナに変換するアシスタントです。ローマ字の 「nn」 は 「ん」と読んでください。")
+		     (cons "user"
+			   "ローマ字をひらがなとカタカナにしてください : shita")
+		     (cons "assistant"
+			   "した シタ")
+		     (cons "user"
+			   "ローマ字をひらがなとカタカナにしてください : nano")
+		     (cons "assistant"
+			   "なの ナノ")
+		     (cons "user"
+			   "ローマ字をひらがなとカタカナにしてください : aiueokakikukeko")
+		     (cons "assistant"
+			   "あいうえおかきくけこ アイウエオカキクケコ")
+		     (cons "user"
+			   (format "ローマ字をひらがなとカタカナにしてください : %s" roman)))
+		    1))
+	 (json-obj (json-parse-string json-str)))
+    (split-string (car (analyze-openai-json-obj json-obj 1)))))
+
+;;
+;; 漢字仮名混じりで書かれた文章をOpenAIサーバーを使って読み仮名を返す。
 ;; roman: "日本語"
 ;; arg-n: 候補を何件返すか
 ;; return: ("にほんご" "ニホンゴ")
@@ -362,17 +391,23 @@
 	 kouho-lst
 	 (list (list roman "原文まま" 0 'l (length kouho-lst))))))
      (t
-      (append
-       (-map
-	(lambda (x)
-	  (list (car x)
-		(format "候補%d" (+ 1 (cdr x)))
-		0 'l (cdr x)))
-	(-zip
-	 (sumibigpt-roman-to-kanji roman 3)
-	 '(0 1 2)))
-       (list 
-	(list roman "原文まま" 0 'l 3)))))))
+      (let ((lst (sumibigpt-roman-to-kanji roman 3)))
+	(when (>= 10 (length roman))
+	  (setq lst
+		(append
+		 lst
+		 (sumibigpt-roman-to-yomigana roman))))
+	(append
+	 (-map
+	  (lambda (x)
+	    (list (car x)
+		  (format "候補%d" (+ 1 (cdr x)))
+		  0 'l (cdr x)))
+	  (-zip
+	   lst
+	   '(0 1 2 3 4)))
+	 (list 
+	  (list roman "原文まま" 0 'l (length lst)))))))))
 
 (defun sumibigpt-file-existp (file)
   "FILE が存在するかどうかをチェックする。 t か nil で結果を返す"
@@ -961,12 +996,12 @@
 ;; 全角で漢字以外の判定関数
 (defun sumibigpt-nkanji (ch)
   (and (eq (sumibigpt-char-charset ch) 'japanese-jisx0208)
-       (not (string-match "[亜-瑤]" (char-to-string ch)))))
+       (not (string-match "[亜-黑]" (char-to-string ch)))))
 
 ;; 全角で漢字の判定関数
 (defun sumibigpt-kanji (ch)
   (and (eq (sumibigpt-char-charset ch) 'japanese-jisx0208)
-       (string-match "[亜-瑤]" (char-to-string ch))))
+       (string-match "[亜-黑]" (char-to-string ch))))
 
 ;; ローマ字漢字変換時、変換対象とするローマ字を読み飛ばす関数
 (defun sumibigpt-skip-chars-backward ()
@@ -1160,7 +1195,7 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
 (setq default-input-method "japanese-sumibigpt")
 
 (defconst sumibigpt-version
-  "1.1.0" ;;SUMIBIGPT-VERSION
+  "1.2.0" ;;SUMIBIGPT-VERSION
   )
 (defun sumibigpt-version (&optional arg)
   "入力モード変更"
