@@ -206,10 +206,11 @@
 
 
 (defun escape-for-json (str)
-  (let* ((str1
-	  (unicode-escape (string-replace "\"" "\\\"" str)))
-	 (str2 (string-replace "\n" "\\n" str1)))
-    str2))
+  (let* ((str1 (string-replace "\\" "" str))
+	 (str2 (string-replace "\"" "\\\"" str1))
+	 (str3 (string-replace "\n" "\\n" str2))
+	 (str4 (unicode-escape str3)))
+    str4))
 
 ;;
 ;; OpenAPIにプロンプトを発行する
