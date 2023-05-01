@@ -1,6 +1,6 @@
 # SumibiGPT
 
-Japanese input method using OpenAI GPT
+Japanese input method powered by ChatGPT API
 
 ## SumibiGPTとは
 
