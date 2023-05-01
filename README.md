@@ -1,12 +1,12 @@
-# SumibiGPT
+# Sumibi
 
 Japanese input method powered by ChatGPT API
 
-## SumibiGPTとは
+## Sumibiとは
 
 Emacs用の日本語入力システム(IME)です。
 
-SumibiGPTはモードレスです。
+Sumibiはモードレスです。
 日本語入力モードに切り替えることなく日本語を入力できます。
 
 よくある質問はこちら。[FAQ](FAQ.md)
@@ -40,7 +40,7 @@ unicode-escapeo 20230109.1222
 
 ## インストールが成功したかどうかの確認方法
 
-Emacsを再起動するとSumibiGPTがステータスバーに表示されます。
+Emacsを再起動するとSumibiがステータスバーに表示されます。
 [gpt-3.5-turbo] はOpenAI API 呼び出しで使用しているGPTのモデルです。
 ![image.png](./images/img_9.png)
 
