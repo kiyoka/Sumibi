@@ -363,40 +363,42 @@
     (split-string (car (analyze-openai-json-obj json-obj 1)))))
 
 ;;
+;; 日本語の文章を、OpenAIサーバーを使って英語に翻訳する。
+;; roman: "私の名前は中野です。"
+;; arg-n: 候補を何件返すか
+;; return: ("My name is Nakano." "My name is Nakano." "My name is Nakano.")
+;;
+(defun sumibigpt-kanji-to-english (kanji arg-n)
+  (let* ((json-str (openai-http-post
+		    (list
+		     (cons "system"
+			   "あなたは、与えられた文章を英語に翻訳するアシスタントです。")
+		     (cons "user" 
+			   "文章を英語に翻訳してください。 : 私の名前は中野です。")
+		     (cons "assistant"
+			   "My name is Nakano.")
+		     (cons "user" 
+			   "文章を英語に翻訳してください。 : GPTはOpenAIから2018年に以下の論文で提案されたモデルで、基本的にはTransformerをベースに、事前学習-ファインチューニングをすることで非常に高い精度を達成したモデルです。")
+		     (cons "assistant"
+			   "GPT is a model proposed by OpenAI in 2018 in the following paper, which is basically based on Transformer and achieves very high accuracy by pre-training - fine tuning.")
+		     (cons "user"
+			   (format "文章を英語に翻訳してください。 : %s" kanji)))
+		    arg-n))
+	 (json-obj (json-parse-string json-str)))
+    (analyze-openai-json-obj json-obj arg-n)))
+
+;;
 ;; ローマ字で書かれた文章を複数候補作成して返す
 ;;
-(defun sumibigpt-henkan-request (roman)
+(defun sumibigpt-henkan-request (roman inverse-flag)
   (let ((fixed-kouho
 	 (-filter
 	  (lambda (x)
 	    (string= roman (car x)))
 	  sumibigpt-fixed-henkan-houho)))
     (cond
-     ;; 固定の変換キーワードの場合(wo ha ga...)
-     ((< 0 (length fixed-kouho))
-      (list (list (cdr (car fixed-kouho)) "固定文字列" 0 'j 0)))
-     ;; 漢字を含む場合
-     ((sumibigpt-string-include-kanji roman)
-      (let* ((lst (sumibigpt-kanji-to-yomigana roman))
-	     (kouho-lst
-	      (-map
-	       (lambda (x)
-		 (list (car x)
-		       (format "候補%d" (+ 1 (cdr x)))
-		       0 'h (cdr x)))
-	       (-zip
-		lst
-		'(0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19)))))
-	(append
-	 kouho-lst
-	 (list (list roman "原文まま" 0 'l (length kouho-lst))))))
-     (t
-      (let ((lst (sumibigpt-roman-to-kanji roman 3)))
-	(when (>= 10 (length roman))
-	  (setq lst
-		(append
-		 lst
-		 (sumibigpt-roman-to-yomigana roman))))
+     (inverse-flag
+      (let ((lst (sumibigpt-kanji-to-english roman 3)))
 	(append
 	 (-map
 	  (lambda (x)
@@ -407,7 +409,45 @@
 	   lst
 	   '(0 1 2 3 4)))
 	 (list 
-	  (list roman "原文まま" 0 'l (length lst)))))))))
+	  (list roman "原文まま" 0 'l (length lst))))))
+     (t
+      (cond
+       ;; 固定の変換キーワードの場合(wo ha ga...)
+       ((< 0 (length fixed-kouho))
+	(list (list (cdr (car fixed-kouho)) "固定文字列" 0 'j 0)))
+       ;; 漢字を含む場合
+       ((sumibigpt-string-include-kanji roman)
+	(let* ((lst (sumibigpt-kanji-to-yomigana roman))
+	       (kouho-lst
+		(-map
+		 (lambda (x)
+		   (list (car x)
+			 (format "候補%d" (+ 1 (cdr x)))
+			 0 'h (cdr x)))
+		 (-zip
+		  lst
+		  '(0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19)))))
+	  (append
+	   kouho-lst
+	   (list (list roman "原文まま" 0 'l (length kouho-lst))))))
+       (t
+	(let ((lst (sumibigpt-roman-to-kanji roman 3)))
+	  (when (>= 10 (length roman))
+	    (setq lst
+		  (append
+		   lst
+		   (sumibigpt-roman-to-yomigana roman))))
+	  (append
+	   (-map
+	    (lambda (x)
+	      (list (car x)
+		    (format "候補%d" (+ 1 (cdr x)))
+		    0 'l (cdr x)))
+	    (-zip
+	     lst
+	     '(0 1 2 3 4)))
+	   (list 
+	    (list roman "原文まま" 0 'l (length lst)))))))))))
 
 (defun sumibigpt-file-existp (file)
   "FILE が存在するかどうかをチェックする。 t か nil で結果を返す"
@@ -418,13 +458,13 @@
 
 
 ;; リージョンをローマ字漢字変換する関数
-(defun sumibigpt-henkan-region (b e)
+(defun sumibigpt-henkan-region (b e inverse-flag)
   "指定された region を漢字変換する"
   (sumibigpt-init)
   (when (/= b e)
     (let* (
 	   (yomi (buffer-substring-no-properties b e))
-	   (henkan-list (sumibigpt-henkan-request yomi)))
+	   (henkan-list (sumibigpt-henkan-request yomi inverse-flag)))
       
       (if henkan-list
 	  (condition-case err
@@ -448,7 +488,6 @@
 	     (setq sumibigpt-select-mode nil))
 	    (run-hooks 'sumibigpt-select-mode-end-hook))
 	nil))))
-
 
 ;; カーソル前の文字種を返却する関数
 (defun sumibigpt-char-charset (ch)
@@ -913,7 +952,7 @@
    ((region-active-p)
     (let ((b (region-beginning))
 	  (e (region-end)))
-      (when (sumibigpt-henkan-region b e)
+      (when (sumibigpt-henkan-region b e nil)
 	(if (eq (char-before b) ?/)
 	    (setq b (- b 1)))
 	(setq sumibigpt-last-roman (buffer-substring-no-properties b e))
@@ -948,7 +987,7 @@
 	    (let (
 		  (b (+ end gap))
 		  (e end))
-	      (when (sumibigpt-henkan-region b e)
+	      (when (sumibigpt-henkan-region b e nil)
 		(if (eq (char-before b) ?/)
 		    (setq b (- b 1)))
 		(setq sumibigpt-last-roman (buffer-substring-no-properties b e))
@@ -980,6 +1019,29 @@
        (t
 	(sumibigpt-debug-print (format "<<OTHER:non-ascii,non-kanji>> (%s)\n" (preceding-char))))))))))
       
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 英語への翻訳関数
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun sumibigpt-english-trans ()
+  "英語への翻訳を行う。"
+  (interactive)
+  (sumibigpt-debug-print "sumibigpt-english-trans()")
+
+  ;; region指定している場合しか発動しない。
+  (when (region-active-p)
+    (let ((b (region-beginning))
+	  (e (region-end)))
+      (when (sumibigpt-henkan-region b e t)
+	(if (eq (char-before b) ?/)
+	    (setq b (- b 1)))
+	(setq sumibigpt-last-roman (buffer-substring-no-properties b e))
+	(delete-region b e)
+	(goto-char b)
+	(insert (sumibigpt-get-display-string))
+	(setq e (point))
+	(sumibigpt-display-function b e nil)
+	(sumibigpt-select-kakutei)))))
 
 
 ;; 漢字を含む文字列であるかどうかの判断関数
@@ -1097,7 +1159,7 @@
 ;;; human interface
 ;;;
 (define-key sumibigpt-mode-map sumibigpt-rK-trans-key 'sumibigpt-rK-trans)
-(define-key sumibigpt-mode-map "\M-j" 'sumibigpt-capitalize-trans)
+(define-key sumibigpt-mode-map "\M-j" 'sumibigpt-english-trans)
 (or (assq 'sumibigpt-mode minor-mode-map-alist)
     (setq minor-mode-map-alist
 	  (append (list 
@@ -1207,11 +1269,15 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
 
 (when nil
 ;; unti test
-  (sumibigpt-henkan-request "watashi no namae ha nakano desu ."))
+  (sumibigpt-henkan-request "watashi no namae ha nakano desu ." nil))
 
 (when nil
 ;; unit test
-  (sumibigpt-henkan-request "読みがな"))
+  (sumibigpt-henkan-request "読みがな" nil))
+
+(when nil
+;; unit test
+  (sumibigpt-henkan-request "私の名前は中野です。" t))
 
 
 ;; Local Variables:
