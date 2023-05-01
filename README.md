@@ -30,12 +30,12 @@ popup 0.5.9
 unicode-escapeo 20230109.1222
 ```
 
-4. sumibigpt.el を \~/.emacs.d/ に保存します。
+4. sumibi.el を \~/.emacs.d/ に保存します。
 5. \~/.emacs.d/init.el に以下のコードを追加します。
 
 ```lisp
-(require 'sumibigpt)
-(global-sumibigpt-mode 1)
+(require 'sumibi)
+(global-sumibi-mode 1)
 ```
 
 ## インストールが成功したかどうかの確認方法
