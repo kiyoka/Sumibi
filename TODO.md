@@ -22,3 +22,12 @@ shita
 (string-match "[亜-瑤]" "要") => nil
 (string-match "[亜-瑤]" "約") => nil
 ```
+
+* ローマ字や英語の文章の中に含まれるmarkdown構文が壊れないように保護する。
+
+例えば、以下のようなリンク構文、画像挿入構文が意識されるようにする。
+
+```
+[link](https://hostname.aaa.bbb/abc/)
+![image](https://hostname.aaa.bbb/abc/image.png)
+```

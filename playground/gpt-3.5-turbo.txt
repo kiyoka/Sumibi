@@ -10,7 +10,7 @@ OUT: 私の名前は中野です。
 
 IN : わたしのなかえはなかのです。
 OUT: 私の名前は中野です。
-OUT: 私の仲絵は中野です。
+OUT: 私の名前は中野です。
 OUT: 私の名前は中野です。
 
 IN : 1nen ha 1gatu3ka kara hajimarimasu .
@@ -19,29 +19,29 @@ OUT: 1年は1月3日から始まります。
 OUT: 1年は1月3日から始まります。
 
 IN : 1ねんは1がつ3かからはじまります。
-OUT: 一年は一月三日から始まります。
+OUT: 1年は1月3日から始まります。
 OUT: 1年は1月3日から始まります。
 OUT: 1年は1月3日から始まります。
 
 IN : kagikakko ha [ to ] de kakomimasu . 
-OUT: 括弧は「[」と「]」で囲まれています。
-OUT: 括弧は「[」と「]」で囲みます。
-OUT: 角括弧は「[」と「]」で囲まれています。
+OUT: 括弧は [ ] で囲みます。
+OUT: 角括弧は [ ] で囲まれます。
+OUT: 角括弧は [ ] で囲みます。
 
 IN : ringo ga 1ko to mikan ga 3ko arimasu . 
 OUT: りんごが1個とみかんが3個あります。
-OUT: リンゴが1個とみかんが3個あります。
-OUT: リンゴが1個とみかんが3個あります。
+OUT: りんごが1個とみかんが3個あります。
+OUT: りんごが1個とみかんが3個あります。
 
 IN : りんごが1ことみかんが3こあります。
-OUT: リンゴが1個とみかんが3個あります。
 OUT: りんごが1個とみかんが3個あります。
+OUT: リンゴが1個とみかんが3個あります。
 OUT: りんごが1個とみかんが3個あります。
 
 IN : koyuu meishi ha tokui deha arimasen . tanaka san to satou san ha yuumei nanode daijyoubu desu . 
 OUT: 公有名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
-OUT: こゆう名詞は得意ではありません。田中さんと佐藤さんは有名なので、大丈夫です。
-OUT: 公有名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
+OUT: 普通名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
+OUT: 好語尾は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
 
 IN : AWS Systems Manager no kanritaisyou insutansu nisuru
 OUT: AWS Systems Managerの管理対象インスタンスにする。
@@ -51,16 +51,16 @@ OUT: AWS Systems Managerの管理対象インスタンスにする。
 IN : honkijiha , EC2 insutansu wo Systems Manager no Kanritaisyou insutansu ni surumadeno tejyun desu . 
 OUT: 本番環境では、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
 OUT: 本記事は、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
-OUT: 本番環境は、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
+OUT: 本記事は、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
 
 IN : AWS komyunithi- AMI de teikyou sareteiru Windows Server 2019 no AMI niha, hajimekara SSM Agent ga insuto-ru sareteimasu .
-OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、始めからSSM Agentがインストールされています。
-OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、始めからSSM Agentがインストールされています。
-OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、始めからSSM Agentがインストールされています。
+OUT: AWS コミュニティ AMI で提供されている Windows Server 2019 の AMI には、始めから SSM Agent がインストールされています。
+OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、初めからSSM Agentがインストールされています。
+OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、初めからSSM Agentがインストールされています。
 
 IN : watashi ha nihongo wo syaberu kotoga dekimasu .
 OUT: 私は日本語を話すことができます。
-OUT: 私は日本語を話すことができます。
+OUT: 私は日本語をしゃべることができます。
 OUT: 私は日本語をしゃべることができます。
 
 IN : Emacs kuraianto kara riyou dekiruyouni narimashita .
@@ -84,41 +84,38 @@ OUT: とりあえず、動くようになりました。
 OUT: とりあえず、動くようになりました。
 
 IN : ikano toori desu
+OUT: 以下のようになります。
+
+いかの通りです。
+OUT: 以下の通りになります。
+
+いかの通りです。
 OUT: 以下の通りです。
 
-以下の通りです。「いかの通りです」
-OUT: 以下の通りです。
-
-生花店です。
-OUT: 以下の通りです。
-
-行かの通りです。
+いかの通りです。
 
 IN : hannisentaku shimasu
 OUT: 範囲選択します。
-OUT: 範囲選択します。
+OUT: 範囲選択します
 OUT: 範囲選択します。
 
 IN : We succeeded in taking a photo like this:
 ![example](https://www.example.com/dir1/dir2/example.png)
-OUT: 以下の通りです。
-
-このような写真を撮ることに成功しました：
+OUT: このような写真を撮影することに成功しました：
 ![例](https://www.example.com/dir1/dir2/example.png)
 OUT: このような写真を撮ることに成功しました：
-！[例]（https://www.example.com/dir1/dir2/example.png）
-OUT: このような写真を撮ることができました：![例](https://www.example.com/dir1/dir2/example.png)
+![例](https://www.example.com/dir1/dir2/example.png)
+OUT: このような写真を撮ることに成功しました：
+![例](https://www.example.com/dir1/dir2/example.png)
 
 IN : We achieved [it](https://www.example.com/aaa/bbb/) by a new method.
-OUT: 新しい方法により、私たちはそれを達成しました。
-OUT: 新しい方法により、私たちはそれを達成しました。
-OUT: 以下の通りです。
-
-新しい方法でそれを達成しました。 (リンクは除く)
+OUT: 私たちは新しい方法で[それ](https://www.example.com/aaa/bbb/)を達成しました。
+OUT: 私たちは、新しい方法で[それ](https://www.example.com/aaa/bbb/)を達成しました。
+OUT: 私たちは新しい方法で[それ](https://www.example.com/aaa/bbb/)を達成しました。
 
 IN : hannisentaku shimasu
 OUT: はんにせんたく します ハンニセンタク シマス
-OUT: はんにせんたく します ハンニセンタク します
+OUT: はんにせんたく します ハンニセンタク シマス
 OUT: はんにせんたく します ハンニセンタク シマス
 
 IN : nano
@@ -137,49 +134,49 @@ OUT: あいうえおかきくけこ アイウエオカキクケコ
 OUT: あいうえおかきくけこ アイウエオカキクケコ
 
 IN : 漢字
+OUT: かんじ カンジ 漢字 みじ キャラクター かんなみ カンナミ 金並 かんな カンナ 鉋 かんじる カンジル 感じる
 OUT: かんじ カンジ 漢字 感じ 幹事 監事 寛二
 OUT: かんじ カンジ 漢字 感じ 幹事 監事 寛二
-OUT: かんじ カンジ 漢字 感じ 幹事 監事 寛二 かんし カンシ 感視 寒紙 関市 簡易 四国四大名水のひとつ
 
 IN : 東西南北
-OUT: とうざいなんぼく トウザイナンボク 東西南北 南北 北南 東西 西東 南西 西南 北西 西北 海東西南風（かいとうざいなんぷう）
-OUT: とうざいなんぼく トウザイナンボク 東西南北 とうさいなんぼく トウサイナンボク 闘載南北 とうざいはんぼく トウザイハンボク 東西半分
-OUT: とうざいなんぼく トウザイナンボク 東西南北 とうざんなんぼく トウザンナンボク 東山南北 とうなんなんぼく トウナンナンボク 東南南北 ひがしにししきた ひがシニシキタ 東西四季歌 あずまきたきた あずマキタキタ 東北北 なんしょく なんショク 南極
+OUT: とうざいなんぼく トウザイナンボク 東西南北
+
+OUT: とうざいなんぼく トウザイナンボク 東西南北 棟梁南北 等々力笛木
+OUT: とうざいなんぼく トウザイナンボク 東西南北
+とうざいほくせい トウザイホクセイ 東西北青
+とうざいほくなん トウザイホクナン 東西北南
+とうざいせいほく トウザイセイホク 東西青北
+とうざいせいなん トウザイセイナン 東西青南
+とうざいほくとう トウザイホクトウ 東西北東
+とうざいなんとう トウザイナントウ 東西南東
+とうざいせいとう トウザイセイトウ 東西青東
+とうざいなんせい トウザイナンセイ 東西南青
+とうざいほくなんせい トウザイホクナンセイ 東西北南青
 
 IN : 行う
-OUT: おこなう オコナウ 行う 進行する 御免状 意を決する 赴く参る
-OUT: おこなう オコナウ 行う 為す 成し遂げる なしとげる つかまつる
-OUT: おこなう オコナウ 行う 為す 為る 為さる 成す なす つかう 使う 用いる 用る
+OUT: おこなう オコナウ 行う 為す 成す 遂行する 達成する 実行する 実施する 奉行する 運営する 経営する 務める 職務を果たす などがあります。
+OUT: おこなう オコナウ 行う 行なう 行為する 行き交う 行列する 行方不明 行商する 行政区画
+OUT: おこなう オコナウ 行う 行ふ 行為 企業
 
 IN : 東京特許許可局
+OUT: とうきょうとっきょきょかきょく トウキョウトッキョキョカキョク 東京特許許可局　東京特許許可局　東京特別区公安課
 OUT: とうきょうとっきょきょかきょく トウキョウトッキョキョカキョク 東京特許許可局
-
-ときょうとっきょきょかきょく トキョウトッキョキョカキョク 東京特許許可局
-
-とうきょうとっきょきょかきょか トウキョウトッキョキョカキョカ 東京特許許可課
-
-ときょうとっきょきょかきょか トキョウトッキョキョカキョカ 東京特許許可課
-
-とうきょうとっきょ トウキョウトッキョ 東京特許
-
-ときょうとっきょ トキョウトッキョ 東京特許
-OUT: とうきょうとっきょきょかきょく トウキョウトッキョキョカキョク 東京特許許可局 透去屋 突き抜け 届く局 塗り壊屋 鳥取県
-OUT: とうきょうとっきょきょかきょく トウキョウトッキョキョカキョク 東京特許許可局 投去屋国 踏切警戒員 透析技師
+OUT: とうきょうとっきょきょかきょく トウキョウトッキョキョカキョク 東京特許許可局 透視図 トーシズ 討論所 トウロンジョ 通貨効果 トンカコウカ 通過効果 トンカコウカ 通過考査 トンカコウサ 闘牛士 トウギュウシ 陶器所 トウキショ 透過効果 トウカコウカ
 
 IN : 要約
-OUT: ようやく ヨウヤク 要約 用紙 用紙屋
-OUT: ようやく ヨウヤク 要約 用役 陽翳
-OUT: ようやく ヨウヤク 要約 様役 陽翼 楊蜀 妖約 羊役 謡役
+OUT: ようやく ヨウヤク 要約 用約 陽薬 用意
+OUT: ようやく ヨウヤク 要約 踊躍 陽翳 影響 用語 葉山
+OUT: ようやく ヨウヤク 要約 窯沸かし津 ようきゅうしてつ 陽久志手
 
 IN : 体制
-OUT: たいせい タイセイ 体制 泰正 大成 大盛 退職
-OUT: たいせい タイセイ 体制 大声 泰西 泰政 泰正 泰清 泰成 泰星 泰誠 泰盛 泰生 泰青 泰政 泰聖 泰清 泰請 泰世 泰斉 泰勢 泰歳 泰西
-OUT: たいせい タイセイ 体制 泰政 大盛 正盛 太正
+OUT: たいせい タイセイ 体制 泰正 大政 大成
+OUT: たいせい タイセイ 体制 泰正 大成 大政 泰政
+OUT: たいせい タイセイ 体制 泰政 大成
 
 IN : 制度
-OUT: せいど セイド 制度 聖堂 西洞
-OUT: せいど セイド 制度 聖堂 正度 性度 成度 西洞里
-OUT: せいど セイド 制度 声優 静電気 西洋風
+OUT: せいど セイド 制度 生渡
+OUT: せいど セイド 制度 生渡 世留止
+OUT: せいど セイド 制度 盛土 正度 聖堂 青銅 精度 政府
 
 IN : 私の名前は中野です。
 OUT: My name is Nakano.
@@ -187,12 +184,12 @@ OUT: My name is Nakano.
 OUT: My name is Nakano.
 
 IN : Emacsから利用できる漢字変換エンジンです。
-OUT: This is a kanji conversion engine available from Emacs.
-OUT: It is a kanji conversion engine that can be used from Emacs.
+OUT: It is a kanji conversion engine available from Emacs.
+OUT: This is a kanji conversion engine available in Emacs.
 OUT: This is a kanji conversion engine that can be used from Emacs.
 
 IN : GPTはOpenAIから2018年に以下の論文で提案されたモデルで、基本的にはTransformerをベースに、事前学習-ファインチューニングをすることで非常に高い精度を達成したモデルです。
-OUT: GPT is a model proposed by OpenAI in 2018 in the following paper, which is basically based on Transformer and achieves very high accuracy by pre-training and fine-tuning.
-OUT: GPT is a model proposed by OpenAI in 2018 in the following paper, which is basically based on Transformer and achieves very high accuracy by pre-training and fine-tuning.
-OUT: GPT is a model proposed by OpenAI in 2018 in the following paper, which is basically based on Transformer and achieves very high accuracy by pre-training - fine tuning.
+OUT: GPT is a model that was proposed by OpenAI in 2018 through the following paper, and essentially is a model based on Transformer that achieves very high accuracy through pre-training and fine-tuning.
+OUT: GPT is a model proposed by OpenAI in 2018 in the following paper, which is basically based on Transformer and achieves very high accuracy through pre-training and fine-tuning.
+OUT: GPT is a model proposed by OpenAI in 2018 in the following paper, which is basically based on Transformer and achieves very high accuracy by pre-training followed by fine-tuning.
 
