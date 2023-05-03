@@ -293,7 +293,11 @@
   (let* ((json-str (openai-http-post
 		    (list
 		     (cons "system"
-			   "あなたはローマ字とひらがなを日本語に変換するアシスタントです。ローマ字の 「nn」 は 「ん」と読んでください。[](URL)のようなmarkdown構文は維持してください。")
+		     	   (concat 
+			    "あなたはローマ字とひらがなを日本語に変換するアシスタントです。"
+			    "ローマ字の 「nn」 は 「ん」と読んでください。"
+			    "[](URL)のようなmarkdown構文は維持してください。"
+			    "# や ## や ### や #### のようなmarkdown構文は維持してください。"))
 		     (cons "user" 
 			   "ローマ字の文を漢字仮名混じり文にしてください。 : watashi no namae ha nakano desu .")
 		     (cons "assistant"
@@ -307,9 +311,13 @@
 		     (cons "assistant"
 			   "範囲指定します")
 		     (cons "user" 
-			   "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : IN : We succeeded in taking a photo like this:\n![example](https://www.example.com/dir1/dir2/example.png)")
+			   "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : We succeeded in taking a photo like this:\n![example](https://www.example.com/dir1/dir2/example.png)")
 		     (cons "assistant"		     
 			   "このような写真を撮ることに成功しました：\n![例](https://www.example.com/dir1/dir2/example.png)")
+		     (cons "user" 
+			   "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : ## this is markdown section")
+		     (cons "assistant"		     
+			   "## これはMarkdownのセクションです。")
 		     (cons "user"
 			   (format "ローマ字の文を漢字仮名混じり文にしてください。 : %s" roman)))
 		    arg-n))
