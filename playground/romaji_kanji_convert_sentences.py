@@ -28,7 +28,7 @@ class GptTest:
         'toriaezu , ugokuyouni narimashita .',
         'ikano toori desu',
         'hannisentaku shimasu',
-        'We succeeded in taking a photo like this:\n(https://www.example.com/dir1/dir2/example.png)',
+        'We succeeded in taking a photo like this:\n![example](https://www.example.com/dir1/dir2/example.png)',
         'We achieved [it](https://www.example.com/aaa/bbb/) by a new method.'
     ]
     
