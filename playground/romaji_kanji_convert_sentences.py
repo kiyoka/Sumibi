@@ -27,7 +27,9 @@ class GptTest:
         'Emacsからりようできるかんじへんかんえんじんです。',
         'toriaezu , ugokuyouni narimashita .',
         'ikano toori desu',
-        'hannisentaku shimasu'
+        'hannisentaku shimasu',
+        'We succeeded in taking a photo like this:\n(https://www.example.com/dir1/dir2/example.png)',
+        'We achieved [it](https://www.example.com/aaa/bbb/) by a new method.'
     ]
     
     romaji_list2 = [
