@@ -299,6 +299,10 @@
 		     (cons "assistant"
 			   "私の名前は中野です。")
 		     (cons "user" 
+			   "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : ikano toori desu .")
+		     (cons "assistant"
+			   "以下の通りです。")
+		     (cons "user" 
 			   "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : hannishitei shimasu")
 		     (cons "assistant"
 			   "範囲指定します")

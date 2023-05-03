@@ -26,6 +26,7 @@ class GptTest:
         'Emacs kara riyou dekiru kanji henkan enjin desu .',
         'Emacsからりようできるかんじへんかんえんじんです。',
         'toriaezu , ugokuyouni narimashita .',
+        'ikano toori desu',
         'hannisentaku shimasu'
     ]
     
@@ -68,6 +69,8 @@ class GptTest:
                 {"role": "assistant", "content": "私の名前は中野です。"},
                 {"role": "user", "content": "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : わたしのなまえはなかのです。"},
                 {"role": "assistant", "content": "私の名前は中野です。"},
+                {"role": "user", "content": "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : ikano toori desu ."},
+                {"role": "assistant", "content": "以下の通りです。"},
                 {"role": "user", "content": "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : hannishitei shimasu"},
                 {"role": "assistant", "content": "範囲指定します"},
                 {"role": "user", "content": "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : {0}".format(romaji)}
