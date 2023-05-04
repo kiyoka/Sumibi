@@ -2,12 +2,16 @@
 
 Japanese input method powered by ChatGPT API
 
+![image.png](./images/sumibi_image.jpg)
+
 ## Sumibiとは
 
 Emacs用の日本語入力システム(IME)です。
 
 Sumibiはモードレスです。
 日本語入力モードに切り替えることなく日本語を入力できます。
+
+日本語と英語の相互翻訳もサポートしていますので、英語で文章を書くことが多い人にもおすすめです。
 
 よくある質問はこちら。[FAQ](FAQ.md)
 
@@ -44,7 +48,7 @@ Emacsを再起動するとSumibiがステータスバーに表示されます。
 [gpt-3.5-turbo] はOpenAI API 呼び出しで使用しているGPTのモデルです。
 ![image.png](./images/img_9.png)
 
-## 変換方法
+## ローマ字や英語の文章から日本語への変換
 
 1. ローマ字で書いた文章の最後にカーソルを合わせて、Ctrl-J を入力すると日本語の文章に置き換わります。
     ![image.png](./images/img_15.png)
@@ -52,18 +56,9 @@ Emacsを再起動するとSumibiがステータスバーに表示されます。
 2. 変換結果が気に入らない場合は、そのまま Ctrl-J を入力すると変換候補のポップアップが表示されるので、その中から選択できます。
     ![image.png](./images/img_11.png)
 
-## Undo
-
-変換結果が気に入らない時は、ESC-u キーを入力することでUndoできます。
-
-または、変換結果に原文ままの選択肢がありますので「原文まま」を選択します。
-![image.png](./images/img_10.png)
-
-## 英語から日本語への変換
-
-英語の文章の最後にカーソルを合わせて、Ctrl-J を入力すると、日本語の文章に変換されます。
-![image.png](./images/img_13.png)
-![image.png](./images/img_14.png)
+3. 英語の文章の最後にカーソルを合わせて、Ctrl-J を入力すると、日本語の文章に変換されます。
+    ![image.png](./images/img_13.png)
+    ![image.png](./images/img_14.png)
 
 
 ## 日本語から英語への翻訳
@@ -71,6 +66,13 @@ Emacsを再起動するとSumibiがステータスバーに表示されます。
 日本語の文章をregion選択した状態で、ESC を押してから j を入力すると、英語に翻訳されます。
 
 「ESC を押してから j」は、代わりに ALT+j でも入力可能です。
+
+## Undo
+
+変換結果が気に入らない時は、ESC-u キーを入力することでUndoできます。
+
+または、変換結果に原文ままの選択肢がありますので「原文まま」を選択します。
+![image.png](./images/img_10.png)
 
 # History
 
@@ -90,3 +92,16 @@ Emacsを再起動するとSumibiがステータスバーに表示されます。
 * OSSの名前をSumibiGPTからSumibiに変更した。
 * sumibigpt.elをsumibi.elに変更した。
 * 英語への翻訳機能を実装した。
+
+### Ver 1.3.0
+
+* markdown形式的な英語のドキュメントを一括で翻訳する際、以下のmarkdown syntaxが壊れないように対策した。(nameとsentenceの部分だけが日本語に翻訳される)
+
+```
+[name](URL)
+![name](URL)
+# sentence
+## sentence
+### sentence
+#### sentence
+```
