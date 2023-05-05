@@ -3,6 +3,7 @@ import os
 import io
 import sys
 import openai
+import time
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
@@ -154,46 +155,68 @@ class GptTest:
             arr.append(response['choices'][i]['message']['content'])
         return(arr)
 
-    def romaji_1_task(self):
+    def start_time_func(self):
+        self.start_time = time.perf_counter()
+
+    def end_time_func(self):
+        self.end_time = time.perf_counter()
+
+    def print_time_func(self):
+        elapsed_sec = self.end_time - self.start_time
+        print('  => elapsed: {0:.2f} sec'.format(elapsed_sec))
+
+    def romaji_1_task(self,arg_n):
         for romaji in self.romaji_list1:
-            result = self.romaji_to_kanji(romaji,3)
+            self.start_time_func()
+            result = self.romaji_to_kanji(romaji,arg_n)
+            self.end_time_func()
             print('IN : {0}'.format(romaji))
             for s in result:
                 print('OUT: {0}'.format(s))
+                self.print_time_func()
             print()
 
-    def romaji_2_task(self):
+    def romaji_2_task(self,arg_n):
         for romaji in self.romaji_list2:
-            result = self.romaji_to_yomigana(romaji,3)
+            self.start_time_func()
+            result = self.romaji_to_yomigana(romaji,arg_n)
+            self.end_time_func()
             print('IN : {0}'.format(romaji))
             for s in result:
                 print('OUT: {0}'.format(s))
+                self.print_time_func()
             print()
 
-    def yomigana_task(self):
+    def yomigana_task(self,arg_n):
         for kanji in self.kanji_list:
-            result = self.kanji_to_yomigana(kanji,3)
+            self.start_time_func()
+            result = self.kanji_to_yomigana(kanji,arg_n)
+            self.end_time_func()
             print('IN : {0}'.format(kanji))
             for s in result:
                 print('OUT: {0}'.format(s))
+                self.print_time_func()
             print()
 
-    def to_english_task(self):
+    def to_english_task(self,arg_n):
         for j in self.japanese_list:
-            result = self.japanese_to_english(j,3)
+            self.start_time_func()
+            result = self.japanese_to_english(j,arg_n)
+            self.end_time_func()
             print('IN : {0}'.format(j))
             for s in result:
                 print('OUT: {0}'.format(s))
+                self.print_time_func()                
             print()
 
 def main(argv):
     gptTest = GptTest()
     if(1 < len(argv)):
         gptTest.set_model(argv[1])
-    gptTest.romaji_1_task()
-    gptTest.romaji_2_task()    
-    gptTest.yomigana_task()
-    gptTest.to_english_task()
+    gptTest.romaji_1_task(3)
+    gptTest.romaji_2_task(3)    
+    gptTest.yomigana_task(3)
+    gptTest.to_english_task(3)
 
 if __name__ == "__main__":
      main(sys.argv)
