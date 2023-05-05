@@ -69,6 +69,11 @@
   :type  'integer
   :group 'sumibi)
 
+(defcustom sumibi-threshold-letters-of-long-sentence 100
+  "OpenAIサーバーに送信する際、長文として判断する文字数。この文字数を超えるとOpenAI APIの引数nを1に減らす"
+  :type  'integer
+  :group 'sumibi)
+
 (defvar sumibi-mode nil             "漢字変換トグル変数")
 (defun sumibi-modeline-string ()
   ;; 接続先sumibi-serverのホスト名を表示する。
@@ -404,6 +409,14 @@
     (analyze-openai-json-obj json-obj arg-n)))
 
 ;;
+;; OpenAI APIの引数「n」に指定する数を決める。
+;;
+(defun sumibi-determine-number-of-n (request-str)
+  (if (<= sumibi-threshold-letters-of-long-sentence (length request-str))
+      1
+    3))
+
+;;
 ;; ローマ字で書かれた文章を複数候補作成して返す
 ;;
 (defun sumibi-henkan-request (roman inverse-flag)
@@ -414,7 +427,7 @@
 	  sumibi-fixed-henkan-houho)))
     (cond
      (inverse-flag
-      (let ((lst (sumibi-kanji-to-english roman 3)))
+      (let ((lst (sumibi-kanji-to-english roman (sumibi-determine-number-of-n roman))))
 	(append
 	 (-map
 	  (lambda (x)
@@ -447,7 +460,7 @@
 	   kouho-lst
 	   (list (list roman "原文まま" 0 'l (length kouho-lst))))))
        (t
-	(let ((lst (sumibi-roman-to-kanji roman 3)))
+	(let ((lst (sumibi-roman-to-kanji roman (sumibi-determine-number-of-n roman))))
 	  (when (>= 10 (length roman))
 	    (setq lst
 		  (append
