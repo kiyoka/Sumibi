@@ -1,11 +1,11 @@
-;;; sumibi.el --- Japanese input method powered by ChatGPT API.
+;;; sumibi.el --- Japanese input method powered by ChatGPT API.  -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (C) 2023 Kiyoka Nishiyama
 ;;
 ;; Author: Kiyoka Nishiyama <kiyoka@sumibi.org>
 ;; Version: 1.3.0          ;;SUMIBI-VERSION
 ;; Keywords: ime, japanese
-;; Package-Requires: ((cl-lib "1.0") (popup "0.5.9") (unicode-escapeo "20230109.1222"))
+;; Package-Requires: ((cl-lib "1.0") (popup "0.5.9") (unicode-escapeo "20230109.1222") (deferred "20170901.1330")
 ;; URL: https://github.com/kiyoka/Sumibi
 ;;
 ;; This file is part of Sumibi
@@ -39,6 +39,7 @@
 (require 'popup)
 (require 'url-parse)
 (require 'unicode-escape)
+(require 'deferred)
 
 ;;; 
 ;;;
@@ -220,7 +221,11 @@
 ;;
 ;; OpenAPIにプロンプトを発行する
 ;;
-(defun openai-http-post (message-lst arg-n)
+(defun openai-http-post (message-lst
+			 arg-n
+			 sync-flag
+			 sync-func
+			 deferred-func)
   "call OpenAI completions API."
   (progn
     (setq url "https://api.openai.com/v1/chat/completions")
@@ -246,28 +251,60 @@
 	    ",")
 	   "  ] "
 	   "}"))
-    (let* ((lines
-	    (let ((buf (url-retrieve-synchronously url t t sumibi-api-timeout)))
-	      (sumibi-debug-print (buffer-name buf))
-	      (sumibi-debug-print "\n")
-	      (if buf
-                  (with-current-buffer buf
-                    (decode-coding-string 
-                     (let ((str (buffer-substring-no-properties (point-min) (point-max))))
-                       (cond
-                        (url-http-response-status
-                         (sumibi-debug-print (format "http result code:%s\n" url-http-response-status))
-                         (sumibi-debug-print (format "(%d-%d) eoh=%s\n" (point-min) (point-max) url-http-end-of-headers))
-                         (sumibi-debug-print (format "<<<%s>>>\n" str))
-                         str)
-                        (t
-                         (sumibi-debug-print (format "<<<%s>>>\n" sumibi-timeout-error-json))
-			 "{\"err\": \"!!HTTP ERROR!!\"}\n")))
-		     'utf-8))
-		"{\"err\": \"!!TIMEOUT ERROR!!\"}\n")))
-	   (line-list
-	    (split-string lines "\n")))
-      (cadr (reverse line-list)))))
+    (cond
+     (sync-flag
+      (let* ((lines
+	      (let ((buf (url-retrieve-synchronously url t t sumibi-api-timeout)))
+	      	(sumibi-debug-print (buffer-name buf))
+		(sumibi-debug-print "\n")
+		(if buf
+                    (with-current-buffer buf
+                      (decode-coding-string 
+                       (let ((str (buffer-substring-no-properties (point-min) (point-max))))
+			 (cond
+                          (url-http-response-status
+                           (sumibi-debug-print (format "http result code:%s\n" url-http-response-status))
+                           (sumibi-debug-print (format "(%d-%d) eoh=%s\n" (point-min) (point-max) url-http-end-of-headers))
+                           (sumibi-debug-print (format "<<<%s>>>\n" str))
+                           str)
+                          (t
+                           (sumibi-debug-print (format "<<<%s>>>\n" sumibi-timeout-error-json))
+			   "{\"err\": \"!!HTTP ERROR!!\"}\n")))
+		       'utf-8))
+		  "{\"err\": \"!!TIMEOUT ERROR!!\"}\n")))
+	     (line-list
+	      (split-string lines "\n")))
+	(funcall sync-func (cadr (reverse line-list)))))
+
+     (t
+      (deferred:$
+	(deferred:url-retrieve url)
+	(deferred:nextc it
+	  (lambda (buf)
+	    (sumibi-debug-print (buffer-name buf))
+	    (sumibi-debug-print "\n")
+	    (if buf
+		(with-current-buffer buf
+		  (decode-coding-string 
+		   (let ((str (buffer-substring-no-properties (point-min) (point-max))))
+		     (cond
+		      (url-http-response-status
+		       (sumibi-debug-print (format "http result code:%s\n" url-http-response-status))
+		       (sumibi-debug-print (format "(%d-%d) eoh=%s\n" (point-min) (point-max) url-http-end-of-headers))
+		       (sumibi-debug-print (format "<<<%s>>>\n" str))
+		       str)
+		      (t
+		       (sumibi-debug-print (format "<<<%s>>>\n" sumibi-timeout-error-json))
+		       "{\"err\": \"!!HTTP ERROR!!\"}\n")))
+		   'utf-8))
+	      "{\"err\": \"!!TIMEOUT ERROR!!\"}\n")))
+	(deferred:nextc it
+	  (lambda (lines)
+	    (cadr (reverse (split-string lines "\n")))))
+	(deferred:nextc it
+	  (lambda (json)
+	    (sumibi-debug-print (format "<<<%s>>>\n" (funcall deferred-func json))))))
+      '()))))
 
 
 (defun analyze-openai-json-obj (json-obj arg-n)
@@ -294,40 +331,47 @@
 ;; arg-n: 候補を何件返すか
 ;; return: ("1番目の文章の文字列" "2番目の文章の文字列" "3番目の文章の文字列" ...)
 ;;
-(defun sumibi-roman-to-kanji (roman arg-n)
-  (let* ((json-str (openai-http-post
-		    (list
-		     (cons "system"
-		     	   (concat 
-			    "あなたはローマ字とひらがなを日本語に変換するアシスタントです。"
-			    "ローマ字の 「nn」 は 「ん」と読んでください。"
-			    "[](URL)のようなmarkdown構文は維持してください。"
-			    "# や ## や ### や #### のようなmarkdown構文は維持してください。"))
-		     (cons "user" 
-			   "ローマ字の文を漢字仮名混じり文にしてください。 : watashi no namae ha nakano desu .")
-		     (cons "assistant"
-			   "私の名前は中野です。")
-		     (cons "user" 
-			   "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : ikano toori desu .")
-		     (cons "assistant"
-			   "以下の通りです。")
-		     (cons "user" 
-			   "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : hannishitei shimasu")
-		     (cons "assistant"
-			   "範囲指定します")
-		     (cons "user" 
-			   "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : We succeeded in taking a photo like this:\n![example](https://www.example.com/dir1/dir2/example.png)")
-		     (cons "assistant"		     
-			   "このような写真を撮ることに成功しました：\n![例](https://www.example.com/dir1/dir2/example.png)")
-		     (cons "user" 
-			   "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : ## this is markdown section")
-		     (cons "assistant"		     
-			   "## これはMarkdownのセクションです。")
-		     (cons "user"
-			   (format "ローマ字の文を漢字仮名混じり文にしてください。 : %s" roman)))
-		    arg-n))
-	 (json-obj (json-parse-string json-str)))
-    (analyze-openai-json-obj json-obj arg-n)))
+(defun sumibi-roman-to-kanji (roman arg-n sync-flag)
+  (openai-http-post
+   (list
+    (cons "system"
+	  (concat 
+	   "あなたはローマ字とひらがなを日本語に変換するアシスタントです。"
+	   "ローマ字の 「nn」 は 「ん」と読んでください。"
+	   "[](URL)のようなmarkdown構文は維持してください。"
+	   "# や ## や ### や #### のようなmarkdown構文は維持してください。"))
+    (cons "user" 
+	  "ローマ字の文を漢字仮名混じり文にしてください。 : watashi no namae ha nakano desu .")
+    (cons "assistant"
+	  "私の名前は中野です。")
+    (cons "user" 
+	  "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : ikano toori desu .")
+    (cons "assistant"
+	  "以下の通りです。")
+    (cons "user" 
+	  "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : hannishitei shimasu")
+    (cons "assistant"
+	  "範囲指定します")
+    (cons "user" 
+	  "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : We succeeded in taking a photo like this:\n![example](https://www.example.com/dir1/dir2/example.png)")
+    (cons "assistant"		     
+	  "このような写真を撮ることに成功しました：\n![例](https://www.example.com/dir1/dir2/example.png)")
+    (cons "user" 
+	  "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : ## this is markdown section")
+    (cons "assistant"		     
+	  "## これはMarkdownのセクションです。")
+    (cons "user"
+	  (format "ローマ字の文を漢字仮名混じり文にしてください。 : %s" roman)))
+   arg-n
+   sync-flag
+   (lambda (json-str)
+     (let ((json-obj (json-parse-string json-str)))
+       (analyze-openai-json-obj json-obj arg-n)))
+   (lambda (json-str)
+     (let* ((json-obj (json-parse-string json-str))
+	    (lst (analyze-openai-json-obj json-obj arg-n)))
+       (if (not (null lst))
+	   (insert (car lst)))))))
 
 ;;
 ;; ローマ字で書かれた文章をOpenAIサーバーを使って読み仮名を返す。
@@ -335,28 +379,35 @@
 ;; arg-n: 候補を何件返すか
 ;; return: ("した" "シタ") や ("なの" "ナノ")
 ;;
-(defun sumibi-roman-to-yomigana (roman)
-  (let* ((json-str (openai-http-post
-		    (list
-		     (cons "system"
-			   "あなたはローマ字をひらがなとカタカナに変換するアシスタントです。ローマ字の 「nn」 は 「ん」と読んでください。")
-		     (cons "user"
-			   "ローマ字をひらがなとカタカナにしてください : shita")
-		     (cons "assistant"
-			   "した シタ")
-		     (cons "user"
-			   "ローマ字をひらがなとカタカナにしてください : nano")
-		     (cons "assistant"
-			   "なの ナノ")
-		     (cons "user"
-			   "ローマ字をひらがなとカタカナにしてください : aiueokakikukeko")
-		     (cons "assistant"
-			   "あいうえおかきくけこ アイウエオカキクケコ")
-		     (cons "user"
-			   (format "ローマ字をひらがなとカタカナにしてください : %s" roman)))
-		    1))
-	 (json-obj (json-parse-string json-str)))
-    (split-string (car (analyze-openai-json-obj json-obj 1)))))
+(defun sumibi-roman-to-yomigana (roman sync-flag)
+  (openai-http-post
+   (list
+    (cons "system"
+	  "あなたはローマ字をひらがなとカタカナに変換するアシスタントです。ローマ字の 「nn」 は 「ん」と読んでください。")
+    (cons "user"
+	  "ローマ字をひらがなとカタカナにしてください : shita")
+    (cons "assistant"
+	  "した シタ")
+    (cons "user"
+	  "ローマ字をひらがなとカタカナにしてください : nano")
+    (cons "assistant"
+	  "なの ナノ")
+    (cons "user"
+	  "ローマ字をひらがなとカタカナにしてください : aiueokakikukeko")
+    (cons "assistant"
+	  "あいうえおかきくけこ アイウエオカキクケコ")
+    (cons "user"
+	  (format "ローマ字をひらがなとカタカナにしてください : %s" roman)))
+   1
+   sync-flag
+   (lambda (json-str)
+     (let ((json-obj (json-parse-string json-str)))
+       (split-string (car (analyze-openai-json-obj json-obj 1)))))
+   (lambda (json-str)
+     (let* ((json-obj (json-parse-string json-str))
+	    (lst (split-string (car (analyze-openai-json-obj json-obj 1)))))
+       (if (not (null lst))
+	   (insert (car lst)))))))
 
 ;;
 ;; 漢字仮名混じりで書かれた文章をOpenAIサーバーを使って読み仮名を返す。
@@ -364,49 +415,62 @@
 ;; arg-n: 候補を何件返すか
 ;; return: ("にほんご" "ニホンゴ")
 ;;
-(defun sumibi-kanji-to-yomigana (kanji)
-  (let* ((json-str (openai-http-post
-		    (list
-		     (cons "system"
-			   "あなたは漢字が与えられると、ひらがなとカタカナとその漢字の同音異義語を返すアシスタントです。")
-		     (cons "user"
-			   "ひらがなとカタカナと同音異義語をなるべく多く列挙してください。 : 東西南北")
-		     (cons "assistant"
-			   "とうざいなんぼく トウザイナンボク 東西南北")
-		     (cons "user"
-			   "ひらがなとカタカナと同音異義語をなるべく多く列挙してください。 : 漢字")
-		     (cons "assistant"
-			   "かんじ カンジ 漢字 感じ 幹事 監事 寛二")
-		     (cons "user"
-			   (format "ひらがなとカタカナと同音異義語をなるべく多く列挙してください。 : %s" kanji)))
-		    1))
-	 (json-obj (json-parse-string json-str)))
-    (split-string (car (analyze-openai-json-obj json-obj 1)))))
-
+(defun sumibi-kanji-to-yomigana (kanji sync-flag)
+  (openai-http-post
+   (list
+    (cons "system"
+	  "あなたは漢字が与えられると、ひらがなとカタカナとその漢字の同音異義語を返すアシスタントです。")
+    (cons "user"
+	  "ひらがなとカタカナと同音異義語をなるべく多く列挙してください。 : 東西南北")
+    (cons "assistant"
+	  "とうざいなんぼく トウザイナンボク 東西南北")
+    (cons "user"
+	  "ひらがなとカタカナと同音異義語をなるべく多く列挙してください。 : 漢字")
+    (cons "assistant"
+	  "かんじ カンジ 漢字 感じ 幹事 監事 寛二")
+    (cons "user"
+	  (format "ひらがなとカタカナと同音異義語をなるべく多く列挙してください。 : %s" kanji)))
+   1
+   sync-flag
+   (lambda (json-str)
+     (let ((json-obj (json-parse-string json-str)))
+       (split-string (car (analyze-openai-json-obj json-obj 1)))))
+   (lambda (json-str)
+     (let* ((json-obj (json-parse-string json-str))
+	    (lst (split-string (car (analyze-openai-json-obj json-obj 1)))))
+       (if (not (null lst))
+	   (insert (car lst)))))))
 ;;
 ;; 日本語の文章を、OpenAIサーバーを使って英語に翻訳する。
 ;; roman: "私の名前は中野です。"
 ;; arg-n: 候補を何件返すか
 ;; return: ("My name is Nakano." "My name is Nakano." "My name is Nakano.")
 ;;
-(defun sumibi-kanji-to-english (kanji arg-n)
-  (let* ((json-str (openai-http-post
-		    (list
-		     (cons "system"
-			   "あなたは、与えられた文章を英語に翻訳するアシスタントです。")
-		     (cons "user" 
-			   "文章を英語に翻訳してください。 : 私の名前は中野です。")
-		     (cons "assistant"
-			   "My name is Nakano.")
-		     (cons "user" 
-			   "文章を英語に翻訳してください。 : GPTはOpenAIから2018年に以下の論文で提案されたモデルで、基本的にはTransformerをベースに、事前学習-ファインチューニングをすることで非常に高い精度を達成したモデルです。")
-		     (cons "assistant"
-			   "GPT is a model proposed by OpenAI in 2018 in the following paper, which is basically based on Transformer and achieves very high accuracy by pre-training - fine tuning.")
-		     (cons "user"
-			   (format "文章を英語に翻訳してください。 : %s" kanji)))
-		    arg-n))
-	 (json-obj (json-parse-string json-str)))
-    (analyze-openai-json-obj json-obj arg-n)))
+(defun sumibi-kanji-to-english (kanji arg-n sync-flag)
+  (openai-http-post
+   (list
+    (cons "system"
+	  "あなたは、与えられた文章を英語に翻訳するアシスタントです。")
+    (cons "user" 
+	  "文章を英語に翻訳してください。 : 私の名前は中野です。")
+    (cons "assistant"
+	  "My name is Nakano.")
+    (cons "user" 
+	  "文章を英語に翻訳してください。 : GPTはOpenAIから2018年に以下の論文で提案されたモデルで、基本的にはTransformerをベースに、事前学習-ファインチューニングをすることで非常に高い精度を達成したモデルです。")
+    (cons "assistant"
+	  "GPT is a model proposed by OpenAI in 2018 in the following paper, which is basically based on Transformer and achieves very high accuracy by pre-training - fine tuning.")
+    (cons "user"
+	  (format "文章を英語に翻訳してください。 : %s" kanji)))
+   arg-n
+   sync-flag
+   (lambda (json-str)
+     (let ((json-obj (json-parse-string json-str)))
+       (analyze-openai-json-obj json-obj arg-n)))
+   (lambda (json-str)
+     (let* ((json-obj (json-parse-string json-str))
+	    (lst (analyze-openai-json-obj json-obj arg-n)))
+       (if (not (null lst))
+	   (insert (car lst)))))))
 
 ;;
 ;; OpenAI APIの引数「n」に指定する数を決める。
@@ -416,10 +480,16 @@
       1
     3))
 
+;;
+;; OpenAI APIを非同期で呼び出すかを決める。
+;;
+(defun sumibi-determine-sync-p (request-str)
+  (> sumibi-threshold-letters-of-long-sentence (length request-str)))
+
 
 ;; 日本語=>英語翻訳
-(defun sumibi-inverse-henkan (roman arg-n)
-  (let ((lst (sumibi-kanji-to-english roman arg-n)))
+(defun sumibi-inverse-henkan (roman arg-n sync-flag)
+  (let ((lst (sumibi-kanji-to-english roman arg-n sync-flag)))
     (append
      (-map
       (lambda (x)
@@ -433,8 +503,8 @@
       (list roman "原文まま" 0 'l (length lst))))))
 
 ;; 日本語を再変換
-(defun sumibi-nihongo-saihenkan (roman)
-  (let* ((lst (sumibi-kanji-to-yomigana roman))
+(defun sumibi-nihongo-saihenkan (roman sync-flag)
+  (let* ((lst (sumibi-kanji-to-yomigana roman sync-flag))
 	 (kouho-lst
 	  (-map
 	   (lambda (x)
@@ -449,13 +519,13 @@
      (list (list roman "原文まま" 0 'l (length kouho-lst))))))
 
 ;; アルファベット(ローマ字or英語の文章)からカナ漢字混じり文への変換
-(defun sumibi-alphabet-henkan (roman arg-n)
-  (let ((lst (sumibi-roman-to-kanji roman arg-n)))
+(defun sumibi-alphabet-henkan (roman arg-n sync-flag)
+  (let ((lst (sumibi-roman-to-kanji roman arg-n sync-flag)))
     (when (>= 10 (length roman))
       (setq lst
 	    (append
 	     lst
-	     (sumibi-roman-to-yomigana roman))))
+	     (sumibi-roman-to-yomigana roman sync-flag))))
     (append
      (-map
       (lambda (x)
@@ -471,7 +541,7 @@
 ;;
 ;; ローマ字で書かれた文章を複数候補作成して返す
 ;;
-(defun sumibi-henkan-request (roman inverse-flag)
+(defun sumibi-henkan-request (roman inverse-flag sync-flag)
   (let ((fixed-kouho
 	 (-filter
 	  (lambda (x)
@@ -479,7 +549,7 @@
 	  sumibi-fixed-henkan-houho)))
     (cond
      (inverse-flag
-      (sumibi-inverse-henkan roman (sumibi-determine-number-of-n roman)))
+      (sumibi-inverse-henkan roman (sumibi-determine-number-of-n roman) sync-flag))
      (t
       (cond
        ;; 固定の変換キーワードの場合(wo ha ga...)
@@ -487,9 +557,9 @@
 	(list (list (cdr (car fixed-kouho)) "固定文字列" 0 'j 0)))
        ;; 漢字を含む場合
        ((sumibi-string-include-kanji roman)
-	(sumibi-nihongo-saihenkan roman))
+	(sumibi-nihongo-saihenkan roman sync-flag))
        (t
-	(sumibi-alphabet-henkan roman (sumibi-determine-number-of-n roman))))))))
+	(sumibi-alphabet-henkan roman (sumibi-determine-number-of-n roman) sync-flag)))))))
 
 
 (defun sumibi-file-existp (file)
@@ -501,14 +571,12 @@
 
 
 ;; リージョンをローマ字漢字変換する関数(同期関数バージョン)
-(defun sumibi-henkan-region-synchronously (b e inverse-flag)
+(defun sumibi-henkan-region-sync (b e inverse-flag)
   "指定された region を漢字変換する"
-  (sumibi-init)
   (when (/= b e)
     (let* (
 	   (yomi (buffer-substring-no-properties b e))
-	   (henkan-list (sumibi-henkan-request yomi inverse-flag)))
-      
+	   (henkan-list (sumibi-henkan-request yomi inverse-flag t)))
       (if henkan-list
 	  (condition-case err
 	      (progn
@@ -542,6 +610,25 @@
 	    (run-hooks 'sumibi-select-mode-end-hook))
 	nil))))
 
+
+;; リージョンをローマ字漢字変換する関数(非同期関数バージョン)
+(defun sumibi-henkan-region-async (b e inverse-flag)
+  "指定された region を漢字変換する"
+  (when (/= b e)
+    (let ((yomi (buffer-substring-no-properties b e)))
+      (delete-region b e)
+      (goto-char b)
+      (sumibi-henkan-request yomi inverse-flag nil))))
+
+(defun sumibi-henkan-region (b e inverse-flag)
+  "指定された region を漢字変換する"
+  (sumibi-init)
+  (when (/= b e)
+    (if (sumibi-determine-sync-p (buffer-substring-no-properties b e))
+	(sumibi-henkan-region-sync b e inverse-flag)
+      (sumibi-henkan-region-async b e inverse-flag))))
+				 
+	  
 ;; カーソル前の文字種を返却する関数
 (defun sumibi-char-charset (ch)
   (let ((result (char-charset ch)))
@@ -1005,7 +1092,7 @@
    ((region-active-p)
     (let ((b (region-beginning))
 	  (e (region-end)))
-      (sumibi-henkan-region-synchronously b e nil)))
+      (sumibi-henkan-region b e nil)))
 
    ;; region指定していない場合
    (t
@@ -1031,7 +1118,7 @@
 	    (let (
 		  (b (+ end gap))
 		  (e end))
-	      (sumibi-henkan-region-synchronously b e nil)))))
+	      (sumibi-henkan-region b e nil)))))
        
        ((or (sumibi-kanji (preceding-char))
 	    (sumibi-nkanji (preceding-char)))
@@ -1067,7 +1154,7 @@
   (when (region-active-p)
     (let ((b (region-beginning))
 	  (e (region-end)))
-      (sumibi-henkan-region-synchronously b e t))))
+      (sumibi-henkan-region b e t))))
 
 
 ;; 漢字を含む文字列であるかどうかの判断関数
@@ -1295,15 +1382,15 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
 
 (when nil
 ;; unti test
-  (sumibi-henkan-request "watashi no namae ha nakano desu ." nil))
+  (sumibi-henkan-request "watashi no namae ha nakano desu ." nil nil))
 
 (when nil
 ;; unit test
-  (sumibi-henkan-request "読みがな" nil))
+  (sumibi-henkan-request "読みがな" nil t))
 
 (when nil
 ;; unit test
-  (sumibi-henkan-request "私の名前は中野です。" t))
+  (sumibi-henkan-request "私の名前は中野です。" t t))
 
 
 ;; Local Variables:
