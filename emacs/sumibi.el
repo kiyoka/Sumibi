@@ -416,6 +416,58 @@
       1
     3))
 
+
+;; 日本語=>英語翻訳
+(defun sumibi-inverse-henkan (roman arg-n)
+  (let ((lst (sumibi-kanji-to-english roman arg-n)))
+    (append
+     (-map
+      (lambda (x)
+	(list (car x)
+	      (format "候補%d" (+ 1 (cdr x)))
+	      0 'l (cdr x)))
+      (-zip
+       lst
+       '(0 1 2 3 4)))
+     (list 
+      (list roman "原文まま" 0 'l (length lst))))))
+
+;; 日本語を再変換
+(defun sumibi-nihongo-saihenkan (roman)
+  (let* ((lst (sumibi-kanji-to-yomigana roman))
+	 (kouho-lst
+	  (-map
+	   (lambda (x)
+	     (list (car x)
+		   (format "候補%d" (+ 1 (cdr x)))
+		   0 'h (cdr x)))
+	   (-zip
+	    lst
+	    '(0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19)))))
+    (append
+     kouho-lst
+     (list (list roman "原文まま" 0 'l (length kouho-lst))))))
+
+;; アルファベット(ローマ字or英語の文章)からカナ漢字混じり文への変換
+(defun sumibi-alphabet-henkan (roman arg-n)
+  (let ((lst (sumibi-roman-to-kanji roman arg-n)))
+    (when (>= 10 (length roman))
+      (setq lst
+	    (append
+	     lst
+	     (sumibi-roman-to-yomigana roman))))
+    (append
+     (-map
+      (lambda (x)
+	(list (car x)
+	      (format "候補%d" (+ 1 (cdr x)))
+	      0 'l (cdr x)))
+      (-zip
+       lst
+       '(0 1 2 3 4)))
+     (list 
+      (list roman "原文まま" 0 'l (length lst))))))
+
 ;;
 ;; ローマ字で書かれた文章を複数候補作成して返す
 ;;
@@ -427,18 +479,7 @@
 	  sumibi-fixed-henkan-houho)))
     (cond
      (inverse-flag
-      (let ((lst (sumibi-kanji-to-english roman (sumibi-determine-number-of-n roman))))
-	(append
-	 (-map
-	  (lambda (x)
-	    (list (car x)
-		  (format "候補%d" (+ 1 (cdr x)))
-		  0 'l (cdr x)))
-	  (-zip
-	   lst
-	   '(0 1 2 3 4)))
-	 (list 
-	  (list roman "原文まま" 0 'l (length lst))))))
+      (sumibi-inverse-henkan roman (sumibi-determine-number-of-n roman)))
      (t
       (cond
        ;; 固定の変換キーワードの場合(wo ha ga...)
@@ -446,37 +487,10 @@
 	(list (list (cdr (car fixed-kouho)) "固定文字列" 0 'j 0)))
        ;; 漢字を含む場合
        ((sumibi-string-include-kanji roman)
-	(let* ((lst (sumibi-kanji-to-yomigana roman))
-	       (kouho-lst
-		(-map
-		 (lambda (x)
-		   (list (car x)
-			 (format "候補%d" (+ 1 (cdr x)))
-			 0 'h (cdr x)))
-		 (-zip
-		  lst
-		  '(0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19)))))
-	  (append
-	   kouho-lst
-	   (list (list roman "原文まま" 0 'l (length kouho-lst))))))
+	(sumibi-nihongo-saihenkan roman))
        (t
-	(let ((lst (sumibi-roman-to-kanji roman (sumibi-determine-number-of-n roman))))
-	  (when (>= 10 (length roman))
-	    (setq lst
-		  (append
-		   lst
-		   (sumibi-roman-to-yomigana roman))))
-	  (append
-	   (-map
-	    (lambda (x)
-	      (list (car x)
-		    (format "候補%d" (+ 1 (cdr x)))
-		    0 'l (cdr x)))
-	    (-zip
-	     lst
-	     '(0 1 2 3 4)))
-	   (list 
-	    (list roman "原文まま" 0 'l (length lst)))))))))))
+	(sumibi-alphabet-henkan roman (sumibi-determine-number-of-n roman))))))))
+
 
 (defun sumibi-file-existp (file)
   "FILE が存在するかどうかをチェックする。 t か nil で結果を返す"
