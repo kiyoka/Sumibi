@@ -523,7 +523,17 @@
 		(sumibi-debug-print (format "sumibi-henkan-kouho-list:%s \n" sumibi-henkan-kouho-list))
 		(sumibi-debug-print (format "sumibi-cand-cur:%s \n" sumibi-cand-cur))
 		(sumibi-debug-print (format "sumibi-cand-len:%s \n" sumibi-cand-len))
-		;;
+
+		;; 同期で変換が成功した場合は、変換候補の保存を行う
+		(if (eq (char-before b) ?/)
+		    (setq b (- b 1)))
+		(setq sumibi-last-roman (buffer-substring-no-properties b e))
+		(delete-region b e)
+		(goto-char b)
+		(insert (sumibi-get-display-string))
+		(setq e (point))
+		(sumibi-display-function b e nil)
+		(sumibi-select-kakutei)
 		t)
 	    (sumibi-trap-server-down
 	     (beep)
@@ -995,16 +1005,7 @@
    ((region-active-p)
     (let ((b (region-beginning))
 	  (e (region-end)))
-      (when (sumibi-henkan-region b e nil)
-	(if (eq (char-before b) ?/)
-	    (setq b (- b 1)))
-	(setq sumibi-last-roman (buffer-substring-no-properties b e))
-	(delete-region b e)
-	(goto-char b)
-	(insert (sumibi-get-display-string))
-	(setq e (point))
-	(sumibi-display-function b e nil)
-	(sumibi-select-kakutei))))
+      (sumibi-henkan-region b e nil)))
 
    ;; region指定していない場合
    (t
@@ -1030,16 +1031,7 @@
 	    (let (
 		  (b (+ end gap))
 		  (e end))
-	      (when (sumibi-henkan-region b e nil)
-		(if (eq (char-before b) ?/)
-		    (setq b (- b 1)))
-		(setq sumibi-last-roman (buffer-substring-no-properties b e))
-		(delete-region b e)
-		(goto-char b)
-		(insert (sumibi-get-display-string))
-		(setq e (point))
-		(sumibi-display-function b e nil)
-		(sumibi-select-kakutei))))))
+	      (sumibi-henkan-region b e nil)))))
        
        ((or (sumibi-kanji (preceding-char))
 	    (sumibi-nkanji (preceding-char)))
@@ -1075,16 +1067,7 @@
   (when (region-active-p)
     (let ((b (region-beginning))
 	  (e (region-end)))
-      (when (sumibi-henkan-region b e t)
-	(if (eq (char-before b) ?/)
-	    (setq b (- b 1)))
-	(setq sumibi-last-roman (buffer-substring-no-properties b e))
-	(delete-region b e)
-	(goto-char b)
-	(insert (sumibi-get-display-string))
-	(setq e (point))
-	(sumibi-display-function b e nil)
-	(sumibi-select-kakutei)))))
+      (sumibi-henkan-region b e t))))
 
 
 ;; 漢字を含む文字列であるかどうかの判断関数
