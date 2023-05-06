@@ -500,8 +500,8 @@
     (file-exists-p file)))
 
 
-;; リージョンをローマ字漢字変換する関数
-(defun sumibi-henkan-region (b e inverse-flag)
+;; リージョンをローマ字漢字変換する関数(同期関数バージョン)
+(defun sumibi-henkan-region-synchronously (b e inverse-flag)
   "指定された region を漢字変換する"
   (sumibi-init)
   (when (/= b e)
@@ -1005,7 +1005,7 @@
    ((region-active-p)
     (let ((b (region-beginning))
 	  (e (region-end)))
-      (sumibi-henkan-region b e nil)))
+      (sumibi-henkan-region-synchronously b e nil)))
 
    ;; region指定していない場合
    (t
@@ -1031,7 +1031,7 @@
 	    (let (
 		  (b (+ end gap))
 		  (e end))
-	      (sumibi-henkan-region b e nil)))))
+	      (sumibi-henkan-region-synchronously b e nil)))))
        
        ((or (sumibi-kanji (preceding-char))
 	    (sumibi-nkanji (preceding-char)))
@@ -1067,7 +1067,7 @@
   (when (region-active-p)
     (let ((b (region-beginning))
 	  (e (region-end)))
-      (sumibi-henkan-region b e t))))
+      (sumibi-henkan-region-synchronously b e t))))
 
 
 ;; 漢字を含む文字列であるかどうかの判断関数
