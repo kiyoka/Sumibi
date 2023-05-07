@@ -223,9 +223,9 @@
 ;;
 (defun openai-http-post (message-lst
 			 arg-n
-			 sync-flag
 			 sync-func
-			 deferred-func)
+			 deferred-func
+			 deferred-func2)
   "call OpenAI completions API."
   (progn
     (setq url "https://api.openai.com/v1/chat/completions")
@@ -252,7 +252,7 @@
 	   "  ] "
 	   "}"))
     (cond
-     (sync-flag ;; 同期バージョン
+     ((not deferred-func2) ;; 同期バージョン
       (let* ((lines
 	      (let ((buf (url-retrieve-synchronously url t t sumibi-api-timeout)))
 	      	(sumibi-debug-print (buffer-name buf))
@@ -303,8 +303,12 @@
 	    (cadr (reverse (split-string lines "\n")))))
 	(deferred:nextc it
 	  (lambda (json)
-	    (sumibi-debug-print (format "<<<%s>>>\n" (funcall deferred-func json))))))
-      '()))))
+	    (sumibi-debug-print (format "<<<%s>>>\n" (funcall deferred-func json)))
+	    t))
+	(deferred:nextc it
+	  (lambda (dummy)
+	    (funcall deferred-func2)))))
+     '())))
 
 
 (defun analyze-openai-json-obj (json-obj arg-n)
@@ -331,7 +335,7 @@
 ;; arg-n: 候補を何件返すか
 ;; return: ("1番目の文章の文字列" "2番目の文章の文字列" "3番目の文章の文字列" ...)
 ;;
-(defun sumibi-roman-to-kanji (roman arg-n sync-flag)
+(defun sumibi-roman-to-kanji (roman arg-n deferred-func2)
   (let ((saved-marker (point-marker)))
     (openai-http-post
      (list
@@ -364,7 +368,6 @@
       (cons "user"
 	    (format "ローマ字の文を漢字仮名混じり文にしてください。 : %s" roman)))
      arg-n
-     sync-flag
      (lambda (json-str)
        (let ((json-obj (json-parse-string json-str)))
 	 (analyze-openai-json-obj json-obj arg-n)))
@@ -375,7 +378,8 @@
 	   (save-excursion
 	     (goto-char (marker-position saved-marker))
 	     (insert (car lst))
-	     (goto-char (marker-position saved-marker)))))))))
+	     (goto-char (marker-position saved-marker))))))
+     deferred-func2)))
 
 ;;
 ;; ローマ字で書かれた文章をOpenAIサーバーを使って読み仮名を返す。
@@ -383,7 +387,7 @@
 ;; arg-n: 候補を何件返すか
 ;; return: ("した" "シタ") や ("なの" "ナノ")
 ;;
-(defun sumibi-roman-to-yomigana (roman sync-flag)
+(defun sumibi-roman-to-yomigana (roman deferred-func2)
   (let ((saved-marker (point-marker)))
     (openai-http-post
      (list
@@ -404,7 +408,6 @@
       (cons "user"
 	    (format "ローマ字をひらがなとカタカナにしてください : %s" roman)))
      1
-     sync-flag
      (lambda (json-str)
        (let ((json-obj (json-parse-string json-str)))
 	 (split-string (car (analyze-openai-json-obj json-obj 1)))))
@@ -415,7 +418,8 @@
 	     (save-excursion
 	       (goto-char (marker-position saved-marker))
 	       (insert (car lst))
-	       (goto-char (marker-position saved-marker)))))))))
+	       (goto-char (marker-position saved-marker))))))
+     deferred-func2)))
 
 ;;
 ;; 漢字仮名混じりで書かれた文章をOpenAIサーバーを使って読み仮名を返す。
@@ -423,7 +427,7 @@
 ;; arg-n: 候補を何件返すか
 ;; return: ("にほんご" "ニホンゴ")
 ;;
-(defun sumibi-kanji-to-yomigana (kanji sync-flag)
+(defun sumibi-kanji-to-yomigana (kanji deferred-func2)
   (let ((saved-marker (point-marker)))
     (openai-http-post
      (list
@@ -440,7 +444,6 @@
       (cons "user"
 	    (format "ひらがなとカタカナと同音異義語をなるべく多く列挙してください。 : %s" kanji)))
      1
-     sync-flag
      (lambda (json-str)
        (let ((json-obj (json-parse-string json-str)))
 	 (split-string (car (analyze-openai-json-obj json-obj 1)))))
@@ -451,7 +454,8 @@
 	     (save-excursion
 	       (goto-char (marker-position saved-marker))
 	       (insert (car lst))
-	       (goto-char (marker-position saved-marker)))))))))
+	       (goto-char (marker-position saved-marker))))))
+     deferred-func2)))
 
 ;;
 ;; 日本語の文章を、OpenAIサーバーを使って英語に翻訳する。
@@ -459,7 +463,7 @@
 ;; arg-n: 候補を何件返すか
 ;; return: ("My name is Nakano." "My name is Nakano." "My name is Nakano.")
 ;;
-(defun sumibi-kanji-to-english (kanji arg-n sync-flag)
+(defun sumibi-kanji-to-english (kanji arg-n deferred-func2)
   (let ((saved-marker (point-marker)))
     (openai-http-post
      (list
@@ -476,7 +480,6 @@
       (cons "user"
 	    (format "文章を英語に翻訳してください。 : %s" kanji)))
      arg-n
-     sync-flag
      (lambda (json-str)
        (let ((json-obj (json-parse-string json-str)))
 	 (analyze-openai-json-obj json-obj arg-n)))
@@ -487,7 +490,8 @@
 	     (save-excursion
 	       (goto-char (marker-position saved-marker))
 	       (insert (car lst))
-	       (goto-char (marker-position saved-marker)))))))))
+	       (goto-char (marker-position saved-marker))))))
+     deferred-func2)))
 
 ;;
 ;; OpenAI APIの引数「n」に指定する数を決める。
@@ -505,8 +509,8 @@
 
 
 ;; 日本語=>英語翻訳
-(defun sumibi-inverse-henkan (roman arg-n sync-flag)
-  (let ((lst (sumibi-kanji-to-english roman arg-n sync-flag)))
+(defun sumibi-inverse-henkan (roman arg-n deferred-func2)
+  (let ((lst (sumibi-kanji-to-english roman arg-n deferred-func2)))
     (append
      (-map
       (lambda (x)
@@ -520,8 +524,8 @@
       (list roman "原文まま" 0 'l (length lst))))))
 
 ;; 日本語を再変換
-(defun sumibi-nihongo-saihenkan (roman sync-flag)
-  (let* ((lst (sumibi-kanji-to-yomigana roman sync-flag))
+(defun sumibi-nihongo-saihenkan (roman deferred-func2)
+  (let* ((lst (sumibi-kanji-to-yomigana roman deferred-func2))
 	 (kouho-lst
 	  (-map
 	   (lambda (x)
@@ -536,13 +540,13 @@
      (list (list roman "原文まま" 0 'l (length kouho-lst))))))
 
 ;; アルファベット(ローマ字or英語の文章)からカナ漢字混じり文への変換
-(defun sumibi-alphabet-henkan (roman arg-n sync-flag)
-  (let ((lst (sumibi-roman-to-kanji roman arg-n sync-flag)))
+(defun sumibi-alphabet-henkan (roman arg-n deferred-func2)
+  (let ((lst (sumibi-roman-to-kanji roman arg-n deferred-func2)))
     (when (>= 10 (length roman))
       (setq lst
 	    (append
 	     lst
-	     (sumibi-roman-to-yomigana roman sync-flag))))
+	     (sumibi-roman-to-yomigana roman deferred-func2))))
     (append
      (-map
       (lambda (x)
@@ -558,7 +562,7 @@
 ;;
 ;; ローマ字で書かれた文章を複数候補作成して返す
 ;;
-(defun sumibi-henkan-request (roman inverse-flag sync-flag)
+(defun sumibi-henkan-request (roman inverse-flag deferred-func2)
   (let ((fixed-kouho
 	 (-filter
 	  (lambda (x)
@@ -566,7 +570,7 @@
 	  sumibi-fixed-henkan-houho)))
     (cond
      (inverse-flag
-      (sumibi-inverse-henkan roman (sumibi-determine-number-of-n roman) sync-flag))
+      (sumibi-inverse-henkan roman (sumibi-determine-number-of-n roman) deferred-func2))
      (t
       (cond
        ;; 固定の変換キーワードの場合(wo ha ga...)
@@ -574,9 +578,9 @@
 	(list (list (cdr (car fixed-kouho)) "固定文字列" 0 'j 0)))
        ;; 漢字を含む場合
        ((sumibi-string-include-kanji roman)
-	(sumibi-nihongo-saihenkan roman sync-flag))
+	(sumibi-nihongo-saihenkan roman deferred-func2))
        (t
-	(sumibi-alphabet-henkan roman (sumibi-determine-number-of-n roman) sync-flag)))))))
+	(sumibi-alphabet-henkan roman (sumibi-determine-number-of-n roman) deferred-func2)))))))
 
 
 (defun sumibi-file-existp (file)
@@ -593,7 +597,7 @@
   (when (/= b e)
     (let* (
 	   (yomi (buffer-substring-no-properties b e))
-	   (henkan-list (sumibi-henkan-request yomi inverse-flag t)))
+	   (henkan-list (sumibi-henkan-request yomi inverse-flag nil)))
       (if henkan-list
 	  (condition-case err
 	      (progn
@@ -632,11 +636,29 @@
 (defun sumibi-henkan-region-async (b e inverse-flag)
   "指定された region を漢字変換する"
   (when (/= b e)
-    (let ((yomi (buffer-substring-no-properties b e)))
+    (let ((yomi (buffer-substring-no-properties b e))
+	  (saved-b-marker 0)
+	  (saved-e-marker 0)
+	  (cur-buf (current-buffer)))
+      (deactivate-mark)
       (delete-region b e)
       (goto-char b)
-      (sumibi-henkan-request yomi inverse-flag nil))))
-
+      (setq saved-b-marker (point-marker))
+      (insert " ")
+      (setq saved-e-marker (point-marker))      
+      (let ((yomi-overlay (make-overlay b (point))))
+	(overlay-put yomi-overlay 'display yomi)
+	(overlay-put yomi-overlay 'face '(:foreground "gray"))
+	(sumibi-henkan-request
+	 yomi
+	 inverse-flag
+	 (lambda ()
+	   (with-current-buffer cur-buf
+	     (save-excursion 
+	       (delete-overlay yomi-overlay)
+	       (delete-region (marker-position saved-b-marker)
+			      (marker-position saved-e-marker))))))))))
+  
 (defun sumibi-henkan-region (b e inverse-flag)
   "指定された region を漢字変換する"
   (sumibi-init)
@@ -1399,8 +1421,8 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
 
 (when nil
 ;; unti test
-  (sumibi-henkan-request "watashi no namae ha nakano desu ." nil nil)
-  (sumibi-henkan-request "2kome no bunsyou desu ." nil nil)
+  (sumibi-henkan-request "watashi no namae ha nakano desu ." nil (lambda ()))
+  (sumibi-henkan-request "2kome no bunsyou desu ." nil (lambda ()))
   )
 
 (when nil
