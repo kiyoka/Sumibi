@@ -252,7 +252,7 @@
 	   "  ] "
 	   "}"))
     (cond
-     (sync-flag
+     (sync-flag ;; 同期バージョン
       (let* ((lines
 	      (let ((buf (url-retrieve-synchronously url t t sumibi-api-timeout)))
 	      	(sumibi-debug-print (buffer-name buf))
@@ -276,7 +276,7 @@
 	      (split-string lines "\n")))
 	(funcall sync-func (cadr (reverse line-list)))))
 
-     (t
+     (t ;; 非同期バージョン
       (deferred:$
 	(deferred:url-retrieve url)
 	(deferred:nextc it
@@ -332,46 +332,50 @@
 ;; return: ("1番目の文章の文字列" "2番目の文章の文字列" "3番目の文章の文字列" ...)
 ;;
 (defun sumibi-roman-to-kanji (roman arg-n sync-flag)
-  (openai-http-post
-   (list
-    (cons "system"
-	  (concat 
-	   "あなたはローマ字とひらがなを日本語に変換するアシスタントです。"
-	   "ローマ字の 「nn」 は 「ん」と読んでください。"
-	   "[](URL)のようなmarkdown構文は維持してください。"
-	   "# や ## や ### や #### のようなmarkdown構文は維持してください。"))
-    (cons "user" 
-	  "ローマ字の文を漢字仮名混じり文にしてください。 : watashi no namae ha nakano desu .")
-    (cons "assistant"
-	  "私の名前は中野です。")
-    (cons "user" 
-	  "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : ikano toori desu .")
-    (cons "assistant"
-	  "以下の通りです。")
-    (cons "user" 
-	  "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : hannishitei shimasu")
-    (cons "assistant"
-	  "範囲指定します")
-    (cons "user" 
-	  "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : We succeeded in taking a photo like this:\n![example](https://www.example.com/dir1/dir2/example.png)")
-    (cons "assistant"		     
-	  "このような写真を撮ることに成功しました：\n![例](https://www.example.com/dir1/dir2/example.png)")
-    (cons "user" 
-	  "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : ## this is markdown section")
-    (cons "assistant"		     
-	  "## これはMarkdownのセクションです。")
-    (cons "user"
-	  (format "ローマ字の文を漢字仮名混じり文にしてください。 : %s" roman)))
-   arg-n
-   sync-flag
-   (lambda (json-str)
-     (let ((json-obj (json-parse-string json-str)))
-       (analyze-openai-json-obj json-obj arg-n)))
-   (lambda (json-str)
-     (let* ((json-obj (json-parse-string json-str))
-	    (lst (analyze-openai-json-obj json-obj arg-n)))
-       (if (not (null lst))
-	   (insert (car lst)))))))
+  (let ((saved-marker (point-marker)))
+    (openai-http-post
+     (list
+      (cons "system"
+	    (concat 
+	     "あなたはローマ字とひらがなを日本語に変換するアシスタントです。"
+	     "ローマ字の 「nn」 は 「ん」と読んでください。"
+	     "[](URL)のようなmarkdown構文は維持してください。"
+	     "# や ## や ### や #### のようなmarkdown構文は維持してください。"))
+      (cons "user" 
+	    "ローマ字の文を漢字仮名混じり文にしてください。 : watashi no namae ha nakano desu .")
+      (cons "assistant"
+	    "私の名前は中野です。")
+      (cons "user" 
+	    "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : ikano toori desu .")
+      (cons "assistant"
+	    "以下の通りです。")
+      (cons "user" 
+	    "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : hannishitei shimasu")
+      (cons "assistant"
+	    "範囲指定します")
+      (cons "user" 
+	    "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : We succeeded in taking a photo like this:\n![example](https://www.example.com/dir1/dir2/example.png)")
+      (cons "assistant"		     
+	    "このような写真を撮ることに成功しました：\n![例](https://www.example.com/dir1/dir2/example.png)")
+      (cons "user" 
+	    "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : ## this is markdown section")
+      (cons "assistant"		     
+	    "## これはMarkdownのセクションです。")
+      (cons "user"
+	    (format "ローマ字の文を漢字仮名混じり文にしてください。 : %s" roman)))
+     arg-n
+     sync-flag
+     (lambda (json-str)
+       (let ((json-obj (json-parse-string json-str)))
+	 (analyze-openai-json-obj json-obj arg-n)))
+     (lambda (json-str)
+       (let* ((json-obj (json-parse-string json-str))
+	      (lst (analyze-openai-json-obj json-obj arg-n)))
+	 (when (not (null lst))
+	   (save-excursion
+	     (goto-char (marker-position saved-marker))
+	     (insert (car lst))
+	     (goto-char (marker-position saved-marker)))))))))
 
 ;;
 ;; ローマ字で書かれた文章をOpenAIサーバーを使って読み仮名を返す。
@@ -380,34 +384,38 @@
 ;; return: ("した" "シタ") や ("なの" "ナノ")
 ;;
 (defun sumibi-roman-to-yomigana (roman sync-flag)
-  (openai-http-post
-   (list
-    (cons "system"
-	  "あなたはローマ字をひらがなとカタカナに変換するアシスタントです。ローマ字の 「nn」 は 「ん」と読んでください。")
-    (cons "user"
-	  "ローマ字をひらがなとカタカナにしてください : shita")
-    (cons "assistant"
-	  "した シタ")
-    (cons "user"
-	  "ローマ字をひらがなとカタカナにしてください : nano")
-    (cons "assistant"
-	  "なの ナノ")
-    (cons "user"
-	  "ローマ字をひらがなとカタカナにしてください : aiueokakikukeko")
-    (cons "assistant"
-	  "あいうえおかきくけこ アイウエオカキクケコ")
-    (cons "user"
-	  (format "ローマ字をひらがなとカタカナにしてください : %s" roman)))
-   1
-   sync-flag
-   (lambda (json-str)
-     (let ((json-obj (json-parse-string json-str)))
-       (split-string (car (analyze-openai-json-obj json-obj 1)))))
-   (lambda (json-str)
-     (let* ((json-obj (json-parse-string json-str))
-	    (lst (split-string (car (analyze-openai-json-obj json-obj 1)))))
-       (if (not (null lst))
-	   (insert (car lst)))))))
+  (let ((saved-marker (point-marker)))
+    (openai-http-post
+     (list
+      (cons "system"
+	    "あなたはローマ字をひらがなとカタカナに変換するアシスタントです。ローマ字の 「nn」 は 「ん」と読んでください。")
+      (cons "user"
+	    "ローマ字をひらがなとカタカナにしてください : shita")
+      (cons "assistant"
+	    "した シタ")
+      (cons "user"
+	    "ローマ字をひらがなとカタカナにしてください : nano")
+      (cons "assistant"
+	    "なの ナノ")
+      (cons "user"
+	    "ローマ字をひらがなとカタカナにしてください : aiueokakikukeko")
+      (cons "assistant"
+	    "あいうえおかきくけこ アイウエオカキクケコ")
+      (cons "user"
+	    (format "ローマ字をひらがなとカタカナにしてください : %s" roman)))
+     1
+     sync-flag
+     (lambda (json-str)
+       (let ((json-obj (json-parse-string json-str)))
+	 (split-string (car (analyze-openai-json-obj json-obj 1)))))
+     (lambda (json-str)
+       (let* ((json-obj (json-parse-string json-str))
+	      (lst (split-string (car (analyze-openai-json-obj json-obj 1)))))
+	 (if (not (null lst))
+	     (save-excursion
+	       (goto-char (marker-position saved-marker))
+	       (insert (car lst))
+	       (goto-char (marker-position saved-marker)))))))))
 
 ;;
 ;; 漢字仮名混じりで書かれた文章をOpenAIサーバーを使って読み仮名を返す。
@@ -416,30 +424,35 @@
 ;; return: ("にほんご" "ニホンゴ")
 ;;
 (defun sumibi-kanji-to-yomigana (kanji sync-flag)
-  (openai-http-post
-   (list
-    (cons "system"
-	  "あなたは漢字が与えられると、ひらがなとカタカナとその漢字の同音異義語を返すアシスタントです。")
-    (cons "user"
-	  "ひらがなとカタカナと同音異義語をなるべく多く列挙してください。 : 東西南北")
-    (cons "assistant"
-	  "とうざいなんぼく トウザイナンボク 東西南北")
-    (cons "user"
-	  "ひらがなとカタカナと同音異義語をなるべく多く列挙してください。 : 漢字")
-    (cons "assistant"
-	  "かんじ カンジ 漢字 感じ 幹事 監事 寛二")
-    (cons "user"
-	  (format "ひらがなとカタカナと同音異義語をなるべく多く列挙してください。 : %s" kanji)))
-   1
-   sync-flag
-   (lambda (json-str)
-     (let ((json-obj (json-parse-string json-str)))
-       (split-string (car (analyze-openai-json-obj json-obj 1)))))
-   (lambda (json-str)
-     (let* ((json-obj (json-parse-string json-str))
-	    (lst (split-string (car (analyze-openai-json-obj json-obj 1)))))
-       (if (not (null lst))
-	   (insert (car lst)))))))
+  (let ((saved-marker (point-marker)))
+    (openai-http-post
+     (list
+      (cons "system"
+	    "あなたは漢字が与えられると、ひらがなとカタカナとその漢字の同音異義語を返すアシスタントです。")
+      (cons "user"
+	    "ひらがなとカタカナと同音異義語をなるべく多く列挙してください。 : 東西南北")
+      (cons "assistant"
+	    "とうざいなんぼく トウザイナンボク 東西南北")
+      (cons "user"
+	    "ひらがなとカタカナと同音異義語をなるべく多く列挙してください。 : 漢字")
+      (cons "assistant"
+	    "かんじ カンジ 漢字 感じ 幹事 監事 寛二")
+      (cons "user"
+	    (format "ひらがなとカタカナと同音異義語をなるべく多く列挙してください。 : %s" kanji)))
+     1
+     sync-flag
+     (lambda (json-str)
+       (let ((json-obj (json-parse-string json-str)))
+	 (split-string (car (analyze-openai-json-obj json-obj 1)))))
+     (lambda (json-str)
+       (let* ((json-obj (json-parse-string json-str))
+	      (lst (split-string (car (analyze-openai-json-obj json-obj 1)))))
+	 (if (not (null lst))
+	     (save-excursion
+	       (goto-char (marker-position saved-marker))
+	       (insert (car lst))
+	       (goto-char (marker-position saved-marker)))))))))
+
 ;;
 ;; 日本語の文章を、OpenAIサーバーを使って英語に翻訳する。
 ;; roman: "私の名前は中野です。"
@@ -447,30 +460,34 @@
 ;; return: ("My name is Nakano." "My name is Nakano." "My name is Nakano.")
 ;;
 (defun sumibi-kanji-to-english (kanji arg-n sync-flag)
-  (openai-http-post
-   (list
-    (cons "system"
-	  "あなたは、与えられた文章を英語に翻訳するアシスタントです。")
-    (cons "user" 
-	  "文章を英語に翻訳してください。 : 私の名前は中野です。")
-    (cons "assistant"
-	  "My name is Nakano.")
-    (cons "user" 
-	  "文章を英語に翻訳してください。 : GPTはOpenAIから2018年に以下の論文で提案されたモデルで、基本的にはTransformerをベースに、事前学習-ファインチューニングをすることで非常に高い精度を達成したモデルです。")
-    (cons "assistant"
-	  "GPT is a model proposed by OpenAI in 2018 in the following paper, which is basically based on Transformer and achieves very high accuracy by pre-training - fine tuning.")
-    (cons "user"
-	  (format "文章を英語に翻訳してください。 : %s" kanji)))
-   arg-n
-   sync-flag
-   (lambda (json-str)
-     (let ((json-obj (json-parse-string json-str)))
-       (analyze-openai-json-obj json-obj arg-n)))
-   (lambda (json-str)
-     (let* ((json-obj (json-parse-string json-str))
-	    (lst (analyze-openai-json-obj json-obj arg-n)))
-       (if (not (null lst))
-	   (insert (car lst)))))))
+  (let ((saved-marker (point-marker)))
+    (openai-http-post
+     (list
+      (cons "system"
+	    "あなたは、与えられた文章を英語に翻訳するアシスタントです。")
+      (cons "user" 
+	    "文章を英語に翻訳してください。 : 私の名前は中野です。")
+      (cons "assistant"
+	    "My name is Nakano.")
+      (cons "user" 
+	    "文章を英語に翻訳してください。 : GPTはOpenAIから2018年に以下の論文で提案されたモデルで、基本的にはTransformerをベースに、事前学習-ファインチューニングをすることで非常に高い精度を達成したモデルです。")
+      (cons "assistant"
+	    "GPT is a model proposed by OpenAI in 2018 in the following paper, which is basically based on Transformer and achieves very high accuracy by pre-training - fine tuning.")
+      (cons "user"
+	    (format "文章を英語に翻訳してください。 : %s" kanji)))
+     arg-n
+     sync-flag
+     (lambda (json-str)
+       (let ((json-obj (json-parse-string json-str)))
+	 (analyze-openai-json-obj json-obj arg-n)))
+     (lambda (json-str)
+       (let* ((json-obj (json-parse-string json-str))
+	      (lst (analyze-openai-json-obj json-obj arg-n)))
+	 (if (not (null lst))
+	     (save-excursion
+	       (goto-char (marker-position saved-marker))
+	       (insert (car lst))
+	       (goto-char (marker-position saved-marker)))))))))
 
 ;;
 ;; OpenAI APIの引数「n」に指定する数を決める。
@@ -1382,7 +1399,9 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
 
 (when nil
 ;; unti test
-  (sumibi-henkan-request "watashi no namae ha nakano desu ." nil nil))
+  (sumibi-henkan-request "watashi no namae ha nakano desu ." nil nil)
+  (sumibi-henkan-request "2kome no bunsyou desu ." nil nil)
+  )
 
 (when nil
 ;; unit test
