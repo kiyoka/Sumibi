@@ -3,7 +3,7 @@
 ;; Copyright (C) 2023 Kiyoka Nishiyama
 ;;
 ;; Author: Kiyoka Nishiyama <kiyoka@sumibi.org>
-;; Version: 1.3.0          ;;SUMIBI-VERSION
+;; Version: 1.4.0          ;;SUMIBI-VERSION
 ;; Keywords: ime, japanese
 ;; Package-Requires: ((cl-lib "1.0") (popup "0.5.9") (unicode-escapeo "20230109.1222") (deferred "20170901.1330")
 ;; URL: https://github.com/kiyoka/Sumibi
@@ -1370,7 +1370,7 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
 (setq default-input-method "japanese-sumibi")
 
 (defconst sumibi-version
-  "1.3.0" ;;SUMIBI-VERSION
+  "1.4.0" ;;SUMIBI-VERSION
   )
 (defun sumibi-version (&optional arg)
   "入力モード変更"
