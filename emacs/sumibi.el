@@ -303,11 +303,10 @@
 	    (cadr (reverse (split-string lines "\n")))))
 	(deferred:nextc it
 	  (lambda (json)
-	    (sumibi-debug-print (format "<<<%s>>>\n" (funcall deferred-func json)))
-	    t))
-	(deferred:nextc it
-	  (lambda (dummy)
-	    (funcall deferred-func2)))))
+	    (atomic-change-group
+	      (funcall deferred-func2)
+	      (sumibi-debug-print (format "<<<%s>>>\n" (funcall deferred-func json))))
+	    t))))
      '())))
 
 
@@ -641,12 +640,12 @@
 	  (saved-e-marker 0)
 	  (cur-buf (current-buffer)))
       (deactivate-mark)
-      (delete-region b e)
+      (goto-char e)
+      (setq saved-e-marker (point-marker))
       (goto-char b)
       (setq saved-b-marker (point-marker))
-      (insert " ")
-      (setq saved-e-marker (point-marker))      
-      (let ((yomi-overlay (make-overlay b (point))))
+      (goto-char e)
+      (let ((yomi-overlay (make-overlay b e)))
 	(overlay-put yomi-overlay 'display yomi)
 	(overlay-put yomi-overlay 'face '(:foreground "gray"))
 	(sumibi-henkan-request
