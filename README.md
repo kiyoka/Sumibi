@@ -32,6 +32,7 @@ Emacs version 28.x (Windows/Linux/macOS) で動作します。Emacs以外の追�
 ```
 popup 0.5.9
 unicode-escapeo 20230109.1222
+deferred 20170901.1330
 ```
 
 4. sumibi.el を \~/.emacs.d/ に保存します。
@@ -105,3 +106,13 @@ Emacsを再起動するとSumibiがステータスバーに表示されます。
 ### sentence
 #### sentence
 ```
+
+### Ver 1.4.0
+
+* 100文字を超える文章を長文と判断して、バックグラウンドで漢字変換するようにした。
+
+(カスタマイズ編集 _sumibi-threshold-letters-of-long-sentence_ で変更可能)
+
+* バックグラウンドでの漢字変換や翻訳を並行で実行できるようにした。
+
+
