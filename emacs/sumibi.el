@@ -3,7 +3,7 @@
 ;; Copyright (C) 2023 Kiyoka Nishiyama
 ;;
 ;; Author: Kiyoka Nishiyama <kiyoka@sumibi.org>
-;; Version: 1.4.0          ;;SUMIBI-VERSION
+;; Version: 1.5.0          ;;SUMIBI-VERSION
 ;; Keywords: ime, japanese
 ;; Package-Requires: ((cl-lib "1.0") (popup "0.5.9") (unicode-escapeo "20230109.1222") (deferred "20170901.1330")
 ;; URL: https://github.com/kiyoka/Sumibi
@@ -11,10 +11,10 @@
 ;; This file is part of Sumibi
 ;; This program was derived from sekka.el and yc.el-4.0.13(auther: knak)
 ;;
-;; Sumibi is free software; you can redistribute it and/or modify
+;; Sumibi is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2, or (at your option)
-;; any later version.
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
 ;;
 ;; Sumibi is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -100,22 +100,116 @@
 		  minor-mode-map-alist)))
 
 
-;; OpenAPIを呼び出さずに固定文字列の結果を返すもの
-(defvar sumibi-fixed-henkan-houho
-  '(
-    ("[" . "「")
-    ("]" . "」")
-    ("." . "。")
-    ("," . "、")
-    ("-" . "ー")
-    ("de" . "で")
-    ("ni" . "に")
-    ("wo" . "を")
-    ("ha" . "は")
-    ("no" . "の")
-    ("ga" . "が")
-    ("ya" . "や")
-    ("to" . "と")))
+;; OpenAPIを呼び出さずに固定文字列の結果を返すもの ( copied from GNU Emacs's japanese.el)
+(defvar sumibi-japanese-transliteration-rules
+  '(( "a" "あ") ( "i" "い") ( "u" "う") ( "e" "え") ( "o" "お")
+    ("ka" "か") ("ki" "き") ("ku" "く") ("ke" "け") ("ko" "こ")
+    ("sa" "さ") ("si" "し") ("su" "す") ("se" "せ") ("so" "そ")
+    ("ta" "た") ("ti" "ち") ("tu" "つ") ("te" "て") ("to" "と")
+    ("na" "な") ("ni" "に") ("nu" "ぬ") ("ne" "ね") ("no" "の")
+    ("ha" "は") ("hi" "ひ") ("hu" "ふ") ("he" "へ") ("ho" "ほ")
+    ("ma" "ま") ("mi" "み") ("mu" "む") ("me" "め") ("mo" "も")
+    ("ya" "や")             ("yu" "ゆ")             ("yo" "よ")
+    ("ra" "ら") ("ri" "り") ("ru" "る") ("re" "れ") ("ro" "ろ")
+    ("la" "ら") ("li" "り") ("lu" "る") ("le" "れ") ("lo" "ろ")
+    ("wa" "わ") ("wi" "ゐ") ("wu" "う") ("we" "ゑ") ("wo" "を")
+    ("n'" "ん")
+    ("ga" "が") ("gi" "ぎ") ("gu" "ぐ") ("ge" "げ") ("go" "ご")
+    ("za" "ざ") ("zi" "じ") ("zu" "ず") ("ze" "ぜ") ("zo" "ぞ")
+    ("da" "だ") ("di" "ぢ") ("du" "づ") ("de" "で") ("do" "ど")
+    ("ba" "ば") ("bi" "び") ("bu" "ぶ") ("be" "べ") ("bo" "ぼ")
+    ("pa" "ぱ") ("pi" "ぴ") ("pu" "ぷ") ("pe" "ぺ") ("po" "ぽ")
+
+    ("kya" "きゃ") ("kyu" "きゅ") ("kye" "きぇ") ("kyo" "きょ")
+    ("sya" "しゃ") ("syu" "しゅ") ("sye" "しぇ") ("syo" "しょ")
+    ("sha" "しゃ") ("shu" "しゅ") ("she" "しぇ") ("sho" "しょ")
+    ("cha" "ちゃ") ("chu" "ちゅ") ("che" "ちぇ") ("cho" "ちょ")
+    ("tya" "ちゃ") ("tyu" "ちゅ") ("tye" "ちぇ") ("tyo" "ちょ")
+    ("nya" "にゃ") ("nyu" "にゅ") ("nye" "にぇ") ("nyo" "にょ")
+    ("hya" "ひゃ") ("hyu" "ひゅ") ("hye" "ひぇ") ("hyo" "ひょ")
+    ("mya" "みゃ") ("myu" "みゅ") ("mye" "みぇ") ("myo" "みょ")
+    ("rya" "りゃ") ("ryu" "りゅ") ("rye" "りぇ") ("ryo" "りょ")
+    ("lya" "りゃ") ("lyu" "りゅ") ("lye" "りぇ") ("lyo" "りょ")
+    ("gya" "ぎゃ") ("gyu" "ぎゅ") ("gye" "ぎぇ") ("gyo" "ぎょ")
+    ("zya" "じゃ") ("zyu" "じゅ") ("zye" "じぇ") ("zyo" "じょ")
+    ("jya" "じゃ") ("jyu" "じゅ") ("jye" "じぇ") ("jyo" "じょ")
+    ( "ja" "じゃ") ( "ju" "じゅ") ( "je" "じぇ") ( "jo" "じょ")
+    ("bya" "びゃ") ("byu" "びゅ") ("bye" "びぇ") ("byo" "びょ")
+    ("pya" "ぴゃ") ("pyu" "ぴゅ") ("pye" "ぴぇ") ("pyo" "ぴょ")
+
+    ("kwa" "くゎ") ("kwi" "くぃ") ("kwe" "くぇ") ("kwo" "くぉ")
+    ("tsa" "つぁ") ("tsi" "つぃ") ("tse" "つぇ") ("tso" "つぉ")
+    ( "fa" "ふぁ") ( "fi" "ふぃ") ( "fe" "ふぇ") ( "fo" "ふぉ")
+    ("gwa" "ぐゎ") ("gwi" "ぐぃ") ("gwe" "ぐぇ") ("gwo" "ぐぉ")
+
+    ("dyi" "でぃ") ("dyu" "どぅ") ("dye" "でぇ") ("dyo" "どぉ")
+    ("xwi" "うぃ")                  ("xwe" "うぇ") ("xwo" "うぉ")
+
+    ("shi" "し") ("tyi" "てぃ") ("chi" "ち") ("tsu" "つ") ("ji" "じ")
+    ("fu"  "ふ")
+    ("ye" "いぇ")
+
+    ("va" "ヴぁ") ("vi" "ヴぃ") ("vu" "ヴ") ("ve" "ヴぇ") ("vo" "ヴぉ")
+
+    ("xa"  "ぁ") ("xi"  "ぃ") ("xu"  "ぅ") ("xe"  "ぇ") ("xo"  "ぉ")
+    ("xtu" "っ") ("xya" "ゃ") ("xyu" "ゅ") ("xyo" "ょ") ("xwa" "ゎ")
+    ("xka" "ヵ") ("xke" "ヶ")
+
+    ("1" "１") ("2" "２") ("3" "３") ("4" "４") ("5" "５")
+    ("6" "６") ("7" "７") ("8" "８") ("9" "９") ("0" "０")
+
+    ("!" "！") ("@" "＠") ("#" "＃") ("$" "＄") ("%" "％")
+    ("^" "＾") ("&" "＆") ("*" "＊") ("(" "（") (")" "）")
+    ("-" "ー") ("=" "＝") ("`" "｀") ("\\" "￥") ("|" "｜")
+    ("_" "＿") ("+" "＋") ("~" "￣") ("[" "「") ("]" "」")
+    ("{" "｛") ("}" "｝") (":" "：") (";" "；") ("\""  "”")
+    ("'" "’") ("." "。") ("," "、") ("<" "＜") (">" "＞")
+    ("?" "？") ("/" "／")
+
+    ("z1" "○") ("z!" "●")
+    ("z2" "▽") ("z@" "▼")
+    ("z3" "△") ("z#" "▲")
+    ("z4" "□") ("z$" "■")
+    ("z5" "◇") ("z%" "◆")
+    ("z6" "☆") ("z^" "★")
+    ("z7" "◎") ("z&" "£")
+    ("z8" "¢") ("z*" "×")
+    ("z9" "♂") ("z(" "【")
+    ("z0" "♀") ("z)" "】")
+    ("z-" "〜") ("z_" "∴")
+    ("z=" "≠") ("z+" "±")
+    ("z\\" "＼") ("z|" "‖")
+    ("z`" "´") ("z~" "¨")
+
+    ("zq" "《") ("zQ" "〈")
+    ("zw" "》") ("zW" "〉")
+    ("zr" "々") ("zR" "仝")
+    ("zt" "〆") ("zT" "§")
+    ("zp" "〒") ("zP" "↑")
+    ("z[" "『") ("z{" "〔")
+    ("z]" "』") ("z}" "〕")
+
+    ("zs" "ヽ") ("zS" "ヾ")
+    ("zd" "ゝ") ("zD" "ゞ")
+    ("zf" "〃") ("zF" "→")
+    ("zg" "‐") ("zG" "—")
+    ("zh" "←")
+    ("zj" "↓")
+    ("zk" "↑")
+    ("zl" "→")
+    ("z;" "゛") ("z:" "゜")
+    ("z'" "‘") ("z\"" "“")
+
+    ("zx" ":-") ("zX" ":-)")
+    ("zc" "〇") ("zC" "℃")
+    ("zv" "※") ("zV" "÷")
+    ("zb" "°") ("zB" "←")
+    ("zn" "′") ("zN" "↓")
+    ("zm" "″") ("zM" "〓")
+    ("z," "‥") ("z<" "≦")
+    ("z." "…") ("z>" "≧")
+    ("z/" "・") ("z?" "∞")
+    ))
 
 ;;;
 ;;; hooks
@@ -566,7 +660,7 @@
 	 (-filter
 	  (lambda (x)
 	    (string= roman (car x)))
-	  sumibi-fixed-henkan-houho)))
+	  sumibi-japanese-transliteration-rules)))
     (cond
      (inverse-flag
       (sumibi-inverse-henkan roman (sumibi-determine-number-of-n roman) deferred-func2))
@@ -574,7 +668,7 @@
       (cond
        ;; 固定の変換キーワードの場合(wo ha ga...)
        ((< 0 (length fixed-kouho))
-	(list (list (cdr (car fixed-kouho)) "固定文字列" 0 'j 0)))
+	(list (list (cadr (car fixed-kouho)) "固定文字列" 0 'j 0)))
        ;; 漢字を含む場合
        ((sumibi-string-include-kanji roman)
 	(sumibi-nihongo-saihenkan roman deferred-func2))
@@ -1408,7 +1502,7 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
 (setq default-input-method "japanese-sumibi")
 
 (defconst sumibi-version
-  "1.4.0" ;;SUMIBI-VERSION
+  "1.5.0" ;;SUMIBI-VERSION
   )
 (defun sumibi-version (&optional arg)
   "入力モード変更"
