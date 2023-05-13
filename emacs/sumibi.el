@@ -5,7 +5,7 @@
 ;; Author: Kiyoka Nishiyama <kiyoka@sumibi.org>
 ;; Version: 1.5.0          ;;SUMIBI-VERSION
 ;; Keywords: ime, japanese
-;; Package-Requires: ((cl-lib "1.0") (popup "0.5.9") (unicode-escapeo "20230109.1222") (deferred "20170901.1330")
+;; Package-Requires: ((popup "0.5.9") (unicode-escapeo "20230109.1222") (deferred "20170901.1330")
 ;; URL: https://github.com/kiyoka/Sumibi
 ;;
 ;; This file is part of Sumibi
@@ -35,7 +35,6 @@
 ;;
 
 ;;; Code:
-(require 'cl)
 (require 'popup)
 (require 'url-parse)
 (require 'unicode-escape)
@@ -300,10 +299,16 @@
 ;; 初期化
 ;;
 (defun sumibi-init ()
-  (when (not sumibi-init)
-    ;; 初期化完了
-    (setq sumibi-init t)))
-
+  (if sumibi-init
+      t
+    (cond
+     ((not (getenv "OPENAI_API_KEY"))
+      (message "%s" "Please set OPENAI_API_KEY environment variable."))
+     ((and (>= emacs-major-version 28) (>= emacs-minor-version 1))
+      ;; 初期化完了
+      (setq sumibi-init t))
+     (t
+      (message "%s" "Emacs version 28.1 or higher is required.")))))
 
 (defun escape-for-json (str)
   (let* ((str1 (string-replace "\\" "" str))
@@ -755,10 +760,11 @@
 (defun sumibi-henkan-region (b e inverse-flag)
   "指定された region を漢字変換する"
   (sumibi-init)
-  (when (/= b e)
-    (if (sumibi-determine-sync-p (buffer-substring-no-properties b e))
-	(sumibi-henkan-region-sync b e inverse-flag)
-      (sumibi-henkan-region-async b e inverse-flag))))
+  (when sumibi-init
+    (when (/= b e)
+      (if (sumibi-determine-sync-p (buffer-substring-no-properties b e))
+	  (sumibi-henkan-region-sync b e inverse-flag)
+	(sumibi-henkan-region-async b e inverse-flag)))))
 				 
 	  
 ;; カーソル前の文字種を返却する関数
