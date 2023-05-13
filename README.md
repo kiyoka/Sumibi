@@ -1,4 +1,4 @@
-# Sumibi
+e# Sumibi
 
 Japanese input method powered by ChatGPT API
 
@@ -126,3 +126,6 @@ Emacsを再起動するとSumibiがステータスバーに表示されます。
   * 「zl」は「→」に「zv」は「※」に変換できるなど
 
 * ライセンスをGPLバージョン2からGPLバージョン3に変更した。
+* 環境変数 "OPENAI_API_KEY" の設定状況を確認するようにした。
+* 必要なEmacsバージョンのチェックを実装した。
+* `(require 'cl)`は、Emacsに標準で含まれているため削除した。
