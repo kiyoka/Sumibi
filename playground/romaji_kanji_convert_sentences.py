@@ -35,7 +35,7 @@ class GptTest:
         '## this is markdown section',
         '### this is markdown subsection',
         '#### this is markdown subsubsection',
-        '# this is markdown file\n## this is markdown section\n### this is markdown subsection'
+        '# this is markdown file\n## this is markdown section\n### this is markdown subsection',
     ]
     
     romaji_list2 = [
@@ -75,20 +75,19 @@ class GptTest:
                 {"role": "system", "content": "あなたはローマ字とひらがなを日本語に変換するアシスタントです。"
                  "ローマ字の 「nn」 は 「ん」と読んでください。"
                  "[](URL)のようなmarkdown構文は維持してください。"
-                 "# や ## や ### や #### のようなmarkdown構文は維持してください。"
-                 "変換結果を'''に続けて記載してください。"},
+                 "# や ## や ### や #### のようなmarkdown構文は維持してください。"},
                 {"role": "user", "content": "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : watashi no namae ha nakano desu ."},
-                {"role": "assistant", "content": "'''私の名前は中野です。"},
+                {"role": "assistant", "content": "私の名前は中野です。"},
                 {"role": "user", "content": "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : わたしのなまえはなかのです。"},
-                {"role": "assistant", "content": "'''私の名前は中野です。"},
+                {"role": "assistant", "content": "私の名前は中野です。"},
                 {"role": "user", "content": "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : ikano toori desu ."},
-                {"role": "assistant", "content": "'''以下の通りです。"},
+                {"role": "assistant", "content": "以下の通りです。"},
                 {"role": "user", "content": "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : hannishitei shimasu"},
-                {"role": "assistant", "content": "'''範囲指定します"},
+                {"role": "assistant", "content": "範囲指定します"},
                 {"role": "user", "content": "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : We succeeded in taking a photo like this:\n![example](https://www.example.com/dir1/dir2/example.png)"},
-                {"role": "assistant", "content": "'''このような写真を撮ることに成功しました：\n![例](https://www.example.com/dir1/dir2/example.png)"},
+                {"role": "assistant", "content": "このような写真を撮ることに成功しました：\n![例](https://www.example.com/dir1/dir2/example.png)"},
                 {"role": "user", "content": "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : ## this is markdown section"},
-                {"role": "assistant", "content": "'''## これはMarkdownのセクションです。"},
+                {"role": "assistant", "content": "## これはMarkdownのセクションです。"},
                 {"role": "user", "content": "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : {0}".format(romaji)}
             ]
         )
@@ -143,12 +142,11 @@ class GptTest:
             temperature=0.8,
             n=arg_n,
             messages=[
-                {"role": "system", "content": "あなたは、与えられた文章を英語に翻訳するアシスタントです。"
-                 "変換結果を'''に続けて記載してください。"},
+                {"role": "system", "content": "あなたは、与えられた文章を英語に翻訳するアシスタントです。"},
                 {"role": "user", "content": "文章を英語に翻訳してください。 : 私の名前は中野です。"},
-                {"role": "assistant", "content": "'''My name is Nakano."},
+                {"role": "assistant", "content": "My name is Nakano."},
                 {"role": "user", "content": "文章を英語に翻訳してください。 : GPTはOpenAIから2018年に以下の論文で提案されたモデルで、基本的にはTransformerをベースに、事前学習-ファインチューニングをすることで非常に高い精度を達成したモデルです。"},
-                {"role": "assistant", "content": "'''GPT is a model proposed by OpenAI in 2018 in the following paper, which is basically based on Transformer and achieves very high accuracy by pre-training - fine tuning."},
+                {"role": "assistant", "content": "GPT is a model proposed by OpenAI in 2018 in the following paper, which is basically based on Transformer and achieves very high accuracy by pre-training - fine tuning."},
                 {"role": "user", "content": "文章を英語に翻訳してください。 : {0}".format(japanese)}
                 ]
             )
