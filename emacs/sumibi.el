@@ -412,11 +412,13 @@
 
 ;; 「以下の通りです。」のような案内文を作成する
 (defun sumibi-drop-guide-sentence (utf8-str)
-  (let* ((str1 (string-replace "以下の通りです。\n\n" "" utf8-str))
-	 (str2 (string-replace "以下の通りです。\n\n" "" str1))
-	 (str3 (string-replace "以下のようになります。\n\n" "" str2))
-	 (str4 (string-replace "以下のようになります。\n\n" "" str3)))
-    str4))
+  (let ((lines (split-string utf8-str "\n")))
+    (if
+	(or (string-equal "以下の通りです。" (car lines))
+	    (string-equal "以下のようになります。" (car lines))
+	    (string-equal "以下になります。" (car lines)))
+	(string-join (cdr lines) "")
+      utf8-str)))
 
   ;; JSONから変換結果の文字列を取り出す
 (defun analyze-openai-json-obj (json-obj arg-n)
