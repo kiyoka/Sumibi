@@ -35,6 +35,7 @@
 ;;
 
 ;;; Code:
+(require 'cl)
 (require 'popup)
 (require 'url-parse)
 (require 'unicode-escape)
@@ -409,6 +410,13 @@
      '())))
 
 
+;; 「以下の通りです。」のような案内文を作成する
+(defun sumibi-drop-guide-sentence (utf8-str)
+  (let* ((str1 (string-replace "以下の通りです。\n\n" "" utf8-str))
+	 (str2 (string-replace "以下のようになります。\n\n" "" str1)))
+    str2))
+
+  ;; JSONから変換結果の文字列を取り出す
 (defun analyze-openai-json-obj (json-obj arg-n)
   (let ((result '())
 	(count 0))
@@ -423,7 +431,7 @@
 				  (aref (gethash "choices" json-obj) count))))
 	       (utf8-str
 		(decode-coding-string (url-unhex-string hex-str) 'utf-8)))
-	  (setq result (cons utf8-str result)))
+	  (setq result (cons (sumibi-drop-guide-sentence utf8-str) result)))
 	(setq count (1+ count)))
       result))))
 
