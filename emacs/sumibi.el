@@ -414,10 +414,10 @@
 (defun sumibi-drop-guide-sentence (utf8-str)
   (let ((lines (split-string utf8-str "\n")))
     (if
-	(or (string-equal "以下の通りです。" (car lines))
-	    (string-equal "以下のようになります。" (car lines))
-	    (string-equal "以下になります。" (car lines)))
-	(string-join (cdr lines) "")
+	(or (string-match "以下の通りです。[ ]*" (car lines))
+	    (string-match "以下のようになります。[ ]*" (car lines))
+	    (string-match "以下になります。[ ]*" (car lines)))
+	(string-trim-left (string-join (cdr lines) "\n"))
       utf8-str)))
 
   ;; JSONから変換結果の文字列を取り出す
