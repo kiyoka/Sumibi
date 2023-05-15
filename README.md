@@ -1,4 +1,4 @@
-e# Sumibi
+# Sumibi
 
 Japanese input method powered by ChatGPT API
 
