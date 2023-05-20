@@ -626,7 +626,7 @@
 	(list (car x)
 	      (format "候補%d" (+ 1 (cdr x)))
 	      0 'l (cdr x)))
-      (-zip
+      (-zip-pair
        lst
        '(0 1 2 3 4)))
      (list 
@@ -641,7 +641,7 @@
 	     (list (car x)
 		   (format "候補%d" (+ 1 (cdr x)))
 		   0 'h (cdr x)))
-	   (-zip
+	   (-zip-pair
 	    lst
 	    '(0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19)))))
     (append
@@ -941,7 +941,7 @@
 
 ;; 選択操作回数のインクリメント
 (defun sumibi-select-operation-inc ()
-  (incf sumibi-select-operation-times)
+  (cl-incf sumibi-select-operation-times)
   (when (< 3 sumibi-select-operation-times)
     (sumibi-select-operation-reset)
     (let* ((lst 
@@ -952,7 +952,6 @@
 		"   ; "
 		(nth sumibi-annotation-index x)))
 	     sumibi-henkan-kouho-list))
-	   (map (make-sparse-keymap))
 	   (result 
 	    (popup-menu* lst
 			 :scroll-bar t
@@ -1012,7 +1011,7 @@
   "前の候補に進める"
   (interactive)
   ;; 前の候補に切りかえる
-  (decf sumibi-cand-cur)
+  (cl-decf sumibi-cand-cur)
   (when (> 0 sumibi-cand-cur)
     (setq sumibi-cand-cur (- sumibi-cand-len 1)))
   (sumibi-select-operation-inc)
@@ -1033,7 +1032,7 @@
 ;; 指定された tango のindex番号を返す
 (defun sumibi-find-by-tango ( tango )
   (let ((result-index nil))
-    (mapcar
+    (mapc
      (lambda (x)
        (let ((_tango (nth sumibi-tango-index x)))
 	 (when (string-equal _tango tango)
@@ -1045,7 +1044,7 @@
 ;; 指定された type の候補を抜き出す
 (defun sumibi-select-by-type-filter ( _type )
   (let ((lst '()))
-    (mapcar
+    (mapc
      (lambda (x)
        (let ((sym (nth sumibi-kind-index x)))
 	 (when (eq sym _type)
@@ -1133,7 +1132,7 @@
   (sumibi-debug-print (format "sumibi-history-gc before len=%d\n" (length sumibi-history-stack)))
 
   (let ((temp-list '()))
-    (mapcar
+    (mapc
      (lambda (alist)
        (let ((markers  (sumibi-assoc-ref 'markers  alist nil)))
 	 (sumibi-debug-print (format "markers=%S\n" markers))
@@ -1155,7 +1154,7 @@
 
     ;; temp-list から limit 件数だけコピーする
     (setq sumibi-history-stack '())
-    (mapcar
+    (mapc
      (lambda (alist)
        (when (< (length sumibi-history-stack)
 		sumibi-history-stack-limit)
@@ -1172,7 +1171,7 @@
 
   ;; カーソル位置に有効な変換済エントリがあるか探す
   (let ((found nil))
-    (mapcar
+    (mapc
      (lambda (alist)
        (let* ((markers  (sumibi-assoc-ref 'markers  alist nil))
 	      (last-fix (sumibi-assoc-ref 'last-fix alist ""))
