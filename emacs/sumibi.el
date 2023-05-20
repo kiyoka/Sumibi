@@ -1,11 +1,11 @@
-;;; sumibi.el --- Japanese input method powered by ChatGPT API.  -*- lexical-binding: t; -*-
+;;; sumibi.el --- Japanese input method powered by ChatGPT API  -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (C) 2023 Kiyoka Nishiyama
 ;;
 ;; Author: Kiyoka Nishiyama <kiyoka@sumibi.org>
 ;; Version: 1.5.0          ;;SUMIBI-VERSION
-;; Keywords: ime, japanese
-;; Package-Requires: ((popup "0.5.9") (unicode-escapeo "20230109.1222") (deferred "20170901.1330")
+;; Keywords: lisp, ime, japanese
+;; Package-Requires: ((emacs "28.1") (popup "0.5.9") (unicode-escape "1.1") (deferred "0.5.1"))
 ;; URL: https://github.com/kiyoka/Sumibi
 ;;
 ;; This file is part of Sumibi
@@ -35,7 +35,7 @@
 ;;
 
 ;;; Code:
-(require 'cl)
+(require 'cl-lib)
 (require 'popup)
 (require 'url-parse)
 (require 'unicode-escape)
@@ -208,8 +208,7 @@
     ("zm" "″") ("zM" "〓")
     ("z," "‥") ("z<" "≦")
     ("z." "…") ("z>" "≧")
-    ("z/" "・") ("z?" "∞")
-    ))
+    ("z/" "・") ("z?" "∞")))
 
 ;;;
 ;;; hooks
@@ -311,7 +310,7 @@
      (t
       (message "%s" "Emacs version 28.1 or higher is required.")))))
 
-(defun escape-for-json (str)
+(defun sumibi-escape-for-json (str)
   (let* ((str1 (string-replace "\\" "" str))
 	 (str2 (string-replace "\"" "\\\"" str1))
 	 (str3 (string-replace "\n" "\\n" str2))
@@ -321,7 +320,7 @@
 ;;
 ;; OpenAPIにプロンプトを発行する
 ;;
-(defun openai-http-post (message-lst
+(defun sumibi-openai-http-post (message-lst
 			 arg-n
 			 sync-func
 			 deferred-func
@@ -346,7 +345,7 @@
 	     (lambda (x)
 	       (format " {\"role\": \"%s\",    \"content\": \"%s\"}"
 		       (car x)
-		       (escape-for-json (cdr x))))
+		       (sumibi-escape-for-json (cdr x))))
 	     message-lst)
 	    ",")
 	   "  ] "
@@ -421,7 +420,7 @@
       utf8-str)))
 
   ;; JSONから変換結果の文字列を取り出す
-(defun analyze-openai-json-obj (json-obj arg-n)
+(defun sumibi-analyze-openai-json-obj (json-obj arg-n)
   (let ((result '())
 	(count 0))
     (cond
@@ -447,7 +446,7 @@
 ;;
 (defun sumibi-roman-to-kanji (roman arg-n deferred-func2)
   (let ((saved-marker (point-marker)))
-    (openai-http-post
+    (sumibi-openai-http-post
      (list
       (cons "system"
 	    (concat 
@@ -480,10 +479,10 @@
      arg-n
      (lambda (json-str)
        (let ((json-obj (json-parse-string json-str)))
-	 (analyze-openai-json-obj json-obj arg-n)))
+	 (sumibi-analyze-openai-json-obj json-obj arg-n)))
      (lambda (json-str)
        (let* ((json-obj (json-parse-string json-str))
-	      (lst (analyze-openai-json-obj json-obj arg-n)))
+	      (lst (sumibi-analyze-openai-json-obj json-obj arg-n)))
 	 (when (not (null lst))
 	   (save-excursion
 	     (goto-char (marker-position saved-marker))
@@ -499,7 +498,7 @@
 ;;
 (defun sumibi-roman-to-yomigana (roman deferred-func2)
   (let ((saved-marker (point-marker)))
-    (openai-http-post
+    (sumibi-openai-http-post
      (list
       (cons "system"
 	    "あなたはローマ字をひらがなとカタカナに変換するアシスタントです。ローマ字の 「nn」 は 「ん」と読んでください。")
@@ -520,10 +519,10 @@
      1
      (lambda (json-str)
        (let ((json-obj (json-parse-string json-str)))
-	 (split-string (car (analyze-openai-json-obj json-obj 1)))))
+	 (split-string (car (sumibi-analyze-openai-json-obj json-obj 1)))))
      (lambda (json-str)
        (let* ((json-obj (json-parse-string json-str))
-	      (lst (split-string (car (analyze-openai-json-obj json-obj 1)))))
+	      (lst (split-string (car (sumibi-analyze-openai-json-obj json-obj 1)))))
 	 (if (not (null lst))
 	     (save-excursion
 	       (goto-char (marker-position saved-marker))
@@ -539,7 +538,7 @@
 ;;
 (defun sumibi-kanji-to-yomigana (kanji deferred-func2)
   (let ((saved-marker (point-marker)))
-    (openai-http-post
+    (sumibi-openai-http-post
      (list
       (cons "system"
 	    "あなたは漢字が与えられると、ひらがなとカタカナとその漢字の同音異義語を返すアシスタントです。")
@@ -556,10 +555,10 @@
      1
      (lambda (json-str)
        (let ((json-obj (json-parse-string json-str)))
-	 (split-string (car (analyze-openai-json-obj json-obj 1)))))
+	 (split-string (car (sumibi-analyze-openai-json-obj json-obj 1)))))
      (lambda (json-str)
        (let* ((json-obj (json-parse-string json-str))
-	      (lst (split-string (car (analyze-openai-json-obj json-obj 1)))))
+	      (lst (split-string (car (sumibi-analyze-openai-json-obj json-obj 1)))))
 	 (if (not (null lst))
 	     (save-excursion
 	       (goto-char (marker-position saved-marker))
@@ -575,7 +574,7 @@
 ;;
 (defun sumibi-kanji-to-english (kanji arg-n deferred-func2)
   (let ((saved-marker (point-marker)))
-    (openai-http-post
+    (sumibi-openai-http-post
      (list
       (cons "system"
 	    "あなたは、与えられた文章を英語に翻訳するアシスタントです。")
@@ -592,10 +591,10 @@
      arg-n
      (lambda (json-str)
        (let ((json-obj (json-parse-string json-str)))
-	 (analyze-openai-json-obj json-obj arg-n)))
+	 (sumibi-analyze-openai-json-obj json-obj arg-n)))
      (lambda (json-str)
        (let* ((json-obj (json-parse-string json-str))
-	      (lst (analyze-openai-json-obj json-obj arg-n)))
+	      (lst (sumibi-analyze-openai-json-obj json-obj arg-n)))
 	 (if (not (null lst))
 	     (save-excursion
 	       (goto-char (marker-position saved-marker))
@@ -1209,8 +1208,7 @@
 	     (sumibi-debug-print (format "sumibi-history-search : sumibi-cand-cur-backup : %S\n" sumibi-cand-cur-backup))
 	     (sumibi-debug-print (format "sumibi-history-search : sumibi-cand-len %S\n" sumibi-cand-len))
 	     (sumibi-debug-print (format "sumibi-history-search : sumibi-last-fix %S\n" sumibi-last-fix))
-	     (sumibi-debug-print (format "sumibi-history-search : sumibi-henkan-kouho-list %S\n" sumibi-henkan-kouho-list)))
-	   )))
+	     (sumibi-debug-print (format "sumibi-history-search : sumibi-henkan-kouho-list %S\n" sumibi-henkan-kouho-list))))))
      sumibi-history-stack)
     found))
 
@@ -1533,8 +1531,7 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
 (when nil
 ;; unti test
   (sumibi-henkan-request "watashi no namae ha nakano desu ." nil (lambda ()))
-  (sumibi-henkan-request "2kome no bunsyou desu ." nil (lambda ()))
-  )
+  (sumibi-henkan-request "2kome no bunsyou desu ." nil (lambda ())))
 
 (when nil
 ;; unit test
