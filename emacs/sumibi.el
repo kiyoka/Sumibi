@@ -3,7 +3,7 @@
 ;; Copyright (C) 2023 Kiyoka Nishiyama
 ;;
 ;; Author: Kiyoka Nishiyama <kiyoka@sumibi.org>
-;; Version: 1.5.0          ;;SUMIBI-VERSION
+;; Version: 1.6.0          ;;SUMIBI-VERSION
 ;; Keywords: lisp, ime, japanese
 ;; Package-Requires: ((emacs "28.1") (popup "0.5.9") (unicode-escape "1.1") (deferred "0.5.1"))
 ;; URL: https://github.com/kiyoka/Sumibi
@@ -1518,7 +1518,7 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
 (setq default-input-method "japanese-sumibi")
 
 (defconst sumibi-version
-  "1.5.0" ;;SUMIBI-VERSION
+  "1.6.0" ;;SUMIBI-VERSION
   )
 (defun sumibi-version (&optional arg)
   "入力モード変更"
