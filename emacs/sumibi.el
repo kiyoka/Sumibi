@@ -51,36 +51,36 @@
   :group 'Japanese)
 
 (defcustom sumibi-stop-chars "(){}<>"
-  "*漢字変換文字列を取り込む時に変換範囲に含めない文字を設定する"
+  "*漢字変換文字列を取り込む時に変換範囲に含めない文字を設定する."
   :type  'string
   :group 'sumibi)
 
 (defcustom sumibi-current-model "gpt-3.5-turbo"
-  "OpenAPIのLLM使用モデル名を指定する"
+  "OpenAPIのLLM使用モデル名を指定する."
   :type  'string
   :group 'sumibi)
 
 (defcustom sumibi-history-stack-limit 100
-  "再度候補選択できる単語と場所を最大何件記憶するか"
+  "再度候補選択できる単語と場所を最大何件記憶するか."
   :type  'integer
   :group 'sumibi)
 
 (defcustom sumibi-api-timeout 60
-  "OpenAIサーバーと通信する時のタイムアウトを指定する。(秒数)"
+  "OpenAIサーバーと通信する時のタイムアウトを指定する。(秒数)."
   :type  'integer
   :group 'sumibi)
 
 (defcustom sumibi-threshold-letters-of-long-sentence 100
-  "OpenAIサーバーに送信する際、長文として判断する文字数。この文字数を超えるとOpenAI APIの引数nを1に減らす"
+  "OpenAIサーバーに送信する際、長文として判断する文字数。この文字数を超えるとOpenAI APIの引数nを1に減らす."
   :type  'integer
   :group 'sumibi)
 
-(defvar sumibi-mode nil             "漢字変換トグル変数")
+(defvar sumibi-mode nil             "漢字変換トグル変数.")
 (defun sumibi-modeline-string ()
-  ;; 接続先sumibi-serverのホスト名を表示する。
+  "接続先サーバーのホスト名を表示する."
   (format " Sumibi[%s]" sumibi-current-model))
 
-(defvar sumibi-select-mode nil      "候補選択モード変数")
+(defvar sumibi-select-mode nil      "候補選択モード変数.")
 (or (assq 'sumibi-mode minor-mode-alist)
     (setq minor-mode-alist (cons
 			    '(sumibi-mode (:eval (sumibi-modeline-string)))
@@ -89,10 +89,10 @@
 
 ;; ローマ字漢字変換時、対象とするローマ字を設定するための変数
 (defvar sumibi-skip-chars "a-zA-Z0-9.,@:`\\-+!\\[\\]?;' ")
-(defvar sumibi-mode-map        (make-sparse-keymap)         "漢字変換トグルマップ")
-(defvar sumibi-select-mode-map (make-sparse-keymap)         "候補選択モードマップ")
+(defvar sumibi-mode-map        (make-sparse-keymap)         "漢字変換トグルマップ.")
+(defvar sumibi-select-mode-map (make-sparse-keymap)         "候補選択モードマップ.")
 (defvar sumibi-rK-trans-key "\C-j"
-  "*漢字変換キーを設定する")
+  "*漢字変換キーを設定する.")
 (or (assq 'sumibi-mode minor-mode-map-alist)
     (setq minor-mode-map-alist
 	  (append (list (cons 'sumibi-mode         sumibi-mode-map)
@@ -228,6 +228,7 @@
 ;;--- デバッグメッセージ出力
 (defvar sumibi-debug nil)		; デバッグフラグ
 (defun sumibi-debug-print (string)
+  "引数STRINGで指定されたデバッグメッセージを*sumibi-debug* に出力する."
   (if sumibi-debug
       (let
 	  ((buffer (get-buffer-create "*sumibi-debug*")))
@@ -282,6 +283,10 @@
 ;; ユーティリティ
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun sumibi-assoc-ref (key alist fallback)
+  "指定したassocから内容を取り出すユーティリティ."
+  "Argument KEY: key of alist.
+Argument ALIST: alist.
+Argument FALLBACK: fallback function."
   (let ((entry (assoc key alist)))
     (if entry
 	(cdr entry)
@@ -299,6 +304,7 @@
 ;; 初期化
 ;;
 (defun sumibi-init ()
+  "Sumibi環境の初期化を行う."
   (if sumibi-init
       t
     (cond
@@ -311,6 +317,7 @@
       (message "%s" "Emacs version 28.1 or higher is required.")))))
 
 (defun sumibi-escape-for-json (str)
+  "引数STRで指定した、JSON文字列に含まれるバックスペースとダブルクォーテーションと改行を削除する."
   (let* ((str1 (string-replace "\\" "" str))
 	 (str2 (string-replace "\"" "\\\"" str1))
 	 (str3 (string-replace "\n" "\\n" str2))
@@ -325,7 +332,13 @@
 			 sync-func
 			 deferred-func
 			 deferred-func2)
-  "call OpenAI completions API."
+  "Call OpenAI completions API.
+Argument MESSAGE-LST : OpenAI API に渡す role と content のリスト.
+Argument ARG-N : OpenAI API の引数nの値.
+Argument SYNC-FUNC : OpenAI API を同期呼び出しで呼び出す場合は
+  コールバック関数を指定する。非同期呼び出しの場合は、nilを指定する.
+Argument DEFERRED-FUNC: 非同期呼び出し時のコールバック関数(1).
+Argument DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
   (progn
     (setq url "https://api.openai.com/v1/chat/completions")
     (setq url-request-method "POST")
@@ -358,7 +371,7 @@
 		(sumibi-debug-print "\n")
 		(if buf
                     (with-current-buffer buf
-                      (decode-coding-string 
+                      (decode-coding-string
                        (let ((str (buffer-substring-no-properties (point-min) (point-max))))
 			 (cond
                           (url-http-response-status
@@ -384,7 +397,7 @@
 	    (sumibi-debug-print "\n")
 	    (if buf
 		(with-current-buffer buf
-		  (decode-coding-string 
+		  (decode-coding-string
 		   (let ((str (buffer-substring-no-properties (point-min) (point-max))))
 		     (cond
 		      (url-http-response-status
@@ -409,8 +422,8 @@
      '())))
 
 
-;; 「以下の通りです。」のような案内文を作成する
 (defun sumibi-drop-guide-sentence (utf8-str)
+  "引数UTF8-STRで指定した文字列中のgpt-3.5-turboが出力する不要な定型文を削除する."
   (let ((lines (split-string utf8-str "\n")))
     (if
 	(or (string-match "以下の通りです。[ ]*" (car lines))
@@ -419,8 +432,10 @@
 	(string-trim-left (string-join (cdr lines) "\n"))
       utf8-str)))
 
-  ;; JSONから変換結果の文字列を取り出す
 (defun sumibi-analyze-openai-json-obj (json-obj arg-n)
+  "JSONから変換結果の文字列を取り出す.
+引数JSON-OBJ: パース済みのJSONオブジェクト
+引数ARG-N: 候補を何件返すか"
   (let ((result '())
 	(count 0))
     (cond
@@ -438,41 +453,40 @@
 	(setq count (1+ count)))
       result))))
 
-;;
-;; ローマ字で書かれた文章をOpenAIサーバーを使って変換し、結果を文字列で返す。
-;; roman: "bunsyou no mojiretu"
-;; arg-n: 候補を何件返すか
-;; return: ("1番目の文章の文字列" "2番目の文章の文字列" "3番目の文章の文字列" ...)
-;;
 (defun sumibi-roman-to-kanji (roman arg-n deferred-func2)
+  "ローマ字で書かれた文章をOpenAIサーバーを使って変換し、結果を文字列で返す.
+ROMAN: \"bunsyou no mojiretu
+ARG-N: 候補を何件返すか
+DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
+戻り値: (\"1番目の文章の文字列\" \"2番目の文章の文字列\" \"3番目の文章の文字列\" ...)"
   (let ((saved-marker (point-marker)))
     (sumibi-openai-http-post
      (list
       (cons "system"
-	    (concat 
+	    (concat
 	     "あなたはローマ字とひらがなを日本語に変換するアシスタントです。"
 	     "ローマ字の 「nn」 は 「ん」と読んでください。"
 	     "[](URL)のようなmarkdown構文は維持してください。"
 	     "# や ## や ### や #### のようなmarkdown構文は維持してください。"))
-      (cons "user" 
+      (cons "user"
 	    "ローマ字の文を漢字仮名混じり文にしてください。 : watashi no namae ha nakano desu .")
       (cons "assistant"
 	    "私の名前は中野です。")
-      (cons "user" 
+      (cons "user"
 	    "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : ikano toori desu .")
       (cons "assistant"
 	    "以下の通りです。")
-      (cons "user" 
+      (cons "user"
 	    "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : hannishitei shimasu")
       (cons "assistant"
 	    "範囲指定します")
-      (cons "user" 
+      (cons "user"
 	    "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : We succeeded in taking a photo like this:\n![example](https://www.example.com/dir1/dir2/example.png)")
-      (cons "assistant"		     
+      (cons "assistant"
 	    "このような写真を撮ることに成功しました：\n![例](https://www.example.com/dir1/dir2/example.png)")
-      (cons "user" 
+      (cons "user"
 	    "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : ## this is markdown section")
-      (cons "assistant"		     
+      (cons "assistant"
 	    "## これはMarkdownのセクションです。")
       (cons "user"
 	    (format "ローマ字の文を漢字仮名混じり文にしてください。 : %s" roman)))
@@ -490,13 +504,12 @@
 	     (goto-char (marker-position saved-marker))))))
      deferred-func2)))
 
-;;
-;; ローマ字で書かれた文章をOpenAIサーバーを使って読み仮名を返す。
-;; roman: "shita" や "nano"
-;; arg-n: 候補を何件返すか
-;; return: ("した" "シタ") や ("なの" "ナノ")
-;;
 (defun sumibi-roman-to-yomigana (roman deferred-func2)
+  "ローマ字で書かれた文章をOpenAIサーバーを使って読み仮名を返す.
+ROMAN: \"shita\" や \"nano\"
+ARG-N: 候補を何件返すか
+DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
+戻り値: (\"した\" \"シタ\") や (\"なの\" \"ナノ\")"
   (let ((saved-marker (point-marker)))
     (sumibi-openai-http-post
      (list
@@ -530,13 +543,11 @@
 	       (goto-char (marker-position saved-marker))))))
      deferred-func2)))
 
-;;
-;; 漢字仮名混じりで書かれた文章をOpenAIサーバーを使って読み仮名を返す。
-;; roman: "日本語"
-;; arg-n: 候補を何件返すか
-;; return: ("にほんご" "ニホンゴ")
-;;
 (defun sumibi-kanji-to-yomigana (kanji deferred-func2)
+  "漢字仮名混じりで書かれた文章をOpenAIサーバーを使って読み仮名を返す.
+KANJI: \"日本語\" のような文字列
+DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
+戻り値: (\"にほんご\" \"ニホンゴ\")"
   (let ((saved-marker (point-marker)))
     (sumibi-openai-http-post
      (list
@@ -566,23 +577,22 @@
 	       (goto-char (marker-position saved-marker))))))
      deferred-func2)))
 
-;;
-;; 日本語の文章を、OpenAIサーバーを使って英語に翻訳する。
-;; roman: "私の名前は中野です。"
-;; arg-n: 候補を何件返すか
-;; return: ("My name is Nakano." "My name is Nakano." "My name is Nakano.")
-;;
 (defun sumibi-kanji-to-english (kanji arg-n deferred-func2)
+  "日本語の文章を、OpenAIサーバーを使って英語に翻訳する.
+KANJI: \"私の名前は中野です。\" のような文字列
+ARG-N: 候補を何件返すか
+DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
+戻り値: (\"My name is Nakano.\" \"My name is Nakano.\" \"My name is Nakano.\")"
   (let ((saved-marker (point-marker)))
     (sumibi-openai-http-post
      (list
       (cons "system"
 	    "あなたは、与えられた文章を英語に翻訳するアシスタントです。")
-      (cons "user" 
+      (cons "user"
 	    "文章を英語に翻訳してください。 : 私の名前は中野です。")
       (cons "assistant"
 	    "My name is Nakano.")
-      (cons "user" 
+      (cons "user"
 	    "文章を英語に翻訳してください。 : GPTはOpenAIから2018年に以下の論文で提案されたモデルで、基本的にはTransformerをベースに、事前学習-ファインチューニングをすることで非常に高い精度を達成したモデルです。")
       (cons "assistant"
 	    "GPT is a model proposed by OpenAI in 2018 in the following paper, which is basically based on Transformer and achieves very high accuracy by pre-training - fine tuning.")
@@ -602,23 +612,22 @@
 	       (goto-char (marker-position saved-marker))))))
      deferred-func2)))
 
-;;
-;; OpenAI APIの引数「n」に指定する数を決める。
-;;
 (defun sumibi-determine-number-of-n (request-str)
+  "引数REQUEST-STRからOpenAI APIの引数「n」に指定する数を決める."
   (if (<= sumibi-threshold-letters-of-long-sentence (length request-str))
       1
     3))
 
-;;
-;; OpenAI APIを非同期で呼び出すかを決める。
-;;
 (defun sumibi-determine-sync-p (request-str)
+  "引数REQUEST-STRからOpenAI APIを非同期で呼び出すかを決める."
   (> sumibi-threshold-letters-of-long-sentence (length request-str)))
 
 
-;; 日本語=>英語翻訳
 (defun sumibi-inverse-henkan (roman arg-n deferred-func2)
+  "日本語=>英語翻訳を実行する.
+ROMAN: \"私の名前は中野です。\" のような文字列
+ARG-N: 候補を何件返すか
+DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
   (let ((lst (sumibi-kanji-to-english roman arg-n deferred-func2)))
     (append
      (-map
@@ -629,11 +638,14 @@
       (-zip-pair
        lst
        '(0 1 2 3 4)))
-     (list 
+     (list
       (list roman "原文まま" 0 'l (length lst))))))
 
-;; 日本語を再変換
+
 (defun sumibi-nihongo-saihenkan (roman deferred-func2)
+  "日本語を再変換する.
+ROMAN: \"日本語\" のような変換済の文字列
+DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
   (let* ((lst (sumibi-kanji-to-yomigana roman deferred-func2))
 	 (kouho-lst
 	  (-map
@@ -648,8 +660,11 @@
      kouho-lst
      (list (list roman "原文まま" 0 'l (length kouho-lst))))))
 
-;; アルファベット(ローマ字or英語の文章)からカナ漢字混じり文への変換
 (defun sumibi-alphabet-henkan (roman arg-n deferred-func2)
+  "アルファベット(ローマ字or英語の文章)からカナ漢字混じり文へ変換する.
+ROMAN: \"watashi no namae ha nakano desu\" のような文字列
+ARG-N: 候補を何件返すか
+DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
   (let ((lst (sumibi-roman-to-kanji roman arg-n deferred-func2)))
     (when (>= 10 (length roman))
       (setq lst
@@ -662,16 +677,17 @@
 	(list (car x)
 	      (format "候補%d" (+ 1 (cdr x)))
 	      0 'l (cdr x)))
-      (-zip
+      (-zip-pair
        lst
        '(0 1 2 3 4)))
-     (list 
+     (list
       (list roman "原文まま" 0 'l (length lst))))))
 
-;;
-;; ローマ字で書かれた文章を複数候補作成して返す
-;;
 (defun sumibi-henkan-request (roman inverse-flag deferred-func2)
+  "ローマ字で書かれた文章を複数候補作成して返す.
+ROMAN: \"watashi no namae ha nakano desu\" のような文字列
+INVERSE-FLAG: 英語から日本語への逆変換の場合だけ t を指定する
+DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
   (let ((fixed-kouho
 	 (-filter
 	  (lambda (x)
@@ -693,16 +709,19 @@
 
 
 (defun sumibi-file-existp (file)
-  "FILE が存在するかどうかをチェックする。 t か nil で結果を返す"
+  "FILE が存在するかどうかをチェックする。 t か nil で結果を返す."
   (let* ((file (or (car-safe file)
 		   file))
 	 (file (expand-file-name file)))
     (file-exists-p file)))
 
 
-;; リージョンをローマ字漢字変換する関数(同期関数バージョン)
+
 (defun sumibi-henkan-region-sync (b e inverse-flag)
-  "指定された region を漢字変換する"
+  "リージョンをローマ字漢字変換する(同期関数バージョン).
+Argument B: リージョンの開始位置
+Argument E: リージョンの終了位置
+Argument INVERSE-FLAG：逆変換かどうか"
   (when (/= b e)
     (let* (
 	   (yomi (buffer-substring-no-properties b e))
@@ -741,9 +760,11 @@
 	nil))))
 
 
-;; リージョンをローマ字漢字変換する関数(非同期関数バージョン)
 (defun sumibi-henkan-region-async (b e inverse-flag)
-  "指定された region を漢字変換する"
+  "リージョンをローマ字漢字変換する(非同期関数バージョン).
+Argument B: リージョンの開始位置
+Argument E: リージョンの終了位置
+Argument INVERSE-FLAG：逆変換かどうか"
   (when (/= b e)
     (let ((yomi (buffer-substring-no-properties b e))
 	  (saved-b-marker 0)
@@ -763,13 +784,16 @@
 	 inverse-flag
 	 (lambda ()
 	   (with-current-buffer cur-buf
-	     (save-excursion 
+	     (save-excursion
 	       (delete-overlay yomi-overlay)
 	       (delete-region (marker-position saved-b-marker)
 			      (marker-position saved-e-marker))))))))))
   
 (defun sumibi-henkan-region (b e inverse-flag)
-  "指定された region を漢字変換する"
+  "指定された region を漢字変換する.  同期か非同期かはBからEまでの文字数で決定する.
+Argument B: リージョンの開始位置
+Argument E: リージョンの終了位置
+Argument INVERSE-FLAG：逆変換かどうか"
   (sumibi-init)
   (when sumibi-init
     (when (/= b e)
@@ -778,10 +802,11 @@
 	(sumibi-henkan-region-async b e inverse-flag)))))
 				 
 	  
-;; カーソル前の文字種を返却する関数
+
 (defun sumibi-char-charset (ch)
+  "引数CHで指定した、カーソル前の文字種を返却する."
   (let ((result (char-charset ch)))
-    (if (multibyte-string-p (char-to-string ch)) 
+    (if (multibyte-string-p (char-to-string ch))
 	'japanese-jisx0208
       result)))
 
@@ -796,15 +821,16 @@
 
 (defvar sumibi-blink-cursor nil)
 (defvar sumibi-cursor-type nil)
-;; undo buffer を退避し、undo 情報の蓄積を停止する関数
+
 (defun sumibi-disable-undo ()
+  "Undo bufferを退避し、undo 情報の蓄積を停止する."
   (when (not (eq buffer-undo-list t))
     (setq sumibi-buffer-undo-list buffer-undo-list)
     (setq sumibi-buffer-modified-p (buffer-modified-p))
     (setq buffer-undo-list t)))
 
-;; 退避した undo buffer を復帰し、undo 情報の蓄積を再開する関数
 (defun sumibi-enable-undo ()
+  "退避した undo buffer を復帰し、undo 情報の蓄積を再開する."
   (when (not sumibi-buffer-modified-p) (set-buffer-modified-p nil))
   (when sumibi-buffer-undo-list
     (setq buffer-undo-list sumibi-buffer-undo-list)))
@@ -814,7 +840,7 @@
 ;; 現在の変換エリアの表示を行う
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun sumibi-get-display-string ()
-  ;; 変換結果文字列を返す。
+  "変換結果文字列を返す."
   (let* ((kouho      (nth sumibi-cand-cur sumibi-henkan-kouho-list))
 	 (_          (sumibi-debug-print (format "sumibi-cand-cur=%s\n" sumibi-cand-cur)))
 	 (_          (sumibi-debug-print (format "kouho=%s\n" kouho)))
@@ -824,6 +850,10 @@
     word))
 
 (defun sumibi-display-function (b e select-mode)
+  "変換結果文字列をバッファに埋め込む形で表示する.
+Argument B: リージョンの開始位置
+Argument E: リージョンの終了位置
+Argument SELECT-MODE：選択状態"
   (let ((insert-word (sumibi-get-display-string))
 	(word (buffer-substring-no-properties b e)))
     (cond
@@ -939,20 +969,21 @@
     map))
 
 
-;; 選択操作回数のインクリメント
+
 (defun sumibi-select-operation-inc ()
+  "選択操作回数のインクリメント."
   (cl-incf sumibi-select-operation-times)
   (when (< 3 sumibi-select-operation-times)
     (sumibi-select-operation-reset)
-    (let* ((lst 
+    (let* ((lst
 	    (mapcar
 	     (lambda (x)
-	       (concat 
+	       (concat
 		(nth sumibi-tango-index x)
 		"   ; "
 		(nth sumibi-annotation-index x)))
 	     sumibi-henkan-kouho-list))
-	   (result 
+	   (result
 	    (popup-menu* lst
 			 :scroll-bar t
 			 :margin t
@@ -962,28 +993,27 @@
 	(setq sumibi-cand-cur (sumibi-find-by-tango selected-word))))))
 
 
-;; 選択操作回数のリセット
+
 (defun sumibi-select-operation-reset ()
+  "選択操作回数のリセット."
   (setq sumibi-select-operation-times 0))
 
-;; 変換を確定し入力されたキーを再入力する関数
 (defun sumibi-kakutei-and-self-insert (arg)
-  "候補選択を確定し、入力された文字を入力する"
+  "候補選択を確定し、入力された文字を入力する.
+ARG: (未使用)"
   (interactive "P")
   (sumibi-select-kakutei)
   (setq unread-command-events (list last-command-event)))
 
-;; 候補選択状態での表示更新
 (defun sumibi-select-update-display ()
+  "候補選択状態での表示更新."
   (sumibi-display-function
    (marker-position sumibi-fence-start)
    (marker-position sumibi-fence-end)
    sumibi-select-mode))
 
-
-;; 候補選択を確定する
 (defun sumibi-select-kakutei ()
-  "候補選択を確定する"
+  "候補選択を確定する."
   (interactive)
   ;; 候補番号リストをバックアップする。
   (setq sumibi-cand-cur-backup sumibi-cand-cur)
@@ -994,9 +1024,8 @@
   (sumibi-history-push))
 
 
-;; 候補選択をキャンセルする
 (defun sumibi-select-cancel ()
-  "候補選択をキャンセルする"
+  "候補選択をキャンセルする."
   (interactive)
   ;; カレント候補番号をバックアップしていた候補番号で復元する。
   (setq sumibi-cand-cur sumibi-cand-cur-backup)
@@ -1005,10 +1034,8 @@
   (sumibi-select-update-display)
   (sumibi-history-push))
 
-
-;; 前の候補に進める
 (defun sumibi-select-prev ()
-  "前の候補に進める"
+  "前の候補に進める."
   (interactive)
   ;; 前の候補に切りかえる
   (cl-decf sumibi-cand-cur)
@@ -1017,9 +1044,8 @@
   (sumibi-select-operation-inc)
   (sumibi-select-update-display))
 
-;; 次の候補に進める
 (defun sumibi-select-next ()
-  "次の候補に進める"
+  "次の候補に進める."
   (interactive)
   ;; 次の候補に切りかえる
   (setq sumibi-cand-cur
@@ -1029,8 +1055,8 @@
   (sumibi-select-operation-inc)
   (sumibi-select-update-display))
 
-;; 指定された tango のindex番号を返す
 (defun sumibi-find-by-tango ( tango )
+  "指定された TANGO のindex番号を返す."
   (let ((result-index nil))
     (mapc
      (lambda (x)
@@ -1041,8 +1067,8 @@
     (sumibi-debug-print (format "sumibi-find-by-tango: tango=%s result=%S \n" tango result-index))
     result-index))
 
-;; 指定された type の候補を抜き出す
 (defun sumibi-select-by-type-filter ( _type )
+  "指定された _TYPE の候補を抜き出す."
   (let ((lst '()))
     (mapc
      (lambda (x)
@@ -1056,13 +1082,13 @@
       (reverse lst))))
   
     
-;; 指定された type の候補が存在するか調べる
 (defun sumibi-include-typep ( _type )
+  "指定された _TYPE の候補が存在するか調べる."
   (sumibi-select-by-type-filter _type))
 
-;; 指定された type の候補に強制的に切りかえる
-;; 切りかえが成功したかどうかを t or nil で返す。
 (defun sumibi-select-by-type ( _type )
+  "指定された _TYPE の候補に強制的に切りかえる.
+切りかえが成功したかどうかを t or nil で返す"
   (let ((kouho (car (sumibi-select-by-type-filter _type))))
     (if (not kouho)
 	(progn
@@ -1086,41 +1112,29 @@
 	t))))
 
 (defun sumibi-select-kanji ()
-  "漢字候補に強制的に切りかえる"
+  "漢字候補に強制的に切りかえる."
   (interactive)
   (sumibi-select-by-type 'j))
 
 (defun sumibi-select-hiragana ()
-  "ひらがな候補に強制的に切りかえる"
+  "ひらがな候補に強制的に切りかえる."
   (interactive)
   (sumibi-select-by-type 'h))
 
 (defun sumibi-select-katakana ()
-  "カタカナ候補に強制的に切りかえる"
+  "カタカナ候補に強制的に切りかえる."
   (interactive)
   (sumibi-select-by-type 'k))
 
 (defun sumibi-select-hankaku ()
-  "半角候補に強制的に切りかえる"
+  "半角候補に強制的に切りかえる."
   (interactive)
   (sumibi-select-by-type 'l))
 
 (defun sumibi-select-zenkaku ()
-  "半角候補に強制的に切りかえる"
+  "半角候補に強制的に切りかえる."
   (interactive)
   (sumibi-select-by-type 'z))
-
-
-(defun sumibi-replace-kakutei-word (b e insert-word)
-  ;; UNDO抑制開始
-  (sumibi-disable-undo)
-    
-  (delete-region b e)
-  
-  (insert insert-word)
-  (message (format "replaced by new word [%s]" insert-word))
-  ;; UNDO再開
-  (sumibi-enable-undo))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1128,7 +1142,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun sumibi-history-gc ()
-  ;; sumibi-history-stack中の無効なマークを持つエントリを削除する
+  "変数sumibi-history-stack中の無効なマークを持つエントリを削除する."
   (sumibi-debug-print (format "sumibi-history-gc before len=%d\n" (length sumibi-history-stack)))
 
   (let ((temp-list '()))
@@ -1163,10 +1177,10 @@
   (sumibi-debug-print (format "sumibi-history-gc after  len=%d\n" (length sumibi-history-stack))))
 
 
-;;確定ヒストリから、指定_pointに変換済の単語が埋まっているかどうか調べる
-;; t か nil を返す。
-;; また、_load に 真を渡すと、見付かった情報で、現在の変換候補変数にロードしてくれる。
 (defun sumibi-history-search (_point _load)
+  "確定ヒストリから、指定_POINTに変換済の単語が埋まっているかどうか調べる.
+戻り値: t か nil を返す
+補足: _LOAD に 真を渡すと、見付かった情報で、現在の変換候補変数にロードしてくれる"
   (sumibi-history-gc)
 
   ;; カーソル位置に有効な変換済エントリがあるか探す
@@ -1212,7 +1226,8 @@
     found))
 
 (defun sumibi-history-push ()
-  (push 
+  "確定ヒストリにエントリーを追加する."
+  (push
    `(
      (markers            . ,sumibi-markers            )
      (cand-cur           . ,sumibi-cand-cur           )
@@ -1229,8 +1244,8 @@
 ;; ローマ字漢字変換関数
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun sumibi-rK-trans ()
-  "ローマ字漢字変換をする。
-・カーソルから行頭方向にローマ字列が続く範囲でローマ字漢字変換を行う。"
+  "ローマ字漢字変換をする.
+カーソルから行頭方向にローマ字列が続く範囲でローマ字漢字変換を行う."
   (interactive)
   (sumibi-debug-print "sumibi-rK-trans()")
 
@@ -1293,7 +1308,7 @@
 ;; 英語への翻訳関数
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun sumibi-english-trans ()
-  "英語への翻訳を行う。"
+  "英語への翻訳を行う."
   (interactive)
   (sumibi-debug-print "sumibi-english-trans()")
 
@@ -1304,8 +1319,8 @@
       (sumibi-henkan-region b e t))))
 
 
-;; 漢字を含む文字列であるかどうかの判断関数
 (defun sumibi-string-include-kanji (str)
+  "STRが漢字を含む文字列であるかどうかの判定関数."
   (let ((kanji-lst
 	 (-filter
 	  (lambda (x)
@@ -1315,18 +1330,20 @@
 	  (split-string str ""))))
     (< 0 (length kanji-lst))))
 
-;; 全角で漢字以外の判定関数
 (defun sumibi-nkanji (ch)
+  "文字CHが全角で漢字以外かを判定する."
   (and (eq (sumibi-char-charset ch) 'japanese-jisx0208)
        (not (string-match "[亜-黑]" (char-to-string ch)))))
 
-;; 全角で漢字の判定関数
+
 (defun sumibi-kanji (ch)
+  "文字CHが全角で漢字かを判定する."
   (and (eq (sumibi-char-charset ch) 'japanese-jisx0208)
        (string-match "[亜-黑]" (char-to-string ch))))
 
-;; ローマ字漢字変換時、変換対象とするローマ字を読み飛ばす関数
+
 (defun sumibi-skip-chars-backward ()
+  "ローマ字漢字変換時、変換対象とするローマ字を読み飛ばす."
   (let* (
 	 (skip-chars
 	  (if auto-fill-function
@@ -1364,7 +1381,7 @@
 
 	  ;; パラグラフ位置でストップする
 	  (if (< (+ (point) result) limit-point)
-	      (- 
+	      (-
 	       limit-point
 	       (point))
 	    result))
@@ -1376,7 +1393,7 @@
 	  (let (
 		(start-point (point)))
 	    (setq limit-point
-		  (+ 
+		  (+
 		   start-point
 		   (skip-chars-forward sumibi-stop-chars (point-at-eol))))))
 
@@ -1385,35 +1402,18 @@
 
 	(if (< (+ (point) result) limit-point)
 	    ;; インデント位置でストップする。
-	    (- 
+	    (-
 	     limit-point
 	     (point))
 	  result)))))
 
 
 (defun sumibi-insert-space (times)
+  "TIMESで指定した回数スペース文字を挿入する."
   (if (null times)
       (insert " ")
     (dotimes(i times)
       (insert " "))))
-
-(defun sumibi-spacekey-init-function ()
-  (define-key global-map (kbd "SPC")
-    '(lambda (&optional arg)(interactive "P")
-       (cond ((and (< 0 sumibi-timer-rest) 
-		   sumibi-kakutei-with-spacekey)
-	      (cond
-	       ((string= " " (char-to-string (preceding-char)))
-		(sumibi-insert-space arg))
-	       ((eq       10                 (preceding-char))   ;; 直前に改行があった
-		(sumibi-insert-space arg))
-	       ((string= "/" (char-to-string (preceding-char)))
-		(delete-region (- (point) 1) (point))
-		(sumibi-insert-space arg))
-	       (t
-		(sumibi-rK-trans))))
-	     (t
-	      (sumibi-insert-space arg))))))
 
 ;;;
 ;;; human interface
@@ -1422,7 +1422,7 @@
 (define-key sumibi-mode-map "\M-j" 'sumibi-english-trans)
 (or (assq 'sumibi-mode minor-mode-map-alist)
     (setq minor-mode-map-alist
-	  (append (list 
+	  (append (list
 		   (cons 'sumibi-mode         sumibi-mode-map))
 		  minor-mode-map-alist)))
 
@@ -1435,35 +1435,40 @@
 
 ;; buffer 毎に sumibi-mode を変更する
 (defun sumibi-mode (&optional arg)
-  "Sumibi mode は ローマ字から直接漢字変換するための minor mode です。
-引数に正数を指定した場合は、Sumibi mode を有効にします。
+  "Sumibi mode は ローマ字から直接漢字変換するための minor mode です.
+引数に正数を指定した場合は、Sumibi mode を有効にします
 
 Sumibi モードが有効になっている場合 \\<sumibi-mode-map>\\[sumibi-rK-trans] で
-point から行頭方向に同種の文字列が続く間を漢字変換します。
+point から行頭方向に同種の文字列が続く間を漢字変換します
 
-同種の文字列とは以下のものを指します。
+同種の文字列とは以下のものを指します
 ・半角カタカナとsumibi-stop-chars に指定した文字を除く半角文字
-・漢字を除く全角文字"
+・漢字を除く全角文字
+引数 ARG は未使用"
   (interactive "P")
   (sumibi-mode-internal arg nil))
 
 ;; 全バッファで sumibi-mode を変更する
 (defun global-sumibi-mode (&optional arg)
-  "Sumibi mode は ローマ字から直接漢字変換するための minor mode です。
-引数に正数を指定した場合は、Sumibi mode を有効にします。
+  "Sumibi mode は ローマ字から直接漢字変換するための minor mode です.
+引数に正数を指定した場合は、Sumibi mode を有効にします
 
 Sumibi モードが有効になっている場合 \\<sumibi-mode-map>\\[sumibi-rK-trans] で
-point から行頭方向に同種の文字列が続く間を漢字変換します。
+point から行頭方向に同種の文字列が続く間を漢字変換します
 
 同種の文字列とは以下のものを指します。
 ・半角カタカナとsumibi-stop-chars に指定した文字を除く半角文字
-・漢字を除く全角文字"
+・漢字を除く全角文字
+引数 ARG は未使用"
   (interactive "P")
   (sumibi-mode-internal arg t))
 
 
-;; sumibi-mode を変更する共通関数
+
 (defun sumibi-mode-internal (arg global)
+  "Sumibi modeを変更する共通関数.
+引数ARG: 未使用
+引数GLOBAL: Sumibi modeをどのバッファでも有効にするグローバルモードにする"
   (sumibi-debug-print "sumibi-mode-internal :1\n")
 
   (or (local-variable-p 'sumibi-mode (current-buffer))
@@ -1475,14 +1480,14 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
 	(sumibi-kill-sumibi-mode))
     (setq sumibi-mode (if (null arg) (not sumibi-mode)
 			(> (prefix-numeric-value arg) 0))))
-  (add-hook 'sumibi-mode-hook 'sumibi-spacekey-init-function)
   (when sumibi-mode (run-hooks 'sumibi-mode-hook))
 
   (sumibi-debug-print "sumibi-mode-internal :2\n"))
 
 
-;; buffer local な sumibi-mode を削除する関数
+
 (defun sumibi-kill-sumibi-mode ()
+  "バッファローカルな `sumibi-mode` を削除する."
   (let ((buf (buffer-list)))
     (while buf
       (set-buffer (car buf))
@@ -1492,7 +1497,8 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
 
 ;; 全バッファで sumibi-input-mode を変更する
 (defun sumibi-input-mode (&optional arg)
-  "入力モード変更"
+  "入力モード変更.
+引数ARG: 未使用"
   (interactive "P")
   (if (< 0 arg)
       (progn
@@ -1504,8 +1510,12 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
 
 ;; input method 対応
 (defun sumibi-activate (&rest arg)
+  "入力モードを有効にする.
+引数ARG: 未使用"
   (sumibi-input-mode 1))
 (defun sumibi-inactivate (&rest arg)
+  "入力モードを無効にする.
+引数ARG: 未使用"
   (sumibi-input-mode -1))
 (register-input-method
  "japanese-sumibi" "Japanese" 'sumibi-activate
@@ -1520,7 +1530,8 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
   "1.6.1" ;;SUMIBI-VERSION
   )
 (defun sumibi-version (&optional arg)
-  "入力モード変更"
+  "Sumibiのバージョン番号をミニバッファに表示する.
+引数ARG: 未使用"
   (interactive "P")
   (message sumibi-version))
 
