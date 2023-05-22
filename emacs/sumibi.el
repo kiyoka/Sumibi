@@ -37,7 +37,7 @@
 ;;; Code:
 (require 'cl-lib)
 (require 'popup)
-(require 'url-parse)
+(require 'url)
 (require 'unicode-escape)
 (require 'deferred)
 
@@ -370,18 +370,11 @@ Argument DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 	      	(sumibi-debug-print (buffer-name buf))
 		(sumibi-debug-print "\n")
 		(if buf
-                    (with-current-buffer buf
-                      (decode-coding-string
-                       (let ((str (buffer-substring-no-properties (point-min) (point-max))))
-			 (cond
-                          (url-http-response-status
-                           (sumibi-debug-print (format "http result code:%s\n" url-http-response-status))
-                           (sumibi-debug-print (format "(%d-%d) eoh=%s\n" (point-min) (point-max) url-http-end-of-headers))
-                           (sumibi-debug-print (format "<<<%s>>>\n" str))
-                           str)
-                          (t
-                           (sumibi-debug-print (format "<<<%s>>>\n" sumibi-timeout-error-json))
-			   "{\"err\": \"!!HTTP ERROR!!\"}\n")))
+		    (with-current-buffer buf
+		      (decode-coding-string
+		       (let ((str (buffer-substring-no-properties (point-min) (point-max))))
+			 (sumibi-debug-print (format "<<<%s>>>\n" str))
+			 str)
 		       'utf-8))
 		  "{\"err\": \"!!TIMEOUT ERROR!!\"}\n")))
 	     (line-list
@@ -399,15 +392,7 @@ Argument DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 		(with-current-buffer buf
 		  (decode-coding-string
 		   (let ((str (buffer-substring-no-properties (point-min) (point-max))))
-		     (cond
-		      (url-http-response-status
-		       (sumibi-debug-print (format "http result code:%s\n" url-http-response-status))
-		       (sumibi-debug-print (format "(%d-%d) eoh=%s\n" (point-min) (point-max) url-http-end-of-headers))
-		       (sumibi-debug-print (format "<<<%s>>>\n" str))
-		       str)
-		      (t
-		       (sumibi-debug-print (format "<<<%s>>>\n" sumibi-timeout-error-json))
-		       "{\"err\": \"!!HTTP ERROR!!\"}\n")))
+                     (sumibi-debug-print (format "<<<%s>>>\n" str)))
 		   'utf-8))
 	      "{\"err\": \"!!TIMEOUT ERROR!!\"}\n")))
 	(deferred:nextc it
@@ -892,12 +877,10 @@ Argument SELECT-MODE：選択状態"
 	(when select-mode (insert "|"))
     
 	(let* (
-	       (start       (point-marker))
-	       (_cur        sumibi-cand-cur)
-	       (_len        sumibi-cand-len))
+	       (start       (point-marker)))
 	  (progn
 	    (insert insert-word)
-	    (message (format "[%s] candidate (%d/%d)" insert-word (+ _cur 1) _len))
+	    (message (format "[%s] candidate (%d/%d)" insert-word (+ sumibi-cand-cur 1) sumibi-cand-len))
 	    (let* ((end         (point-marker))
 		   (ov          (make-overlay start end)))
 	      
@@ -998,9 +981,9 @@ Argument SELECT-MODE：選択状態"
   "選択操作回数のリセット."
   (setq sumibi-select-operation-times 0))
 
-(defun sumibi-kakutei-and-self-insert (arg)
+(defun sumibi-kakutei-and-self-insert (_arg)
   "候補選択を確定し、入力された文字を入力する.
-ARG: (未使用)"
+_ARG: (未使用)"
   (interactive "P")
   (sumibi-select-kakutei)
   (setq unread-command-events (list last-command-event)))
@@ -1060,20 +1043,19 @@ ARG: (未使用)"
   (let ((result-index nil))
     (mapc
      (lambda (x)
-       (let ((_tango (nth sumibi-tango-index x)))
-	 (when (string-equal _tango tango)
-	   (setq result-index (nth sumibi-id-index x)))))
+       (when (string-equal (nth sumibi-tango-index x) tango)
+	 (setq result-index (nth sumibi-id-index x))))
      sumibi-henkan-kouho-list)
     (sumibi-debug-print (format "sumibi-find-by-tango: tango=%s result=%S \n" tango result-index))
     result-index))
 
-(defun sumibi-select-by-type-filter ( _type )
-  "指定された _TYPE の候補を抜き出す."
+(defun sumibi-select-by-type-filter (type)
+  "指定された TYPE の候補を抜き出す."
   (let ((lst '()))
     (mapc
      (lambda (x)
        (let ((sym (nth sumibi-kind-index x)))
-	 (when (eq sym _type)
+	 (when (eq sym type)
 	   (push x lst))))
      sumibi-henkan-kouho-list)
     (sumibi-debug-print (format "filtered-lst = %S\n" (reverse lst)))
@@ -1082,28 +1064,28 @@ ARG: (未使用)"
       (reverse lst))))
   
     
-(defun sumibi-include-typep ( _type )
-  "指定された _TYPE の候補が存在するか調べる."
-  (sumibi-select-by-type-filter _type))
+(defun sumibi-include-typep (type)
+  "指定された TYPE の候補が存在するか調べる."
+  (sumibi-select-by-type-filter type))
 
-(defun sumibi-select-by-type ( _type )
-  "指定された _TYPE の候補に強制的に切りかえる.
+(defun sumibi-select-by-type (type)
+  "指定された TYPE の候補に強制的に切りかえる.
 切りかえが成功したかどうかを t or nil で返す"
-  (let ((kouho (car (sumibi-select-by-type-filter _type))))
+  (let ((kouho (car (sumibi-select-by-type-filter type))))
     (if (not kouho)
 	(progn
 	 (cond
-	  ((eq _type 'j)
+	  ((eq type 'j)
 	   (message "Sumibi: 漢字の候補はありません。"))
-	  ((eq _type 'h)
+	  ((eq type 'h)
 	   (message "Sumibi: ひらがなの候補はありません。"))
-	  ((eq _type 'k)
+	  ((eq type 'k)
 	   (message "Sumibi: カタカナの候補はありません。"))
-	  ((eq _type 'l)
+	  ((eq type 'l)
 	   (message "Sumibi: 半角の候補はありません。"))
-	  ((eq _type 'z)
+	  ((eq type 'z)
 	   (message "Sumibi: 全角の候補はありません。"))
-	  ((eq _type 'n)
+	  ((eq type 'n)
 	   (message "Sumibi: 数字混在の候補はありません．")))
 	 nil)
       (let ((num   (nth sumibi-id-index kouho)))
@@ -1177,10 +1159,10 @@ ARG: (未使用)"
   (sumibi-debug-print (format "sumibi-history-gc after  len=%d\n" (length sumibi-history-stack))))
 
 
-(defun sumibi-history-search (_point _load)
+(defun sumibi-history-search (_point load-flag)
   "確定ヒストリから、指定_POINTに変換済の単語が埋まっているかどうか調べる.
 戻り値: t か nil を返す
-補足: _LOAD に 真を渡すと、見付かった情報で、現在の変換候補変数にロードしてくれる"
+補足: LOAD-FLAG に 真を渡すと、見付かった情報で、現在の変換候補変数にロードしてくれる"
   (sumibi-history-gc)
 
   ;; カーソル位置に有効な変換済エントリがあるか探す
@@ -1206,7 +1188,7 @@ ARG: (未使用)"
 		(<= (point) end)
 		(string-equal last-fix pickup))
 	   (setq found t)
-	   (when _load
+	   (when load-flag
 	     (setq sumibi-markers            (cons
 					     (move-marker (car markers) start)
 					     (cdr markers)))
@@ -1412,7 +1394,7 @@ ARG: (未使用)"
   "TIMESで指定した回数スペース文字を挿入する."
   (if (null times)
       (insert " ")
-    (dotimes(i times)
+    (dotimes(_ times)
       (insert " "))))
 
 ;;;
@@ -1502,20 +1484,20 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
   (interactive "P")
   (if (< 0 arg)
       (progn
-	(setq inactivate-current-input-method-function 'sumibi-inactivate)
+	(setq deactivate-current-input-method-function 'sumibi-inactivate)
 	(setq sumibi-mode t))
-    (setq inactivate-current-input-method-function nil)
+    (setq deactivate-current-input-method-function nil)
     (setq sumibi-mode nil)))
 
 
 ;; input method 対応
-(defun sumibi-activate (&rest arg)
+(defun sumibi-activate (&rest _arg)
   "入力モードを有効にする.
-引数ARG: 未使用"
+引数_ARG: 未使用"
   (sumibi-input-mode 1))
-(defun sumibi-inactivate (&rest arg)
+(defun sumibi-inactivate (&rest _arg)
   "入力モードを無効にする.
-引数ARG: 未使用"
+引数_ARG: 未使用"
   (sumibi-input-mode -1))
 (register-input-method
  "japanese-sumibi" "Japanese" 'sumibi-activate
@@ -1529,9 +1511,9 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
 (defconst sumibi-version
   "1.6.1" ;;SUMIBI-VERSION
   )
-(defun sumibi-version (&optional arg)
+(defun sumibi-version (&optional _arg)
   "Sumibiのバージョン番号をミニバッファに表示する.
-引数ARG: 未使用"
+引数_ARG: 未使用"
   (interactive "P")
   (message sumibi-version))
 
