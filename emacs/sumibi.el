@@ -392,7 +392,8 @@ Argument DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 		(with-current-buffer buf
 		  (decode-coding-string
 		   (let ((str (buffer-substring-no-properties (point-min) (point-max))))
-                     (sumibi-debug-print (format "<<<%s>>>\n" str)))
+                     (sumibi-debug-print (format "<<<%s>>>\n" str))
+		     str)
 		   'utf-8))
 	      "{\"err\": \"!!TIMEOUT ERROR!!\"}\n")))
 	(deferred:nextc it
