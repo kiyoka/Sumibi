@@ -283,8 +283,8 @@
 ;; ユーティリティ
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun sumibi-assoc-ref (key alist fallback)
-  "指定したassocから内容を取り出すユーティリティ."
-  "Argument KEY: key of alist.
+  "指定したassocから内容を取り出すユーティリティ.
+Argument KEY: key of alist.
 Argument ALIST: alist.
 Argument FALLBACK: fallback function."
   (let ((entry (assoc key alist)))
