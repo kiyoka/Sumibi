@@ -339,8 +339,7 @@ Argument SYNC-FUNC : OpenAI API を同期呼び出しで呼び出す場合は
   コールバック関数を指定する。非同期呼び出しの場合は、nilを指定する.
 Argument DEFERRED-FUNC: 非同期呼び出し時のコールバック関数(1).
 Argument DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
-  (progn
-    (setq url "https://api.openai.com/v1/chat/completions")
+  (let ((url "https://api.openai.com/v1/chat/completions"))
     (setq url-request-method "POST")
     (setq url-http-version "1.1")
     (setq url-request-extra-headers
