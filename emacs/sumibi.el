@@ -38,6 +38,7 @@
 (require 'cl-lib)
 (require 'popup)
 (require 'url)
+(require 'url-http)
 (require 'unicode-escape)
 (require 'deferred)
 
