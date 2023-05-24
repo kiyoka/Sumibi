@@ -483,7 +483,7 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
      (lambda (json-str)
        (let* ((json-obj (json-parse-string json-str))
 	      (lst (sumibi-analyze-openai-json-obj json-obj arg-n)))
-	 (when (not (null lst))
+	 (when lst
 	   (save-excursion
 	     (goto-char (marker-position saved-marker))
 	     (insert (car lst))
@@ -522,7 +522,7 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
      (lambda (json-str)
        (let* ((json-obj (json-parse-string json-str))
 	      (lst (split-string (car (sumibi-analyze-openai-json-obj json-obj 1)))))
-	 (if (not (null lst))
+	 (if lst
 	     (save-excursion
 	       (goto-char (marker-position saved-marker))
 	       (insert (car lst))
@@ -556,7 +556,7 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
      (lambda (json-str)
        (let* ((json-obj (json-parse-string json-str))
 	      (lst (split-string (car (sumibi-analyze-openai-json-obj json-obj 1)))))
-	 (if (not (null lst))
+	 (if lst
 	     (save-excursion
 	       (goto-char (marker-position saved-marker))
 	       (insert (car lst))
@@ -591,7 +591,7 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
      (lambda (json-str)
        (let* ((json-obj (json-parse-string json-str))
 	      (lst (sumibi-analyze-openai-json-obj json-obj arg-n)))
-	 (if (not (null lst))
+	 (if lst
 	     (save-excursion
 	       (goto-char (marker-position saved-marker))
 	       (insert (car lst))
@@ -881,7 +881,7 @@ Argument SELECT-MODE：選択状態"
 	       (start       (point-marker)))
 	  (progn
 	    (insert insert-word)
-	    (message (format "[%s] candidate (%d/%d)" insert-word (+ sumibi-cand-cur 1) sumibi-cand-len))
+	    (message "[%s] candidate (%d/%d)" insert-word (+ sumibi-cand-cur 1) sumibi-cand-len)
 	    (let* ((end         (point-marker))
 		   (ov          (make-overlay start end)))
 	      
@@ -1351,7 +1351,7 @@ _ARG: (未使用)"
 	    (backward-paragraph)
 	    (when (< 1 (point))
 	      (forward-line 1))
-	    (goto-char (point-at-bol))
+	    (beginning-of-line)
 	    (let (
 		  (start-point (point)))
 	      (setq limit-point
@@ -1372,7 +1372,7 @@ _ARG: (未使用)"
       ;; auto-fill-modeが無効の時
       (progn
 	(save-excursion
-	  (goto-char (point-at-bol))
+	  (beginning-of-line)
 	  (let (
 		(start-point (point)))
 	    (setq limit-point
@@ -1458,6 +1458,7 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
       (make-local-variable 'sumibi-mode))
   (if global
       (progn
+	(setq default-input-method "japanese-sumibi")
 	(setq-default sumibi-mode (if (null arg) (not sumibi-mode)
 				    (> (prefix-numeric-value arg) 0)))
 	(sumibi-kill-sumibi-mode))
@@ -1507,7 +1508,7 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
 
 ;; input-method として登録する。
 (set-language-info "Japanese" 'input-method "japanese-sumibi")
-(setq default-input-method "japanese-sumibi")
+
 
 (defconst sumibi-version
   "1.6.1" ;;SUMIBI-VERSION
