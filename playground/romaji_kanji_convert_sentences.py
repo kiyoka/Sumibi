@@ -10,32 +10,8 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 class GptTest:
     romaji_list1 = [
-        'watashi no namae ha nakano desu .',
-        'watashinonamaehanakanodesu .',
-        'わたしのなかえはなかのです。',
-        '1nen ha 1gatu3ka kara hajimarimasu .',
-        '1ねんは1がつ3かからはじまります。',
-        'kagikakko ha [ to ] de kakomimasu . ',
-        'ringo ga 1ko to mikan ga 3ko arimasu . ', 
-        'りんごが1ことみかんが3こあります。',
-        'koyuu meishi ha tokui deha arimasen . tanaka san to satou san ha yuumei nanode daijyoubu desu . ',
-        'AWS Systems Manager no kanritaisyou insutansu nisuru',
-        'honkijiha , EC2 insutansu wo Systems Manager no Kanritaisyou insutansu ni surumadeno tejyun desu . ',
-        'AWS komyunithi- AMI de teikyou sareteiru Windows Server 2019 no AMI niha, hajimekara SSM Agent ga insuto-ru sareteimasu .',
-        'watashi ha nihongo wo syaberu kotoga dekimasu .',
-        'Emacs kuraianto kara riyou dekiruyouni narimashita .',
-        'Emacs kara riyou dekiru kanji henkan enjin desu .',
-        'Emacsからりようできるかんじへんかんえんじんです。',
-        'toriaezu , ugokuyouni narimashita .',
         'ikano toori desu',
         'hannisentaku shimasu',
-        'We succeeded in taking a photo like this:\n![example](https://www.example.com/dir1/dir2/example.png)',
-        'We achieved [it](https://www.example.com/aaa/bbb/) by a new method.',
-        '# this is markdown file',
-        '## this is markdown section',
-        '### this is markdown subsection',
-        '#### this is markdown subsubsection',
-        '# this is markdown file\n## this is markdown section\n### this is markdown subsection',
     ]
     
     romaji_list2 = [
@@ -43,6 +19,20 @@ class GptTest:
         'nano',
         'shita',
         'aiueokakikukeko'
+    ]
+
+    # 変換対象の手前の文章を提供する実験
+    romaji_list3 = [
+#        ['Emacs用の日本語入力システム(IME)です。この日本語入力システムは、短い文章の断片を認識するのは',
+#         'nigatena tame'],
+#        ['私たちはこのように考えています、',
+#         'shikashi,'],
+#        ['Emacs version 28.x (Windows/Linux/macOS) で動作します。Emacs以外の追加ソフトウェアは',
+#         'fuyoudesu.'],
+        ['日本語入力モードに切り替えることなく日本語を入力できます。日本語と英語の相互翻訳もサポート',
+         'shiteimasu'],
+        ['',
+         'shiteimasu']
     ]
 
     kanji_list = [
@@ -66,7 +56,12 @@ class GptTest:
     def set_model(self,model):
         self.model = model
 
-    def romaji_to_kanji(self,romaji,arg_n):
+    def romaji_to_kanji(self,previous_sentence,romaji,arg_n):
+        last_content = ''
+        if 0 < len(previous_sentence):
+            last_content = "{0}\n\n\n\nの後に続く、次のローマ字とひらがなの文を漢字仮名混じり文にしてください。: {1}".format(previous_sentence,romaji)
+        else:
+            last_content = "ローマ字とひらがなの文を漢字仮名混じり文にしてください。: {0}".format(romaji)
         response = openai.ChatCompletion.create(
             model=self.model,
             temperature=0.8,
@@ -88,7 +83,7 @@ class GptTest:
                 {"role": "assistant", "content": "このような写真を撮ることに成功しました：\n![例](https://www.example.com/dir1/dir2/example.png)"},
                 {"role": "user", "content": "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : ## this is markdown section"},
                 {"role": "assistant", "content": "## これはMarkdownのセクションです。"},
-                {"role": "user", "content": "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : {0}".format(romaji)}
+                {"role": "user", "content": "{0}".format(last_content)}
             ]
         )
         arr = []
@@ -168,7 +163,7 @@ class GptTest:
     def romaji_1_task(self,arg_n):
         for romaji in self.romaji_list1:
             self.start_time_func()
-            result = self.romaji_to_kanji(romaji,arg_n)
+            result = self.romaji_to_kanji('',romaji,arg_n)
             self.end_time_func()
             print('IN : {0}'.format(romaji))
             for s in result:
@@ -182,6 +177,17 @@ class GptTest:
             result = self.romaji_to_yomigana(romaji,arg_n)
             self.end_time_func()
             print('IN : {0}'.format(romaji))
+            for s in result:
+                print('OUT: {0}'.format(s))
+                self.print_time_func()
+            print()
+
+    def romaji_3_task(self,arg_n):
+        for entry in self.romaji_list3:
+            self.start_time_func()
+            result = self.romaji_to_kanji(entry[0],entry[1],arg_n)
+            self.end_time_func()
+            print('IN : {0}'.format(entry[1]))
             for s in result:
                 print('OUT: {0}'.format(s))
                 self.print_time_func()
@@ -213,10 +219,11 @@ def main(argv):
     gptTest = GptTest()
     if(1 < len(argv)):
         gptTest.set_model(argv[1])
-    gptTest.romaji_1_task(3)
-    gptTest.romaji_2_task(3)    
-    gptTest.yomigana_task(3)
-    gptTest.to_english_task(3)
+    #gptTest.romaji_1_task(3)
+    #gptTest.romaji_2_task(3)
+    gptTest.romaji_3_task(3)  
+    #gptTest.yomigana_task(3)
+    #gptTest.to_english_task(3)
 
 if __name__ == "__main__":
      main(sys.argv)
