@@ -1,6 +1,5 @@
-;;; sumibi.el --- Japanese input method powered by ChatGPT API  
+;;; sumibi.el --- Japanese input method powered by ChatGPT API   -*- lexical-binding: t; -*-
 ;;
-;; -*- lexical-binding: t; -*-
 ;; -*- indent-tabs-mode: nil -*-
 ;;
 ;; Copyright (C) 2023 Kiyoka Nishiyama
