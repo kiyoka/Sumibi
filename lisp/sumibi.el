@@ -93,16 +93,41 @@
 
 ;; ローマ字漢字変換時、対象とするローマ字を設定するための変数
 (defvar sumibi-skip-chars "a-zA-Z0-9.,@:`\\-+!\\[\\]?;' ")
-(defvar sumibi-mode-map        (make-sparse-keymap)         "漢字変換トグルマップ.")
-(defvar sumibi-select-mode-map (make-sparse-keymap)         "候補選択モードマップ.")
 (defvar sumibi-rK-trans-key "\C-j"
   "*漢字変換キーを設定する.")
+(defvar sumibi-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map sumibi-rK-trans-key 'sumibi-rK-trans)
+    (define-key map "\M-j" 'sumibi-english-trans)
+    map)
+  "漢字変換トグルマップ.")
+(defvar sumibi-select-mode-map 
+  (let ((map (make-sparse-keymap)))
+    (let ((i 0))
+      (while (<= i ?\177)
+	(define-key map (char-to-string i)
+	  'sumibi-kakutei-and-self-insert)
+	(setq i (1+ i))))
+    (define-key map "\C-m"                   'sumibi-select-kakutei)
+    (define-key map "\C-g"                   'sumibi-select-cancel)
+    (define-key map "q"                      'sumibi-select-cancel)
+    (define-key map "\C-a"                   'sumibi-select-kanji)
+    (define-key map "\C-p"                   'sumibi-select-prev)
+    (define-key map "\C-n"                   'sumibi-select-next)
+    (define-key map sumibi-rK-trans-key      'sumibi-select-next)
+    (define-key map (kbd "SPC")              'sumibi-select-next)
+    (define-key map "\C-u"                   'sumibi-select-hiragana)
+    (define-key map "\C-i"                   'sumibi-select-katakana)
+    (define-key map "\C-k"                   'sumibi-select-katakana)
+    (define-key map "\C-l"                   'sumibi-select-hankaku)
+    (define-key map "\C-e"                   'sumibi-select-zenkaku)
+    map)
+  "候補選択モードマップ.")
 (or (assq 'sumibi-mode minor-mode-map-alist)
     (setq minor-mode-map-alist
           (append (list (cons 'sumibi-mode         sumibi-mode-map)
                         (cons 'sumibi-select-mode  sumibi-select-mode-map))
                   minor-mode-map-alist)))
-
 
 ;; OpenAPIを呼び出さずに固定文字列の結果を返すもの ( copied from GNU Emacs's japanese.el)
 (defvar sumibi-japanese-transliteration-rules
@@ -912,26 +937,6 @@ Argument SELECT-MODE：選択状態"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 変換候補選択モード
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(let ((i 0))
-  (while (<= i ?\177)
-    (define-key sumibi-select-mode-map (char-to-string i)
-      'sumibi-kakutei-and-self-insert)
-    (setq i (1+ i))))
-(define-key sumibi-select-mode-map "\C-m"                   'sumibi-select-kakutei)
-(define-key sumibi-select-mode-map "\C-g"                   'sumibi-select-cancel)
-(define-key sumibi-select-mode-map "q"                      'sumibi-select-cancel)
-(define-key sumibi-select-mode-map "\C-a"                   'sumibi-select-kanji)
-(define-key sumibi-select-mode-map "\C-p"                   'sumibi-select-prev)
-(define-key sumibi-select-mode-map "\C-n"                   'sumibi-select-next)
-(define-key sumibi-select-mode-map sumibi-rK-trans-key   'sumibi-select-next)
-(define-key sumibi-select-mode-map (kbd "SPC")              'sumibi-select-next)
-(define-key sumibi-select-mode-map "\C-u"                   'sumibi-select-hiragana)
-(define-key sumibi-select-mode-map "\C-i"                   'sumibi-select-katakana)
-(define-key sumibi-select-mode-map "\C-k"                   'sumibi-select-katakana)
-(define-key sumibi-select-mode-map "\C-l"                   'sumibi-select-hankaku)
-(define-key sumibi-select-mode-map "\C-e"                   'sumibi-select-zenkaku)
-
-
 (defvar sumibi-popup-menu-keymap
   (let ((map (make-sparse-keymap)))
     (define-key map "\r"        'popup-select)
@@ -1400,19 +1405,6 @@ _ARG: (未使用)"
       (insert " ")
     (dotimes(_ times)
       (insert " "))))
-
-;;;
-;;; human interface
-;;;
-(define-key sumibi-mode-map sumibi-rK-trans-key 'sumibi-rK-trans)
-(define-key sumibi-mode-map "\M-j" 'sumibi-english-trans)
-(or (assq 'sumibi-mode minor-mode-map-alist)
-    (setq minor-mode-map-alist
-          (append (list
-                   (cons 'sumibi-mode         sumibi-mode-map))
-                  minor-mode-map-alist)))
-
-
 
 ;; sumibi-mode の状態変更関数
 ;;  正の引数の場合、常に sumibi-mode を開始する
