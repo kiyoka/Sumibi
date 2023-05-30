@@ -100,7 +100,7 @@
     (define-key map "\M-j" 'sumibi-english-trans)
     map)
   "漢字変換トグルマップ.")
-(defvar sumibi-select-mode-map 
+(defvar sumibi-select-mode-map
   (let ((map (make-sparse-keymap)))
     (let ((i 0))
       (while (<= i ?\177)
