@@ -352,6 +352,27 @@ Argument FALLBACK: fallback function."
          (str4 (unicode-escape str3)))
     str4))
 
+(defun sumibi-parse-http-body (buf)
+  "Pickup http status and body string from buf string.
+Argument BUF : http response buffer"
+  (with-current-buffer buf
+    (decode-coding-string
+     (let ((str (buffer-substring-no-properties (point-min) (point-max))))
+       (sumibi-debug-print (format "<<<%s>>>\n" str))
+       str)
+     'utf-8)
+    (goto-char (point-min))
+    (let ((status-line (buffer-substring (point-min) (progn (end-of-line) (point)))))
+      ;; Extract and return the status code
+      (if (string-match "\\([0-9]+\\) \\(.*\\)" status-line)
+          (match-string 1 status-line)
+	"400")
+      (re-search-forward "^$")
+      (forward-char)
+      (cons
+       status-line
+       (buffer-substring (point) (point-max))))))
+
 ;;
 ;; OpenAPIにプロンプトを発行する
 ;;
@@ -367,7 +388,7 @@ Argument SYNC-FUNC : OpenAI API を同期呼び出しで呼び出す場合は
   コールバック関数を指定する。非同期呼び出しの場合は、nilを指定する.
 Argument DEFERRED-FUNC: 非同期呼び出し時のコールバック関数(1).
 Argument DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
-  (let ((url "https://api.openai.com/v1/chat/completions"))
+  (let ((url "https://api.openai.com/v1/chat/completions")) ;; for local testing "http://localhost:8000/v1/chat/completions"
     (setq url-request-method "POST")
     (setq url-http-version "1.1")
     (setq url-request-extra-headers
@@ -392,21 +413,14 @@ Argument DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
            "}"))
     (cond
      ((not deferred-func2) ;; 同期バージョン
-      (let* ((lines
-              (let ((buf (url-retrieve-synchronously url t t sumibi-api-timeout)))
-                (sumibi-debug-print (buffer-name buf))
-                (sumibi-debug-print "\n")
-                (if buf
-                    (with-current-buffer buf
-                      (decode-coding-string
-                       (let ((str (buffer-substring-no-properties (point-min) (point-max))))
-                         (sumibi-debug-print (format "<<<%s>>>\n" str))
-                         str)
-                       'utf-8))
-                  "{\"err\": \"!!TIMEOUT ERROR!!\"}\n")))
-             (line-list
-              (split-string lines "\n")))
-        (funcall sync-func (cadr (reverse line-list)))))
+      (let ((status-and-body
+             (let ((buf (url-retrieve-synchronously url t t sumibi-api-timeout)))
+               (sumibi-debug-print (buffer-name buf))
+               (sumibi-debug-print "\n")
+               (if buf
+		   (sumibi-parse-http-body buf)
+                 (cons "504" "{\"error\": { \"message\" : \"TIMEOUT ERROR\"}}\n")))))
+        (funcall sync-func (cdr status-and-body))))
 
      (t ;; 非同期バージョン
       (deferred:$
@@ -416,21 +430,13 @@ Argument DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
             (sumibi-debug-print (buffer-name buf))
             (sumibi-debug-print "\n")
             (if buf
-                (with-current-buffer buf
-                  (decode-coding-string
-                   (let ((str (buffer-substring-no-properties (point-min) (point-max))))
-                     (sumibi-debug-print (format "<<<%s>>>\n" str))
-                     str)
-                   'utf-8))
-              "{\"err\": \"!!TIMEOUT ERROR!!\"}\n")))
+		(sumibi-parse-http-body buf)
+              (cons "504" "{\"error\": { \"message\" : \"TIMEOUT ERROR\"}}\n"))))
         (deferred:nextc it
-          (lambda (lines)
-            (cadr (reverse (split-string lines "\n")))))
-        (deferred:nextc it
-          (lambda (json)
+          (lambda (status-and-body)
             (atomic-change-group
               (funcall deferred-func2)
-              (sumibi-debug-print (format "<<<%s>>>\n" (funcall deferred-func json))))
+              (sumibi-debug-print (format "<<<%s>>>\n" (funcall deferred-func (cdr status-and-body)))))
             t))))
      '())))
 
@@ -452,8 +458,10 @@ Argument DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
   (let ((result '())
         (count 0))
     (cond
-     ((gethash "err" json-obj)
-      (list (gethash "err" json-obj)))
+     ((gethash "error" json-obj)
+      (let ((obj (gethash "error" json-obj)))
+	(gethash "message" obj)
+	(list (concat "!!" (gethash "message" obj) "!!"))))
      (t
       (while (< count arg-n)
         (let* ((hex-str
