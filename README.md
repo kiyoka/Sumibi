@@ -27,16 +27,8 @@ Emacs version 28.x (Windows/Linux/macOS) で動作します。Emacs以外の追�
 ![image.png](./images/img_8.png)
 
 2. 環境変数 OPENAI\_API\_KEY にOpenAPIのAPIキーを登録します。
-3. melpa から以下のパッケージをインストールします。
-
-```
-popup 0.5.9
-unicode-escapeo 20230109.1222
-deferred 20170901.1330
-```
-
-4. sumibi.el を \~/.emacs.d/ に保存します。
-5. \~/.emacs.d/init.el に以下のコードを追加します。
+3. MELPAからパッケージ「sumibi」をインストールします。
+4. \~/.emacs.d/init.el に以下のコードを追加します。
 
 ```lisp
 (require 'sumibi)
@@ -46,7 +38,7 @@ deferred 20170901.1330
 ## インストールが成功したかどうかの確認方法
 
 Emacsを再起動するとSumibiがステータスバーに表示されます。
-[gpt-3.5-turbo] はOpenAI API 呼び出しで使用しているGPTのモデルです。
+[gpt-3.5-turbo] はOpenAI API呼び出しで使用しているGPTのモデルです。
 ![image.png](./images/img_9.png)
 
 ## ローマ字や英語の文章から日本語への変換
