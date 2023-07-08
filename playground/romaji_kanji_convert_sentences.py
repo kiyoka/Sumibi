@@ -23,16 +23,22 @@ class GptTest:
 
     # 変換対象の手前の文章を提供する実験
     romaji_list3 = [
-#        ['Emacs用の日本語入力システム(IME)です。この日本語入力システムは、短い文章の断片を認識するのは',
-#         'nigatena tame'],
-#        ['私たちはこのように考えています、',
-#         'shikashi,'],
-#        ['Emacs version 28.x (Windows/Linux/macOS) で動作します。Emacs以外の追加ソフトウェアは',
-#         'fuyoudesu.'],
+        ['',
+         'tokui deha naitame'],
+        ['Emacs用の日本語入力システム(IME)です。この日本語入力システムは、短い文章の断片を認識するのは',
+         'tokui deha naitame'],
+        ['',
+         'shikashi,'],
+        ['私たちはこのように考えています、',
+         'shikashi,'],
+        ['',
+         'ika no youni narimasu.'],
+        ['Emacs version 28.x (Windows/Linux/macOS) で動作します。Emacs以外の追加ソフトウェアは',
+         'ika no youni narimasu.'],
+        ['',
+         'shiteimasu'],
         ['日本語入力モードに切り替えることなく日本語を入力できます。日本語と英語の相互翻訳もサポート',
          'shiteimasu'],
-        ['',
-         'shiteimasu']
     ]
 
     kanji_list = [
@@ -59,7 +65,7 @@ class GptTest:
     def romaji_to_kanji(self,previous_sentence,romaji,arg_n):
         last_content = ''
         if 0 < len(previous_sentence):
-            last_content = "{0}\n\n\n\nの後に続く、次のローマ字とひらがなの文を漢字仮名混じり文にしてください。: {1}".format(previous_sentence,romaji)
+            last_content = "{0}\n\n\n\nの文章にあとに次のローマ字が続くとしたら、それを漢字仮名混じり文にしてください。: {1}".format(previous_sentence,romaji)
         else:
             last_content = "ローマ字とひらがなの文を漢字仮名混じり文にしてください。: {0}".format(romaji)
         response = openai.ChatCompletion.create(
