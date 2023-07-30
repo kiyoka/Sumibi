@@ -29,10 +29,21 @@ A. はい、必要です。OpenAI APIの契約をしてAPIキーを取得して�
 ## Q. Sumibiを使うとOpen AIに支払う費用はどれくらいかかりますか？
 
 A. gpt-3.5-turboを使った場合、1ドキュメントを書くのに約1円から5円程度です。
-Sumibiの設定をgpt-4に変更して日本語のドキュメントを書くと、大体10倍の費用がかかります。
+Sumibiの設定をgpt-4に変更して日本語のドキュメントを書くと、大体20倍から30倍の費用がかかります。
+
+- 以下のブログ記事を翻訳した時の実績値です。
 
 gpt-3.5-turboで、英語のブログ記事を1本翻訳するとだいたい10円程度かかります。
-gpt-4に変更して、英語のブログ記事を1本翻訳するとだいたい100円程度かかります。
+gpt-4に変更して、英語のブログ記事を1本翻訳するとだいたい300円程度かかります。
+[Generative AI Space and the Mental Imagery of Alien Minds](https://writings.stephenwolfram.com/2023/07/generative-ai-space-and-the-mental-imagery-of-alien-minds/)
+
+- 以下、OpenAIの料金表です。
+
+[Pricing](https://openai.com/pricing)
+| Model | Input | Output |
+| ----- | ----- | ------ |
+| GPT-3.5 Turbo 4K context | $0.0015 / 1K tokens | $0.002 / 1K tokens |
+| GPT-4 8K context | $0.03 / 1K tokens | $0.06 / 1K tokens |
 
 ## Q. 期待した漢字が出ません。うまく変換するやり方はありますか？
 
@@ -68,4 +79,3 @@ A. はい、カスタマイズ変数 sumibi-api-timeout を60秒から変更し�
 ## Q. gpt-3.5-turbo 以外のモデルを利用したいのですが、どのようにすれば良いですか？
 
 A. カスタマイズ変数 sumibi-current-model を "gpt-4" などに変更してください。
-

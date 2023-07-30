@@ -48,11 +48,9 @@ Emacsを再起動するとSumibiがステータスバーに表示されます。
     ![image.png](./images/img_16.png)
 2. 変換結果が気に入らない場合は、そのまま Ctrl-J を入力すると変換候補のポップアップが表示されるので、その中から選択できます。
     ![image.png](./images/img_11.png)
-
 3. 英語の文章の最後にカーソルを合わせて、Ctrl-J を入力すると、日本語の文章に変換されます。
     ![image.png](./images/img_13.png)
     ![image.png](./images/img_14.png)
-
 
 ## 日本語から英語への翻訳
 
@@ -66,4 +64,3 @@ Emacsを再起動するとSumibiがステータスバーに表示されます。
 
 または、変換結果に原文ままの選択肢がありますので「原文まま」を選択します。
 ![image.png](./images/img_10.png)
-
