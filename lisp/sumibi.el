@@ -63,6 +63,11 @@
   :type  'string
   :group 'sumibi)
 
+(defcustom sumibi-model-list '("gpt-3.5-turbo" "gpt-4")
+  "OpenAPIのLLM使用モデル名の候補を定義する."
+  :type  '(repeat string)
+  :group 'sumibi)
+
 (defcustom sumibi-history-stack-limit 100
   "再度候補選択できる単語と場所を最大何件記憶するか."
   :type  'integer
@@ -1414,6 +1419,23 @@ _ARG: (未使用)"
       (insert " ")
     (dotimes(_ times)
       (insert " "))))
+
+(defun sumibi-switch-model (&optional arg)
+  "GPTのモデルを切り替える."
+  (interactive "P")
+  (let ((index 
+	 (cl-position-if
+	  (lambda (item)
+	    (and (stringp item)
+		 (string-match-p sumibi-current-model item)))
+	  sumibi-model-list)))
+    (let ((result
+	   (popup-menu* sumibi-model-list
+			:scroll-bar t
+			:margin t
+			:keymap sumibi-popup-menu-keymap
+			:initial-index index)))
+      (setq sumibi-current-model result))))
 
 ;; sumibi-mode の状態変更関数
 ;;  正の引数の場合、常に sumibi-mode を開始する
