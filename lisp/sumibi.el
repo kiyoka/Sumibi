@@ -467,7 +467,6 @@ Argument DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
     (cond
      ((gethash "error" json-obj)
       (let ((obj (gethash "error" json-obj)))
-	(gethash "message" obj)
 	(list (concat "!!" (gethash "message" obj) "!!"))))
      (t
       (while (< count arg-n)
