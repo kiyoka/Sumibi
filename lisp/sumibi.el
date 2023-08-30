@@ -1420,8 +1420,9 @@ _ARG: (未使用)"
     (dotimes(_ times)
       (insert " "))))
 
-(defun sumibi-switch-model (&optional arg)
-  "GPTのモデルを切り替える."
+(defun sumibi-switch-model (&optional _arg)
+  "GPTのモデルを切り替える.
+引数_ARG: 未使用"
   (interactive "P")
   (let ((index 
 	 (cl-position-if
