@@ -1505,6 +1505,20 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
       (setq buf (cdr buf)))))
 
 
+(defun sumibi-mode-line-function ()
+  "この関数はモードラインをクリックで呼び出され、モデルをスイッチできます."
+  (interactive)
+  (sumibi-switch-model))
+
+(defvar sumibi-mode-line-string
+  (propertize " [sumibi-switch-model] "
+              'help-echo "クリックして利用するGPTのモデルを切り替えることができます."
+              'mouse-face 'mode-line-highlight
+              'local-map (let ((map (make-sparse-keymap)))
+                           (define-key map [mode-line mouse-1] 'sumibi-mode-line-function)
+                           map)))
+
+
 ;; 全バッファで sumibi-input-mode を変更する
 (defun sumibi-input-mode (&optional arg)
   "入力モード変更.
@@ -1513,9 +1527,11 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
   (if (< 0 arg)
       (progn
         (setq deactivate-current-input-method-function 'sumibi-inactivate)
-        (setq sumibi-mode t))
+        (setq sumibi-mode t)
+	(setq-default mode-line-format (append mode-line-format (list sumibi-mode-line-string))))
     (setq deactivate-current-input-method-function nil)
-    (setq sumibi-mode nil)))
+    (setq sumibi-mode nil)
+    (setq-default mode-line-format (delq sumibi-mode-line-string mode-line-format))))
 
 
 ;; input method 対応
