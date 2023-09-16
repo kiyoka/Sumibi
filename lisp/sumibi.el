@@ -710,6 +710,18 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
      (list
       (list roman "原文まま" 0 'l (length lst))))))
 
+(defun sumibi-hiragana-to-katakana (str)
+  "ひらがな文字列をカタカナに変換して返す。もし、ひらがな以外の場合はnilを返す.
+str: ひらがな文字列"
+  (if (string-match-p "[^ぁ-ん]" str)
+      nil
+    (apply 'concat
+           (mapcar (lambda (char)
+                     (if (and (>= char #x3041) (<= char #x3096))
+                         (string (+ char #x60))
+		       (string char)))
+                   (string-to-list str)))))
+
 (defun sumibi-henkan-request (roman inverse-flag deferred-func2)
   "ローマ字で書かれた文章を複数候補作成して返す.
 ROMAN: \"watashi no namae ha nakano desu\" のような文字列
@@ -727,7 +739,16 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
       (cond
        ;; 固定の変換キーワードの場合(wo ha ga...)
        ((< 0 (length fixed-kouho))
-        (list (list (cadr (car fixed-kouho)) "固定文字列" 0 'j 0)))
+	(let* ((fixed-str
+		(cadr (car fixed-kouho)))
+	       (fixed-katakana
+		(sumibi-hiragana-to-katakana fixed-str)))
+	  (if fixed-katakana
+	      (list
+	       (list fixed-str "固定文字列" 0 'j 0)
+	       (list fixed-katakana "固定文字列" 0 'j 0))
+	    (list
+	     (list fixed-str "固定文字列" 0 'j 0)))))
        ;; 漢字を含む場合
        ((sumibi-string-include-kanji roman)
         (sumibi-nihongo-saihenkan roman deferred-func2))
