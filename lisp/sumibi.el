@@ -1518,6 +1518,11 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
                            (define-key map [mode-line mouse-1] 'sumibi-mode-line-function)
                            map)))
 
+;; sumibi-mode有効時にモードラインにモデルスイッチの機能を追加する.
+(add-hook 'sumibi-mode-hook
+	  (lambda ()
+	    (setq-default mode-line-format (delq sumibi-mode-line-string mode-line-format))
+	    (setq-default mode-line-format (append mode-line-format (list sumibi-mode-line-string)))))
 
 ;; 全バッファで sumibi-input-mode を変更する
 (defun sumibi-input-mode (&optional arg)
@@ -1527,12 +1532,10 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
   (if (< 0 arg)
       (progn
         (setq deactivate-current-input-method-function 'sumibi-inactivate)
-        (setq sumibi-mode t)
-	(setq-default mode-line-format (append mode-line-format (list sumibi-mode-line-string))))
-    (setq deactivate-current-input-method-function nil)
-    (setq sumibi-mode nil)
-    (setq-default mode-line-format (delq sumibi-mode-line-string mode-line-format))))
-
+        (setq sumibi-mode t))
+    (progn
+      (setq deactivate-current-input-method-function nil)
+      (setq sumibi-mode nil))))
 
 ;; input method 対応
 (defun sumibi-activate (&rest _arg)
