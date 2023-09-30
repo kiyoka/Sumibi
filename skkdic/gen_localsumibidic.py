@@ -38,12 +38,14 @@ def skkdic_to_lisp(line):
 def generate_emacslisp(dic_array):
     print(';; This file is generated from SKK-JISYO.L.unannotated.')
     print(';; As SKK-JISYO.L.unannotated is under GPL-2, this file will also be under GPL-2.')
-    print(';; ')
-    print("(defver sumibi-localdic '(")
+    print(";;")
+    print("(defvar sumibi-localdic")
+    print("  '(")
     for line in dic_array:
         line = skkdic_to_lisp(line)
-        print('  ' + line)
-    print(")")
+        print('    ' + line)
+    print("))")
+    print("(provide 'sumibi-localdic)")
 
 def generate_localdic(dic_filename):
     dic_array = load(dic_filename)
