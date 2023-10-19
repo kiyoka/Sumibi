@@ -43,6 +43,7 @@
 (require 'url-http)
 (require 'unicode-escape)
 (require 'deferred)
+(require 'sumibi-localdic)
 
 ;;; 
 ;;;
@@ -669,20 +670,53 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
       (list roman "原文まま" 0 'l (length lst))))))
 
 
+(defun sumibi-supplement-kouho (kouho-lst)
+  "/ro-karu jisyo を使って、変換候補をおぎなう.
+KOUHO-LST: (\"にほんご\" \"ニホンゴ\") のようなリスト.
+必ずしも先頭にひらがな候補が入っているとは限らない
+"
+  ;; ひらがな候補を探す
+  (let ((hiragana-kouho-lst
+	 (-filter
+	  (lambda (str)
+	    (string-match-p "^[ぁ-ん]+$" str))
+	  kouho-lst)))
+    (if hiragana-kouho-lst
+	(let* ((hiragana-kouho
+		(car hiragana-kouho-lst))
+	       (extra-kouho-lst
+		(-filter
+		 (lambda (x)
+		   (string= hiragana-kouho (car x)))
+		 sumibi-localdic)))
+	  (if extra-kouho-lst
+	      (append kouho-lst (car (cdr (car extra-kouho-lst))))
+	    kouho-lst))
+      kouho-lst)))
+
+
 (defun sumibi-nihongo-saihenkan (roman deferred-func2)
   "日本語を再変換する.
 ROMAN: \"日本語\" のような変換済の文字列
 DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
   (let* ((lst (sumibi-kanji-to-yomigana roman deferred-func2))
-         (kouho-lst
+	 (extended-lst 
+          (sumibi-supplement-kouho lst))
+	 (kouho-lst
           (-map
            (lambda (x)
              (list (car x)
                    (format "候補%d" (+ 1 (cdr x)))
                    0 'h (cdr x)))
            (-zip-pair
-            lst
-            '(0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19)))))
+	    extended-lst
+	    '(
+	      0 1 2 3 4 5 6 7 8 9
+		10 11 12 13 14 15 16 17 18 19
+		20 21 22 23 24 25 26 27 28 29
+		30 31 32 33 34 35 36 37 38 39
+		40 41 42 43 44 45 46 47 48 49
+		)))))
     (append
      kouho-lst
      (list (list roman "原文まま" 0 'l (length kouho-lst))))))
@@ -698,6 +732,9 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
             (append
              lst
              (sumibi-roman-to-yomigana roman deferred-func2))))
+    (setq
+     lst
+     (sumibi-supplement-kouho lst))
     (append
      (-map
       (lambda (x)
@@ -706,7 +743,12 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
               0 'l (cdr x)))
       (-zip-pair
        lst
-       '(0 1 2 3 4)))
+       '(
+	 0 1 2 3 4 5 6 7 8 9
+	   10 11 12 13 14 15 16 17 18 19
+	   20 21 22 23 24 25 26 27 28 29
+	   30 31 32 33 34 35 36 37 38 39
+	   40 41 42 43 44 45 46 47 48 49)))
      (list
       (list roman "原文まま" 0 'l (length lst))))))
 
