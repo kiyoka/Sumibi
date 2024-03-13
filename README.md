@@ -26,7 +26,15 @@ Emacs version 28.x (Windows/Linux/macOS) で動作します。Emacs以外の追�
 [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys)
 ![image.png](./images/img_8.png)
 
-2. 環境変数 OPENAI\_API\_KEY にOpenAPIのAPIキーを登録します。
+2. 認証情報にトークンを登録
+
+`~/.authinfo` や `~/.authinfo.gpg` というファイル名の場合が多い。
+xx-XXX...の部分をトークンに書き換える。
+
+```
+machine api.openai.com login sumibi password xx-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+```
+
 3. MELPAからパッケージ「sumibi」をインストールします。
 4. \~/.emacs.d/init.el に以下のコードを追加します。
 
@@ -40,6 +48,14 @@ Emacs version 28.x (Windows/Linux/macOS) で動作します。Emacs以外の追�
 Emacsを再起動するとSumibiがステータスバーに表示されます。
 [gpt-3.5-turbo] はOpenAI API呼び出しで使用しているGPTのモデルです。
 ![image.png](./images/img_9.png)
+
+## Auth-sourceに登録したトークンが正しく登録できたかどうかの確認方法
+
+下記を評価してトークンが取れたら OK。
+
+```lisp
+(sumibi-get-password sumibi-auth-user)
+```
 
 ## ローマ字や英語の文章から日本語への変換
 

@@ -54,6 +54,11 @@
   :group 'input-method
   :group 'Japanese)
 
+(defcustom sumibi-auth-user "sumibi"
+  "auth-sourceに登録しているトークの名前"
+  :type  'string
+  :group 'sumibi)
+
 (defcustom sumibi-stop-chars "(){}<>"
   "*漢字変換文字列を取り込む時に変換範囲に含めない文字を設定する."
   :type  'string
@@ -342,8 +347,6 @@ Argument FALLBACK: fallback function."
   (if sumibi-init
       t
     (cond
-     ((not (getenv "OPENAI_API_KEY"))
-      (message "%s" "Please set OPENAI_API_KEY environment variable."))
      ((and (>= emacs-major-version 28) (>= emacs-minor-version 1))
       ;; 初期化完了
       (setq sumibi-init t))
@@ -379,6 +382,18 @@ Argument BUF : http response buffer"
        status-line
        (buffer-substring (point) (point-max))))))
 
+(defun sumibi-get-password (user)
+  (require 'auth-source)
+  (and (fboundp 'auth-source-search)
+       (let* ((host "api.openai.com")
+              (secret
+               (plist-get
+                (car (or (auth-source-search :max 1 :host host :user user)))
+                :secret)))
+         (if (functionp secret)
+             (funcall secret)
+           secret))))
+
 ;;
 ;; OpenAPIにプロンプトを発行する
 ;;
@@ -399,7 +414,7 @@ Argument DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
     (setq url-http-version "1.1")
     (setq url-request-extra-headers
           `(("Content-Type" . "application/json; charset=utf-8")
-            ("Authorization" . ,(concat "Bearer " (getenv "OPENAI_API_KEY")))))
+            ("Authorization" . ,(concat "Bearer " (sumibi-get-password sumibi-auth-user)))))
     (setq url-request-data
           (concat
            "{"
