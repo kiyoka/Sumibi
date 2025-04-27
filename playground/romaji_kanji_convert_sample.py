@@ -5,11 +5,14 @@ import sys
 from openai import OpenAI
 
 # test data
-surrounding_text  = 'オブジェクトshikouプログラミング'
-henkan_text = 'shikou'
+#surrounding_text  = 'ここは海から近い市場です。イカがたくさん並んでいます。ikano toori desu.'
+#henkan_text = 'ikano toori desu.'
 
+surrounding_text  = '説明は詳細です。実際の例は、ikano toori desu.'
+henkan_text = 'ikano toori desu.'
+
+# api request
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
 response = client.chat.completions.create(model="gpt-4.1",
 temperature=0.8,
 n=1,
