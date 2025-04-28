@@ -4,14 +4,18 @@ import io
 import sys
 from openai import OpenAI
 
-# test data
+# テストデータ
+
 #surrounding_text  = 'ここは海から近い市場です。イカがたくさん並んでいます。ikano toori desu.'
 #henkan_text = 'ikano toori desu.'
 
-surrounding_text  = '説明は詳細です。実際の例は、ikano toori desu.'
-henkan_text = 'ikano toori desu.'
+#surrounding_text  = '説明は詳細です。実際の例は、ikano toori desu.'
+#henkan_text = 'ikano toori desu.'
 
-# api request
+surrounding_text  = '会社ではTruly Ergonomic CLEAVE keyboardというキーボードを使っています。Truly Ergonomic CLEAVE keyboard ha nyuusyu konnnann desu . '
+henkan_text = 'Truly Ergonomic CLEAVE keyboard ha nyuusyu konnnann desu .'
+
+# OpenAIリクエスト処理
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 response = client.chat.completions.create(model="gpt-4.1",
 temperature=0.8,
