@@ -59,13 +59,13 @@
   :type  'string
   :group 'sumibi)
 
-(defcustom sumibi-current-model "gpt-3.5-turbo"
-  "OpenAPIのLLM使用モデル名を指定する."
+(defcustom sumibi-current-model "gpt-4.1-mini"
+  "OpenAPIのLLM使用モデル名を指定する (デフォルトは gpt-4.1-mini)."
   :type  'string
   :group 'sumibi)
 
-(defcustom sumibi-model-list '("gpt-3.5-turbo" "gpt-4")
-  "OpenAPIのLLM使用モデル名の候補を定義する."
+(defcustom sumibi-model-list '("gpt-4.1" "gpt-4.1-mini" "gpt-4o" "gpt-4o-mini")
+  "OpenAPIのLLM使用モデル名の候補を定義する (gpt-4シリーズ以上)."
   :type  '(repeat string)
   :group 'sumibi)
 

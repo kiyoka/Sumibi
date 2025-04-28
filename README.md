@@ -38,7 +38,7 @@ Emacs version 28.x (Windows/Linux/macOS) で動作します。Emacs以外の追�
 ## インストールが成功したかどうかの確認方法
 
 Emacsを再起動するとSumibiがステータスバーに表示されます。
-[gpt-3.5-turbo] はOpenAI API呼び出しで使用しているGPTのモデルです。
+[gpt-4.1-mini] はOpenAI API呼び出しで使用しているGPTのモデルです。
 ![image.png](./images/img_9.png)
 
 ## ローマ字や英語の文章から日本語への変換
@@ -62,7 +62,7 @@ Emacsを再起動するとSumibiがステータスバーに表示されます。
 
 M-x sumibi-switch-modelでポップアップから利用モデルを動的に変更することができます。
 
-デフォルトでは、"gpt-3.5-turbo"と"gpt-4"の二つから選択できます。
+デフォルトでは、"gpt-4.1-mini"と"gpt-4"のなど多数のモデル名を登録しています。
 選択肢を増やしたい場合は、カスタマイズ変数 `sumibi-model-list` に候補を追加してください。
 
 ## Undo
