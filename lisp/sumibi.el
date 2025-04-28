@@ -928,6 +928,7 @@ Argument INVERSE-FLAG：逆変換かどうか"
         (overlay-put yomi-overlay 'face '(:foreground "gray"))
         (sumibi-henkan-request
          yomi
+	 yomi
          inverse-flag
          (lambda ()
            (with-current-buffer cur-buf
