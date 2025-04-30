@@ -1,0 +1,389 @@
+IN : watashi no namae ha nakano desu .
+OUT: 私の名前は中野です。
+  => elapsed: 0.79 sec
+OUT: 私の名前は中野です。
+  => elapsed: 0.79 sec
+OUT: 私の名前は中野です。
+  => elapsed: 0.79 sec
+
+IN : watashinonamaehanakanodesu .
+OUT: 私の名前は中野です。
+  => elapsed: 1.45 sec
+OUT: 私の名前は中野です。
+  => elapsed: 1.45 sec
+OUT: 私の名前は中野です。
+  => elapsed: 1.45 sec
+
+IN : わたしのなかえはなかのです。
+OUT: 私の名前は中野です。
+  => elapsed: 0.79 sec
+OUT: 私の中江は中野です。
+  => elapsed: 0.79 sec
+OUT: 私の中江は中野です。
+  => elapsed: 0.79 sec
+
+IN : 1nen ha 1gatu3ka kara hajimarimasu .
+OUT: 1年は1月3日から始まります。
+  => elapsed: 0.95 sec
+OUT: 1年は1月3日から始まります。
+  => elapsed: 0.95 sec
+OUT: 1年は1月3日から始まります。
+  => elapsed: 0.95 sec
+
+IN : 1ねんは1がつ3かからはじまります。
+OUT: 1年は1月3日から始まります。
+  => elapsed: 0.74 sec
+OUT: 1年は1月3日から始まります。
+  => elapsed: 0.74 sec
+OUT: 1年は1月3日から始まります。
+  => elapsed: 0.74 sec
+
+IN : kagikakko ha [ to ] de kakomimasu . 
+OUT: 角括弧は [ と ] で囲みます。
+  => elapsed: 0.96 sec
+OUT: 鍵括弧は「と」で囲みます。
+  => elapsed: 0.96 sec
+OUT: 角括弧は「[」と「]」で囲みます。
+  => elapsed: 0.96 sec
+
+IN : ringo ga 1ko to mikan ga 3ko arimasu . 
+OUT: りんごが1個とみかんが3個あります。
+  => elapsed: 1.13 sec
+OUT: りんごが1個とみかんが3個あります。
+  => elapsed: 1.13 sec
+OUT: りんごが1個とみかんが3個あります。
+  => elapsed: 1.13 sec
+
+IN : りんごが1ことみかんが3こあります。
+OUT: りんごが1個とみかんが3個あります。
+  => elapsed: 0.73 sec
+OUT: りんごが1個とみかんが3個あります。
+  => elapsed: 0.73 sec
+OUT: リンゴが1個とミカンが3個あります。
+  => elapsed: 0.73 sec
+
+IN : koyuu meishi ha tokui deha arimasen . tanaka san to satou san ha yuumei nanode daijyoubu desu . 
+OUT: 固有名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
+  => elapsed: 1.33 sec
+OUT: 固有名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
+  => elapsed: 1.33 sec
+OUT: 固有名詞は得意ではありません。田中さんと佐藤さんは有名なので大丈夫です。
+  => elapsed: 1.33 sec
+
+IN : AWS Systems Manager no kanritaisyou insutansu nisuru
+OUT: AWS Systems Managerの管理対象インスタンスにする
+  => elapsed: 0.79 sec
+OUT: AWS Systems Managerの管理対象インスタンスにする
+  => elapsed: 0.79 sec
+OUT: AWS Systems Managerの管理対象インスタンスにする
+  => elapsed: 0.79 sec
+
+IN : honkijiha , EC2 insutansu wo Systems Manager no Kanritaisyou insutansu ni surumadeno tejyun desu . 
+OUT: 本記事は、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
+  => elapsed: 0.98 sec
+OUT: 本記事は、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
+  => elapsed: 0.98 sec
+OUT: 本記事は、EC2インスタンスをSystems Managerの管理対象インスタンスにするまでの手順です。
+  => elapsed: 0.98 sec
+
+IN : AWS komyunithi- AMI de teikyou sareteiru Windows Server 2019 no AMI niha, hajimekara SSM Agent ga insuto-ru sareteimasu .
+OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、初めからSSM Agentがインストールされています。
+  => elapsed: 1.20 sec
+OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、初めからSSM Agentがインストールされています。
+  => elapsed: 1.20 sec
+OUT: AWSコミュニティAMIで提供されているWindows Server 2019のAMIには、初めからSSM Agentがインストールされています。
+  => elapsed: 1.20 sec
+
+IN : watashi ha nihongo wo syaberu kotoga dekimasu .
+OUT: 私は日本語をしゃべることができます。
+  => elapsed: 0.90 sec
+OUT: 私は日本語をしゃべることができます。
+  => elapsed: 0.90 sec
+OUT: 私は日本語をしゃべることができます。
+  => elapsed: 0.90 sec
+
+IN : Emacs kuraianto kara riyou dekiruyouni narimashita .
+OUT: Emacsクライアントから利用できるようになりました。
+  => elapsed: 1.23 sec
+OUT: Emacsクライアントから利用できるようになりました。
+  => elapsed: 1.23 sec
+OUT: Emacsクライアントから利用できるようになりました。
+  => elapsed: 1.23 sec
+
+IN : Emacs kara riyou dekiru kanji henkan enjin desu .
+OUT: Emacsから利用できる漢字変換エンジンです。
+  => elapsed: 1.22 sec
+OUT: Emacsから利用できる漢字変換エンジンです。
+  => elapsed: 1.22 sec
+OUT: Emacsから利用できる漢字変換エンジンです。
+  => elapsed: 1.22 sec
+
+IN : Emacsからりようできるかんじへんかんえんじんです。
+OUT: Emacsから利用できる漢字変換エンジンです。
+  => elapsed: 0.93 sec
+OUT: Emacsから利用できる漢字変換エンジンです。
+  => elapsed: 0.93 sec
+OUT: Emacsから利用できる漢字変換エンジンです。
+  => elapsed: 0.93 sec
+
+IN : toriaezu , ugokuyouni narimashita .
+OUT: とりあえず、動くようになりました。
+  => elapsed: 0.78 sec
+OUT: とりあえず、動くようになりました。
+  => elapsed: 0.78 sec
+OUT: とりあえず、動くようになりました。
+  => elapsed: 0.78 sec
+
+IN : ikano toori desu
+OUT: 以下の通りです。
+  => elapsed: 0.82 sec
+OUT: 以下の通りです。
+  => elapsed: 0.82 sec
+OUT: 以下の通りです。
+  => elapsed: 0.82 sec
+
+IN : hannisentaku shimasu
+OUT: 範囲選択します。
+  => elapsed: 1.07 sec
+OUT: 範囲選択します。
+  => elapsed: 1.07 sec
+OUT: 範囲選択します。
+  => elapsed: 1.07 sec
+
+IN : We succeeded in taking a photo like this:
+![example](https://www.example.com/dir1/dir2/example.png)
+OUT: このような写真を撮ることに成功しました：
+![例](https://www.example.com/dir1/dir2/example.png)
+  => elapsed: 1.14 sec
+OUT: このような写真を撮ることに成功しました：
+![例](https://www.example.com/dir1/dir2/example.png)
+  => elapsed: 1.14 sec
+OUT: このような写真を撮ることに成功しました:
+![例](https://www.example.com/dir1/dir2/example.png)
+  => elapsed: 1.14 sec
+
+IN : We achieved [it](https://www.example.com/aaa/bbb/) by a new method.
+OUT: 新しい方法で[それ](https://www.example.com/aaa/bbb/)を達成しました。
+  => elapsed: 1.03 sec
+OUT: 新しい方法によって[これ](https://www.example.com/aaa/bbb/)を達成しました。
+  => elapsed: 1.03 sec
+OUT: 新しい方法によって[それ](https://www.example.com/aaa/bbb/)を達成しました。
+  => elapsed: 1.03 sec
+
+IN : # this is markdown file
+OUT: # これはMarkdownファイルです。
+  => elapsed: 1.54 sec
+OUT: # これはMarkdownファイルです。
+  => elapsed: 1.54 sec
+OUT: # これはMarkdownファイルです。
+  => elapsed: 1.54 sec
+
+IN : ## this is markdown section
+OUT: ## これはMarkdownセクションです。
+  => elapsed: 0.71 sec
+OUT: ## これはMarkdownセクションです。
+  => elapsed: 0.71 sec
+OUT: ## これはMarkdownセクションです。
+  => elapsed: 0.71 sec
+
+IN : ### this is markdown subsection
+OUT: ### これはMarkdownのサブセクションです。
+  => elapsed: 0.67 sec
+OUT: ### これはMarkdownのサブセクションです。
+  => elapsed: 0.67 sec
+OUT: ### これはMarkdownのサブセクションです。
+  => elapsed: 0.67 sec
+
+IN : #### this is markdown subsubsection
+OUT: #### これはMarkdownのサブサブセクションです。
+  => elapsed: 0.92 sec
+OUT: #### これはMarkdownのサブサブセクションです。
+  => elapsed: 0.92 sec
+OUT: #### これはMarkdownのサブサブセクションです。
+  => elapsed: 0.92 sec
+
+IN : # this is markdown file
+## this is markdown section
+### this is markdown subsection
+OUT: # これはMarkdownファイルです。
+## これはMarkdownのセクションです。
+### これはMarkdownのサブセクションです。
+  => elapsed: 1.59 sec
+OUT: # これはMarkdownファイルです
+## これはMarkdownのセクションです
+### これはMarkdownのサブセクションです
+  => elapsed: 1.59 sec
+OUT: # これはMarkdownファイルです
+## これはMarkdownのセクションです
+### これはMarkdownのサブセクションです
+  => elapsed: 1.59 sec
+
+IN : hannisentaku shimasu
+OUT: はんいせんたく します ハンイセンタク シマス
+  => elapsed: 1.78 sec
+OUT: はんいせんたく します ハンイセンタク シマス
+  => elapsed: 1.78 sec
+OUT: はんいせんたく します ハンイセンタク シマス
+  => elapsed: 1.78 sec
+
+IN : nano
+OUT: なの ナノ
+  => elapsed: 0.66 sec
+OUT: なの ナノ
+  => elapsed: 0.66 sec
+OUT: なの ナノ
+  => elapsed: 0.66 sec
+
+IN : shita
+OUT: した シタ
+  => elapsed: 0.85 sec
+OUT: した シタ
+  => elapsed: 0.85 sec
+OUT: した シタ
+  => elapsed: 0.85 sec
+
+IN : aiueokakikukeko
+OUT: あいうえおかきくけこ アイウエオカキクケコ
+  => elapsed: 0.93 sec
+OUT: あいうえおかきくけこ アイウエオカキクケコ
+  => elapsed: 0.93 sec
+OUT: あいうえおかきくけこ アイウエオカキクケコ
+  => elapsed: 0.93 sec
+
+IN : 漢字
+OUT: かんじ カンジ
+
+**同音異義語:**
+1. 漢字
+2. 感じ
+3. 幹事
+4. 監事
+5. 寛二 (人名)
+6. 患児
+7. 冠辞
+  => elapsed: 2.85 sec
+OUT: 漢字（かんじ、カンジ）
+
+同音異義語：
+1. 感じ（かんじ、カンジ） - 感覚や印象。
+2. 幹事（かんじ、カンジ） - 何かの行事や会合の責任者。
+3. 監事（かんじ、カンジ） - 組織の監督や監査を行う役職。
+4. 寛二（かんじ、カンジ） - 日本の人名の一部。
+  => elapsed: 2.85 sec
+OUT: ひらがな: かんじ  
+カタカナ: カンジ  
+同音異義語:  
+- 感じ  
+- 幹事  
+- 監事  
+- 寛二 (人名)  
+- 患児 (医療用語)  
+- 寒地 (地理用語)  
+  => elapsed: 2.85 sec
+
+IN : 東西南北
+OUT: 「東西南北」は、以下のような情報になります。
+
+- ひらがな: とうざいなんぼく 
+- カタカナ: トウザイナンボク 
+
+「東西南北」に関して、特定の同音異義語は存在しません。これは固有の表現で、他の意味を持つ同音の単語がないためです。もし他に調査して欲しい単語があればお知らせください。
+  => elapsed: 3.01 sec
+OUT: ひらがな: とうざいなんぼく  
+カタカナ: トウザイナンボク  
+
+同音異義語は特に存在しませんが、関連する言葉として以下のものがあります：
+
+- 東西（とうざい）：東と西のこと、または一般的に全体を指すこともある。
+- 南北（なんぼく）：南と北のこと、または一般的に全体を指すこともある。
+
+ただし、「東西南北」と全体としての同音異義語は存在しません。
+  => elapsed: 3.01 sec
+OUT: とうざいなんぼく トウザイナンボク
+
+申し訳ありませんが、「東西南北」には一般的な日本語では同音異義語が存在しません。この単語は、特定の意味を持つ語として使われています。
+  => elapsed: 3.01 sec
+
+IN : 行う
+OUT: おこなう オコナウ 行う 行なう 
+  => elapsed: 0.99 sec
+OUT: おこなう オコナウ 行う 行なう 行う
+  => elapsed: 0.99 sec
+OUT: おこなう オコナウ 行う 行なう
+  => elapsed: 0.99 sec
+
+IN : 東京特許許可局
+OUT: とうきょうとっきょきょかきょく トウキョウトッキョキョカキョク
+
+このフレーズは、早口言葉として知られており、実際には存在しない架空の機関です。同音異義語として具体的な単語は存在しませんが、「とっきょ（特許）」や「きょか（許可）」などの単語が関連する言葉として挙げられます。それぞれが異なる意味を持つ単語であるため、組み合わせたフレーズとしての同音異義語は特にありません。
+  => elapsed: 4.43 sec
+OUT: とうきょうとっきょきょかきょく トウキョウトッキョキョカキョク
+
+この言葉は早口言葉として知られていますが、実際には存在しない架空の機関名です。そのため、同音異義語は特にありません。ただし、構成要素に関連する単語の同音異義語は以下のようになります。
+
+- 東京（とうきょう／トウキョウ）
+  - 同音異義語: なし（固有名詞）
+
+- 特許（とっきょ／トッキョ）
+  - 同音異義語: なし
+
+- 許可（きょか／キョカ）
+  - 同音異義語: なし
+
+- 局（きょく／キョク）
+  - 同音異義語: 曲（きょく）、極（きょく）
+  => elapsed: 4.43 sec
+OUT: とうきょうとっきょきょかきょく トウキョウトッキョキョカキョク 東京特許許可局
+  => elapsed: 4.43 sec
+
+IN : 要約
+OUT: ようやく ヨウヤク 要約 ようやく（漸く）
+  => elapsed: 1.13 sec
+OUT: ようやく ヨウヤク 要約 漸く/ようやく（意味：しばらくして）
+  => elapsed: 1.13 sec
+OUT: ようやく ヨウヤク 要約 漸く（ようやく） 用薬
+  => elapsed: 1.13 sec
+
+IN : 体制
+OUT: たいせい タイセイ 体制 態勢 耐性 体勢 大成
+  => elapsed: 0.94 sec
+OUT: たいせい タイセイ 体制 耐性 態勢 体勢 大成 泰成
+  => elapsed: 0.94 sec
+OUT: たいせい タイセイ 体制 態勢 大成 体勢 胎生
+  => elapsed: 0.94 sec
+
+IN : 制度
+OUT: せいど セイド 制度 精度 聖堂 生徒 斉藤
+  => elapsed: 1.85 sec
+OUT: せいど セイド  
+制度、生徒、正道、聖堂、製糖
+  => elapsed: 1.85 sec
+OUT: せいど セイド  
+制度 聖土 生徒 正道 牲徒 などがあります。  
+文脈によって異なる意味を持つことがありますので、注意が必要です。
+  => elapsed: 1.85 sec
+
+IN : 私の名前は中野です。
+OUT: My name is Nakano.
+  => elapsed: 0.81 sec
+OUT: My name is Nakano.
+  => elapsed: 0.81 sec
+OUT: My name is Nakano.
+  => elapsed: 0.81 sec
+
+IN : Emacsから利用できる漢字変換エンジンです。
+OUT: It is a kanji conversion engine that can be used from Emacs.
+  => elapsed: 2.46 sec
+OUT: It is a kanji conversion engine that can be used from Emacs.
+  => elapsed: 2.46 sec
+OUT: It is a kanji conversion engine that can be used from Emacs.
+  => elapsed: 2.46 sec
+
+IN : GPTはOpenAIから2018年に以下の論文で提案されたモデルで、基本的にはTransformerをベースに、事前学習-ファインチューニングをすることで非常に高い精度を達成したモデルです。
+OUT: GPT is a model proposed by OpenAI in 2018 in the following paper. It is essentially based on the Transformer architecture and achieves very high accuracy through a process of pre-training and fine-tuning.
+  => elapsed: 1.63 sec
+OUT: GPT is a model proposed by OpenAI in 2018 in the following paper. It is fundamentally based on the Transformer and achieves very high accuracy through pre-training and fine-tuning.
+  => elapsed: 1.63 sec
+OUT: GPT is a model proposed by OpenAI in 2018 in the following paper. It is fundamentally based on the Transformer architecture and achieves very high accuracy through pre-training and fine-tuning.
+  => elapsed: 1.63 sec
+

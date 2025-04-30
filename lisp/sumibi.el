@@ -84,6 +84,11 @@
   :type  'integer
   :group 'sumibi)
 
+(defcustom sumibi-surrounding-lines 6
+  "変換対象の文字列の周辺の文章を何行分取り込むか."
+  :type  'integer
+  :group 'sumibi)
+
 (defvar sumibi-mode nil             "漢字変換トグル変数.")
 (defun sumibi-modeline-string ()
   "接続先サーバーのホスト名を表示する."
@@ -481,9 +486,10 @@ Argument DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
         (setq count (1+ count)))
       result))))
 
-(defun sumibi-roman-to-kanji (roman arg-n deferred-func2)
-  "ローマ字で書かれた文章をOpenAIサーバーを使って変換し、結果を文字列で返す.
+(defun sumibi-roman-to-kanji-with-surrounding (roman surrounding arg-n deferred-func2)
+  "ローマ字で書かれた文章をOpenAIサーバーを使って変換し、結果を文字列で返す.変換対象の文章の修変の文章も受け取る.
 ROMAN: \"bunsyou no mojiretu
+SURROUNDING: \"長い文章になってしまいましたが、これがbunsyou no mojiretuです。
 ARG-N: 候補を何件返すか
 DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 戻り値: (\"1番目の文章の文字列\" \"2番目の文章の文字列\" \"3番目の文章の文字列\" ...)"
@@ -497,27 +503,57 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
              "[](URL)のようなmarkdown構文は維持してください。"
              "# や ## や ### や #### のようなmarkdown構文は維持してください。"))
       (cons "user"
-            "ローマ字の文を漢字仮名混じり文にしてください。 : watashi no namae ha nakano desu .")
+	    (concat
+	     "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
+	     " 周辺の文章は、「こんにちは、中野です。watashi no namae ha nakano desu . どうぞよろしくお願いします。」"
+	     "のような文章になっています。"
+	     "周辺の文脈を見てそれに合った語彙を選んでください。: watashi no namae ha nakano desu ."))
       (cons "assistant"
             "私の名前は中野です。")
       (cons "user"
-            "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : ikano toori desu .")
+	    (concat
+	     "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
+	     "周辺の文章は、「説明はここまでです。それ以外はikano toori desu .」"
+	     "のような文章になっています。"
+	     "周辺の文脈を見てそれに合った語彙を選んでください。: ikano toori desu ."))
       (cons "assistant"
             "以下の通りです。")
       (cons "user"
-            "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : hannishitei shimasu")
+	    (concat
+	     "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
+	     "周辺の文章は、「開始位置から終了位置までをhannishitei shimasuそれでは続いて、」"
+	     "のような文章になっています。"
+	     "周辺の文脈を見てそれに合った語彙を選んでください。: hannishitei shimasu"))
       (cons "assistant"
             "範囲指定します")
       (cons "user"
-            "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : We succeeded in taking a photo like this:\n![example](https://www.example.com/dir1/dir2/example.png)")
+	    (concat
+	     "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
+	     "周辺の文章は、「見てください!We succeeded in taking a photo like this:\n![example](https://www.example.com/dir1/dir2/example.png)、"
+	     "リアルな写真だと思いませんか？」"
+	     "のような文章になっています。"
+	     "周辺の文脈を見てそれに合った語彙を選んでください。: We succeeded in taking a photo like this:\n![example](https://www.example.com/dir1/dir2/example.png)"))
       (cons "assistant"
             "このような写真を撮ることに成功しました：\n![例](https://www.example.com/dir1/dir2/example.png)")
       (cons "user"
-            "ローマ字とひらがなの文を漢字仮名混じり文にしてください。 : ## this is markdown section")
+	    (concat
+	     "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
+	     "周辺の文章は、「ここまでが前半の説明です。\n"
+	     "## this is markdown section\n"
+	     "\n"
+	     "」"
+	     "のような文章になっています。"
+	     "周辺の文脈を見てそれに合った語彙を選んでください。: ## this is markdown section"))
       (cons "assistant"
             "## これはMarkdownのセクションです。")
       (cons "user"
-            (format "ローマ字の文を漢字仮名混じり文にしてください。 : %s" roman)))
+	    (format
+	     (concat 
+	      "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
+	      "周辺の文章は、「%s」"
+	      "のような文章になっています。"
+	      "周辺の文脈を見てそれに合った語彙を選んでください。: %s")
+	     surrounding roman)))
      arg-n
      (lambda (json-str)
        (let ((json-obj (json-parse-string json-str)))
@@ -721,12 +757,12 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
      kouho-lst
      (list (list roman "原文まま" 0 'l (length kouho-lst))))))
 
-(defun sumibi-alphabet-henkan (roman arg-n deferred-func2)
+(defun sumibi-alphabet-henkan (roman surrounding-text arg-n deferred-func2)
   "アルファベット(ローマ字or英語の文章)からカナ漢字混じり文へ変換する.
 ROMAN: \"watashi no namae ha nakano desu\" のような文字列
 ARG-N: 候補を何件返すか
 DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
-  (let ((lst (sumibi-roman-to-kanji roman arg-n deferred-func2)))
+  (let ((lst (sumibi-roman-to-kanji-with-surrounding roman surrounding-text arg-n deferred-func2)))
     (when (>= 10 (length roman))
       (setq lst
             (append
@@ -764,7 +800,7 @@ str: ひらがな文字列"
 		       (string char)))
                    (string-to-list str)))))
 
-(defun sumibi-henkan-request (roman inverse-flag deferred-func2)
+(defun sumibi-henkan-request (roman surrounding-text inverse-flag deferred-func2)
   "ローマ字で書かれた文章を複数候補作成して返す.
 ROMAN: \"watashi no namae ha nakano desu\" のような文字列
 INVERSE-FLAG: 英語から日本語への逆変換の場合だけ t を指定する
@@ -795,7 +831,7 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
        ((sumibi-string-include-kanji roman)
         (sumibi-nihongo-saihenkan roman deferred-func2))
        (t
-        (sumibi-alphabet-henkan roman (sumibi-determine-number-of-n roman) deferred-func2)))))))
+        (sumibi-alphabet-henkan roman surrounding-text (sumibi-determine-number-of-n roman) deferred-func2)))))))
 
 
 (defun sumibi-file-existp (file)
@@ -806,6 +842,26 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
     (file-exists-p file)))
 
 
+(defun sumibi-extract-lines-around-point (p n)
+  "ポイント P を中心に、前後 N 行、合計 (2N+1) 行のテキストを取り出す.バッファ先頭・末尾に達してもエラーにならない.
+P: \"中心位置P
+n: \"N行
+戻り値: ポイント P の前後を取り出した文字列"
+  (save-excursion
+    (goto-char p)
+    (beginning-of-line)
+    ;; 前にN行移動（バッファ先頭超えないように）
+    (let ((start (point)))
+      (forward-line (- n))
+      (setq start (point)) ;; 実際に移動した位置を記録
+      ;; 中心に戻って、後ろにN行進む
+      (goto-char p)
+      (beginning-of-line)
+      (forward-line n)
+      (end-of-line)
+      (let ((end (point)))
+        (buffer-substring-no-properties start end)))))
+
 
 (defun sumibi-henkan-region-sync (b e inverse-flag)
   "リージョンをローマ字漢字変換する(同期関数バージョン).
@@ -815,7 +871,8 @@ Argument INVERSE-FLAG：逆変換かどうか"
   (when (/= b e)
     (let* (
            (yomi (buffer-substring-no-properties b e))
-           (henkan-list (sumibi-henkan-request yomi inverse-flag nil)))
+	   (surrounding-text (sumibi-extract-lines-around-point b (ceiling (/ (max 2 sumibi-surrounding-lines) 2))))
+           (henkan-list (sumibi-henkan-request yomi surrounding-text inverse-flag nil)))
       (if henkan-list
           (condition-case err
               (progn
@@ -871,6 +928,7 @@ Argument INVERSE-FLAG：逆変換かどうか"
         (overlay-put yomi-overlay 'face '(:foreground "gray"))
         (sumibi-henkan-request
          yomi
+	 yomi
          inverse-flag
          (lambda ()
            (with-current-buffer cur-buf
