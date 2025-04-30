@@ -59,13 +59,13 @@
   :type  'string
   :group 'sumibi)
 
-(defcustom sumibi-current-model "gpt-3.5-turbo"
-  "OpenAPIのLLM使用モデル名を指定する."
+(defcustom sumibi-current-model "gpt-4.1-mini"
+  "OpenAPIのLLM使用モデル名を指定する (デフォルトは gpt-4.1-mini)."
   :type  'string
   :group 'sumibi)
 
-(defcustom sumibi-model-list '("gpt-3.5-turbo" "gpt-4")
-  "OpenAPIのLLM使用モデル名の候補を定義する."
+(defcustom sumibi-model-list '("gpt-4.1" "gpt-4.1-mini" "gpt-4o" "gpt-4o-mini")
+  "OpenAPIのLLM使用モデル名の候補を定義する (gpt-4シリーズ以上)."
   :type  '(repeat string)
   :group 'sumibi)
 
@@ -452,17 +452,6 @@ Argument DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
      '())))
 
 
-(defun sumibi-drop-guide-sentence (utf8-str)
-  "引数UTF8-STRで指定した文字列中のgpt-3.5-turboが出力する不要な定型文を削除する."
-  (if (string-match "gpt-4" sumibi-current-model)
-      utf8-str
-    (let ((lines (split-string utf8-str "\n")))
-      (if
-          (or (string-match "以下の通りです。[ ]*" (car lines))
-              (string-match "以下のようになります。[ ]*" (car lines))
-              (string-match "以下になります。[ ]*" (car lines)))
-          (string-trim-left (string-join (cdr lines) "\n"))
-	utf8-str))))
 
 (defun sumibi-analyze-openai-json-obj (json-obj arg-n)
   "JSONから変換結果の文字列を取り出す.
@@ -482,7 +471,7 @@ Argument DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
                                   (aref (gethash "choices" json-obj) count))))
                (utf8-str
                 (decode-coding-string (url-unhex-string hex-str) 'utf-8)))
-          (setq result (cons (sumibi-drop-guide-sentence utf8-str) result)))
+          (setq result (cons utf8-str result)))
         (setq count (1+ count)))
       result))))
 
