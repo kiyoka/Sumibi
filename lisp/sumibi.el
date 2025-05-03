@@ -1,4 +1,4 @@
-;;; sumibi.el --- Japanese input method powered by ChatGPT API   -*- lexical-binding: t; -*-
+;;; sumibi.el --- Japanese input method powered by ChatGPT API   -*- lexical-binding: t; coding: utf-8; -*-
 ;;
 ;; -*- indent-tabs-mode: nil -*-
 ;;
@@ -88,11 +88,21 @@
   "変換対象の文字列の周辺の文章を何行分取り込むか."
   :type  'integer
   :group 'sumibi)
+  
+(defcustom sumibi-convert-method 'romaji
+  "Conversion method for Sumibi: either 'romaji (romaji→日本語) or 'pinyin (pinyin→中国語)."
+  :type '(choice (const :tag "Romaji→日本語" romaji)
+                 (const :tag "Pinyin→中国語" pinyin))
+  :group 'sumibi)
 
 (defvar sumibi-mode nil             "漢字変換トグル変数.")
 (defun sumibi-modeline-string ()
-  "接続先サーバーのホスト名を表示する."
-  (format " Sumibi[%s]" sumibi-current-model))
+  "Display Sumibi conversion method and model in the mode line."
+  (format " Sumibi[%s][%s]"
+          (pcase sumibi-convert-method
+            ('romaji "JP")
+            ('pinyin "CN"))
+          sumibi-current-model))
 
 (defvar sumibi-select-mode nil      "候補選択モード変数.")
 (or (assq 'sumibi-mode minor-mode-alist)
@@ -105,9 +115,12 @@
 (defvar sumibi-skip-chars "a-zA-Z0-9.,@:`\\-+!\\[\\]?;' ")
 (defvar sumibi-rK-trans-key "\C-j"
   "*漢字変換キーを設定する.")
+;; Load conversion interfaces after key is defined
+(require 'romaji-japanese)
+(require 'pinyin-chinese)
 (defvar sumibi-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map sumibi-rK-trans-key 'sumibi-rK-trans)
+    (define-key map sumibi-rK-trans-key 'sumibi-convert)
     (define-key map "\M-j" 'sumibi-english-trans)
     map)
   "漢字変換トグルマップ.")
@@ -1547,6 +1560,40 @@ _ARG: (未使用)"
 			:initial-index index)))
       (setq sumibi-current-model result))))
 
+;;;###autoload
+(defun sumibi-convert ()
+  "Convert input based on `sumibi-convert-method`.
+If `sumibi-convert-method` is 'romaji, perform romaji→Japanese conversion.
+If 'pinyin, perform pinyin→Chinese conversion on active region."
+  (interactive)
+  (pcase sumibi-convert-method
+    ('romaji
+     (sumibi-rK-trans))
+    ('pinyin
+     (if (region-active-p)
+         (pinyin-chinese-trans-region (region-beginning) (region-end))
+       (message "No active region for Pinyin conversion")))
+    (_ (user-error "Unknown sumibi-convert-method: %S" sumibi-convert-method))))
+
+;;;###autoload
+(defun sumibi-switch-convert-method (&optional arg)
+  "Switch Sumibi conversion method between romaji→日本語 and pinyin→中国語."
+  (interactive "P")
+  (let* ((choices '("Romaji→日本語" "Pinyin→中国語"))
+         (result (popup-menu* choices
+                              :scroll-bar t :margin t
+                              :keymap sumibi-popup-menu-keymap))
+         (method (pcase result
+                   ("Romaji→日本語" 'romaji)
+                   ("Pinyin→中国語" 'pinyin)
+                   (_ nil)))
+    (when method
+      (setq sumibi-convert-method method)
+      (message "Sumibi conversion method: %s"
+               (if (eq method 'romaji)
+                   "日本語 (romaji)"
+                 "中国語 (pinyin)"))))))
+
 ;; sumibi-mode の状態変更関数
 ;;  正の引数の場合、常に sumibi-mode を開始する
 ;;  {負,0}の引数の場合、常に sumibi-mode を終了する
@@ -1675,21 +1722,6 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
   (message sumibi-version))
 
 (provide 'sumibi)
-
-
-(when nil
-  ;; unti test
-  (sumibi-henkan-request "watashi no namae ha nakano desu ." nil (lambda ()))
-  (sumibi-henkan-request "2kome no bunsyou desu ." nil (lambda ())))
-
-(when nil
-  ;; unit test
-  (sumibi-henkan-request "読みがな" nil t))
-
-(when nil
-  ;; unit test
-  (sumibi-henkan-request "私の名前は中野です。" t t))
-
 
 ;; Local Variables:
 ;; coding: utf-8
