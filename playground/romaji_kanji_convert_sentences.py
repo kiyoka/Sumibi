@@ -4,7 +4,10 @@ import io
 import sys
 from openai import OpenAI
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+api_key = os.getenv("SUMIBI_AI_API_KEY") or os.getenv("OPENAI_API_KEY")
+host = os.getenv("SUMIBI_AI_API_HOST") or "api.openai.com"
+base_url = f"https://{host}/v1"
+client = OpenAI(api_key=api_key, base_url=base_url)
 import time
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
