@@ -91,8 +91,8 @@
 
 (defvar sumibi-mode nil             "漢字変換トグル変数.")
 (defun sumibi-modeline-string ()
-  "接続先サーバーのホスト名を表示する."
-  (format " Sumibi[%s]" sumibi-current-model))
+  "利用するモデル名を表示する."
+  (format " Sumibi[%s]" (or (getenv "SUMIBI_AI_MODEL") sumibi-current-model)))
 
 (defvar sumibi-select-mode nil      "候補選択モード変数.")
 (or (assq 'sumibi-mode minor-mode-alist)
@@ -347,8 +347,9 @@ Argument FALLBACK: fallback function."
   (if sumibi-init
       t
     (cond
-     ((not (getenv "OPENAI_API_KEY"))
-      (message "%s" "Please set OPENAI_API_KEY environment variable."))
+     ((and (not (getenv "SUMIBI_AI_API_KEY"))
+           (not (getenv "OPENAI_API_KEY")))
+      (message "%s" "Please set SUMIBI_AI_API_KEY or OPENAI_API_KEY environment variable."))
      ((and (>= emacs-major-version 28) (>= emacs-minor-version 1))
       ;; 初期化完了
       (setq sumibi-init t))
@@ -399,12 +400,14 @@ Argument SYNC-FUNC : OpenAI API を同期呼び出しで呼び出す場合は
   コールバック関数を指定する。非同期呼び出しの場合は、nilを指定する.
 Argument DEFERRED-FUNC: 非同期呼び出し時のコールバック関数(1).
 Argument DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
-  (let ((url "https://api.openai.com/v1/chat/completions")) ;; for local testing "http://localhost:8000/v1/chat/completions"
+    (let* ((host (or (getenv "SUMIBI_AI_API_HOST")
+                      "api.openai.com"))
+           (url (format "https://%s/v1/chat/completions" host)))
     (setq url-request-method "POST")
     (setq url-http-version "1.1")
     (setq url-request-extra-headers
           `(("Content-Type" . "application/json; charset=utf-8")
-            ("Authorization" . ,(concat "Bearer " (getenv "OPENAI_API_KEY")))))
+            ("Authorization" . ,(concat "Bearer " (or (getenv "SUMIBI_AI_API_KEY") (getenv "OPENAI_API_KEY"))))))
     (setq url-request-data
           (concat
            "{"
