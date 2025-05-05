@@ -90,9 +90,19 @@
   :group 'sumibi)
 
 (defvar sumibi-mode nil             "漢字変換トグル変数.")
+
+(defun sumibi-ai-host ()
+  "利用中のAI接続先ホスト名を返す."
+  (or (getenv "SUMIBI_AI_API_HOST")
+      "api.openai.com"))
+
+(defun sumibi-ai-model ()
+  "利用中のAIモデル名を返す."
+  (or (getenv "SUMIBI_AI_MODEL") sumibi-current-model))
+
 (defun sumibi-modeline-string ()
   "利用するモデル名を表示する."
-  (format " Sumibi[%s]" (or (getenv "SUMIBI_AI_MODEL") sumibi-current-model)))
+  (format " Sumibi[%s/%s]" (sumibi-ai-host) (sumibi-ai-model)))
 
 (defvar sumibi-select-mode nil      "候補選択モード変数.")
 (or (assq 'sumibi-mode minor-mode-alist)
@@ -400,9 +410,7 @@ Argument SYNC-FUNC : OpenAI API を同期呼び出しで呼び出す場合は
   コールバック関数を指定する。非同期呼び出しの場合は、nilを指定する.
 Argument DEFERRED-FUNC: 非同期呼び出し時のコールバック関数(1).
 Argument DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
-    (let* ((host (or (getenv "SUMIBI_AI_API_HOST")
-                      "api.openai.com"))
-           (url (format "https://%s/v1/chat/completions" host)))
+  (let ((url (format "https://%s/v1/chat/completions" (sumibi-ai-host))))
     (setq url-request-method "POST")
     (setq url-http-version "1.1")
     (setq url-request-extra-headers
@@ -411,7 +419,7 @@ Argument DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
     (setq url-request-data
           (concat
            "{"
-           (format "  \"model\": \"%s\"," (or (getenv "SUMIBI_AI_MODEL") sumibi-current-model))
+           (format "  \"model\": \"%s\"," (sumibi-ai-model))
            "  \"temperature\": 0.8,"
            (format  "  \"n\": %d," arg-n)
            "  \"messages\": [ "
@@ -670,8 +678,7 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 
 (defun sumibi-determine-number-of-n (request-str)
   "引数REQUEST-STRからOpenAI APIの引数「n」に指定する数を決める."
-  (if (and (getenv "SUMIBI_AI_API_HOST")
-	   (string= (getenv "SUMIBI_AI_API_HOST") "api.deepseek.com"))
+  (if (string= (sumibi-ai-host) "api.deepseek.com")
       1
     (if (<= sumibi-threshold-letters-of-long-sentence (length request-str))
 	1
