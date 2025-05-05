@@ -411,7 +411,7 @@ Argument DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
     (setq url-request-data
           (concat
            "{"
-           (format "  \"model\": \"%s\"," sumibi-current-model)
+           (format "  \"model\": \"%s\"," (or (getenv "SUMIBI_AI_MODEL") sumibi-current-model))
            "  \"temperature\": 0.8,"
            (format  "  \"n\": %d," arg-n)
            "  \"messages\": [ "
@@ -670,9 +670,12 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 
 (defun sumibi-determine-number-of-n (request-str)
   "引数REQUEST-STRからOpenAI APIの引数「n」に指定する数を決める."
-  (if (<= sumibi-threshold-letters-of-long-sentence (length request-str))
+  (if (and (getenv "SUMIBI_AI_API_HOST")
+	   (string= (getenv "SUMIBI_AI_API_HOST") "api.deepseek.com"))
       1
-    3))
+    (if (<= sumibi-threshold-letters-of-long-sentence (length request-str))
+	1
+      3)))
 
 (defun sumibi-determine-sync-p (request-str)
   "引数REQUEST-STRからOpenAI APIを非同期で呼び出すかを決める."
@@ -1536,19 +1539,21 @@ _ARG: (未使用)"
   "GPTのモデルを切り替える.
 引数_ARG: 未使用"
   (interactive "P")
-  (let ((index 
-	 (cl-position-if
-	  (lambda (item)
-	    (and (stringp item)
-		 (string-match-p sumibi-current-model item)))
-	  sumibi-model-list)))
-    (let ((result
-	   (popup-menu* sumibi-model-list
-			:scroll-bar t
-			:margin t
-			:keymap sumibi-popup-menu-keymap
-			:initial-index index)))
-      (setq sumibi-current-model result))))
+  (if (getenv "SUMIBI_AI_MODEL")
+      (message "!! 環境変数SUMIBI_AI_MODELが設定されているときは、モデルを動的にスイッチできません !!")
+    (let ((index 
+	   (cl-position-if
+	    (lambda (item)
+	      (and (stringp item)
+		   (string-match-p sumibi-current-model item)))
+	    sumibi-model-list)))
+      (let ((result
+	     (popup-menu* sumibi-model-list
+			  :scroll-bar t
+			  :margin t
+			  :keymap sumibi-popup-menu-keymap
+			  :initial-index index)))
+	(setq sumibi-current-model result)))))
 
 ;; sumibi-mode の状態変更関数
 ;;  正の引数の場合、常に sumibi-mode を開始する
