@@ -20,7 +20,7 @@ api_key = os.getenv("SUMIBI_AI_API_KEY") or os.getenv("OPENAI_API_KEY")
 host = os.getenv("SUMIBI_AI_API_HOST") or "api.openai.com"
 base_url = f"https://{host}/v1"
 client = OpenAI(api_key=api_key, base_url=base_url)
-response = client.chat.completions.create(model="gpt-4.1",
+response = client.chat.completions.create(model=os.getenv("SUMIBI_AI_MODEL") or "gpt-4.1",
 temperature=0.8,
 n=1,
 messages=[
