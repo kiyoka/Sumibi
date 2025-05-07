@@ -27,7 +27,7 @@ Emacs version 28.x (Windows/Linux/macOS) で動作します。Emacs以外の追�
 ![image.png](./images/img_8.png)
 
 2. 環境変数 `SUMIBI_AI_API_KEY` にOpenAI APIキーを登録します。`SUMIBI_AI_API_KEY` が未定義の場合は、環境変数 `OPENAI_API_KEY` の値を使用します。
-3. 任意で環境変数 `SUMIBI_AI_API_HOST` にAPIエンドポイントのホストを指定できます。定義されていない場合は `api.openai.com` を使用します。
+3. 任意で環境変数 `SUMIBI_AI_BASEURL` にAPIエンドポイントのベースURLを指定できます。定義されていない場合は `https://api.openai.com` を使用します。
 3. 任意で環境変数 `SUMIBI_AI_MODEL` にGPTの利用モデルを指定できます。定義されていない場合はデフォルトで gpt-4.1-mini になります。
 4. MELPAからパッケージ「sumibi」をインストールします。
 5. \~/.emacs.d/init.el に以下のコードを追加します。
@@ -92,13 +92,13 @@ OpenAIのcompletions APIと互換性のあるサービスであれば、環境�
 - 向先をDeepSeekに変更する場合
 
   - 環境変数 `SUMIBI_AI_API_KEY` に deepseekのAPIキーを設定する。
-  - 環境変数 `SUMIBI_AI_API_HOST` に api.deepseek.com を設定する。
+  - 環境変数 `SUMIBI_AI_BASEURL` に `https://api.deepseek.com` を設定する。
   - 環境変数 `SUMIBI_AI_MODEL` に deepseek-chatを設定する。
 
 - 上記の設定を、init.elに設定するには以下のようになります。
 
 ```
 (setenv "SUMIBI_AI_API_KEY" "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-(setenv "SUMIBI_AI_API_HOST" "api.deepseek.com")
+(setenv "SUMIBI_AI_BASEURL" "https://api.deepseek.com")
 (setenv "SUMIBI_AI_MODEL" "deepseek-chat")))
 ```
