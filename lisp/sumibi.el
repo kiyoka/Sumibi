@@ -682,11 +682,11 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 
 (defun sumibi-determine-number-of-n (request-str)
   "引数REQUEST-STRからOpenAI APIの引数「n」に指定する数を決める."
-  (if (string= (sumibi-ai-base-url) "https://api.deepseek.com")
-      1
-    (if (<= sumibi-threshold-letters-of-long-sentence (length request-str))
-	1
-      3)))
+  (if (string= (sumibi-ai-base-url) "https://api.openai.com")
+      (if (<= sumibi-threshold-letters-of-long-sentence (length request-str))
+	  1
+	3)
+    1))
 
 (defun sumibi-determine-sync-p (request-str)
   "引数REQUEST-STRからOpenAI APIを非同期で呼び出すかを決める."
