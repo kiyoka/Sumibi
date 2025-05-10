@@ -16,8 +16,11 @@ surrounding_text  = '会社ではTruly Ergonomic CLEAVE keyboardというキー�
 henkan_text = 'Truly Ergonomic CLEAVE keyboard ha nyuusyu konnnann desu .'
 
 # OpenAIリクエスト処理
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-response = client.chat.completions.create(model="gpt-4.1",
+api_key = os.getenv("SUMIBI_AI_API_KEY") or os.getenv("OPENAI_API_KEY")
+base_url_env = os.getenv("SUMIBI_AI_BASEURL") or "https://api.openai.com"
+base_url = base_url_env.rstrip("/") + "/v1"
+client = OpenAI(api_key=api_key, base_url=base_url)
+response = client.chat.completions.create(model=os.getenv("SUMIBI_AI_MODEL") or "gpt-4.1",
 temperature=0.8,
 n=1,
 messages=[

@@ -26,9 +26,11 @@ Emacs version 28.x (Windows/Linux/macOS) で動作します。Emacs以外の追�
 [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys)
 ![image.png](./images/img_8.png)
 
-2. 環境変数 OPENAI\_API\_KEY にOpenAPIのAPIキーを登録します。
-3. MELPAからパッケージ「sumibi」をインストールします。
-4. \~/.emacs.d/init.el に以下のコードを追加します。
+2. 環境変数 `SUMIBI_AI_API_KEY` にOpenAI APIキーを登録します。`SUMIBI_AI_API_KEY` が未定義の場合は、環境変数 `OPENAI_API_KEY` の値を使用します。
+3. 任意で環境変数 `SUMIBI_AI_BASEURL` にAPIエンドポイントのベースURLを指定できます。定義されていない場合は `https://api.openai.com` を使用します。
+3. 任意で環境変数 `SUMIBI_AI_MODEL` にGPTの利用モデルを指定できます。定義されていない場合はデフォルトで gpt-4.1-mini になります。
+4. MELPAからパッケージ「sumibi」をインストールします。
+5. \~/.emacs.d/init.el に以下のコードを追加します。
 
 ```lisp
 (require 'sumibi)
@@ -72,9 +74,34 @@ M-x sumibi-switch-modelでポップアップから利用モデルを動的に変
 または、変換結果に原文ままの選択肢がありますので「原文まま」を選択します。
 ![image.png](./images/img_10.png)
 
-## 文脈情報の取り込み
+## 利用するAIサービスの切り替え
 
-Sumibiでは、変換対象のローマ字や英文をより自然な日本語に変換するために、対象文字列の前後の文章をOpenAI APIに送信し、文脈情報として活用します。
+AIサービスとしてOpenAI以外にも切り替えることができます。OpenAIのcompletions APIと互換性のあるサービスであれば、環境変数で切り替えることができます。ローカルのLLMを利用する場合なども活用してください。
+
+- 向き先をDeepSeekに切り替える場合
+
+    ```
+    (setenv "SUMIBI_AI_API_KEY" "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxx") ;; DeepSeekのAPIキー
+    (setenv "SUMIBI_AI_BASEURL" "https://api.deepseek.com") ;; DeepSeekのエンドポイントURL
+    (setenv "SUMIBI_AI_MODEL" "deepseek-chat") ;; DeeSeekのチャット用モデル
+    ```
+
+- 向き先をローカルLLMに切り替える場合
+
+
+    ```
+    (setenv "SUMIBI_AI_API_KEY" "xxxxxxxx") ;; ダミーのAPIキー
+    (setenv "SUMIBI_AI_BASEURL" "http://192.168.56.1:1234") ;; ローカルLLMのエンドポイントURL
+    (setenv "SUMIBI_AI_MODEL" "gemma-3-12b-it-qat") ;; ローカルLLMのモデル名
+    ```
+
+    上記の例は、Windows環境にLLM Studioをインストールし、モデル gemma-3-12b-it-qat をホストしたエンドポイントに接続した一つの例です。
+
+## その他
+
+### 前後の文章の取り込み行数の調整
+
+Sumibiでは、変換対象のローマ字や英文をより自然な日本語に変換するために、対象文字列の前後の文章をAIに送信し、文脈情報として活用します。
 取り込む周辺行数は、カスタマイズ可能な変数 `sumibi-surrounding-lines` で設定できます。デフォルトは6で、6はカーソル位置から上向きに3行、下向きに3行の合計6行という意味です。
-必要に応じて適切な行数に調整し、最適な文脈量を確保してください。
-APIの費用が気になる人は小さい数字に、変換精度を上げたい人は大きい数字にすると良いでしょう。
+必要に応じて適切な行数に調整し、最適な文章量を確保してください。
+APIの費用が気になる方は小さい数字に、変換精度を上げたい方は大きい数字にすると良いでしょう。
