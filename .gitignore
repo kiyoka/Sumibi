@@ -1,3 +1,4 @@
 
 .unotes/*
 /benchmark/__pycache__
+benchmark/evaluation_items.json
