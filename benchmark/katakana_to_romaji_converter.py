@@ -1,13 +1,8 @@
-# This is the Python representation of the Lisp-like table provided by the user.
-# これはユーザーから提供されたLisp風テーブルのPython表現です。
-
+# 辞書を使用してカタカナ文字列をアルファベット（ローマ字）に変換するクラス
+    
 class KatakanaToRomajiConverter:
     """
-    辞書を使用してカタカナ文字列を
-    アルファベット（ローマ字）に変換するクラス。
-    (A class to convert Katakana strings to Alphabet (Romanji) using Lisp-style
-     table data, internally held as a dictionary.)
-
+    辞書を使用してカタカナ文字列をアルファベット（ローマ字）に変換するクラス
     このクラスは、指定された日本語の文字とローマ字の対応表に基づいて変換を行います。
     全角記号や全角数字も変換対象となります。
     """
@@ -227,11 +222,3 @@ if __name__ == '__main__':
         print("\n全てのテストケースに成功しました！ (All test cases passed!)")
     else:
         print("\nいくつかのテストケースに失敗しました。 (Some test cases failed.)")
-
-    # 個別の変換テスト (Individual conversion tests for verification)
-    # print("\n個別テスト (Individual tests):")
-    # print(f"'ヴ' -> '{converter.convert('ヴ')}' (Expected: vu, Actual: {converter.romaji_map.get('ヴ')})")
-    # print(f"'う' -> '{converter.convert('ウ')}' (Expected: wu, Actual: {converter.romaji_map.get('う')})") # ウ -> う -> wu
-    # print(f"'ら' -> '{converter.convert('ラ')}' (Expected: la, Actual: {converter.romaji_map.get('ら')})") # ラ -> ら -> la
-    # print(f"'し' -> '{converter.convert('シ')}' (Expected: shi, Actual: {converter.romaji_map.get('し')})") # シ -> し -> shi
-    # print(f"'ん' -> '{converter.convert('ン')}' (Expected: nn, Actual: {converter.romaji_map.get('ん')})") # ン -> ん -> nn
