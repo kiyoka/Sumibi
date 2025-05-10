@@ -34,19 +34,13 @@ class SumibiBench:
         print(f"surrounding_text: '{surrounding_text}'")
         print(f"henkan_text:     '{henkan_text}'")
         print(f"result:          '{result}'\n")
-        d = {}
-        cer = 0
-        at1 = 0
-        for text in expected_output:
-            expected_text = text
-            cer = ajimee_utils.calculate_CER(text, result)
-            at1 = ajimee_utils.calculate_accuracy_at1(text, result)
-        self.result_arr.append(d)
+        cer = ajimee_utils.calculate_MinCER(expected_output, result)
+        at1 = ajimee_utils.calculate_accuracy_at1(expected_output, result)
         # append to results
         self.result_arr.append({
             'surrounding_text': surrounding_text,
             'henkan_text': henkan_text,
-            'expect': expected_text,
+            'expect': expected_output,
             'result': result,
             'cer': cer,
             'at1': at1
