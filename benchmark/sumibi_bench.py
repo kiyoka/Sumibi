@@ -7,6 +7,7 @@ sumibiのローマ字仮名漢字変換のベンチマークを実行して、�
 import sys
 import os
 import json
+import time
 from katakana_to_romaji_converter import KatakanaToRomajiConverter
 from sumibi_typical_convert_client import SumibiTypicalConvertClient
 from importlib.machinery import SourceFileLoader
@@ -30,7 +31,12 @@ class SumibiBench:
         """
         Perform conversion and print inputs and result.
         """
+        # measure conversion time
+        start = time.perf_counter()
         result = self.client.convert(surrounding_text, henkan_text)
+        end = time.perf_counter()
+        elapsed = end - start
+        print(f"  => elapsed: {elapsed:.2f} sec")
         print(f"surrounding_text: '{surrounding_text}'")
         print(f"henkan_text:     '{henkan_text}'")
         print(f"result:          '{result}'\n")
@@ -43,7 +49,8 @@ class SumibiBench:
             'expect': expected_output,
             'result': result,
             'cer': cer,
-            'at1': at1
+            'at1': at1,
+            'elapsed_sec': elapsed
         })
 
     def benchmark(self, evaluation_data):
