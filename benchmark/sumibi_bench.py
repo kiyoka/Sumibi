@@ -8,6 +8,8 @@ import sys
 import json
 from katakana_to_romaji_converter import KatakanaToRomajiConverter
 from sumibi_typical_convert_client import SumibiTypicalConvertClient
+from importlib.machinery import SourceFileLoader;
+ajimee_utils = SourceFileLoader("ajimee_utils", "./AJIMEE-Bench/utils.py").load_module()
 
 def henkan(client, surrounding_text, henkan_text):
     result = client.convert(surrounding_text, henkan_text)
