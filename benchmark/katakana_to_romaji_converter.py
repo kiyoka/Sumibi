@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # 辞書を使用してカタカナ文字列をアルファベット（ローマ字）に変換するクラス
     
 class KatakanaToRomajiConverter:
