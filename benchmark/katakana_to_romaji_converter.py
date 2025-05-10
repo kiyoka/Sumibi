@@ -26,7 +26,7 @@ class KatakanaToRomajiConverter:
         "は": "ha", "ひ": "hi", "ふ": "fu", "へ": "he", "ほ": "ho", # "ふ" is "fu"
         "ま": "ma", "み": "mi", "む": "mu", "め": "me", "も": "mo",
         "や": "ya", "ゆ": "yu", "よ": "yo",
-        "ら": "la", "り": "li", "る": "lu", "れ": "le", "ろ": "lo", # 'ら'行 etc. use 'l' versions
+        "ら": "ra", "り": "ri", "る": "ru", "れ": "re", "ろ": "ro", # 'ら'行 etc. use 'r' versions
         "わ": "wa", "ゐ": "wi", "ゑ": "we", "を": "wo",
         "ん": "nn", # "ん" is "nn"
         "が": "ga", "ぎ": "gi", "ぐ": "gu", "げ": "ge", "ご": "go",
@@ -42,9 +42,10 @@ class KatakanaToRomajiConverter:
         "にゃ": "nya", "にゅ": "nyu", "にぇ": "nye", "にょ": "nyo",
         "ひゃ": "hya", "ひゅ": "hyu", "ひぇ": "hye", "ひょ": "hyo",
         "みゃ": "mya", "みゅ": "myu", "みぇ": "mye", "みょ": "myo",
-        "りゃ": "lya", "りゅ": "lyu", "りぇ": "lye", "りょ": "lyo", # 'りゃ'行 use 'ly' versions
+        "りゃ": "rya", "りゅ": "ryu", "りぇ": "rye", "りょ": "ryo", # 'りゃ'行 use 'ry' versions
         "ぎゃ": "gya", "ぎゅ": "gyu", "ぎぇ": "gye", "ぎょ": "gyo",
         "じゃ": "ja", "じゅ": "ju", "じぇ": "je", "じょ": "jo",    # 'じゃ'行 use 'j' versions
+        "ぢゃ": "ja", "ぢゅ": "ju", "ぢぇ": "je", "ぢょ": "jo",    # 'ぢゃ'行 treated same as 'じゃ'
         "びゃ": "bya", "びゅ": "byu", "びぇ": "bye", "びょ": "byo",
         "ぴゃ": "pya", "ぴゅ": "pyu", "ぴぇ": "pye", "ぴょ": "pyo",
 
@@ -148,6 +149,18 @@ class KatakanaToRomajiConverter:
         text_len = len(processed_string)
 
         while current_idx < text_len:
+            # Handle small tsu (促音): geminate the following consonant
+            if processed_string[current_idx] == 'っ':
+                if current_idx + 1 < text_len:
+                    # Find the next romaji mapping to determine consonant to double
+                    for next_key in self.sorted_romaji_map_keys:
+                        if processed_string.startswith(next_key, current_idx + 1):
+                            next_romaji = self.romaji_map[next_key]
+                            if next_romaji:
+                                result_romaji_list.append(next_romaji[0])
+                            break
+                current_idx += 1
+                continue
             matched = False
             # self.sorted_romaji_map_keys は長いキーから順に試す
             # Iterate through sorted keys (longest first) from instance attribute.
