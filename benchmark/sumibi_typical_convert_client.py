@@ -22,7 +22,12 @@ class SumibiTypicalConvertClient:
         """
         self.api_key = api_key or os.getenv("SUMIBI_AI_API_KEY") or os.getenv("OPENAI_API_KEY")
         base_url_env = base_url or os.getenv("SUMIBI_AI_BASEURL") or "https://api.openai.com"
-        self.base_url = base_url_env.rstrip("/") + "/v1"
+        # バージョン指定 (/v1) が含まれている場合は追加せず、そのまま使用
+        raw_url = base_url_env.rstrip("/")
+        if "/v1" in raw_url:
+            self.base_url = raw_url
+        else:
+            self.base_url = raw_url + "/v1"
         self.model = model or os.getenv("SUMIBI_AI_MODEL") or "gpt-4.1"
         self.temperature = temperature
         self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
