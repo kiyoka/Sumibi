@@ -7,27 +7,30 @@ plot_mean_response_time.py
 """
 import matplotlib.pyplot as plt
 
-# モデル名と平均応答時間 (mean_elapsed_sec) 値
+## モデル名と平均応答時間 (mean_elapsed_sec) 値
+# 両プロットで同じ順序・カラーを使用
 modules = [
-    'deepseek-v3',
     'gpt-4.1-mini',
     'gpt-4.1',
     'gpt-4o-mini',
     'gpt-4o',
     'o4-mini',
+    'deepseek-v3',
 ]
 # 各モデルの mean_elapsed_sec
 mean_elapsed_secs = [
-    6.444244,   # deepseek-v3
     0.908558,   # gpt-4.1-mini
     0.985278,   # gpt-4.1
     0.912621,   # gpt-4o-mini
     0.821817,   # gpt-4o
     21.780880,  # o4-mini
+    6.444244,   # deepseek-v3
 ]
 
-# カラー設定（モデルごと）
-colors = ['red', 'skyblue', 'orange', 'gray', 'green', 'purple']
+# カラー設定（モデルごと, plot_errorrate_vs_cost.py と同順序）
+colors = ['skyblue', 'orange', 'gray', 'green', 'pink', 'red']
+
+import matplotlib.pyplot as plt
 
 # バーグラフの描画
 plt.figure(figsize=(10, 6))
