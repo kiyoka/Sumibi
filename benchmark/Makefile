@@ -1,12 +1,20 @@
+EVAL    := ./AJIMEE-Bench/JWTD_v2/v1/evaluation_items.json
+SCRIPT  := sumibi_bench.py
+RESULTS := gpt-4.1-mini.json gpt-4.1.json gpt-4o-mini.json gpt-4o.json
 
-result/gpt-4.1-mini.json  : ./AJIMEE-Bench/JWTD_v2/v1/evaluation_items.json sumibi_bench.py
-	python3 sumibi_bench.py ./AJIMEE-Bench/JWTD_v2/v1/evaluation_items.json result/gpt-4.1-mini.json
+.DEFAULT_GOAL := help
+.PHONY: help all clean
 
-result/gpt-4.1.json  : ./AJIMEE-Bench/JWTD_v2/v1/evaluation_items.json sumibi_bench.py
-	python3 sumibi_bench.py ./AJIMEE-Bench/JWTD_v2/v1/evaluation_items.json result/gpt-4.1.json
+help:
+	@echo "Usage: make [target]"
+	@echo "Targets:"
+	@echo "  all     generate all result JSONs"
+	@echo "  clean   remove result JSONs"
 
-result/gpt-4o-mini.json  : ./AJIMEE-Bench/JWTD_v2/v1/evaluation_items.json sumibi_bench.py
-	python3 sumibi_bench.py ./AJIMEE-Bench/JWTD_v2/v1/evaluation_items.json result/gpt-4o-mini.json
+all: $(addprefix result/,$(RESULTS))
 
-result/gpt-4o.json  : ./AJIMEE-Bench/JWTD_v2/v1/evaluation_items.json sumibi_bench.py
-	python3 sumibi_bench.py ./AJIMEE-Bench/JWTD_v2/v1/evaluation_items.json result/gpt-4o.json
+result/%.json: $(EVAL) $(SCRIPT)
+	python3 $(SCRIPT) $(EVAL) $@
+
+clean:
+	rm -f result/*.json
