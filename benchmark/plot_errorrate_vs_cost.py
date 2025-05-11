@@ -48,7 +48,9 @@ plt.xlabel("Cost Per Request ($)")
 plt.ylabel("Error Rate (%)")
 plt.title("Error Rate vs Cost of LLM Model")
 plt.grid(True)
-# ラベルがプロット外に出ても描画するためマージンを追加
-plt.margins(x=0.05, y=0.1)
+# y 軸を 0%～110% の範囲に設定
+plt.ylim(0, 110)
+# ラベルがプロット外に出ても描画するためマージンを追加（x 軸のみ）
+plt.margins(x=0.05)
 plt.tight_layout()
 plt.show()
