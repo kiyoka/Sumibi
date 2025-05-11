@@ -29,7 +29,7 @@ def summarize(results):
     cer が 1.0 を超える場合は 1.0 に丸めて平均を計算
     at1 の平均値を計算
     elapsed_sec の最小値、最大値、平均値を計算
-    戻り値: (mean_cer, mean_at1, min_elapsed, max_elapsed, mean_elapsed)
+    戻り値: (mean_cer, mean_at1, min_elapsed_sec, max_elapsed_sec, mean_elapsed_sec)
     """
     n = len(results)
     if n == 0:
@@ -47,10 +47,10 @@ def summarize(results):
     mean_at1 = at1_sum / n
     # elapsed_sec の最小値、最大値、平均値
     elapsed_vals = [rec.get('elapsed_sec', 0.0) for rec in results]
-    min_elapsed = min(elapsed_vals)
-    max_elapsed = max(elapsed_vals)
-    mean_elapsed = sum(elapsed_vals) / n
-    return mean_cer, mean_at1, min_elapsed, max_elapsed, mean_elapsed
+    min_elapsed_sec = min(elapsed_vals)
+    max_elapsed_sec = max(elapsed_vals)
+    mean_elapsed_sec = sum(elapsed_vals) / n
+    return mean_cer, mean_at1, min_elapsed_sec, max_elapsed_sec, mean_elapsed_sec
 
 def main():
     parser = argparse.ArgumentParser(
@@ -63,11 +63,11 @@ def main():
         except Exception as e:
             print(f"Error loading '{path}': {e}", file=sys.stderr)
             continue
-        mean_cer, mean_at1, min_elapsed, max_elapsed, mean_elapsed = summarize(results)
+        mean_cer, mean_at1, min_elapsed_sec, max_elapsed_sec, mean_elapsed_sec = summarize(results)
         print(
             f"{path}: mean_cer = {mean_cer:.6f}, mean_at1 = {mean_at1:.6f}, "
-            f"min_elapsed = {min_elapsed:.6f}, max_elapsed = {max_elapsed:.6f}, "
-            f"mean_elapsed = {mean_elapsed:.6f}"
+            f"min_elapsed_sec = {min_elapsed_sec:.6f}, max_elapsed_sec = {max_elapsed_sec:.6f}, "
+            f"mean_elapsed_sec = {mean_elapsed_sec:.6f}"
         )
 
 if __name__ == '__main__':
