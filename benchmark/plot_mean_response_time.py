@@ -16,6 +16,7 @@ modules = [
     'gpt-4o',
     'o4-mini',
     'deepseek-v3',
+    'gemini-2.0-flash',
 ]
 # 各モデルの mean_elapsed_sec
 mean_elapsed_secs = [
@@ -25,10 +26,11 @@ mean_elapsed_secs = [
     0.821817,   # gpt-4o
     21.780880,  # o4-mini
     6.444244,   # deepseek-v3
+    0.651836,   # 
 ]
 
 # カラー設定（モデルごと, plot_errorrate_vs_cost.py と同順序）
-colors = ['skyblue', 'orange', 'gray', 'green', 'pink', 'red']
+colors = ['skyblue', 'orange', 'gray', 'green', 'pink', 'red', 'purple']
 
 import matplotlib.pyplot as plt
 
