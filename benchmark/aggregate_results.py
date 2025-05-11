@@ -7,7 +7,7 @@ aggregate_results.py
   - JSON 形式のベンチマーク結果ファイルを読み込み
   - cer の平均値 (1.0 を超える場合は 1.0 に丸め)
   - at1 の平均値を計算
-  - elapsed_sec の範囲 (max - min) を計算
+  - elapsed_sec の最小値、最大値、平均値を計算
 
 Usage example:
   python3 aggregate_results.py benchmark/result/gpt-4.1.json
@@ -28,12 +28,12 @@ def summarize(results):
     results: List[Dict]  各要素に 'cer' (float)、'at1' (int)、'elapsed_sec' (float) を含む
     cer が 1.0 を超える場合は 1.0 に丸めて平均を計算
     at1 の平均値を計算
-    elapsed_sec の範囲 (max - min) を計算
-    戻り値: (mean_cer, mean_at1, elapsed_range)
+    elapsed_sec の最小値、最大値、平均値を計算
+    戻り値: (mean_cer, mean_at1, min_elapsed, max_elapsed, mean_elapsed)
     """
     n = len(results)
     if n == 0:
-        return float('nan'), float('nan'), float('nan')
+        return float('nan'), float('nan'), float('nan'), float('nan'), float('nan')
     cer_sum = 0.0
     at1_sum = 0.0
     for rec in results:
@@ -45,17 +45,16 @@ def summarize(results):
         at1_sum += rec.get('at1', 0)
     mean_cer = cer_sum / n
     mean_at1 = at1_sum / n
-    # elapsed_sec の範囲 (max - min)
+    # elapsed_sec の最小値、最大値、平均値
     elapsed_vals = [rec.get('elapsed_sec', 0.0) for rec in results]
-    if elapsed_vals:
-        elapsed_range = max(elapsed_vals) - min(elapsed_vals)
-    else:
-        elapsed_range = float('nan')
-    return mean_cer, mean_at1, elapsed_range
+    min_elapsed = min(elapsed_vals)
+    max_elapsed = max(elapsed_vals)
+    mean_elapsed = sum(elapsed_vals) / n
+    return mean_cer, mean_at1, min_elapsed, max_elapsed, mean_elapsed
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Aggregate CER and at1 from JSON benchmark results')
+        description='Aggregate CER, AT1, and elapsed_sec stats from JSON benchmark results')
     parser.add_argument('files', nargs='+', help='result JSON files')
     args = parser.parse_args()
     for path in args.files:
@@ -64,8 +63,12 @@ def main():
         except Exception as e:
             print(f"Error loading '{path}': {e}", file=sys.stderr)
             continue
-        mean_cer, mean_at1, elapsed_range = summarize(results)
-        print(f"{path}: mean_cer = {mean_cer:.6f}, mean_at1 = {mean_at1:.6f}, elapsed_range = {elapsed_range:.6f}")
+        mean_cer, mean_at1, min_elapsed, max_elapsed, mean_elapsed = summarize(results)
+        print(
+            f"{path}: mean_cer = {mean_cer:.6f}, mean_at1 = {mean_at1:.6f}, "
+            f"min_elapsed = {min_elapsed:.6f}, max_elapsed = {max_elapsed:.6f}, "
+            f"mean_elapsed = {mean_elapsed:.6f}"
+        )
 
 if __name__ == '__main__':
     main()
