@@ -1,7 +1,7 @@
 EVAL    := ./AJIMEE-Bench/JWTD_v2/v1/evaluation_items.json
 SCRIPT  := sumibi_bench.py
 RESULTS := gpt-4.1-mini.json gpt-4.1.json gpt-4o-mini.json gpt-4o.json deepseek-v3.json o4-mini.json \
-	   gemini-2.0-flash.json \
+	   gemini-2.0-flash.json gemini-2.0-flash-lite.json gemini-2.5-pro-preview-05-06.json gemini-2.5-flash-preview-04-17.json \
 	   gemma-3-12b-it-qat.json japanese-stablelm-instruct-gamma-7b.json
 
 .DEFAULT_GOAL := help
