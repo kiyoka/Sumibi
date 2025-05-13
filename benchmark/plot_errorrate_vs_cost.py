@@ -11,6 +11,9 @@ models = [
     'o4-mini',
     'deepseek-v3',
     'gemini-2.0-flash',
+    'gemini-2.0-flash-lite',
+    'gemini-2.5-pro-preview-05-06',
+    'gemini-2.5-flash-preview-04-17',
 ]
 error_rate = [ # 単位: %
     0.430172,
@@ -20,6 +23,9 @@ error_rate = [ # 単位: %
     0.332583,
     0.592557,
     0.266489,
+    0.356546,
+    0.093759,
+    0.137815,
 ]
 costs = [ # 単位: $/リクエスト ( sumibi_typical_convert_client.py でリクエスト500トークン、レスポンス200トークンを消費すると仮定した)
     0.00052,
@@ -29,11 +35,27 @@ costs = [ # 単位: $/リクエスト ( sumibi_typical_convert_client.py でリ�
     0.00143,
     0.000355,
     0.00013,
+    0.0000975,
+    0.002625,
+    0.000195,
 ]
+colors = [
+    'palegreen',
+    'lightgreen',
+    'mediumspringgreen',
+    'springgreen',
+    'mediumseagreen',
+    'pink',
+    'lightgray',
+    'silver',
+    'darkgray',
+    'gray',
+    'dimgray',
+]    
 
 # 散布図の描画とモデル名の表示
 plt.figure(figsize=(8, 6))
-colors = ['skyblue', 'orange', 'gray', 'green', 'pink', 'red', 'purple']
+
 for name, cost, err, c in zip(models, costs, error_rate, colors):
     # Error Rate をパーセント表示に変換してプロット
     pct = err * 100
