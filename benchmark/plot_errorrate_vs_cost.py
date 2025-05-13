@@ -51,15 +51,32 @@ colors = [
     'darkgray',
     'gray',
     'dimgray',
-]    
+]
+
+# 各モデルの平均応答時間 (mean_elapsed_sec)
+mean_elapsed_secs = [
+    0.908558,   # gpt-4.1-mini
+    0.985278,   # gpt-4.1
+    0.912621,   # gpt-4o-mini
+    0.821817,   # gpt-4o
+    21.780880,  # o4-mini
+    6.444244,   # deepseek-v3
+    0.651836,   # gemini-2.0-flash
+    0.709727,   # gemini-2.0-flash-lite
+    28.210514,  # gemini-2.5-pro-preview-05-06
+    6.640661,   # gemini-2.5-flash-preview-04-17
+]
+# 円の大きさスケール (s = mean_elapsed_sec * SCALE)
+SCALE = 50
 
 # 散布図の描画とモデル名の表示
 plt.figure(figsize=(8, 6))
 
-for name, cost, err, c in zip(models, costs, error_rate, colors):
-    # Error Rate をパーセント表示に変換してプロット
+# 各モデルをコスト vs エラーレートでプロット (円の大きさは平均応答時間に比例)
+for name, cost, err, c, sec in zip(models, costs, error_rate, colors, mean_elapsed_secs):
     pct = err * 100
-    plt.scatter(cost, pct, s=150, color=c)
+    size = sec * SCALE
+    plt.scatter(cost, pct, s=size, color=c)
     plt.annotate(name,
                  xy=(cost, pct),
                  xytext=(5, 5),
