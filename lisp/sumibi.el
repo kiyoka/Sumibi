@@ -499,8 +499,11 @@ Argument DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
                          (gethash "message"
                                   (aref (gethash "choices" json-obj) count))))
                (utf8-str
-                (decode-coding-string (url-unhex-string hex-str) 'utf-8)))
-          (setq result (cons utf8-str result)))
+                (decode-coding-string (url-unhex-string hex-str) 'utf-8))
+               (clean-str
+		;; 末尾の改行文字を削除する
+		(string-trim-right utf8-str "\n")))
+          (setq result (cons clean-str result)))
         (setq count (1+ count)))
       result))))
 
