@@ -91,13 +91,27 @@
 
 (defvar sumibi-mode nil             "漢字変換トグル変数.")
 
+
+(defun sumibi-drop-right-slash (url)
+  (if (string-suffix-p "/" url)
+      (substring url 0 -1)
+    url))
+
 (defun sumibi-ai-base-url ()
-  "利用中のAI接続先のベースURLを返す。末尾のスラッシュを含まない。"
-  (let ((url (or (getenv "SUMIBI_AI_BASEURL")
-                 "https://api.openai.com")))
-    (if (string-suffix-p "/" url)
-        (substring url 0 -1)
-      url)))
+  "利用中のAIエンドポイントのベースURLを返す。末尾のスラッシュは含まない.
+SUMIBI_AI_BASEURL環境変数が未設定の場合はデフォルトURL\"https://api.openai.com/v1\"を返す.
+環境変数に\"/v1\"が含まれている場合は、値から末尾のスラッシュを除去して返す.
+それ以外の場合は、値から末尾のスラッシュを除去し、末尾に\"/v1\"を付加して返す."
+  (let ((env (getenv "SUMIBI_AI_BASEURL")))
+    (cond
+     ((not env)
+      "https://api.openai.com/v1")
+     ((string-match-p "/v1" env)
+      (sumibi-drop-right-slash env))
+     (t
+      (concat 
+       (sumibi-drop-right-slash env)
+       "/v1")))))
 
 (defun sumibi-ai-model ()
   "利用中のAIモデル名を返す."
@@ -414,7 +428,7 @@ Argument SYNC-FUNC : OpenAI API を同期呼び出しで呼び出す場合は
 Argument DEFERRED-FUNC: 非同期呼び出し時のコールバック関数(1).
 Argument DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
   (let* ((base (sumibi-ai-base-url))
-         (url (concat base "/v1/chat/completions")))
+         (url (concat base "/chat/completions")))
     (setq url-request-method "POST")
     (setq url-http-version "1.1")
     (setq url-request-extra-headers
