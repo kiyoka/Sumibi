@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 ## モデル名と平均応答時間 (mean_elapsed_sec) 値
 # 両プロットで同じ順序・カラーを使用
 modules = [
+    'gpt-3.5-turbe',
     'gpt-4.1-mini',
     'gpt-4.1',
     'gpt-4o-mini',
@@ -23,6 +24,7 @@ modules = [
 ]
 # 各モデルの mean_elapsed_sec
 mean_elapsed_secs = [
+    0.836779,   # gpt-3.5-turbe
     0.908558,   # gpt-4.1-mini
     0.985278,   # gpt-4.1
     0.912621,   # gpt-4o-mini
@@ -42,6 +44,7 @@ colors = [
     'mediumspringgreen',
     'springgreen',
     'mediumseagreen',
+    'springgreen',
     'pink',
     'lightgray',
     'silver',

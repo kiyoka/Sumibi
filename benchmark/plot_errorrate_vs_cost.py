@@ -5,6 +5,7 @@ from matplotlib.lines import Line2D
 変換エラー率とコストの比較グラフをプロットする
 """
 models = [
+    'gpt-3.5-turbe',
     'gpt-4.1-mini',
     'gpt-4.1',
     'gpt-4o-mini',
@@ -17,6 +18,7 @@ models = [
     'gemini-2.5-pro-preview-05-06',
 ]
 error_rate = [ # 単位: %
+    0.721777,
     0.430172,
     0.218878,
     0.735027,
@@ -29,6 +31,7 @@ error_rate = [ # 単位: %
     0.093759,
 ]
 costs = [ # 単位: $/リクエスト ( sumibi_typical_convert_client.py でリクエスト500トークン、レスポンス200トークンを消費すると仮定した)
+    0.00055,
     0.00052,
     0.00260,
     0.000195,
@@ -46,6 +49,7 @@ colors = [
     'mediumspringgreen',
     'springgreen',
     'mediumseagreen',
+    'springgreen',
     'pink',
     'lightgray',
     'silver',
@@ -56,6 +60,7 @@ colors = [
 
 # 各モデルの平均応答時間 (mean_elapsed_sec)
 mean_elapsed_secs = [
+    0.836779,   # gpt-3.5-turbe
     0.908558,   # gpt-4.1-mini
     0.985278,   # gpt-4.1
     0.912621,   # gpt-4o-mini
