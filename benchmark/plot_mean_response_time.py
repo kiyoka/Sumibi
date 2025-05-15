@@ -81,7 +81,7 @@ for bar, val, err in zip(bars, mean_elapsed_secs, error_rates):
 
 plt.xlabel('Model')
 plt.ylabel('Mean Response Time (sec)')
-plt.title('Mean Response Time and Error Rate for Each Model')
+plt.title('Mean Response Time and Each Model')
 plt.xticks(rotation=45)
 plt.grid(axis='y', linestyle='--', alpha=0.7)
 plt.tight_layout()
