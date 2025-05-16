@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+import argparse
 """
 変換エラー率とコストの比較グラフをプロットする
 """
@@ -123,4 +124,12 @@ plt.legend(handles, labels,
            labelspacing=1.5,
            framealpha=0.5)
 plt.tight_layout()
-plt.show()
+
+# コマンドライン引数による出力先指定
+parser = argparse.ArgumentParser(description='Plot error rate vs cost')
+parser.add_argument('-o', '--output', help='Output image file path')
+args = parser.parse_args()
+if args.output:
+    plt.savefig(args.output, dpi=300, bbox_inches='tight')
+else:
+    plt.show()

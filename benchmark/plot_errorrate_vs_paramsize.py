@@ -8,6 +8,7 @@ Usage:
   モジュール名、error_rates、param_sizes リストを編集後、実行
 """
 import matplotlib.pyplot as plt
+import argparse
 
 # モデル名リスト
 modules = [
@@ -48,4 +49,12 @@ plt.grid(True)
 plt.ylim(0, 110)
 plt.margins(x=0.05)
 plt.tight_layout()
-plt.show()
+
+# コマンドライン引数による出力先指定
+parser = argparse.ArgumentParser(description='Plot error rate vs parameter size')
+parser.add_argument('-o', '--output', help='Output image file path')
+args = parser.parse_args()
+if args.output:
+    plt.savefig(args.output, dpi=300, bbox_inches='tight')
+else:
+    plt.show()

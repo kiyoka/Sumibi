@@ -6,6 +6,7 @@ plot_mean_response_time.py
 各モデルの平均応答時間（mean_elapsed_sec）をバーグラフでプロットする
 """
 import matplotlib.pyplot as plt
+import argparse
 
 ## モデル名と平均応答時間 (mean_elapsed_sec) 値
 # 両プロットで同じ順序・カラーを使用
@@ -107,4 +108,12 @@ for bar, val in zip(bars, mean_elapsed_secs):
                  ha='left', va='center')
 
 plt.tight_layout()
-plt.show()
+
+# コマンドライン引数による出力先指定
+parser = argparse.ArgumentParser(description='Plot mean response time')
+parser.add_argument('-o', '--output', help='Output image file path')
+args = parser.parse_args()
+if args.output:
+    plt.savefig(args.output, dpi=300, bbox_inches='tight')
+else:
+    plt.show()
