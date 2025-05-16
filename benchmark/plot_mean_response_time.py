@@ -88,7 +88,7 @@ ax2 = ax1.twiny()
 err_pct = [e * 100 for e in error_rates]
 # バーの中心 y 座標を取得
 y_centers = [bar.get_y() + bar.get_height() / 2 for bar in bars]
-ax2.plot(err_pct, y_centers, 'o-', color='red', label='Error Rate')
+ax2.plot(err_pct, y_centers, 'o-', color='firebrick', label='Error Rate')
 ax2.set_xlabel('Error Rate (%)')
 ax2.set_xlim(0, 100)
 ax2.set_xticks(range(0, 101, 10))
