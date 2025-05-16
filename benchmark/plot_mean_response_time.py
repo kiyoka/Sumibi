@@ -52,12 +52,6 @@ colors = [
     'gray',
 ]
 
-import matplotlib.pyplot as plt
-
-## バーグラフの描画 (左軸: 平均応答時間, 注釈にエラーレートを表示)
-plt.figure(figsize=(10, 6))
-bars = plt.bar(modules, mean_elapsed_secs, color=colors)
-
 ## 各モデルのエラーレート (mean_cer)
 error_rates = [
     0.721777,  # gpt-3.5-turbe
@@ -72,20 +66,33 @@ error_rates = [
     0.137815,  # gemini-2.5-flash-preview-04-17
     0.093759,  # gemini-2.5-pro-preview-05-06
 ]
+# 応答時間が長い順にソート
+sorted_idx = sorted(range(len(mean_elapsed_secs)), key=lambda i: mean_elapsed_secs[i], reverse=True)
+modules = [modules[i] for i in sorted_idx]
+mean_elapsed_secs = [mean_elapsed_secs[i] for i in sorted_idx]
+colors = [colors[i] for i in sorted_idx]
+error_rates = [error_rates[i] for i in sorted_idx]
 
-# 各バーに値とエラーレートを表示
+import matplotlib.pyplot as plt
+
+## バーグラフの描画 (横軸: 平均応答時間, 注釈にエラーレートを表示)
+plt.figure(figsize=(10, 6))
+# 横軸に平均応答時間、縦軸にモデル名を表示する横長バーグラフに変更
+bars = plt.barh(modules, mean_elapsed_secs, color=colors)
+
+## 各バーに値とエラーレートを表示
 for bar, val, err in zip(bars, mean_elapsed_secs, error_rates):
-    height = bar.get_height()
+    width = bar.get_width()
+    y_pos = bar.get_y() + bar.get_height() / 2
     plt.annotate(f'{val:.2f}s\n{err*100:.1f}%',
-                 xy=(bar.get_x() + bar.get_width() / 2, height),
-                 xytext=(0, 5),
+                 xy=(width, y_pos),
+                 xytext=(5, 0),
                  textcoords='offset points',
-                 ha='center', va='bottom')
+                 ha='left', va='center')
 
-plt.xlabel('Model')
-plt.ylabel('Mean Response Time (sec)')
+plt.xlabel('Mean Response Time (sec)')
+plt.ylabel('Model')
 plt.title('Mean Response Time and Each Model')
-plt.xticks(rotation=45)
-plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.grid(axis='x', linestyle='--', alpha=0.7)
 plt.tight_layout()
 plt.show()
