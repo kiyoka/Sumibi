@@ -50,7 +50,6 @@ colors = [
     'silver',
     'darkgray',
     'gray',
-    'dimgray',
 ]
 
 import matplotlib.pyplot as plt
@@ -61,6 +60,7 @@ bars = plt.bar(modules, mean_elapsed_secs, color=colors)
 
 ## 各モデルのエラーレート (mean_cer)
 error_rates = [
+    0.721777,  # gpt-3.5-turbe
     0.430172,  # gpt-4.1-mini
     0.218878,  # gpt-4.1
     0.735027,  # gpt-4o-mini

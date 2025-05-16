@@ -55,7 +55,6 @@ colors = [
     'silver',
     'darkgray',
     'gray',
-    'dimgray',
 ]
 
 # 各モデルの平均応答時間 (mean_elapsed_sec)
