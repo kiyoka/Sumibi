@@ -74,25 +74,37 @@ colors = [colors[i] for i in sorted_idx]
 error_rates = [error_rates[i] for i in sorted_idx]
 
 import matplotlib.pyplot as plt
+# メイン軸：平均応答時間を横長バーでプロット
+fig, ax1 = plt.subplots(figsize=(10, 6))
+bars = ax1.barh(modules, mean_elapsed_secs, color=colors)
 
-## バーグラフの描画 (横軸: 平均応答時間, 注釈にエラーレートを表示)
-plt.figure(figsize=(10, 6))
-# 横軸に平均応答時間、縦軸にモデル名を表示する横長バーグラフに変更
-bars = plt.barh(modules, mean_elapsed_secs, color=colors)
+ax1.set_xlabel('Mean Response Time (sec)')
+ax1.set_ylabel('Model')
+ax1.grid(axis='x', linestyle='--', alpha=0.7)
 
-## 各バーに値とエラーレートを表示
-for bar, val, err in zip(bars, mean_elapsed_secs, error_rates):
-    width = bar.get_width()
-    y_pos = bar.get_y() + bar.get_height() / 2
-    plt.annotate(f'{val:.2f}s\n{err*100:.1f}%',
-                 xy=(width, y_pos),
+# 補助軸：エラー率を折れ線でプロット
+ax2 = ax1.twiny()
+# エラー率をパーセントに変換
+err_pct = [e * 100 for e in error_rates]
+# バーの中心 y 座標を取得
+y_centers = [bar.get_y() + bar.get_height() / 2 for bar in bars]
+ax2.plot(err_pct, y_centers, 'o-', color='red', label='Error Rate')
+ax2.set_xlabel('Error Rate (%)')
+ax2.set_xlim(0, 100)
+ax2.set_xticks(range(0, 101, 10))
+ax2.xaxis.set_label_position('top')
+ax2.xaxis.set_ticks_position('top')
+ax2.legend(loc='lower right')
+
+# 平均応答時間の値をバーの右側にアノテーション
+for bar, val in zip(bars, mean_elapsed_secs):
+    x = bar.get_width()
+    y = bar.get_y() + bar.get_height() / 2
+    ax1.annotate(f'{val:.2f}s',
+                 xy=(x, y),
                  xytext=(5, 0),
                  textcoords='offset points',
                  ha='left', va='center')
 
-plt.xlabel('Mean Response Time (sec)')
-plt.ylabel('Model')
-plt.title('Mean Response Time and Each Model')
-plt.grid(axis='x', linestyle='--', alpha=0.7)
 plt.tight_layout()
 plt.show()
