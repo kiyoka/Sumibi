@@ -76,13 +76,21 @@ M-x sumibi-switch-modelでポップアップから利用モデルを動的に変
 
 ## 利用するAIサービスの切り替え
 
-AIサービスとしてOpenAI以外にも切り替えることができます。OpenAIのcompletions APIと互換性のあるサービスであれば、環境変数で切り替えることができます。ローカルのLLMを利用する場合なども活用してください。
+AIサービスはOpenAI以外にも切り替えられます。OpenAIのcompletions APIと互換性のあるサービスであれば、環境変数で切り替えることができます。ローカルのLLMを利用する場合なども活用してください。
+
+- 向き先をGeminiに切り替える場合
+
+    ```
+    (setenv "SUMIBI_AI_API_KEY" "AIxxxxxxxxxxxxxxxxxxxxxxxxxxxx") ;; Gemini APIのAPIキー
+    (setenv "SUMIBI_AI_BASEURL" "https://generativelanguage.googleapis.com/v1beta/openai/") ;; Gemini APIのエンドポイントURL
+    (setenv "SUMIBI_AI_MODEL" "gemini-2.0-flash") ;; Geminiのチャット用モデル
+    ```
 
 - 向き先をDeepSeekに切り替える場合
 
     ```
     (setenv "SUMIBI_AI_API_KEY" "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxx") ;; DeepSeekのAPIキー
-    (setenv "SUMIBI_AI_BASEURL" "https://api.deepseek.com") ;; DeepSeekのエンドポイントURL
+    (setenv "SUMIBI_AI_BASEURL" "https://api.deepseek.com/") ;; DeepSeekのエンドポイントURL
     (setenv "SUMIBI_AI_MODEL" "deepseek-chat") ;; DeeSeekのチャット用モデル
     ```
 
@@ -91,7 +99,7 @@ AIサービスとしてOpenAI以外にも切り替えることができます。
 
     ```
     (setenv "SUMIBI_AI_API_KEY" "xxxxxxxx") ;; ダミーのAPIキー
-    (setenv "SUMIBI_AI_BASEURL" "http://192.168.56.1:1234") ;; ローカルLLMのエンドポイントURL
+    (setenv "SUMIBI_AI_BASEURL" "http://192.168.56.1:1234/") ;; ローカルLLMのエンドポイントURL
     (setenv "SUMIBI_AI_MODEL" "gemma-3-12b-it-qat") ;; ローカルLLMのモデル名
     ```
 
