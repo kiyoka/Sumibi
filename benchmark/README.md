@@ -14,7 +14,110 @@ benchmark ディレクトリの README
 - `plot_errorrate_vs_paramsize.py`: 文字誤り率とモデルパラメータ数の関係をプロット
 - `result/`: 各モデルのベンチマーク結果 JSON ファイル
 
-## 測定結果サマリ
+## Chat Completion API 呼び出し内容
+
+ベンチマークでは、`sumibi_typical_convert_client.py` 内で以下の Chat Completion API 呼び出しを行っています:
+
+```python
+response = self.client.chat.completions.create(
+    model=モデル名,
+    temperature=0.8,
+    n=1,
+    messages=messages,
+)
+```
+
+### プロンプト (`messages`) の内容
+
+| role      | content |
+|-----------|---------|
+| system    | あなたはローマ字とひらがなを日本語に変換するアシスタントです。ローマ字の 「nn」 は 「ん」と読んでください。\[\]\(URL\)のようなmarkdown構文は維持してください。\# や \#\# や \#\#\# や \#\#\#\# のようなmarkdown構文は維持してください。  |
+| user      | ローマ字とひらがなの文を漢字仮名混じり文にしてください。 周辺の文章は、「こんにちは、中野です。watashi no namae ha nakano desu . どうぞよろしくお願いします。」のような文章になっています。周辺の文脈を見てそれに合った語彙を選んでください。: watashi no namae ha nakano desu . |
+| assistant | 私の名前は中野です。 |
+| user      | ローマ字とひらがなの文を漢字仮名混じり文にしてください。周辺の文章は、「説明はここまでです。それ以外は ikano toori desu .」のような文章になっています。周辺の文脈を見てそれに合った語彙を選んでください。: ikano toori desu . |
+| assistant | 以下の通りです。 |
+| user      | ローマ字とひらがなの文を漢字仮名混じり文にしてください。 周辺の文章は、「{**surrounding_text**}」のような文章になっています。 周辺の文脈を見てそれに合った語彙を選んでください。: {**text**} |
+
+※ **surrounding_text** 部分には「増えたkotode,onnjowuwotorimodoshi,」のような変換対象の周辺文章を含む文字列が埋め込まれて実行されます。
+※ **text**部分には「kotode,onnjowuwotorimodoshi,」のような変換対象の文字列が埋め込まれて実行されます。
+
+## 測定結果グラフ
+
+
+![plot1](../images/plot_errorrate_vs_cost_1000x600.png)
+
+![plot2](../images/plot_mean_response_time_1000x600.png)
+
+## 傾向分析
+Sumibi のユーザビリティを左右する主要因として、以下の3つの観点が重要です。
+1. レイテンシー（応答時間）
+2. 文字誤り率（CER: Character Error Rate）
+3. API 利用コスト（$/リクエスト）
+
+以下ではこれらを組み合わせた傾向を分析します。
+
+### レイテンシーと精度のトレードオフでの評価
+- **1秒未満でバランス良好**  
+  - `gemini-2.0-flash`：約0.65s / CER約26.7% / $0.00013。最速かつ低コストで実用的。  
+  - `gpt-4o`：約0.82s / CER約19.7% / $0.00550。高精度だがコストは高め。  
+- **1秒未満だがトレードオフあり**  
+  - `gemini-2.0-flash-lite`：約0.71s / CER約35.7% / $0.0000975。コスト最小だが精度はやや犠牲。  
+  - `gpt-3.5-turbo`：約0.84s / CER約72.2% / $0.00055。高速かつ中コストだが精度は低い。  
+  - `gpt-4.1-mini` / `gpt-4o-mini`：約0.9s前後 / CER高め（43.0%, 73.5%） / $0.00052, $0.000195。用途を選ぶ。  
+  - `gpt-4.1`：約0.99s / CER約21.9% / $0.00260。速度・コストとも中程度。  
+- **1秒以上で実用性低下**  
+  - `deepseek-v3` / `gemini-2.5-flash-preview-04-17`：約6.4〜6.6s / CER約59.3%, 13.8% / $0.000355, $0.000195。低コストだが遅延が大きい。  
+  - `o4-mini` / `gemini-2.5-pro-preview-05-06`：約21.8〜28.2s / CER約33.3%, 9.4% / $0.00143, $0.002625。高い遅延 または高コスト。  
+
+### コスト面の評価
+- **低コスト重視**  
+  - `gemini-2.0-flash-lite`：$0.0000975。最も安価。リアルタイム用途でコストを抑えたい場合に適する。  
+  - `gemini-2.0-flash`：$0.00013。高速かつ安価な実用モデル。  
+- **中コスト帯のバランス**  
+  - `gpt-4o-mini` / `gpt-4.1-mini`：$0.000195〜$0.00052。中程度のコストで、多様な用途に対応。  
+- **高コスト・高精度**  
+  - `gpt-4o`：$0.00550。高精度だがコストが最大級。  
+  - `gemini-2.5-pro-preview-05-06`：$0.002625。高精度かつコストも高め。  
+
+### 総合評価
+リアルタイムかつコストを最優先するなら `gemini-2.0-flash-lite` または `gemini-2.0-flash`。  
+精度重視でコストを許容できるなら `gpt-4o` や `gemini-2.5-pro-preview-05-06`。  
+速度・精度・コストのバランスを取りたい場合は、実際の要件に応じて中コスト帯のモデル（`gpt-4o-mini` / `gpt-4.1-mini`）を検討してください。
+
+## Sumibiの推奨モデル
+3つの観点を総合するとgemini-2.0-flashとgpt-4.1が推奨と判断します。
+
+## ベンチマーク環境の構築手順
+
+1. Sumibiのリポジトリをgit cloneする
+
+```bash
+   git clone git@github.com:kiyoka/Sumibi.git
+```
+2. https://github.com/azooKey/AJIMEE-Bench のソースコード一式をダウンロードする
+
+3. ./Sumibi/benchmarkAJIMEE-Benchにダウンロードしたソースコード一式を展開する
+
+## 実行手順
+1. ベンチマーク実行 ( google のgemini-2.0-flashのベンチマークデータ取得の例)
+   ```bash
+   export SUMIBI_AI_API_KEY="AIxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+   export SUMIBI_AI_BASEURL=https://generativelanguage.googleapis.com/v1beta/openai/
+   export SUMIBI_AI_MODEL=gemini-2.5-flash-preview-04-17   
+   make result/gemini-2.0-flash.json
+   ```  
+
+2. 結果集計
+   ```bash
+   make aggregate 
+   ```  
+   
+3. プロット生成
+   ```bash
+   make plots
+   ```
+
+## 付録:測定結果データ
 
 ### 平均応答時間（秒）
 | モデル名                                | 平均応答時間 |
@@ -46,75 +149,3 @@ benchmark ディレクトリの README
 | gpt-3.5-turbe                          |    72.18  |
 | gpt-4o-mini                            |    73.50  |
 
-## 測定結果グラフ
-
-![plot1](../images/plot_errorrate_vs_cost_1000x600.png)
-
-![plot2](../images/plot_mean_response_time_1000x600.png)
-
-## 傾向分析
-Sumibi のユーザビリティを左右する主要因として、以下の3 つの観点が重要です。
-1. レイテンシー（応答時間）
-2. 文字誤り率（CER: Character Error Rate）
-3. API 利用コスト（$/リクエスト）
-
-以下ではこれらを組み合わせた傾向を分析します。
-
-### レイテンシーと精度のトレードオフ
-- **1秒未満でバランス良好**  
-  - `gemini-2.0-flash`：約0.65s / CER約26.7% / $0.00013。最速かつ低コストで実用的。  
-  - `gpt-4o`：約0.82s / CER約19.7% / $0.00550。高精度だがコストは高め。  
-- **1秒未満だがトレードオフあり**  
-  - `gemini-2.0-flash-lite`：約0.71s / CER約35.7% / $0.0000975。コスト最小だが精度はやや犠牲。  
-  - `gpt-3.5-turbo`：約0.84s / CER約72.2% / $0.00055。高速かつ中コストだが精度は低い。  
-  - `gpt-4.1-mini` / `gpt-4o-mini`：約0.9s前後 / CER高め（43.0%, 73.5%） / $0.00052, $0.000195。用途を選ぶ。  
-- **1秒以上で実用性低下**  
-  - `gpt-4.1`：約0.99s / CER約21.9% / $0.00260。速度・コストとも中程度。  
-  - `deepseek-v3` / `gemini-2.5-flash-preview-04-17`：約6.4〜6.6s / CER約59.3%, 13.8% / $0.000355, $0.000195。低コストだが遅延が大きい。  
-  - `o4-mini` / `gemini-2.5-pro-preview-05-06`：約21.8〜28.2s / CER約33.3%, 9.4% / $0.00143, $0.002625。高い遅延 または高コスト。  
-
-### コスト面の評価
-- **低コスト重視**  
-  - `gemini-2.0-flash-lite`：$0.0000975。最も安価。リアルタイム用途でコストを抑えたい場合に適する。  
-  - `gemini-2.0-flash`：$0.00013。高速かつ安価な実用モデル。  
-- **中コスト帯のバランス**  
-  - `gpt-4o-mini` / `gpt-4.1-mini`：$0.000195〜$0.00052。中程度のコストで、多様な用途に対応。  
-- **高コスト・高精度**  
-  - `gpt-4o`：$0.00550。高精度だがコストが最大級。  
-  - `gemini-2.5-pro-preview-05-06`：$0.002625。高精度かつコストも高め。  
-
-### 総合評価
-リアルタイムかつコストを最優先するなら `gemini-2.0-flash-lite` または `gemini-2.0-flash`。  
-精度重視でコストを許容できるなら `gpt-4o` や `gemini-2.5-pro-preview-05-06`。  
-速度・精度・コストのバランスを取りたい場合は、実際の要件に応じて中コスト帯のモデル（`gpt-4o-mini` / `gpt-4.1-mini`）を検討してください。
-
-
-## ベンチマーク環境の構築手順
-
-1. Sumibiのリポジトリをgit cloneする
-
-```bash
-   git clone git@github.com:kiyoka/Sumibi.git
-```
-2. https://github.com/azooKey/AJIMEE-Bench のソースコード一式をダウンロードする
-
-3. ./Sumibi/benchmarkAJIMEE-Benchにダウンロードしたソースコード一式を展開する
-
-## 実行手順
-1. ベンチマーク実行 ( google のgemini-2.0-flashのベンチマークデータ取得の例)
-   ```bash
-   export SUMIBI_AI_API_KEY="AIxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-   export SUMIBI_AI_BASEURL=https://generativelanguage.googleapis.com/v1beta/openai/
-   export SUMIBI_AI_MODEL=gemini-2.5-flash-preview-04-17   
-   make result/gemini-2.0-flash.json
-   ```  
-
-2. 結果集計
-   ```bash
-   make aggregate 
-   ```  
-   
-3. プロット生成
-   ```bash
-   make plots
-   ```
