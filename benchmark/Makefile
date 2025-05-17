@@ -27,7 +27,7 @@ clean:
 	rm -f result/*.json
 
 # Generate plot images in the project's images directory
-plots: ../images/plot_errorrate_vs_cost.png ../images/plot_errorrate_vs_paramsize.png ../images/plot_mean_response_time.png
+plots: ../images/plot_errorrate_vs_cost.png ../images/plot_errorrate_vs_paramsize.png ../images/plot_mean_response_time.png ../images/plot_errorrate_vs_cost_1000x600.png ../images/plot_errorrate_vs_paramsize_1000x600.png ../images/plot_mean_response_time_1000x600.png
 
 ../images/plot_errorrate_vs_cost.png: plot_errorrate_vs_cost.py
 	python3 $< -o $@
@@ -37,3 +37,12 @@ plots: ../images/plot_errorrate_vs_cost.png ../images/plot_errorrate_vs_paramsiz
 
 ../images/plot_mean_response_time.png: plot_mean_response_time.py
 	python3 $< -o $@
+
+../images/plot_errorrate_vs_cost_1000x600.png: ../images/plot_errorrate_vs_cost.png
+	convert $< -resize 1000x600 $@
+
+../images/plot_errorrate_vs_paramsize_1000x600.png: ../images/plot_errorrate_vs_paramsize.png
+	convert $< -resize 1000x600 $@
+
+../images/plot_mean_response_time_1000x600.png: ../images/plot_mean_response_time.png
+	convert $< -resize 1000x600 $@
