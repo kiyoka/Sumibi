@@ -1,4 +1,5 @@
 
 .unotes/*
 /benchmark/__pycache__
+benchmark/AJIMEE-Bench
 benchmark/evaluation_items.json

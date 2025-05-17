@@ -53,21 +53,33 @@ benchmark ディレクトリの README
 - **小型モデルの限界**: `gpt-4o-mini` は応答時間（約0.91s）こそ悪くないものの、CER が高め（約73.5%）で、変換精度を求める場面には不向き。
 - **大規模モデルの遅延と精度**: `o4-mini` や `gemini-2.5` 系はモデルサイズが大きく品質は高いが、応答時間が数秒〜数十秒に及ぶため、インタラクティブ用途には要注意。
 
+
+## ベンチマーク環境の構築手順
+
+1. Sumibiのリポジトリをgit cloneする
+
+```bash
+   git clone git@github.com:kiyoka/Sumibi.git
+```
+2. https://github.com/azooKey/AJIMEE-Bench のソースコード一式をダウンロードする
+
+3. ./Sumibi/benchmarkAJIMEE-Benchにダウンロードしたソースコード一式を展開する
+
 ## 実行手順
-1. ベンチマーク実行
+1. ベンチマーク実行 ( google のgemini-2.0-flashのベンチマークデータ取得の例)
    ```bash
-   python3 sumibi_bench.py
+   export SUMIBI_AI_API_KEY="AIxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+   export OPENAI_API_KEY=$SUMIBI_AI_API_KEY
+   export SUMIBI_AI_BASEURL=https://generativelanguage.googleapis.com/v1beta/openai/
+   export SUMIBI_AI_MODEL=gemini-2.5-flash-preview-04-17   
+   make result/gemini-2.0-flash.json
    ```  
 2. 結果集計
    ```bash
-   python3 aggregate_results.py
+   make aggregate 
    ```  
+   
 3. プロット生成
    ```bash
-   python3 plot_mean_response_time.py
-   python3 plot_errorrate_vs_cost.py
-   python3 plot_errorrate_vs_paramsize.py
+   make plots
    ```
-
-----
-*最終更新: 2025-05-16*  
