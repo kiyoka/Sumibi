@@ -15,6 +15,8 @@ Sumibiはモードレスです。
 
 よくある質問はこちら。[FAQ](FAQ.md)
 
+ベンチマーク結果はこちら。[benchmarkのREADME](benchmark/README.md)
+
 ## 利用可能なEmacsバージョン
 
 Emacs version 28.x (Windows/Linux/macOS) で動作します。Emacs以外の追加ソフトウェアは不要です。
