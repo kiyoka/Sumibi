@@ -112,35 +112,3 @@ Sumibi のユーザビリティを左右する主要因として、以下の3つ
    make plots
    ```
 
-## 付録:測定結果データ
-
-### 平均応答時間（秒）
-| モデル名                                | 平均応答時間 |
-|----------------------------------------|-----------:|
-| gemini-2.0-flash                       |      0.65  |
-| gemini-2.0-flash-lite                  |      0.71  |
-| gpt-4o                                 |      0.82  |
-| gpt-3.5-turbe                          |      0.84  |
-| gpt-4.1-mini                           |      0.91  |
-| gpt-4o-mini                            |      0.91  |
-| gpt-4.1                                |      0.99  |
-| deepseek-v3                            |      6.44  |
-| gemini-2.5-flash-preview-04-17         |      6.64  |
-| o4-mini                                |     21.78  |
-| gemini-2.5-pro-preview-05-06           |     28.21  |
-
-### ローマ字かな漢字変換誤り率（CER）
-| モデル名                                | CER (%)   |
-|----------------------------------------|---------:|
-| gemini-2.5-pro-preview-05-06           |     9.38  |
-| gemini-2.5-flash-preview-04-17         |    13.78  |
-| gpt-4o                                 |    19.74  |
-| gpt-4.1                                |    21.89  |
-| gemini-2.0-flash                       |    26.65  |
-| gemini-2.0-flash-lite                  |    35.65  |
-| o4-mini                                |    33.26  |
-| deepseek-v3                            |    59.26  |
-| gpt-4.1-mini                           |    43.02  |
-| gpt-3.5-turbe                          |    72.18  |
-| gpt-4o-mini                            |    73.50  |
-
