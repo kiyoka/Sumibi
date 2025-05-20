@@ -2,7 +2,9 @@ EVAL    := ./AJIMEE-Bench/JWTD_v2/v1/evaluation_items.json
 SCRIPT  := sumibi_bench.py
 RESULTS := gpt-3.5-turbe.json gpt-4.1-mini.json gpt-4.1.json gpt-4o-mini.json gpt-4o.json deepseek-v3.json o4-mini.json \
 	   gemini-2.0-flash.json gemini-2.0-flash-lite.json gemini-2.5-pro-preview-05-06.json gemini-2.5-flash-preview-04-17.json \
-	   gemma-3-12b-it-qat.json japanese-stablelm-instruct-gamma-7b.json
+	   gemma-3-12b-it-qat.json gemma-3-27b-it-qat.json japanese-stablelm-instruct-gamma-7b.json \
+	   hermes-3-llama-3.2-3b.json llama-4-scout-17b-16e-instruct.json \
+	   llama-3.3-70b-instruct.json
 
 .DEFAULT_GOAL := help
 .PHONY: help all aggregate clean plots
