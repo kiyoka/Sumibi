@@ -39,6 +39,7 @@ class SumibiBench:
         print(f"  => elapsed: {elapsed:.2f} sec")
         print(f"surrounding_text: '{surrounding_text}'")
         print(f"henkan_text:     '{henkan_text}'")
+        print(f"expect:          '{expected_output}'")
         print(f"result:          '{result}'\n")
         cer = ajimee_utils.calculate_MinCER(expected_output, result)
         at1 = ajimee_utils.calculate_accuracy_at1(expected_output, result)
