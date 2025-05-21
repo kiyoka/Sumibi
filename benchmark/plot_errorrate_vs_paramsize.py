@@ -12,18 +12,42 @@ import argparse
 
 # モデル名リスト
 modules = [
+    'gemma-3-12b-it-qat',
+    'gemma-3-27b-it-qat',
+    'gemma-3-27b-it-Q8_0',
     'japanese-stablelm-instruct-gamma-7b',
-    'gemma-3-12b-it-qat'
+    'hermes-3-llama-3.2-3b',
+    'llama-4-scout-17b-16e-instruct',
+    'llama-3.3-70b-instruct',
 ]
-# エラー率 (比率: 0.05 == 5%)
+# エラー率 (mean CER)
 error_rates = [
-    0.981412,
-    0.853688
+    0.844450,
+    0.803389,
+    0.839824,
+    0.939121,
+    0.989908,
+    0.874311,
+    0.902066,
 ]
 # パラメータ数 (ビリオン単位)
 param_sizes = [
+    12,
+    27,
+    27,
     7,
-    12
+    3,
+    17,
+    70,
+]
+markers = [
+    's',
+    's',
+    's',
+    'o',
+    's',
+    's',
+    's',
 ]
 
 # カラー設定 (モデル数に合わせて調整)
@@ -32,9 +56,9 @@ colors = base_colors[:len(modules)]
 
 plt.figure(figsize=(8, 6))
 # 散布図: x=Parameter Size (Billion), y=Error Rate (%)
-for name, err, size, c in zip(modules, error_rates, param_sizes, colors):
+for name, err, size, marker, c in zip(modules, error_rates, param_sizes, markers, colors):
     pct = err * 100
-    plt.scatter(size, pct, s=150, color=c)
+    plt.scatter(size, pct, s=150, color=c, marker=marker)
     plt.annotate(name,
                  xy=(size, pct),
                  xytext=(5, 5),
