@@ -111,10 +111,17 @@ Sumibi のユーザビリティを左右する主要因として、以下の3つ
    ```bash
    make plots
    ```
-## ローカルLLMの実行環境
+# ローカルLLM
+ローカルLLMでもベンチマークを取得しました。ローカルで稼働できるモデルには費用面で限度があるため、Sumibiには適していないことが分かります。
+ローカルLLMは計算コストと変換性能のバランスが悪いため、Sumibiは各種ビッグテックのAPI経由で利用することが最も現実的です。
+100Bサイズのパラメータまで計測しましたが、パラメータサイズを大きくしても、変換精度向上はほとんど見られませんでした。
 
-- GPU-16GByte RAMに収まる場合、 g6.xlarge 使用 ( USD 1.3512 )
-- GPU 48GByte RAMに拡張したい場合、g6e.2xlarge 使用 ( USD 3.61968 )
+![plot3](../images/plot_errorrate_vs_paramsize_1000x600.png)
+
+# ローカルLLMの実行環境
+
+- GPU-16GByte RAMに収まる場合、 AWS g6.xlarge 使用 ( USD 1.3512 )
+- GPU 48GByte RAMに拡張したい場合、AWS g6e.2xlarge 使用 ( USD 3.61968 )
 
 ### 利用するEC2インスタンスタイプ
 
