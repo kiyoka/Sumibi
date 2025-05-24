@@ -33,7 +33,7 @@ from matplotlib.lines import Line2D
 # ---------------------------------------------------------------------------
 # 価格は従来スクリプトの値を流用
 MASTER_COST: Dict[str, float] = {
-    "gpt-3.5-turbe": 0.00055,
+    "gpt-3.5-turbo": 0.00055,
     "gpt-4.1-mini": 0.00052,
     "gpt-4.1": 0.00260,
     "gpt-4o-mini": 0.000195,
@@ -49,7 +49,7 @@ MASTER_COST: Dict[str, float] = {
 # モデルごとの基本色。matplotlib の named color もしくは hex
 # 同一モデルではバージョンが違っても同じ色で塗り、透明度で区別する。
 COLOR_MAP: Dict[str, str] = {
-    "gpt-3.5-turbe": "palegreen",
+    "gpt-3.5-turbo": "palegreen",
     "gpt-4.1-mini": "lightgreen",
     "gpt-4.1": "mediumspringgreen",
     "gpt-4o-mini": "springgreen",
@@ -67,7 +67,7 @@ COLOR_MAP: Dict[str, str] = {
 # ---------------------------------------------------------------------------
 # v2.3.0
 DATA_V23: Dict[str, Dict[str, float]] = {
-    "gpt-3.5-turbe": {"cer": 0.721777, "elapsed": 0.836779},
+    "gpt-3.5-turbo": {"cer": 0.721777, "elapsed": 0.836779},
     "gpt-4.1-mini": {"cer": 0.430172, "elapsed": 0.908558},
     "gpt-4.1": {"cer": 0.218878, "elapsed": 0.985278},
     "gpt-4o-mini": {"cer": 0.735027, "elapsed": 0.912621},

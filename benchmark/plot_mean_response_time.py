@@ -11,7 +11,7 @@ import argparse
 ## モデル名と平均応答時間 (mean_elapsed_sec) 値
 # 両プロットで同じ順序・カラーを使用
 modules = [
-    'gpt-3.5-turbe',
+    'gpt-3.5-turbo',
     'gpt-4.1-mini',
     'gpt-4.1',
     'gpt-4o-mini',
@@ -25,7 +25,7 @@ modules = [
 ]
 # 各モデルの mean_elapsed_sec
 mean_elapsed_secs = [
-    0.836779,   # gpt-3.5-turbe
+    0.836779,   # gpt-3.5-turbo
     0.908558,   # gpt-4.1-mini
     0.985278,   # gpt-4.1
     0.912621,   # gpt-4o-mini
@@ -55,7 +55,7 @@ colors = [
 
 ## 各モデルのエラーレート (mean_cer)
 error_rates = [
-    0.721777,  # gpt-3.5-turbe
+    0.721777,  # gpt-3.5-turbo
     0.430172,  # gpt-4.1-mini
     0.218878,  # gpt-4.1
     0.735027,  # gpt-4o-mini
