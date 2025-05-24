@@ -6,10 +6,10 @@
       "青年誌で描くことの理由として、男性青年誌における男性優位の性意識（",
       "青年誌で書くことの理由として、男性青年誌における男性優位の性意識（"
     ],
-    "result": "青年誌で描くことの理由として、男性青年誌における男性誘因の性意識（",
-    "cer": 0.06060606060606061,
-    "at1": 0,
-    "elapsed_sec": 0.7880788879992906
+    "result": "青年誌で描くことの理由として、男性青年誌における男性優位の性意識（",
+    "cer": 0.0,
+    "at1": 1,
+    "elapsed_sec": 1.3676349410015973
   },
   {
     "surrounding_text": "きっかけで、漫画の仕事noiraigakuruyouni",
@@ -17,10 +17,10 @@
     "expect": [
       "の依頼が来るように"
     ],
-    "result": "のようになる。",
-    "cer": 0.7777777777777778,
+    "result": "の様に来るように。\n",
+    "cer": 0.5555555555555556,
     "at1": 0,
-    "elapsed_sec": 0.5440057699961471
+    "elapsed_sec": 0.5317263910037582
   },
   {
     "surrounding_text": "２００６年７月５日、名古屋市内の６７歳nodannseikatanodozoukara,munakatashikousakuhinntoomowareruhannganado,kottouhinnsannbyakutenngatounann",
@@ -30,10 +30,10 @@
       "の男性方の土蔵から、棟方志功作品と思われる版画など、骨董品300点が盗難",
       "の男性方の土蔵から、棟方志功作品と思われる版画など、骨董品三百点が盗難"
     ],
-    "result": "の男性方の土蔵から、棟方志功工作品と思われる版画など、骨董品三百点などが盗難。\n",
-    "cer": 0.14285714285714285,
+    "result": "の男性像から、棟方志功作と思われる版画など、骨董品三百点などが盗難。\n",
+    "cer": 0.2571428571428571,
     "at1": 0,
-    "elapsed_sec": 0.8715463380067376
+    "elapsed_sec": 0.7998859490035102
   },
   {
     "surrounding_text": "tatoebatyokkouzahyouheimennjounoninninotennnogenntennkara",
@@ -42,10 +42,10 @@
       "例えば直交座標平面上の任意の点の原点から",
       "たとえば直交座標平面上の任意の点の原点から"
     ],
-    "result": "例えば直交座標平面上の任意の一点の原点から",
-    "cer": 0.05,
+    "result": "例えば直交座標平面上の任意の点の原点から。\n",
+    "cer": 0.1,
     "at1": 0,
-    "elapsed_sec": 0.5801843410008587
+    "elapsed_sec": 0.5619609400018817
   },
   {
     "surrounding_text": "主人公とすることが多く,honnsakumosono",
@@ -56,7 +56,7 @@
     "result": "、本作品もその",
     "cer": 0.16666666666666666,
     "at1": 0,
-    "elapsed_sec": 0.5162060669972561
+    "elapsed_sec": 0.5735471309963032
   },
   {
     "surrounding_text": "ある。それが無かったら、その後の重要な科学的な発見は成しえなかっta.]tokojinntekinakannsouwonokoshitaga,ainnshutainnharekishiwosennkoushiteorazu,konoyounakannchigaiwoshita",
@@ -64,10 +64,10 @@
     "expect": [
       "た。」と個人的な感想を残したが、アインシュタインは歴史を専攻しておらず、このような勘違いをした"
     ],
-    "result": "た]。陶磁器的な印象を遺したが、アインシュタインは歴史を先攻しておらず、このような勘違いをした",
-    "cer": 0.19148936170212766,
+    "result": "た。] 独断的観想を したが、アインシュタインは歴史を先攻しておらず、このような勘違いをした。\n",
+    "cer": 0.2127659574468085,
     "at1": 0,
-    "elapsed_sec": 0.807245921001595
+    "elapsed_sec": 0.8384282039987738
   },
   {
     "surrounding_text": "deha,giinnnofutaihotokkenn",
@@ -75,10 +75,10 @@
     "expect": [
       "では、議員の不逮捕特権"
     ],
-    "result": "では、議員の不逮捕特権。\n",
-    "cer": 0.18181818181818182,
+    "result": "では、議員の付帯報告書。",
+    "cer": 0.5454545454545454,
     "at1": 0,
-    "elapsed_sec": 1.2354022299987264
+    "elapsed_sec": 0.5712586000008741
   },
   {
     "surrounding_text": "配偶者の氏nihennkou,aruihafukugouseiwosenntakusurutamenihasonoyounikonninnmaenitetsudukiwookonawa",
@@ -89,10 +89,10 @@
       "に変更、あるいは複合姓を選択する為にはそのように婚姻前に手続きを行わ",
       "に変更、あるいは複合姓を選択する為にはそのように婚姻前に手続きをおこなわ"
     ],
-    "result": "氏の変更、あるいは復氏を選択するために、そのように婚姻前に手続きを行った。\n",
-    "cer": 0.2857142857142857,
+    "result": "氏の変更、または復氏を選択するために、そのように婚姻前に手続きを行います。\n",
+    "cer": 0.4,
     "at1": 0,
-    "elapsed_sec": 0.885924406000413
+    "elapsed_sec": 0.660328373000084
   },
   {
     "surrounding_text": "改暦以降hashinnrekihachigatsutsuitachimoshikuhatsukiokurenokugatsutsuitachi",
@@ -102,10 +102,10 @@
       "は新暦八月一日もしくは月遅れの九月一日",
       "は新暦8月1日もしくは月遅れの9月1日"
     ],
-    "result": "発新暦八月朔日、もしくは八月遅れの九月朔日。\n",
-    "cer": 0.3684210526315789,
+    "result": "廃新暦八月朔日もしくは月遅れの九月朔日。\n",
+    "cer": 0.2631578947368421,
     "at1": 0,
-    "elapsed_sec": 0.6005571870045969
+    "elapsed_sec": 0.5785628160010674
   },
   {
     "surrounding_text": "mitasebahennshinnberutowotenishitamonogadaredemokamennraida-ninarerutoiu,kokomadenoheiseiraida-detsuchikawaretaime-jinoshuutaiseitekinasakuhinn",
@@ -114,10 +114,10 @@
       "満たせば変身ベルトを手にしたものが誰でも仮面ライダーになれるという、ここまでの平成ライダーで培われたイメージの集大成的な作品",
       "満たせば変身ベルトを手にした者が誰でも仮面ライダーになれるという、ここまでの平成ライダーで培われたイメージの集大成的な作品"
     ],
-    "result": "満たせば変身ベルトを手にした者が誰でも仮面ライダーになれるという、これまでの平成ライダーで培われたイメージの集大成的作品。\n",
+    "result": "満たせば変身ベルトを手にいれた者が誰でも仮面ライダーになれるという、ここまでの平成ライダーで培われたイメージの集大成的な作品。\n",
     "cer": 0.06557377049180328,
     "at1": 0,
-    "elapsed_sec": 0.8323408519936493
+    "elapsed_sec": 0.7494856679986697
   },
   {
     "surrounding_text": "路線はその西端の中野駅から東京都心部を横断しtaato,sonomamahigashihoukouninobi",
@@ -131,7 +131,7 @@
     "result": "たあと、そのまま東方向へ伸び。\n",
     "cer": 0.21428571428571427,
     "at1": 0,
-    "elapsed_sec": 0.5460164109972538
+    "elapsed_sec": 0.5709597309978562
   },
   {
     "surrounding_text": "歳だった１９６sannnennkugatsujuugonichi,yuujinnnodeni-su・makune-agahakujinnyuuetsuronnshaniyorujuurokubanngaiseiyohanekyoukaidenobakudanntero",
@@ -147,10 +147,10 @@
       "三年九月十五日、友人のデニース・マクネーアが白人優越論者による16番街聖ヨハネ教会での爆弾テロ",
       "三年九月十五日、友人のデニース・マクネーアが白人優越論者による十六番街聖ヨハネ教会での爆弾テロ"
     ],
-    "result": "三年九月十五日、友人のデニス・マクネーガーは人種差別論者による十六番外生医科殿の爆弾テロ",
-    "cer": 0.3191489361702128,
+    "result": "3年9月15日、友人のデニス・マクネーアは人種差別論者による16番街救世軍派教会での爆弾テロ。\n",
+    "cer": 0.2553191489361702,
     "at1": 0,
-    "elapsed_sec": 0.8723127669945825
+    "elapsed_sec": 0.9682773110034759
   },
   {
     "surrounding_text": "kukeijounihairetsushita",
@@ -158,10 +158,10 @@
     "expect": [
       "矩形状に配列した"
     ],
-    "result": "形状に配列した。\n",
-    "cer": 0.375,
+    "result": "矩形に配置した。\n",
+    "cer": 0.5,
     "at1": 0,
-    "elapsed_sec": 0.5142342390026897
+    "elapsed_sec": 0.6053556199985906
   },
   {
     "surrounding_text": "nokennkyuute-madearutahennsuufukusokannsuuronn",
@@ -170,10 +170,10 @@
       "の研究テーマである多変数複素関数論",
       "の研究テーマである多変数複素函数論"
     ],
-    "result": "の権研究テーマでアルタ変数の複素関数論。",
-    "cer": 0.35294117647058826,
+    "result": "ノケンキューテまでアルタヘン数複素関数論。\n",
+    "cer": 0.8235294117647058,
     "at1": 0,
-    "elapsed_sec": 0.836654119004379
+    "elapsed_sec": 0.6456359939984395
   },
   {
     "surrounding_text": "また同シリーズのキャラクター商品権によるビジネスで成功woosametaru-kasuhasonoshikinnwoeizou・onnkyoukannkeinodejitarukawotyuushinntoshitagijutsukaihatsunitoushishi,eigakainitadai",
@@ -181,10 +181,10 @@
     "expect": [
       "を収めたルーカスはその資金を映像・音響関係のデジタル化を中心とした技術開発に投資し、映画界に多大"
     ],
-    "result": "を治めたるか、その資金を映像・音響関係のデジタル化を中心とした技術開発に投資し、映画界に大",
-    "cer": 0.14583333333333334,
+    "result": "ウォサメタール・カスハその資金を映像・音響関係のデジタル化を中心とした技術開発に投資し、映画界に大い",
+    "cer": 0.20833333333333334,
     "at1": 0,
-    "elapsed_sec": 0.6717581589982728
+    "elapsed_sec": 0.6768684630005737
   },
   {
     "surrounding_text": "、急性中毒や、sapurimenntonosesshunadoniyorikeizokutekinikajousesshushitabaainihaikanoyou",
@@ -192,10 +192,10 @@
     "expect": [
       "サプリメントの摂取などにより継続的に過剰摂取した場合には以下のよう"
     ],
-    "result": "サプリメントの摂取などにより、継続的に過剰摂取した場合は肝臓のよう。\n",
-    "cer": 0.18181818181818182,
+    "result": "サプリメントの摂取などにより継続的に過剰摂取した場合には、肝機能障害。",
+    "cer": 0.21212121212121213,
     "at1": 0,
-    "elapsed_sec": 0.7539519809943158
+    "elapsed_sec": 0.5957099470033427
   },
   {
     "surrounding_text": "部屋新設の基準が厳格化されたこともari(koujutsu),sumoubeyanokazuhagennshoukeikou",
@@ -203,10 +203,10 @@
     "expect": [
       "あり（後述）、相撲部屋の数は減少傾向"
     ],
-    "result": "あり（後述）、相撲部屋の数は減少傾向。\n",
-    "cer": 0.1111111111111111,
+    "result": "あり（口述）、相撲部屋の数は減少傾向。\n",
+    "cer": 0.16666666666666666,
     "at1": 0,
-    "elapsed_sec": 0.5532882850020542
+    "elapsed_sec": 0.7926306749941432
   },
   {
     "surrounding_text": "joudoshinnshuujitennga,doreniteishokusurunndesu",
@@ -218,7 +218,7 @@
     "result": "浄土真宗辞典が、どれに定食するんです。\n",
     "cer": 0.2222222222222222,
     "at1": 0,
-    "elapsed_sec": 0.6353604839969194
+    "elapsed_sec": 0.6191489729972091
   },
   {
     "surrounding_text": "釈尊の入滅はsuusetsuaruga,",
@@ -226,10 +226,10 @@
     "expect": [
       "数説あるが、"
     ],
-    "result": "数説あるが、",
-    "cer": 0.0,
-    "at1": 1,
-    "elapsed_sec": 0.4875433540000813
+    "result": "諸説あるが、",
+    "cer": 0.16666666666666666,
+    "at1": 0,
+    "elapsed_sec": 0.47068621399375843
   },
   {
     "surrounding_text": "歯のないくちばしを持つこと、kataikarawomotsutamagowoumukoto,takaitaisharitsu",
@@ -245,7 +245,7 @@
     "result": "硬い殻を持つ卵を産むこと、高い代謝率。\n",
     "cer": 0.1111111111111111,
     "at1": 0,
-    "elapsed_sec": 0.7203362599975662
+    "elapsed_sec": 0.7031436520046555
   },
   {
     "surrounding_text": "滞在中のshukushotoshitetsukuttashiro",
@@ -253,10 +253,10 @@
     "expect": [
       "宿所として造った城"
     ],
-    "result": "宿泊所として作った城",
-    "cer": 0.2222222222222222,
+    "result": "宿泊所として作った城。",
+    "cer": 0.3333333333333333,
     "at1": 0,
-    "elapsed_sec": 0.442491786001483
+    "elapsed_sec": 0.476787270999921
   },
   {
     "surrounding_text": "公共交通機関は、basugakushiroekikaraakannkohannmade",
@@ -264,10 +264,10 @@
     "expect": [
       "バスが釧路駅から阿寒湖畔まで"
     ],
-    "result": "バスが釧路駅から赤ん湖畔まで。\n",
-    "cer": 0.2857142857142857,
+    "result": "バスが釧路駅から阿寒湖畔まで。",
+    "cer": 0.07142857142857142,
     "at1": 0,
-    "elapsed_sec": 0.5643756019999273
+    "elapsed_sec": 0.8035954329970991
   },
   {
     "surrounding_text": "死刑判決を受けたスコッツボロー事件では大規模な釈放運動を行い、saishinnnouekaihouwokachitotta",
@@ -278,10 +278,10 @@
       "再審の上解放を勝ちとった",
       "再審のうえ解放を勝ちとった"
     ],
-    "result": "再審と、最終的な解放を勝ち取った。\n",
-    "cer": 0.6153846153846154,
+    "result": "再審と、更なる解放を勝ち取った。\n",
+    "cer": 0.5384615384615384,
     "at1": 0,
-    "elapsed_sec": 0.5879374260039185
+    "elapsed_sec": 0.578793840999424
   },
   {
     "surrounding_text": "遺言に従い、jikikouteinihakarenomusukodearu",
@@ -289,10 +289,10 @@
     "expect": [
       "次期皇帝には彼の息子である"
     ],
-    "result": "直系後継者である息子である。\n",
-    "cer": 0.7692307692307693,
+    "result": "直系後継には彼れの息子である。\n",
+    "cer": 0.5384615384615384,
     "at1": 0,
-    "elapsed_sec": 0.5896227620032732
+    "elapsed_sec": 0.6037928680016194
   },
   {
     "surrounding_text": "鉄道ファンによる鉄道撮影へのyokkyuunomuyaminakanetsuwoosaetai",
@@ -301,10 +301,10 @@
       "欲求の無闇な過熱を抑えたい",
       "欲求のむやみな過熱を抑えたい"
     ],
-    "result": "欲求の闇の中熱を抑えたい。",
-    "cer": 0.3076923076923077,
+    "result": "欲求の向こう側の熱を抑えたい。\n",
+    "cer": 0.5,
     "at1": 0,
-    "elapsed_sec": 0.46528417600347893
+    "elapsed_sec": 0.6328948160007712
   },
   {
     "surrounding_text": "入学案内に経営者２世のyouseiwoutatteita",
@@ -312,10 +312,10 @@
     "expect": [
       "養成を謳っていた"
     ],
-    "result": "要請を唱えていた。\n",
-    "cer": 0.75,
+    "result": "要請を謳っていた。",
+    "cer": 0.375,
     "at1": 0,
-    "elapsed_sec": 0.4429615460030618
+    "elapsed_sec": 0.4697955310039106
   },
   {
     "surrounding_text": "しかしエフレムはshounennjidaihatannkidewagamamanaseikakudeari",
@@ -323,10 +323,10 @@
     "expect": [
       "少年時代は短気でわがままな性格であり"
     ],
-    "result": "少年時代は反抗期で我が儘な性格であり、",
-    "cer": 0.3888888888888889,
+    "result": "少年時代は反抗期でわがままな性格であり、",
+    "cer": 0.2222222222222222,
     "at1": 0,
-    "elapsed_sec": 0.5719583879981656
+    "elapsed_sec": 0.554891628002224
   },
   {
     "surrounding_text": "本人がjishinnganakattatamekyohishiteita",
@@ -337,10 +337,10 @@
       "自信が無かった為拒否していた",
       "自信がなかった為拒否していた"
     ],
-    "result": "自信が無かったため拒否していた。\n",
+    "result": "自信がなかったため拒否していた。\n",
     "cer": 0.13333333333333333,
     "at1": 0,
-    "elapsed_sec": 0.5043290160028846
+    "elapsed_sec": 0.5280727110002772
   },
   {
     "surrounding_text": "設楽統（バナナマン）とは誕生日が同じであり、家族ぐるみで誕生日パーティーを開いたりba-sude-sonnguwookuttarisurunaka.",
@@ -352,7 +352,7 @@
     "result": "バースデーソングを歌ったりする仲。\n",
     "cer": 0.11764705882352941,
     "at1": 0,
-    "elapsed_sec": 0.539931842002261
+    "elapsed_sec": 0.6136032419963158
   },
   {
     "surrounding_text": "koboreochitashushihaakinimebae,rozettodefuyuwokosu",
@@ -362,10 +362,10 @@
       "溢れ落ちた種子は秋に芽生え、ロゼットで冬を越す",
       "零れ落ちた種子は秋に芽生え、ロゼットで冬を越す"
     ],
-    "result": "こぼれ落ちた種は秋に芽生え、ロゼットで冬を越す。",
-    "cer": 0.08333333333333333,
+    "result": "零れ落ちた種は秋に芽生え、ロゼットで冬を越す。\n",
+    "cer": 0.13043478260869565,
     "at1": 0,
-    "elapsed_sec": 0.5405478739994578
+    "elapsed_sec": 0.5328220220035291
   },
   {
     "surrounding_text": "sakuhinnwotennjisurutamenisetsuritsushitabijutsukannde,sonozannshinnnagaikannha",
@@ -377,7 +377,7 @@
     "result": "作品を展示するために設立した美術館で、その斬新な外観は",
     "cer": 0.0,
     "at1": 1,
-    "elapsed_sec": 0.5508166510044248
+    "elapsed_sec": 0.5674435189939686
   },
   {
     "surrounding_text": "「飛鳥」のkannjiwowakunnniateteiruyurai",
@@ -386,10 +386,10 @@
       "漢字を和訓に当てている由来",
       "漢字を和訓に充てている由来"
     ],
-    "result": "漢字を分かって入れている所以。\n",
-    "cer": 0.7692307692307693,
+    "result": "漢字を分かっている所以。\n",
+    "cer": 0.6923076923076923,
     "at1": 0,
-    "elapsed_sec": 0.5098762439956772
+    "elapsed_sec": 0.522376032997272
   },
   {
     "surrounding_text": "dabinifusaretaitai",
@@ -398,10 +398,10 @@
       "荼毘にふされた遺体",
       "荼毘に付された遺体"
     ],
-    "result": "だびんいふされたい。",
-    "cer": 0.6666666666666666,
+    "result": "ダビニフサレタイタイ。\n",
+    "cer": 1.3333333333333333,
     "at1": 0,
-    "elapsed_sec": 0.5309717269992689
+    "elapsed_sec": 0.5465979110012995
   },
   {
     "surrounding_text": "gaibunokashunogakkyokuseisakudeha",
@@ -409,10 +409,10 @@
     "expect": [
       "外部の歌手の楽曲制作では"
     ],
-    "result": "外聞の歌詞の楽曲制作では",
-    "cer": 0.16666666666666666,
+    "result": "外聞の歌詞の楽曲制作では。\n",
+    "cer": 0.3333333333333333,
     "at1": 0,
-    "elapsed_sec": 0.49380270700203255
+    "elapsed_sec": 0.565424679996795
   },
   {
     "surrounding_text": "両ホームは挟んでいる交差点に関してtenntaishounoichi",
@@ -420,10 +420,10 @@
     "expect": [
       "点対称の位置"
     ],
-    "result": "転退消の位置",
-    "cer": 0.5,
+    "result": "転倒衝突の位置。\n",
+    "cer": 1.0,
     "at1": 0,
-    "elapsed_sec": 0.4923535889975028
+    "elapsed_sec": 0.498188448997098
   },
   {
     "surrounding_text": "tehoshiitonaduketatokiita]tohonnninngaizennkatatteiru",
@@ -434,10 +434,10 @@
       "て欲しいと名づけたと聞いた」と本人が依然語っている",
       "てほしいと名付けたと聞いた」と本人が依然語っている"
     ],
-    "result": "「手放しと名付けたとき」と本人が言っている。\n",
-    "cer": 0.48,
+    "result": "てほし糸と名付けたと聞いた]と本人が言っていた。\n",
+    "cer": 0.32,
     "at1": 0,
-    "elapsed_sec": 0.5652143219995196
+    "elapsed_sec": 0.5871535159967607
   },
   {
     "surrounding_text": "ディーゼルエンジンとhatsudennkikennyounodennkimo-ta-wokumiawasetesoukousurunogatokutyoude,jisokuyonnjuugokirome-torumimannhadennkimo-ta-",
@@ -450,10 +450,10 @@
       "発電機兼用の電気モーターを組み合わせて走行するのが特徴で、時速45キロメートル未満は電気モーター",
       "発電機兼用の電気モーターを組み合わせて走行するのが特徴で、時速四十五キロメートル未満は電気モーター"
     ],
-    "result": "発電機兼用の電気モーターを組み合わせて走行するのが特徴で、時速45キロメートル以下は電気モーター",
-    "cer": 0.041666666666666664,
+    "result": "発電機用の電気モーターを組み合わせて走行するのが特徴で、時速45キロメートル以下は電気モーター。",
+    "cer": 0.08333333333333333,
     "at1": 0,
-    "elapsed_sec": 0.5420180059954873
+    "elapsed_sec": 0.6142775650005206
   },
   {
     "surrounding_text": "wokaerubekutyousennshitaissaku(honnninndann)]de,",
@@ -463,10 +463,10 @@
       "を変えるべく挑戦した１作（本人談）」で、",
       "を変えるべく挑戦した1作（本人談）」で、"
     ],
-    "result": "を帰るべき朝鮮視察団で、\n",
-    "cer": 0.8,
+    "result": "を帰るべく長征を試みた一策（本人団）で、",
+    "cer": 0.5,
     "at1": 0,
-    "elapsed_sec": 0.5599104799985071
+    "elapsed_sec": 0.5755223380037933
   },
   {
     "surrounding_text": "ドクター・ランドへnofukushuu",
@@ -474,10 +474,10 @@
     "expect": [
       "の復讐"
     ],
-    "result": "の復習",
-    "cer": 0.3333333333333333,
+    "result": "の復習。\n",
+    "cer": 1.0,
     "at1": 0,
-    "elapsed_sec": 0.4228724080021493
+    "elapsed_sec": 0.49246587800007546
   },
   {
     "surrounding_text": "))nokoukann(soushoushitegiseikanntoiu)wosasuyougo",
@@ -485,10 +485,10 @@
     "expect": [
       "））の高官（総称して議政官という）を指す用語"
     ],
-    "result": "))の交換(総称して偽性幹という)を誘う語",
-    "cer": 0.5454545454545454,
+    "result": "))の交換(相称して偽性幹という)を施す用語",
+    "cer": 0.5,
     "at1": 0,
-    "elapsed_sec": 0.600999807997141
+    "elapsed_sec": 0.6137271330007934
   },
   {
     "surrounding_text": "ha,fuseichiwozennryokushissousurumo-kuga",
@@ -496,10 +496,10 @@
     "expect": [
       "は、不整地を全力疾走するモークが"
     ],
-    "result": "は、不正を全力で失踪するも、工霞。\n",
-    "cer": 0.6875,
+    "result": "は、不正を全力疾走するも苦が。\n",
+    "cer": 0.4375,
     "at1": 0,
-    "elapsed_sec": 0.6323770989984041
+    "elapsed_sec": 0.8290641389976372
   },
   {
     "surrounding_text": "の場面で登板し現役最終dasekiwomukaetayokohamabeisuta-zunodaidasuzukitakanoriwofa-sutogoroniuchito",
@@ -507,10 +507,10 @@
     "expect": [
       "打席を迎えた横浜ベイスターズの代打鈴木尚典をファーストゴロに打ち取っ"
     ],
-    "result": "打席を迎えた横浜ベイスターズの代打鈴木尚典をファーストゴロに打ち。\n",
+    "result": "打席を迎えた横浜ベイスターズの代打鈴木尚典をファーストゴロに打ち取っ。\n",
     "cer": 0.058823529411764705,
     "at1": 0,
-    "elapsed_sec": 0.5820161779993214
+    "elapsed_sec": 0.633117861005303
   },
   {
     "surrounding_text": "６５dowokoeru",
@@ -522,7 +522,7 @@
     "result": "どう越える。\n",
     "cer": 1.0,
     "at1": 0,
-    "elapsed_sec": 0.4655178539978806
+    "elapsed_sec": 0.5360251300007803
   },
   {
     "surrounding_text": "shatorubasugaunnkousareteitajiki",
@@ -533,7 +533,7 @@
     "result": "シャトルバスが運行されていた時期。\n",
     "cer": 0.125,
     "at1": 0,
-    "elapsed_sec": 0.5385347480041673
+    "elapsed_sec": 0.5191927400010172
   },
   {
     "surrounding_text": "９０年から)gappeigohafukushityou",
@@ -541,10 +541,10 @@
     "expect": [
       "）合併後は副市長"
     ],
-    "result": ")合併後は副市長",
-    "cer": 0.125,
+    "result": ")合併後福祉庁",
+    "cer": 0.625,
     "at1": 0,
-    "elapsed_sec": 0.5163468099999591
+    "elapsed_sec": 0.3995896600026754
   },
   {
     "surrounding_text": "は５～６チームずつのguru-puniwakareteri-gusennwookonai,ichiiga",
@@ -560,7 +560,7 @@
     "result": "グループに分かれてリーグ戦を行い、1位が",
     "cer": 0.0,
     "at1": 1,
-    "elapsed_sec": 0.5570585150053375
+    "elapsed_sec": 0.5136859510021168
   },
   {
     "surrounding_text": "シーズンでamerikashijouhatsunojoseishusekihosakann",
@@ -568,10 +568,10 @@
     "expect": [
       "アメリカ史上初の女性首席補佐官"
     ],
-    "result": "アメリカ市場初の女性首位候補。",
+    "result": "アメリカ市場初の女性首位走者。",
     "cer": 0.4,
     "at1": 0,
-    "elapsed_sec": 0.5275646769950981
+    "elapsed_sec": 0.5176217869957327
   },
   {
     "surrounding_text": "なると思いますので、とくにコメントは出さず、状況wotyuushishitaitoomoimasuga,saishonoiraidehadetekonakatta",
@@ -579,10 +579,10 @@
     "expect": [
       "を注視したいと思いますが、最初の依頼では出てこなかった"
     ],
-    "result": "状況を注視したいと思いますが、最初の依頼では出てこなかった。\n",
+    "result": "を注視したいと思いますが出、最初の依頼では出て来なかった。\n",
     "cer": 0.14814814814814814,
     "at1": 0,
-    "elapsed_sec": 0.490589111999725
+    "elapsed_sec": 0.5544217459973879
   },
   {
     "surrounding_text": ",ichininnmaeninarukotode,jitadomoniseijinnishikiwofukame,konotokikarakarerahahajimetekekkonnshikakuwokouninnsare,",
@@ -597,10 +597,10 @@
       "、一人前になることで、自他ともに成人意識を深め、この時から彼等は初めて結婚資格を公認され、",
       "、一人前になることで、自他ともに成人意識を深め、この時から彼らは初めて結婚資格を公認され、"
     ],
-    "result": "、一人前になることで、実父に成人意識を深め、この時から彼らは初めて結婚資格を公認され、\n",
-    "cer": 0.09090909090909091,
+    "result": "、一人前になる事で、実父に成人意識を深め、この時から彼らは初めて結婚資格を公認され、",
+    "cer": 0.11363636363636363,
     "at1": 0,
-    "elapsed_sec": 0.6808073069987586
+    "elapsed_sec": 0.6372094389953418
   },
   {
     "surrounding_text": "setsuritsukannrennjigyoutoshite[dennwamounonakanomienaimyu-jiamu]gadennwamounonakanikaisetsusa",
@@ -608,10 +608,10 @@
     "expect": [
       "設立関連事業として「電話網の中の見えないミュージアム」が電話網の中に開設さ"
     ],
-    "result": "設立関連事業として[電話網の中の 見えないミュージアム]が電話網の中に開設さ",
-    "cer": 0.08108108108108109,
+    "result": "設立関連事業として[電話網の中の見えないミュージアム]が電話網の中に開設さ。\n",
+    "cer": 0.10810810810810811,
     "at1": 0,
-    "elapsed_sec": 0.6064267030014889
+    "elapsed_sec": 0.6139356400017277
   },
   {
     "surrounding_text": "に集金を行う事を[asagake],gyakunishinnyanishuukinnwookonaukotowo[yogake]toiu",
@@ -622,7 +622,7 @@
     "result": "[朝駆け]、逆に新入社員に集金を行う事を[夜駆け]と言う。\n",
     "cer": 0.4230769230769231,
     "at1": 0,
-    "elapsed_sec": 0.5860168089930085
+    "elapsed_sec": 0.6194104309979593
   },
   {
     "surrounding_text": "saremasu』toiuhyougennha,ikanimowatashigadokokanosaitokaragazouwotouyoushi",
@@ -640,7 +640,7 @@
     "result": "されます」という表現は、如何にも私が何処かのサイトから画像を盗用し",
     "cer": 0.030303030303030304,
     "at1": 0,
-    "elapsed_sec": 0.5465523170059896
+    "elapsed_sec": 0.5942486529966118
   },
   {
     "surrounding_text": "jinnbunnkagakukennkyuukahakushi",
@@ -648,10 +648,10 @@
     "expect": [
       "人文科学研究科博士"
     ],
-    "result": "人文科学研究科博士",
-    "cer": 0.0,
-    "at1": 1,
-    "elapsed_sec": 0.44555404600396287
+    "result": "人文学研究博士。\n",
+    "cer": 0.4444444444444444,
+    "at1": 0,
+    "elapsed_sec": 0.48439464299735846
   },
   {
     "surrounding_text": "naku,gamirasunodesura-soutoukarahajimetenyuudennshitatokiniha,sakugasutaffuni",
@@ -662,10 +662,10 @@
       "無く、ガミラスのデスラー総統から初めて入電したときには、作画スタッフに",
       "なく、ガミラスのデスラー総統から初めて入電したときには、作画スタッフに"
     ],
-    "result": "泣く、ガミラズノデすらー相当から初めて入電した時には、作画がスタッフに\n",
-    "cer": 0.2647058823529412,
+    "result": "泣く、ガミラさんのですら相当から初めて遊電した時には、作画がスタッフに。\n",
+    "cer": 0.38235294117647056,
     "at1": 0,
-    "elapsed_sec": 0.6600786380004138
+    "elapsed_sec": 0.6560398310029996
   },
   {
     "surrounding_text": "koreikounozokuhennwokakukotowonanndokairaisarerumo,[gojirawokorosunogakawaisoudakara",
@@ -674,10 +674,10 @@
       "これ以降の続編を書くことを何度か依頼されるも、「ゴジラを殺すのがかわいそうだから",
       "これ以降の続編を書くことを何度か依頼されるも、「ゴジラを殺すのが可哀想だから"
     ],
-    "result": "これ以降の続編を書く事を何度か依頼されるも、[ゴジラを殺すのが可愛そうだから。",
-    "cer": 0.175,
+    "result": "これ以降の続編を書くことを何度か依頼されるも、[ゴジラを殺すのが可愛そうだか",
+    "cer": 0.125,
     "at1": 0,
-    "elapsed_sec": 0.5800855310008046
+    "elapsed_sec": 0.6208053980008117
   },
   {
     "surrounding_text": "nokyoudoujisshiwohaikeinikyouryoku・rennkeikannkeinotsumikasanegaari,kennnaidemogappeimadenoshoyoukikannhasaisokudea",
@@ -692,10 +692,10 @@
       "の共同実施を背景に協力・連携関係の積み重ねがあり、県内でも合併までの所要期間は最速であっ",
       "の共同実施を背景に協力・連携関係の積み重ねがあり、圏内でも合併までの所要期間は最速であっ"
     ],
-    "result": "農協共同実施を背景に協力・連携関係の積み重ねがあり、県内でも合併までの所要期間は最短であ",
+    "result": "農協共同実施を背景に協力・連携関係の積み重ねがあり、県内でも合併までの所要期間は最短であ。",
     "cer": 0.09090909090909091,
     "at1": 0,
-    "elapsed_sec": 0.6405459180023172
+    "elapsed_sec": 0.6008632689990918
   },
   {
     "surrounding_text": "koremomatazennkokudehajimeteno",
@@ -706,7 +706,7 @@
     "result": "これもまた全国で初めての",
     "cer": 0.0,
     "at1": 1,
-    "elapsed_sec": 0.4552818099982687
+    "elapsed_sec": 0.48322314499819186
   },
   {
     "surrounding_text": "本人曰く「田園気質」であり、中学２年生の頃、横浜から奈良nitennkoushi,[jibunnnoibashohakokonannda]tokannji",
@@ -715,10 +715,10 @@
       "に転校し、「自分の居場所はここなんだ」と感じ",
       "に転校し、「自分の居場所は此処なんだ」と感じ"
     ],
-    "result": "転校し、「自分の居場所はここなんだ」と感じ。",
-    "cer": 0.09090909090909091,
+    "result": "転校し、[自分の居場所はここなんだ]と感じ。\n",
+    "cer": 0.22727272727272727,
     "at1": 0,
-    "elapsed_sec": 0.5372647879994474
+    "elapsed_sec": 0.5813013070001034
   },
   {
     "surrounding_text": ",yomiuriterebi",
@@ -733,7 +733,7 @@
     "result": ",読売テレビ",
     "cer": 0.16666666666666666,
     "at1": 0,
-    "elapsed_sec": 0.489432593996753
+    "elapsed_sec": 0.44948707400180865
   },
   {
     "surrounding_text": "緑茶生産においては、タンニンによる渋味を抑え、テアニンによる甘味を与えるため,tyajuwoshakouka",
@@ -741,10 +741,10 @@
     "expect": [
       "、茶樹を遮光下"
     ],
-    "result": "、茶樹を施肥化。",
-    "cer": 0.5714285714285714,
+    "result": "、茶樹を遮光化。",
+    "cer": 0.2857142857142857,
     "at1": 0,
-    "elapsed_sec": 0.5157056510070106
+    "elapsed_sec": 0.5102233229990816
   },
   {
     "surrounding_text": "shagekishiseiwotamochiyasukushi",
@@ -753,10 +753,10 @@
       "射撃姿勢を保ち易くし",
       "射撃姿勢を保ちやすくし"
     ],
-    "result": "射撃姿勢を保ちやすくし",
-    "cer": 0.0,
-    "at1": 1,
-    "elapsed_sec": 0.5032496690037078
+    "result": "射撃姿勢を保ちやすくし。\n",
+    "cer": 0.18181818181818182,
+    "at1": 0,
+    "elapsed_sec": 0.507796623998729
   },
   {
     "surrounding_text": "これら喪失領土や、sennryouchiniita",
@@ -765,10 +765,10 @@
       "占領地にいた",
       "占領地に居た"
     ],
-    "result": "占領地（せんりょうち）に居た。\n",
-    "cer": 1.6666666666666667,
+    "result": "占領地に行った。\n",
+    "cer": 0.6666666666666666,
     "at1": 0,
-    "elapsed_sec": 0.5498736739973538
+    "elapsed_sec": 0.47376702800102066
   },
   {
     "surrounding_text": "ha-zogukanntokuga[yogenn]shitatoori,honnkyochibusshu・sutajiamudehonnruidawoutenainadokitaiwouragiri,dounennkagiridekaikosare",
@@ -777,10 +777,10 @@
       "ハーゾグ監督が「予言」した通り、本拠地ブッシュ・スタジアムで本塁打を打てないなど期待を裏切り、同年限りで解雇され",
       "ハーゾグ監督が「予言」したとおり、本拠地ブッシュ・スタジアムで本塁打を打てないなど期待を裏切り、同年限りで解雇され"
     ],
-    "result": "ハゾグカントクが\\[予言]した通り、本拠地ブッシュ・スタジアムで本塁打を打てない時を憂い、同年に限りで解雇され",
+    "result": "ハ・ゾーガカントクが[予言]した通り、本拠地ブッシュ・スタジアムで本塁打を打てないどきどきを裏切り、同年の限りで解雇され。\n",
     "cer": 0.2857142857142857,
     "at1": 0,
-    "elapsed_sec": 0.7941219589993125
+    "elapsed_sec": 0.8594473320044926
   },
   {
     "surrounding_text": "torannpuwotewatashi,makaotojomanochikyuuseifukukeikakuwososhisuruyoutanomuga,makaotojomano",
@@ -788,10 +788,10 @@
     "expect": [
       "トランプを手渡し、マカオとジョマの地球征服計画を阻止するよう頼むが、マカオとジョマの"
     ],
-    "result": "トランプを渡、マカオとジョーの地球制服計画を阻止するよう頼むが、マカオとジョーの",
-    "cer": 0.11904761904761904,
+    "result": "トランプを手渡し、マカオとジョーの地球再生計画を組織するよう頼むが、マカオとジョーの。\n",
+    "cer": 0.19047619047619047,
     "at1": 0,
-    "elapsed_sec": 0.6389752670002053
+    "elapsed_sec": 0.6999132119963178
   },
   {
     "surrounding_text": "chichinotennkinnnitomonai,ronndonnyaro-ma",
@@ -802,7 +802,7 @@
     "result": "父の転勤に伴い、ロンドンへローマ。\n",
     "cer": 0.1875,
     "at1": 0,
-    "elapsed_sec": 0.5774512479983969
+    "elapsed_sec": 0.5453229160048068
   },
   {
     "surrounding_text": "tomonisuiheiannteibannnonaibunihanennryoutannkugamoukerare,shuyokutannkutonoaidadenennryouwoidousase,kitainojuushinnichiwoseigyosurushisutemugatousai",
@@ -810,10 +810,10 @@
     "expect": [
       "ともに水平安定板の内部には燃料タンクが設けられ、主翼タンクとの間で燃料を移動させ、機体の重心位置を制御するシステムが搭載"
     ],
-    "result": "共に水平安定版の内側に燃料タンクが設けられ、主翼とタンクの間で燃料を移動させ、機体の重心位置を制御するシステムが搭載。",
-    "cer": 0.13333333333333333,
+    "result": "共に水平安定版の内部分に燃料タンクが設けられ、主翼タンクとの間で燃料を移動させ、機体の重心位置を制御するシステムが搭載。\n",
+    "cer": 0.11666666666666667,
     "at1": 0,
-    "elapsed_sec": 0.7575506389985094
+    "elapsed_sec": 0.666708099997777
   },
   {
     "surrounding_text": "nyu-gyarari-nokaikannnisuxwe-dennwodaihyoushite",
@@ -821,10 +821,10 @@
     "expect": [
       "ニューギャラリーの開館にスウェーデンを代表して"
     ],
-    "result": "ニューギャラリーの開館にスウェーデン代表して",
-    "cer": 0.043478260869565216,
+    "result": "ニューギャラリーの開館に際し、電話を代表して。\n",
+    "cer": 0.34782608695652173,
     "at1": 0,
-    "elapsed_sec": 0.5100896270014346
+    "elapsed_sec": 0.5783690229945933
   },
   {
     "surrounding_text": "損害をkuwaetabaainioite,jikonokouinosekininnwobennshikisurunitaruchinouwosonaeteinaitokiha,sonokouinitsuitebaishousekininnwoowanaiga,sonosekininnmunouryokushawokanntokusuruhouteinogimuwooumonohabaishousekininnwo",
@@ -833,10 +833,10 @@
       "加えた場合において、自己の行為の責任を弁識するに足る知能を備えていない時は、その行為について賠償責任を負わないが、その責任無能力者を監督する法定の義務を負う者は賠償責任を",
       "加えた場合において、自己の行為の責任を弁識するに足る知能を備えていないときは、その行為について賠償責任を負わないが、その責任無能力者を監督する法定の義務を負う者は賠償責任を"
     ],
-    "result": "加えた場合において、自己の行為の責任を弁識するに足りる知能を備えていないときは、その行為について賠償責任を負わないが、その責任無能力者を監督する法定の義務を負う者は賠償責任を",
-    "cer": 0.011627906976744186,
+    "result": "加えた場合に於いて、自己の行為の責任を弁識するに足る知能を備えていない時は、その行為について賠償責任を負わないが、その責任無能力者を監督する法定の義務を負う者は賠償責任を。\n",
+    "cer": 0.03529411764705882,
     "at1": 0,
-    "elapsed_sec": 0.894081227001152
+    "elapsed_sec": 0.9402723650055123
   },
   {
     "surrounding_text": "nikoganeironokinnitsunayoukaginnnomakuwokeisei",
@@ -845,10 +845,10 @@
       "に黄金色の均一なヨウ化銀の膜を形成",
       "に黄金色の均一な沃化銀の膜を形成"
     ],
-    "result": "ニ黄色の金につなぎ、陽炎の膜を形成。\n",
-    "cer": 0.6470588235294118,
+    "result": "ニ黄金の金に綱陽火銀の膜を形成。\n",
+    "cer": 0.5625,
     "at1": 0,
-    "elapsed_sec": 0.600192457997764
+    "elapsed_sec": 0.615587594002136
   },
   {
     "surrounding_text": ",nipponnhatsunosuijoujettoko-suta-",
@@ -856,10 +856,10 @@
     "expect": [
       "、日本初の水上ジェットコースター"
     ],
-    "result": "、日本初の水上ジェットコースター",
-    "cer": 0.0,
-    "at1": 1,
-    "elapsed_sec": 0.5142970310043893
+    "result": "、日本初の水上ジェットコースター。",
+    "cer": 0.0625,
+    "at1": 0,
+    "elapsed_sec": 0.47961382700304966
   },
   {
     "surrounding_text": "、夫・献帝に禅譲を強要したsaini[futyuusha]tohinannshi",
@@ -867,10 +867,10 @@
     "expect": [
       "際に「不忠者」と非難し"
     ],
-    "result": "際に[不忠者]と避難し",
-    "cer": 0.2727272727272727,
+    "result": "斉に[不忠者]と避難し。\n",
+    "cer": 0.5454545454545454,
     "at1": 0,
-    "elapsed_sec": 0.6502139630028978
+    "elapsed_sec": 0.5223891350033227
   },
   {
     "surrounding_text": "wotoorudourozoinijuutakuchiga",
@@ -878,10 +878,10 @@
     "expect": [
       "を通る道路沿いに住宅地が"
     ],
-    "result": "を通り道路に住宅地が。",
-    "cer": 0.3333333333333333,
+    "result": "ウォートルードーロージイン二十住宅地が。\n",
+    "cer": 1.4166666666666667,
     "at1": 0,
-    "elapsed_sec": 0.5436254140004166
+    "elapsed_sec": 0.6322923270054162
   },
   {
     "surrounding_text": "peteruburugugunnnokyotennatokarahokutoragahakkutsu",
@@ -889,10 +889,10 @@
     "expect": [
       "ペテルブルグ軍の拠点跡から北斗らが発掘"
     ],
-    "result": "ペテルブルグ軍の拠点をから北トラガ発掘。\n",
-    "cer": 0.3157894736842105,
+    "result": "ペテルブルグ軍の拠點から北トラが發掘。\n",
+    "cer": 0.3684210526315789,
     "at1": 0,
-    "elapsed_sec": 0.695451936997415
+    "elapsed_sec": 0.5665398359997198
   },
   {
     "surrounding_text": "gunntoshitehennseishihajimetaga,kijunnniattakosakkuhahotonndoinakattanode,naimujinnminniinnbunoshikannyasekigunnnoheishi",
@@ -903,10 +903,10 @@
       "軍として編成し始めたが、基準に合ったコサックはほとんどいなかったので、内務人民委員部の士官や赤軍の兵士",
       "軍として編成し始めたが、基準にあったコサックはほとんどいなかったので、内務人民委員部の士官や赤軍の兵士"
     ],
-    "result": "群として編成を開始したが、基準に合った作句はほとんど居なかったので、内務人民に恩分の師管に依り軍の兵士。\n",
+    "result": "群として編成を開始したが、基準に合った作はほとんど居なかったので、内務人民に因分の視姦をせき軍の兵士。\n",
     "cer": 0.37254901960784315,
     "at1": 0,
-    "elapsed_sec": 0.7974647459996049
+    "elapsed_sec": 0.838879820999864
   },
   {
     "surrounding_text": "kannpannwakinohacchikarataikuukijuugunn",
@@ -914,10 +914,10 @@
     "expect": [
       "甲板脇のハッチから対空機銃群"
     ],
-    "result": "艦番はきの発地から対空重群。\n",
+    "result": "艦番は木の八から対空十群。\n",
     "cer": 0.7857142857142857,
     "at1": 0,
-    "elapsed_sec": 0.6447974690017872
+    "elapsed_sec": 0.5719919269977254
   },
   {
     "surrounding_text": "ha[saradapann]toyobareru,mayone-zudeaetatakuannnokomagiriwohasanndasouzaipanngaseizou",
@@ -926,10 +926,10 @@
       "は「サラダパン」と呼ばれる、マヨネーズで和えたたくあんの細切りを挟んだ惣菜パンが製造",
       "は「サラダパン」と呼ばれる、マヨネーズで和えた沢庵の細切りを挟んだ惣菜パンが製造"
     ],
-    "result": "は[サラダパン]と呼ばれる、マヨネーズで味付けたたくあんのコマ切りを挟んだ惣菜パン製造",
-    "cer": 0.19047619047619047,
+    "result": "は[サラダパン]と呼ばれる、マヨネーズで和えたたくあんの細切りを挟んだ惣菜パン製造。\n",
+    "cer": 0.11904761904761904,
     "at1": 0,
-    "elapsed_sec": 0.6067032990031294
+    "elapsed_sec": 0.5920252029973199
   },
   {
     "surrounding_text": "nado,shokuseikatsunotetteiburinihakannshinnsarerarerumono",
@@ -938,10 +938,10 @@
       "など、食生活の徹底ぶりには感心されられるもの",
       "等、食生活の徹底ぶりには感心されられるもの"
     ],
-    "result": "など、食生活の徹底ぶりには感心させられるもの。\n",
-    "cer": 0.13636363636363635,
+    "result": "など、食生活の徹底ぶりに、は感心させられるもの。\n",
+    "cer": 0.18181818181818182,
     "at1": 0,
-    "elapsed_sec": 0.5744228760013357
+    "elapsed_sec": 0.5849957190002897
   },
   {
     "surrounding_text": "認められる企業会計nokannkounishitagaubekikoto,nioite,kabushikigaishaha,houmushourei(kaishakeisannkisoku)desadamerutokoroniyori,",
@@ -949,10 +949,10 @@
     "expect": [
       "の慣行に従うべきこと、において、株式会社は、法務省令（会社計算規則）で定めるところにより、"
     ],
-    "result": "の慣行に従うべき事、に於いて、株式会社は、法務省令（会社計算規則）で定める所により、\n",
-    "cer": 0.15555555555555556,
+    "result": "の慣行に 従うべきこと に 置いて、株式会社は、 法務省令(会社計算規則)で定める所により、",
+    "cer": 0.2222222222222222,
     "at1": 0,
-    "elapsed_sec": 0.6836770740046632
+    "elapsed_sec": 0.7030889579982613
   },
   {
     "surrounding_text": "nakeitsuigaikutsukahakkennsareteori,sauroposeidonnto",
@@ -963,10 +963,10 @@
       "な頸椎がいくつか発見されており、サウロポセイドンと",
       "な頸椎が幾つか発見されており、サウロポセイドンと"
     ],
-    "result": "化石がいくつか発見されており、サウロポセイドンと",
-    "cer": 0.12,
+    "result": "化石遺骸が幾つか発見されており、サウロセイドンと。\n",
+    "cer": 0.2916666666666667,
     "at1": 0,
-    "elapsed_sec": 0.5056731410004431
+    "elapsed_sec": 0.6039695109939203
   },
   {
     "surrounding_text": "keisatsuhenokokuhatsuwofukumetakeijisekininnnotsuikyuuwosusumeteiru",
@@ -977,7 +977,7 @@
     "result": "警察への告訴を含めた刑事責任の追及を勧めている。\n",
     "cer": 0.17391304347826086,
     "at1": 0,
-    "elapsed_sec": 0.6693658780059195
+    "elapsed_sec": 0.5671681380044902
   },
   {
     "surrounding_text": "autogawaninagasarerutooohaba",
@@ -985,10 +985,10 @@
     "expect": [
       "アウト側に流されると大幅"
     ],
-    "result": "オート川に流されると大波。\n",
+    "result": "オート川に流されると大羽。\n",
     "cer": 0.5,
     "at1": 0,
-    "elapsed_sec": 0.5363149949989747
+    "elapsed_sec": 0.589279740001075
   },
   {
     "surrounding_text": "aitenoashibarai",
@@ -999,7 +999,7 @@
     "result": "相手の足払い。\n",
     "cer": 0.3333333333333333,
     "at1": 0,
-    "elapsed_sec": 0.4698964290000731
+    "elapsed_sec": 0.4838830849985243
   },
   {
     "surrounding_text": "昆虫型ゾイドを思念伝達で自在にコントロールし、個体ないしは群体による直接攻撃やそれらの毒性を利用した幻覚操作によって他者を支配下に置くtokushunanouryokuwoyuushiteori,supekyura-hasononouryokuwosenntoutyuudemozoufukushitekatsuyoudekiruyounihonnkiwokyoukashiteori,koreniyottehonnkitokuyuuno『gennei",
@@ -1007,10 +1007,10 @@
     "expect": [
       "特殊な能力を有しており、スペキュラーはその能力を戦闘中でも増幅して活用できるように本機を強化しており、これによって本機特有の『幻影"
     ],
-    "result": "特殊な能力を有しており、スペキュラーは、その能力を戦闘中でも増幅して活用できるように本気を強化しており、これにより本気特有の『幻影』",
+    "result": "特殊能力を有しており、スペキュラーは、その能力を戦闘中でも増幅して活用できるように本気を強化しており、これによって本気特有の「幻影」",
     "cer": 0.09230769230769231,
     "at1": 0,
-    "elapsed_sec": 0.684820545000548
+    "elapsed_sec": 0.7919232720014406
   },
   {
     "surrounding_text": "gorufa-toshitemoyuumeidesannjuumonakabanishitetotsuzenn",
@@ -1020,10 +1020,10 @@
       "ゴルファーとしても有名で30も半ばにして突然",
       "ゴルファーとしても有名で三十も半ばにして突然"
     ],
-    "result": "ゴルフとしても有名で三十も中盤にして突然。\n",
-    "cer": 0.2727272727272727,
+    "result": "ゴルファーとしても有名で、三十も半ばにして突如。",
+    "cer": 0.13636363636363635,
     "at1": 0,
-    "elapsed_sec": 0.5133676390032633
+    "elapsed_sec": 0.6092627760008327
   },
   {
     "surrounding_text": "made,isuraerunokannsennhasuezuunngawotsuukou",
@@ -1032,10 +1032,10 @@
       "まで、イスラエルの艦船はスエズ運河を通航",
       "まで、イスラエルの艦船はスエズ運河を通行"
     ],
-    "result": "まで、イスラエルの貨物船はスエズ運河を通過。\n",
-    "cer": 0.25,
+    "result": "まで、イスラエルの艦船はスエズ運河を通過。\n",
+    "cer": 0.15,
     "at1": 0,
-    "elapsed_sec": 0.6412803069979418
+    "elapsed_sec": 0.6311737330033793
   },
   {
     "surrounding_text": "四国のリアクションは不自然で、hamadaha[majideitaimitaidesuyo]tohatsugenn",
@@ -1049,7 +1049,7 @@
     "result": "浜田は[マジで痛いみたいですよ]と発言。\n",
     "cer": 0.21052631578947367,
     "at1": 0,
-    "elapsed_sec": 0.5455586099997163
+    "elapsed_sec": 0.5609573030014872
   },
   {
     "surrounding_text": "史実をmotonishinagaramo,sorenitorawarezujiyuuna",
@@ -1065,7 +1065,7 @@
     "result": "基にしながらも、それに囚われず自由な",
     "cer": 0.0,
     "at1": 1,
-    "elapsed_sec": 0.48055174999899464
+    "elapsed_sec": 0.5227009340014774
   },
   {
     "surrounding_text": "motakaku,shunnsokuwobukinishikaketekurudoribura-nisupi-dodemakerukotohahotonndonaku,subayakukaradawoiretebo-ruwodasshusurukotomoshibashibamirare",
@@ -1078,10 +1078,10 @@
       "も高く、俊足を武器に仕掛けてくるドリブラーにスピードで負けることはほとんどなく、素速く体を入れてボールを奪取することもしばしば見られ",
       "も高く、俊足を武器に仕掛けくるドリブラーにスピードで負けることはほとんどなく、素速く体を入れてボールを奪取することもしばしば見られ"
     ],
-    "result": "もたかく、俊足（しゅんそく）を武器（ぶき）に仕掛（しか）けてくるドリブラーにスピードで負（ま）けることはほとんどなく、素早（すばや）く体（からだ）を入（い）れてボールを奪（うば）ることもしばしば見（み）られる。\n",
-    "cer": 0.6515151515151515,
+    "result": "高く、俊足を得意とするドリブラーにスピードで勝つことはほとんどなく、素早く体を入れボールを奪取することも度々見られる。\n",
+    "cer": 0.2923076923076923,
     "at1": 0,
-    "elapsed_sec": 1.1216147899976932
+    "elapsed_sec": 0.7017189699981827
   },
   {
     "surrounding_text": "ほか，クエン酸、シアン化水素、シュウ酸、フッ化水素,rakusann,ryuukasuiso",
@@ -1092,7 +1092,7 @@
     "result": "、酪酸、硫化水素",
     "cer": 0.0,
     "at1": 1,
-    "elapsed_sec": 0.4866292369988514
+    "elapsed_sec": 0.509343967998575
   },
   {
     "surrounding_text": "は水上見張り用の二十二号レーダーwoshagekiyounimochiirujunnbiwoshitaga,nido",
@@ -1105,10 +1105,10 @@
       "を射撃用にもちいる準備をしたが、２度",
       "を射撃用にもちいる準備をしたが、2度"
     ],
-    "result": "を射撃用に用い準備をしたが、二度",
-    "cer": 0.058823529411764705,
-    "at1": 0,
-    "elapsed_sec": 0.5300180650010589
+    "result": "を射撃用に用いる準備をしたが、二度",
+    "cer": 0.0,
+    "at1": 1,
+    "elapsed_sec": 0.5421417949983152
   },
   {
     "surrounding_text": "コンパス航空の３社が,kononamaede",
@@ -1116,10 +1116,10 @@
     "expect": [
       "、この名前で"
     ],
-    "result": "、この名前で",
-    "cer": 0.0,
-    "at1": 1,
-    "elapsed_sec": 0.4773697229975369
+    "result": "、この名前で。\n",
+    "cer": 0.3333333333333333,
+    "at1": 0,
+    "elapsed_sec": 0.4711326890028431
   },
   {
     "surrounding_text": "デッドボールが頭wokyouda,shiboushi",
@@ -1130,7 +1130,7 @@
     "result": "を強打、死没。\n",
     "cer": 0.42857142857142855,
     "at1": 0,
-    "elapsed_sec": 0.5497869730024831
+    "elapsed_sec": 0.531826161997742
   },
   {
     "surrounding_text": "karahagennsannkokuwokaezuni",
@@ -1138,10 +1138,10 @@
     "expect": [
       "からは原産国を変えずに"
     ],
-    "result": "彼からは減産国を変えずに。\n",
-    "cer": 0.36363636363636365,
+    "result": "彼等から原産国を変えずに。\n",
+    "cer": 0.45454545454545453,
     "at1": 0,
-    "elapsed_sec": 0.5052373290018295
+    "elapsed_sec": 0.5313347970004543
   },
   {
     "surrounding_text": "nosennyouunnyoukann",
@@ -1149,10 +1149,10 @@
     "expect": [
       "の専用運用艦"
     ],
-    "result": "脳神経用尿管",
-    "cer": 1.0,
+    "result": "脳専用運尿管。\n",
+    "cer": 0.8333333333333334,
     "at1": 0,
-    "elapsed_sec": 0.4730821500052116
+    "elapsed_sec": 0.5655623089987785
   },
   {
     "surrounding_text": "釣りビジョンの『五畳半の狼』ではshikaiwotsutome,jishinnnoburogudemosonotyouka",
@@ -1160,10 +1160,10 @@
     "expect": [
       "司会を務め、自身のブログでもその釣果"
     ],
-    "result": "司会を務め、自身のブログでもその長所",
-    "cer": 0.1111111111111111,
+    "result": "司会を務め、自身のブログでもその長さを。\n",
+    "cer": 0.2777777777777778,
     "at1": 0,
-    "elapsed_sec": 0.5252355560005526
+    "elapsed_sec": 0.49646247099735774
   },
   {
     "surrounding_text": "noosusumenoshouhinnnogaiyou,naiyounadowo",
@@ -1174,10 +1174,10 @@
       "のおすすめの商品の概要、内容などを",
       "のお勧めの商品の概要、内容などを"
     ],
-    "result": "お勧めの商品の概要、内容などを",
-    "cer": 0.0625,
+    "result": "お勧めの商品の概要、内容などを。\n",
+    "cer": 0.1875,
     "at1": 0,
-    "elapsed_sec": 0.8524720589994104
+    "elapsed_sec": 0.48791831899870886
   },
   {
     "surrounding_text": "taga,hannnainohabatsuarasoiniyaburete,ichijiha",
@@ -1185,10 +1185,10 @@
     "expect": [
       "たが、藩内の派閥争いに敗れて、一時は"
     ],
-    "result": "だが、判明のは罰当たり争いに敗れて、一時派。",
-    "cer": 0.5555555555555556,
+    "result": "だが、半々には罰当たり争いに敗れて、一時。\n",
+    "cer": 0.6111111111111112,
     "at1": 0,
-    "elapsed_sec": 0.5930768530015484
+    "elapsed_sec": 0.5864057900034823
   },
   {
     "surrounding_text": "wochikattejoumaewokakerubashogayouisareteori,ooigawatetsudoudehakonojoumae・kagiwohannbaishite",
@@ -1197,10 +1197,10 @@
       "を誓って錠前をかける場所が用意されており、大井川鉄道ではこの錠前・鍵を販売して",
       "を誓って錠前をかける場所が用意されており、大井川鐵道ではこの錠前・鍵を販売して"
     ],
-    "result": "を借りて乗車券をかける場所が用意されており、大井川鐵道ではこの乗車券・鍵を販売して",
-    "cer": 0.20512820512820512,
+    "result": "を買って上前をかける場所が用意されており、大井川鉄道ではこの上前・鍵を販売して",
+    "cer": 0.07692307692307693,
     "at1": 0,
-    "elapsed_sec": 0.6187299379962496
+    "elapsed_sec": 0.6574145969934762
   },
   {
     "surrounding_text": "ikenngawakarete",
@@ -1208,10 +1208,10 @@
     "expect": [
       "意見が分かれて"
     ],
-    "result": "意見が分かれて",
-    "cer": 0.0,
-    "at1": 1,
-    "elapsed_sec": 0.4633204019992263
+    "result": "意見が分かれて。\n",
+    "cer": 0.2857142857142857,
+    "at1": 0,
+    "elapsed_sec": 0.4782606559965643
   },
   {
     "surrounding_text": "shitemukae",
@@ -1219,10 +1219,10 @@
     "expect": [
       "して迎え"
     ],
-    "result": "して迎え。\n",
-    "cer": 0.5,
+    "result": "し手迎え。\n",
+    "cer": 0.75,
     "at1": 0,
-    "elapsed_sec": 0.4901212319964543
+    "elapsed_sec": 0.49255780900421087
   },
   {
     "surrounding_text": "似た形をしteitagasennkyuuhyakukyuujuuichinennnidaikaishuuwohodokoshi,fukugouko-na-gatasuuhaichisaregennzai",
@@ -1233,10 +1233,10 @@
       "ていたが一九九一年に大改修を施し、複合コーナーが多数配置され現在",
       "ていたが千九百九十一年に大改修を施し、複合コーナーが多数配置され現在"
     ],
-    "result": "低速が千九百九十一年に大改造を施し、複合鋼那型が数配置され現在。",
+    "result": "低速が千九百九十一年二大改修を施し、複合鋼製ガタが多数配置され現在。\n",
     "cer": 0.29411764705882354,
     "at1": 0,
-    "elapsed_sec": 0.6277173280032002
+    "elapsed_sec": 0.699316430996987
   },
   {
     "surrounding_text": "反論で動揺すると「目が泳ぐ」nodesuguniwakaru",
@@ -1257,10 +1257,10 @@
       "ので直ぐに理解る",
       "のですぐに理解る"
     ],
-    "result": "のですぐ分かる。\n",
-    "cer": 0.375,
+    "result": "のですぐに分かる。\n",
+    "cer": 0.25,
     "at1": 0,
-    "elapsed_sec": 0.5377633289972437
+    "elapsed_sec": 0.5017719009993016
   },
   {
     "surrounding_text": "誕生日というkotode,tategojuusennchime-toruyokogojuusennchime-torunoba-sude-ke-kitonagasagojuusennchime-toruno",
@@ -1282,7 +1282,7 @@
     "result": "ことで、縦五十センチメートル、横五十センチメートルのバースデーケーキと長五〇センチメートルの。\n",
     "cer": 0.10869565217391304,
     "at1": 0,
-    "elapsed_sec": 0.728867256999365
+    "elapsed_sec": 0.6848268240064499
   },
   {
     "surrounding_text": "テレビ朝日(seisakukyoku",
@@ -1290,10 +1290,10 @@
     "expect": [
       "（制作局"
     ],
-    "result": "(制作局",
-    "cer": 0.25,
-    "at1": 0,
-    "elapsed_sec": 0.5251940339949215
+    "result": "（制作局",
+    "cer": 0.0,
+    "at1": 1,
+    "elapsed_sec": 0.4077874670038
   },
   {
     "surrounding_text": "hazennshuumatsu)noshiaiwofurikaeruhoka,tanntouanaunnsa-gatyuukeisakinotennkou,rennshuunomoyou,sennshu・",
@@ -1301,10 +1301,10 @@
     "expect": [
       "は前週末）の試合を振り返るほか、担当アナウンサーが中継先の天候、練習の模様、選手・"
     ],
-    "result": "（発展週末）の試合を振り返るほか、担当アナウンサー・キャスター、練習の模様、選手・",
+    "result": "（先週末）の試合を振り返るほか、担当アナウンサー・ガチ解説者の転校、練習の模様、選手・",
     "cer": 0.24390243902439024,
     "at1": 0,
-    "elapsed_sec": 0.563779052994505
+    "elapsed_sec": 0.638384860001679
   },
   {
     "surrounding_text": "連動式noburasuta-kyanonnwoniki,toxu・ke-burunohasshakanounaha-pu-nn・gann(moriuchihou)wo",
@@ -1314,10 +1314,10 @@
       "のブラスターキャノンを2基、トゥ・ケーブルの発射可能なハープーン・ガン（銛撃ち砲）を",
       "のブラスターキャノンを二基、トゥ・ケーブルの発射可能なハープーン・ガン（銛撃ち砲）を"
     ],
-    "result": "ノブラスターキャノンを二基、トウ・ケーブルの発射可能はハープ・ガン（森内砲）を",
-    "cer": 0.19047619047619047,
+    "result": "ノブラスターキャノンを二基、トウ・ケーブルの発射可能はハープ・ガン（森内法）を。\n",
+    "cer": 0.2619047619047619,
     "at1": 0,
-    "elapsed_sec": 0.6505207570007769
+    "elapsed_sec": 0.692114222998498
   },
   {
     "surrounding_text": "分岐器nokeijouhakatabirakibunnkidea",
@@ -1326,10 +1326,10 @@
       "の形状は片開き分岐であっ",
       "の形状は片開分岐であっ"
     ],
-    "result": "ノの形状は、片開き分岐器アイデアです。\n",
-    "cer": 0.8333333333333334,
+    "result": "ノ形状は片開き分岐器です。\n",
+    "cer": 0.4166666666666667,
     "at1": 0,
-    "elapsed_sec": 0.6453597859945148
+    "elapsed_sec": 0.5427002600044943
   },
   {
     "surrounding_text": "taitorurogowoisshinn",
@@ -1337,10 +1337,10 @@
     "expect": [
       "タイトルロゴを一新"
     ],
-    "result": "タイトルロゴを一緒",
-    "cer": 0.1111111111111111,
+    "result": "タイトルロゴを一緒。\n",
+    "cer": 0.3333333333333333,
     "at1": 0,
-    "elapsed_sec": 0.40882467300252756
+    "elapsed_sec": 0.5740036829956807
   },
   {
     "surrounding_text": "京都に設置saretaheigakkouga",
@@ -1348,10 +1348,10 @@
     "expect": [
       "された兵学校が"
     ],
-    "result": "された兵学校が",
-    "cer": 0.0,
-    "at1": 1,
-    "elapsed_sec": 0.49336943999514915
+    "result": "設置された兵学校が",
+    "cer": 0.2857142857142857,
+    "at1": 0,
+    "elapsed_sec": 0.523443022997526
   },
   {
     "surrounding_text": "shigotodeshirarerurikku・ru-binnwopurodexyu-sa-nimukaetaarubamu[",
@@ -1362,7 +1362,7 @@
     "result": "仕事で知られるリック・ルービンをプロデューサーに迎えたアルバム[",
     "cer": 0.03125,
     "at1": 0,
-    "elapsed_sec": 0.5452405309988535
+    "elapsed_sec": 0.5259072770058992
   },
   {
     "surrounding_text": "nenn),chichinoshiniyoriatowotsugu",
@@ -1371,10 +1371,10 @@
       "年）、父の死により跡を継ぐ",
       "年）、父の死により後を継ぐ"
     ],
-    "result": "年）、父の死により跡を継ぐ。\n",
-    "cer": 0.15384615384615385,
+    "result": "年), 父の死により跡を継ぐ。\n",
+    "cer": 0.38461538461538464,
     "at1": 0,
-    "elapsed_sec": 0.5728030610043788
+    "elapsed_sec": 0.5548206800012849
   },
   {
     "surrounding_text": "の双方で活躍し、それぞれ数多くnojushouoyobinomine-toreki",
@@ -1383,10 +1383,10 @@
       "の受賞およびノミネート歴",
       "の受賞及びノミネート歴"
     ],
-    "result": "の受賞及びの軌跡",
-    "cer": 0.5454545454545454,
+    "result": "の受賞及びノミネート歴。\n",
+    "cer": 0.18181818181818182,
     "at1": 0,
-    "elapsed_sec": 0.5714381439975114
+    "elapsed_sec": 0.5570841500011738
   },
   {
     "surrounding_text": "zennkokukoutougakkouyakyuusennshukennkanagawataikai(ripo-ta-",
@@ -1394,10 +1394,10 @@
     "expect": [
       "全国高等学校野球選手権神奈川大会（リポーター"
     ],
-    "result": "全国高等学校野球選手権神奈川大会(リポーター",
-    "cer": 0.045454545454545456,
-    "at1": 0,
-    "elapsed_sec": 0.5638956519978819
+    "result": "全国高等学校野球選手権神奈川大会（リポーター",
+    "cer": 0.0,
+    "at1": 1,
+    "elapsed_sec": 0.5296647860013763
   },
   {
     "surrounding_text": "しtakennpoukaiseiwotadachini",
@@ -1405,10 +1405,10 @@
     "expect": [
       "た憲法改正を直ちに"
     ],
-    "result": "直ちに、立憲法改正を。",
+    "result": "直ちに、他憲法改正を。",
     "cer": 0.8888888888888888,
     "at1": 0,
-    "elapsed_sec": 0.5359929850019398
+    "elapsed_sec": 0.5451990489964373
   },
   {
     "surrounding_text": "は各shisetsunokaisetsuwosannshou",
@@ -1416,10 +1416,10 @@
     "expect": [
       "施設の解説を参照"
     ],
-    "result": "施設の解説をご参照ください。\n",
-    "cer": 0.875,
+    "result": "施設の解説をご参照。\n",
+    "cer": 0.375,
     "at1": 0,
-    "elapsed_sec": 0.5108789059959236
+    "elapsed_sec": 0.4888649139975314
   },
   {
     "surrounding_text": "に失敗作となってshimattaga,onajitominoyoshiyukikanntokusakuhinndearu[dennsetsukyojinnideonn][kidousennshize-taganndamu]nitsuranaru,doukanntokudokutokunosukuinonaida-kunamonogatarini",
@@ -1432,10 +1432,10 @@
       "しまったが、同じ富野由悠季監督作品である「伝説巨神イデオン」「機動戦士Ζガンダム」に連なる、同監督独特の救いのないダークな物語に",
       "しまったが、おなじ富野由悠季監督作品である「伝説巨神イデオン」「機動戦士Ζガンダム」に連なる、同監督独特の救いのないダークな物語に"
     ],
-    "result": "しまったが、同じ富野由悠季監督作品である[伝説巨神イデオン][機動戦士ゼータガンダム]に連なる、同監督独特の救いなきアイデア君物語に。\n",
-    "cer": 0.25,
+    "result": "しまったが、同じ富野由悠季監督作品である[伝説巨神イデオン][機動戦士ゼータガンダム]に連なる、同監督独特の救いのないアイーダ・クン物語に。\n",
+    "cer": 0.21875,
     "at1": 0,
-    "elapsed_sec": 0.8093041169995558
+    "elapsed_sec": 0.8778802329979953
   },
   {
     "surrounding_text": "senngohadakaikkannkara",
@@ -1443,10 +1443,10 @@
     "expect": [
       "戦後裸一貫から"
     ],
-    "result": "戦後裸一貫から",
-    "cer": 0.0,
-    "at1": 1,
-    "elapsed_sec": 0.5235585479967995
+    "result": "戦後はだか一貫から。\n",
+    "cer": 0.7142857142857143,
+    "at1": 0,
+    "elapsed_sec": 0.4986587929961388
   },
   {
     "surrounding_text": "ookikufukasugi,hyoumennbannni",
@@ -1458,7 +1458,7 @@
     "result": "大きく深すぎ、表面版に。\n",
     "cer": 0.2727272727272727,
     "at1": 0,
-    "elapsed_sec": 0.48410778299876256
+    "elapsed_sec": 0.510413329997391
   },
   {
     "surrounding_text": "現象があるが）「とゆう」が「ちゅう」nitennjitarisurukotoha",
@@ -1466,10 +1466,10 @@
     "expect": [
       "に転じたりすることは"
     ],
-    "result": "二転三したりする事は",
-    "cer": 0.5,
+    "result": "二点示したりすること。\n",
+    "cer": 0.6,
     "at1": 0,
-    "elapsed_sec": 0.4789544429950183
+    "elapsed_sec": 0.5492695409993757
   },
   {
     "surrounding_text": "、「私は演技が下手だ」と発言しteori,[geirekimoasaku,sennmonngakkoudenobennkyouyaressunnwouketeinainodejibunnnochikaradegannbarushikanai.ima,",
@@ -1477,10 +1477,10 @@
     "expect": [
       "ており、「芸歴も浅く、専門学校での勉強やレッスンを受けていないので自分の力で頑張るしかない。今、"
     ],
-    "result": "ており、[芸歴も浅く、専門学校での勉強やレッスンを受けていないので、自分の力で頑張るしかない。今、",
-    "cer": 0.041666666666666664,
+    "result": "ており、[芸歴も浅く、専門学校での勉強やレッスンを受けていないので自分の力で頑張るしかない。今、",
+    "cer": 0.020833333333333332,
     "at1": 0,
-    "elapsed_sec": 0.6198881050004275
+    "elapsed_sec": 0.5563045839953702
   },
   {
     "surrounding_text": "代表作nikonnseigasshou",
@@ -1488,10 +1488,10 @@
     "expect": [
       "に混声合唱"
     ],
-    "result": "二期生合唱",
-    "cer": 0.6,
+    "result": "二期生合唱。\n",
+    "cer": 1.0,
     "at1": 0,
-    "elapsed_sec": 0.45337330799520714
+    "elapsed_sec": 0.8176938850010629
   },
   {
     "surrounding_text": "nonaibunoyounamitooshinokikanaikuukann",
@@ -1500,10 +1500,10 @@
       "の内部のような見通しの利かない空間",
       "の内部のような見通しのきかない空間"
     ],
-    "result": "内部のような相互通信が効かない空間",
-    "cer": 0.35294117647058826,
+    "result": "内部のような意思疎通の効かない空間。\n",
+    "cer": 0.47058823529411764,
     "at1": 0,
-    "elapsed_sec": 0.5132670660022995
+    "elapsed_sec": 0.6515562350032269
   },
   {
     "surrounding_text": "sugufukukyaputennnishuuninn",
@@ -1514,7 +1514,7 @@
     "result": "すぐ副キャプテンに就任。\n",
     "cer": 0.18181818181818182,
     "at1": 0,
-    "elapsed_sec": 0.504254489998857
+    "elapsed_sec": 0.523126696003601
   },
   {
     "surrounding_text": "ピアノと管弦楽のための幻想曲（後nikaiteisare",
@@ -1522,10 +1522,10 @@
     "expect": [
       "に改訂され"
     ],
-    "result": "二回訂正され",
-    "cer": 0.6,
-    "at1": 0,
-    "elapsed_sec": 0.4870076750012231
+    "result": "に改訂され",
+    "cer": 0.0,
+    "at1": 1,
+    "elapsed_sec": 0.49691065899969544
   },
   {
     "surrounding_text": "nasukunasa]deatte,[toubunnnokajousesshu]haakumade",
@@ -1533,10 +1533,10 @@
     "expect": [
       "な少なさ」であって、「糖分の過剰摂取」はあくまで"
     ],
-    "result": "[少なさ]であって、[糖分過剰摂取]はあくまで",
+    "result": "なくなさ]であって、[糖分過剰摂取]はあくまで",
     "cer": 0.20833333333333334,
     "at1": 0,
-    "elapsed_sec": 0.5798351970006479
+    "elapsed_sec": 0.5613447299983818
   },
   {
     "surrounding_text": "声優さん（白鳥由里sannfannrekigakoukoujidaikara…)toseijikannkeinokiji(wakaijibunnnityoppirishinntousakigakenikakawattajidaiari)nimotoukousurutoomoimasu",
@@ -1544,10 +1544,10 @@
     "expect": [
       "さんファン歴が高校時代から…）と政治関係の記事（若い時分にちょっぴり新党さきがけに関った時代有り）にも投稿すると思います"
     ],
-    "result": "さんファン歴が高校時代から…）と政治関係の記事（若い自分にちょっぴり浸透させるきっかけになった時代あり）にも投稿すると思います。\n",
-    "cer": 0.18333333333333332,
+    "result": "さんファン歴が高校時代から…）と政治関係の記事（若い自分はちょっぴりシンパ、先駆けに惹かれていた時代あり）にも投稿すると思います。\n",
+    "cer": 0.26666666666666666,
     "at1": 0,
-    "elapsed_sec": 0.6573363889983739
+    "elapsed_sec": 1.0560261240025284
   },
   {
     "surrounding_text": "hagirishianiyabure",
@@ -1555,10 +1555,10 @@
     "expect": [
       "はギリシアに敗れ"
     ],
-    "result": "破毀しあにやぶれ",
-    "cer": 0.875,
+    "result": "破霧利しあに破れ。\n",
+    "cer": 1.0,
     "at1": 0,
-    "elapsed_sec": 0.4852436119981576
+    "elapsed_sec": 0.5952207439986523
   },
   {
     "surrounding_text": "『吸血姫美夕』notoujoujinnbutsu",
@@ -1566,10 +1566,10 @@
     "expect": [
       "の登場人物"
     ],
-    "result": "登場人物",
-    "cer": 0.2,
+    "result": "登場人物。\n",
+    "cer": 0.6,
     "at1": 0,
-    "elapsed_sec": 0.4518618720030645
+    "elapsed_sec": 0.5014757879980607
   },
   {
     "surrounding_text": ",ichinichinoshouginobennkyoujikanngajuujikannwokoerutokotaetakotoga",
@@ -1579,10 +1579,10 @@
       "、1日の将棋の勉強時間が10時間を超えると答えたことが",
       "、一日の将棋の勉強時間が十時間を超えると答えたことが"
     ],
-    "result": "、一日の将棋の勉強時間が十時間を超える事も答えた事がある。\n",
-    "cer": 0.3076923076923077,
+    "result": "、一日の将棋の勉強時間が十時間を超えると答えた事が。\n",
+    "cer": 0.15384615384615385,
     "at1": 0,
-    "elapsed_sec": 0.6481528080039425
+    "elapsed_sec": 0.6173784290003823
   },
   {
     "surrounding_text": "ムッシュ・ルモンド(chikyuusannka)ha",
@@ -1590,10 +1590,10 @@
     "expect": [
       "（地球讃歌）は"
     ],
-    "result": "(地球参加)は\n",
-    "cer": 0.7142857142857143,
+    "result": "(地球参加)は",
+    "cer": 0.5714285714285714,
     "at1": 0,
-    "elapsed_sec": 0.4503788160000113
+    "elapsed_sec": 0.458955917005369
   },
   {
     "surrounding_text": "jishukaisannniyorutogisenndehasuginamikukarashutsubasurugarakusenn,shikashinagarahouteitokuhyousuuwouwamawariichibuno",
@@ -1601,10 +1601,10 @@
     "expect": [
       "自主解散による都議選では杉並区から出馬するが落選、しかしながら法定得票数を上回り一部の"
     ],
-    "result": "自主解散による、都議選では杉並区から出馬するが落選、しかしながら法定得票数を上回り一部の",
-    "cer": 0.023255813953488372,
+    "result": "自主解散による都議選では杉並区から出馬するが落選、しかしながら法定得票数を上回り一分の。\n",
+    "cer": 0.06976744186046512,
     "at1": 0,
-    "elapsed_sec": 0.7116759199998342
+    "elapsed_sec": 0.7657761279988335
   },
   {
     "surrounding_text": "kareragayaminoshiokijinndearutokenntouwotsuketa",
@@ -1615,7 +1615,7 @@
     "result": "彼らが闇の執行人であると見当をつけた。\n",
     "cer": 0.2222222222222222,
     "at1": 0,
-    "elapsed_sec": 0.5366415110038361
+    "elapsed_sec": 0.5352014660020359
   },
   {
     "surrounding_text": "１０月からも登場するが、バッキー守岡はnisenngonennkugatsunijuurokunichinohousouwomottesotsugyou",
@@ -1626,10 +1626,10 @@
       "二〇〇五年九月二十六日の放送をもって卒業",
       "二千五年九月二十六日の放送をもって卒業"
     ],
-    "result": "2005年9月26日の放送を以て卒業。\n",
-    "cer": 0.21052631578947367,
+    "result": "2005年8月26日の放送を以て卒業。\n",
+    "cer": 0.2631578947368421,
     "at1": 0,
-    "elapsed_sec": 0.560591112000111
+    "elapsed_sec": 0.627429601001495
   },
   {
     "surrounding_text": "以外notenntaikaranoekkususennwo",
@@ -1644,7 +1644,7 @@
     "result": "能天体からのエックス線を。\n",
     "cer": 0.25,
     "at1": 0,
-    "elapsed_sec": 0.5172502280038316
+    "elapsed_sec": 0.5619402110023657
   },
   {
     "surrounding_text": "失態集(onnseiganarunodetyuui)nosaitokara",
@@ -1652,10 +1652,10 @@
     "expect": [
       "（音声が鳴るので注意）のサイトから"
     ],
-    "result": "（音声がなるので注意）のサイトから",
-    "cer": 0.058823529411764705,
+    "result": "（音声が鳴るので注意）のサイトから。\n",
+    "cer": 0.11764705882352941,
     "at1": 0,
-    "elapsed_sec": 0.5246038769982988
+    "elapsed_sec": 0.5663238999986788
   },
   {
     "surrounding_text": "、水害により落橋してしまったため、に鋼鈑桁nodouro・kidouheiyoukyounikakenaosareta",
@@ -1663,10 +1663,10 @@
     "expect": [
       "の道路・軌道併用橋に架け直された"
     ],
-    "result": "の道路・軌道併用橋に架け直された。\n",
-    "cer": 0.125,
+    "result": "の、道路・軌道併用橋に架け直された。\n",
+    "cer": 0.1875,
     "at1": 0,
-    "elapsed_sec": 0.5319626150012482
+    "elapsed_sec": 0.5159266740010935
   },
   {
     "surrounding_text": "[shuruihannbaigyoumennkyo]niokerusoshikihennkouno",
@@ -1674,10 +1674,10 @@
     "expect": [
       "「酒類販売業免許」における組織変更の"
     ],
-    "result": "[種類販売業免許]における組織変更の\n",
-    "cer": 0.2222222222222222,
+    "result": "[酒類販売業免許]における組織変更の",
+    "cer": 0.1111111111111111,
     "at1": 0,
-    "elapsed_sec": 0.5272577330033528
+    "elapsed_sec": 0.5456843070060131
   },
   {
     "surrounding_text": "ninnmudehakarekaramusenndeshijiwoukete",
@@ -1685,10 +1685,10 @@
     "expect": [
       "任務では彼から無線で指示を受けて"
     ],
-    "result": "任務で彼から無線で指示を受けて。\n",
-    "cer": 0.1875,
+    "result": "人目では彼から無言で指示を受けて。\n",
+    "cer": 0.3125,
     "at1": 0,
-    "elapsed_sec": 0.5687101060029818
+    "elapsed_sec": 0.539217033998284
   },
   {
     "surrounding_text": "信欣三らとともに移動劇団・瑞穂劇団(taiseiyokusannkaisannkanonihonnidouenngekirennmeinikamei",
@@ -1699,7 +1699,7 @@
     "result": "（大政翼賛会傘下の日本移動演劇連盟に加盟）",
     "cer": 0.05,
     "at1": 0,
-    "elapsed_sec": 0.6395379189998494
+    "elapsed_sec": 0.6288986690051388
   },
   {
     "surrounding_text": "saserushuhouwohajime,shashinnnouekarakoumyouniewokaki,ifukuwo",
@@ -1710,10 +1710,10 @@
       "させる手法を始め、写真の上から巧妙に絵を書き、衣服を",
       "させる手法をはじめ、写真の上から巧妙に絵を書き、衣服を"
     ],
-    "result": "させる手法を始め、写真の上から光明を描き、衣服を",
-    "cer": 0.15384615384615385,
+    "result": "させる手法を始め、写真の上から光明を描き、衣服を。\n",
+    "cer": 0.23076923076923078,
     "at1": 0,
-    "elapsed_sec": 0.5760940659965854
+    "elapsed_sec": 0.5705006209973362
   },
   {
     "surrounding_text": "noshinnninnwoeta",
@@ -1725,7 +1725,7 @@
     "result": "のしんにんを得た。\n",
     "cer": 1.0,
     "at1": 0,
-    "elapsed_sec": 0.5372452129959129
+    "elapsed_sec": 0.5122494040042511
   },
   {
     "surrounding_text": "ものをirerarerunowofusegunotobouhannjounoriyuukara,kannshikameragasecchisa",
@@ -1733,10 +1733,10 @@
     "expect": [
       "入れられるのを防ぐのと防犯上の理由から、監視カメラが設置さ"
     ],
-    "result": "入れられるのを防ぐための防犯上の理由から、監視カメラが設置さ",
-    "cer": 0.10344827586206896,
+    "result": "入れられるのを防ぐのが当方の反譲渡の理由から、監視カメラが設置さ。",
+    "cer": 0.27586206896551724,
     "at1": 0,
-    "elapsed_sec": 0.5238562680024188
+    "elapsed_sec": 0.6071738269965863
   },
   {
     "surrounding_text": "ijoudetoujou.saigononannkannnifusawashiku,fannta,geroppa",
@@ -1745,10 +1745,10 @@
       "以上で登場。最後の難関に相応しく、ファンタ、ゲロッパ",
       "以上で登場。最後の難関にふさわしく、ファンタ、ゲロッパ"
     ],
-    "result": "以上で登場。最後の難関に相応しく、ファンタ、ゲロッパ",
-    "cer": 0.0,
-    "at1": 1,
-    "elapsed_sec": 0.5011462129987194
+    "result": "以上で登場。最後の難関に相応しく、ファンタ、ゲロッパ。\n",
+    "cer": 0.07692307692307693,
+    "at1": 0,
+    "elapsed_sec": 0.7888507050010958
   },
   {
     "surrounding_text": "たが、採取によって漁場が荒れるなどの漁業への影響gahasseishitakotonadokarajojonikiseigasusumi,setonaikaidehazennmennkiseimo",
@@ -1756,10 +1756,10 @@
     "expect": [
       "が発生したことなどから徐々に規制が進み、瀬戸内海では全面規制も"
     ],
-    "result": "が発生したことなどから徐々に規制が進み、瀬戸内海では全面規制も",
-    "cer": 0.0,
-    "at1": 1,
-    "elapsed_sec": 0.5655511309960275
+    "result": "が発生したことなどから徐々に規制が進み、瀬戸内海では全面規制も。\n",
+    "cer": 0.06451612903225806,
+    "at1": 0,
+    "elapsed_sec": 0.593474048000644
   },
   {
     "surrounding_text": "raibarushadeattatoyotanovittsu,honndanofittogateinennpiseiwouchidashitebakuhatsutekininnkiwoeteitajikini,supo-tsuseiwo",
@@ -1767,10 +1767,10 @@
     "expect": [
       "ライバル車であったトヨタのヴィッツ、ホンダのフィットが低燃費性を打ち出して爆発的人気を得ていた時期に、スポーツ性を"
     ],
-    "result": "ライバルで会ったトヨタのヴィッツ、ホンダのフィットが年々勢いを出し、爆発的な人気を得ていた時期に、スポーツ性を",
-    "cer": 0.17543859649122806,
+    "result": "ライバル車であったトヨタのヴィッツ、ホンダのフィットが年間販売を打ち出して爆発的人気を得ていた時期に、スポーツ性を",
+    "cer": 0.07017543859649122,
     "at1": 0,
-    "elapsed_sec": 0.9215563279940397
+    "elapsed_sec": 0.7003237760000047
   },
   {
     "surrounding_text": "アッバース朝５代目カリフnitsukaeta",
@@ -1781,7 +1781,7 @@
     "result": "に仕えた。\n",
     "cer": 0.5,
     "at1": 0,
-    "elapsed_sec": 0.4891890290018637
+    "elapsed_sec": 0.4716029389965115
   },
   {
     "surrounding_text": "kyuuzoushi,zennkokudemozerosennpuramoderuwohatsubaishiteirume-ka-noseisanngaoitsukazu,ichijitekininyuukamachijoutaininarunado",
@@ -1792,10 +1792,10 @@
       "急増し、全国でも零戦プラモデルを発売しているメーカーの生産が追いつかず、一時的に入荷待ち状態になるなど",
       "急増し、全国でもゼロ戦プラモデルを発売しているメーカーの生産が追いつかず、一時的に入荷待ち状態になるなど"
     ],
-    "result": "急増し、全国でもゼロ戦プラモデルを販売しているメーカーの生産が追いつかず、一時的に入荷待ち状態になるなど",
-    "cer": 0.019230769230769232,
+    "result": "急増し、全国でもゼロ戦プラモデルを販売しているメーカーの生産が追いつかず、一時的に入荷待ち状態になるなど。\n",
+    "cer": 0.057692307692307696,
     "at1": 0,
-    "elapsed_sec": 0.6236565690051066
+    "elapsed_sec": 0.593351055002131
   },
   {
     "surrounding_text": "はブルジョワ国家のsaishuudannkaitosareruga,jissaihaburujoaji-nojoushoukinishutsugennshi,jinnminntouhyouyafutsuusennkyonadominnshushugiyouinnwofukumudokusaiseitoiutokuinakinndainokennryoku",
@@ -1803,10 +1803,10 @@
     "expect": [
       "最終段階とされるが、実際はブルジョアジーの上昇期に出現し、人民投票や普通選挙など民主主義要因を含む独裁制という特異な近代の権力"
     ],
-    "result": "最終段階とされるが、実際はブルジョワジーの上昇期に出現し、人民投票や普通選挙など民主主義要因を含む独裁政権という特異な近代的権力",
-    "cer": 0.06349206349206349,
+    "result": "最終段階とされが、実際はブルジョアジーの助長に現れ、人民投票や普通選挙など民主主義要因を含む独裁政権という特異な近代的権力。\n",
+    "cer": 0.1746031746031746,
     "at1": 0,
-    "elapsed_sec": 0.6769637090037577
+    "elapsed_sec": 0.7434385119995568
   },
   {
     "surrounding_text": "nojishaseisaku",
@@ -1814,10 +1814,10 @@
     "expect": [
       "の自社制作"
     ],
-    "result": "自己責任。\n",
+    "result": "農事施策。\n",
     "cer": 1.2,
     "at1": 0,
-    "elapsed_sec": 0.46262117899459554
+    "elapsed_sec": 0.5637360460023046
   },
   {
     "surrounding_text": "三段変速機、大型で頑丈なスチールbasuketto,sekisaiseinisugurerunidaigasoutyaku",
@@ -1825,10 +1825,10 @@
     "expect": [
       "バスケット、積載性に優れる荷台が装着"
     ],
-    "result": "バスケット、設計に優れる2段が装着。",
-    "cer": 0.3333333333333333,
+    "result": "バスケット、積載性に優れる二重ガスが装着。\n",
+    "cer": 0.5,
     "at1": 0,
-    "elapsed_sec": 0.5719382730021607
+    "elapsed_sec": 0.6336272850021487
   },
   {
     "surrounding_text": "daigakkoukoukyuukateidesennryakuwo",
@@ -1836,10 +1836,10 @@
     "expect": [
       "大学校高級課程で戦略を"
     ],
-    "result": "大学校高等課程戦略を",
+    "result": "大学校高級課程で戦略を。\n",
     "cer": 0.18181818181818182,
     "at1": 0,
-    "elapsed_sec": 0.4321839969998109
+    "elapsed_sec": 0.5410004790028324
   },
   {
     "surrounding_text": "hajieitainotokushusakusenngunnnosenntouyouinnnimohaibisareruyouni",
@@ -1850,7 +1850,7 @@
     "result": "自衛隊の特殊作戦群の戦闘要員に配備されるように。\n",
     "cer": 0.16,
     "at1": 0,
-    "elapsed_sec": 0.5613818450001418
+    "elapsed_sec": 0.6026264740066836
   },
   {
     "surrounding_text": "daritsuyashourisuutoittapopyura-namonokara,heisatsudaritsuyahihonnruidaritsunadomaniakkunamonomadeshuurokusareteiru",
@@ -1858,10 +1858,10 @@
     "expect": [
       "打率や勝利数といったポピュラーなものから、併殺打率や被本塁打率などマニアックなものまで収録されている"
     ],
-    "result": "**ダ**リツヤショウリストイッタポピュラ-ナモノカラ、閉鎖**ダ**リツヤヒホンルイ**ダ**リツナド**マ**ニアックなものまで集録されている。\n",
-    "cer": 1.08,
+    "result": "打率や出塁率と言ったポピュラーなものから、併殺打率や非本塁打率などマニアックなものまで収録されている。\n",
+    "cer": 0.14,
     "at1": 0,
-    "elapsed_sec": 0.925506999999925
+    "elapsed_sec": 0.70531889799895
   },
   {
     "surrounding_text": "kakeiwotasukerutame,ryoushunoienihoukoushi",
@@ -1870,10 +1870,10 @@
       "家計を助けるため、領主の家に奉公し",
       "家計を助ける為、領主の家に奉公し"
     ],
-    "result": "家計を助けるため、漁師の家に奉公し。\n",
+    "result": "家計を助けるため、両親の家に奉公し。\n",
     "cer": 0.23529411764705882,
     "at1": 0,
-    "elapsed_sec": 0.6003633299987996
+    "elapsed_sec": 0.5305581200009328
   },
   {
     "surrounding_text": "土佐料理店がzouteishitafunamorino",
@@ -1885,7 +1885,7 @@
     "result": "増定した舟盛の",
     "cer": 0.375,
     "at1": 0,
-    "elapsed_sec": 0.643755137003609
+    "elapsed_sec": 0.5036594030025299
   },
   {
     "surrounding_text": "daishinnsaihisaichishiennjiaitoshiteo-punnsenn・kyojinntaihannshinngashikousare,kaijounibokinnbakogasecchisaretahoka,hannkikeiyou,mokutouga",
@@ -1893,10 +1893,10 @@
     "expect": [
       "大震災被災地支援試合としてオープン戦・巨人対阪神が施行され、会場に募金箱が設置されたほか、半旗掲揚、黙祷が"
     ],
-    "result": "大震災被災地支援事業として、オープンスペース・巨大耐震が考案され、海上には募金箱が設置された他、半旗掲揚、黙祷が",
-    "cer": 0.33962264150943394,
+    "result": "大震災被災地支援アイとしてオープセン・巨人群体汎神が施行され、海上に募金箱が設置された他、半旗掲揚、黙祷が。\n",
+    "cer": 0.24528301886792453,
     "at1": 0,
-    "elapsed_sec": 0.7928261609995388
+    "elapsed_sec": 0.8689625400002114
   },
   {
     "surrounding_text": "４年６月１８日、鹿児島空港に着陸しようとした全日空３５１便（エアバスＡ３２０−２００、ＪＡ８３９２）は、滑走路に機体尾部を接触sase,atsuryokukakuhekikabuwosonnshousurunadoshi",
@@ -1904,10 +1904,10 @@
     "expect": [
       "させ、圧力隔壁下部を損傷するなどし"
     ],
-    "result": "させ、圧力隔壁下部を損傷するなどし、",
-    "cer": 0.058823529411764705,
+    "result": "させ、圧力隔壁下部を損傷などし",
+    "cer": 0.11764705882352941,
     "at1": 0,
-    "elapsed_sec": 0.5237251310027204
+    "elapsed_sec": 0.5304925840027863
   },
   {
     "surrounding_text": "見世物小屋もsakannnikougyousare",
@@ -1915,10 +1915,10 @@
     "expect": [
       "盛んに興行され"
     ],
-    "result": "盛んに興行され",
-    "cer": 0.0,
-    "at1": 1,
-    "elapsed_sec": 0.5664679809997324
+    "result": "盛んに興行され。\n",
+    "cer": 0.2857142857142857,
+    "at1": 0,
+    "elapsed_sec": 0.5068462550043478
   },
   {
     "surrounding_text": "なお、化学的消臭法を用いた消臭剤nitsuiteha,shoushuuzaijitaino",
@@ -1929,7 +1929,7 @@
     "result": "については、消臭剤自体の",
     "cer": 0.0,
     "at1": 1,
-    "elapsed_sec": 0.4619617440039292
+    "elapsed_sec": 0.5120652100013103
   },
   {
     "surrounding_text": "[warainoyakyuu",
@@ -1937,10 +1937,10 @@
     "expect": [
       "「笑いの野球"
     ],
-    "result": "\\[笑いの野球\\]\n",
-    "cer": 0.8333333333333334,
+    "result": "[笑いの野球",
+    "cer": 0.16666666666666666,
     "at1": 0,
-    "elapsed_sec": 0.47734149700409034
+    "elapsed_sec": 0.46914947500044946
   },
   {
     "surrounding_text": "kawaisounaomoiwosaseta",
@@ -1954,7 +1954,7 @@
     "result": "可哀想な思いをさせた。\n",
     "cer": 0.2,
     "at1": 0,
-    "elapsed_sec": 0.47681288400053745
+    "elapsed_sec": 0.46236647899786476
   },
   {
     "surrounding_text": "saiakunojitaiwokaihisurutame",
@@ -1966,7 +1966,7 @@
     "result": "最悪の事態を回避するため。\n",
     "cer": 0.16666666666666666,
     "at1": 0,
-    "elapsed_sec": 0.5044813799977419
+    "elapsed_sec": 0.501481415994931
   },
   {
     "surrounding_text": "武器と危険人物が集まっteirukotowokakuninnshitaemuaishikkusuharoshiagawanogouiniyorikaijoukarajunnkoumisairu",
@@ -1977,10 +1977,10 @@
       "ていることを確認したｍｉ６はロシア側の合意により海上から巡航ミサイル",
       "ていることを確認したmi6はロシア側の合意により海上から巡航ミサイル"
     ],
-    "result": "ていることを確認したEM6ハロスィア湾の豪雨により、海上面から巡航ミサイル。\n",
-    "cer": 0.35294117647058826,
+    "result": "ていることを確認したEM愛シックスハロシアガワの豪雨により、海路から巡航ミサイル。\n",
+    "cer": 0.4411764705882353,
     "at1": 0,
-    "elapsed_sec": 0.7397393459978048
+    "elapsed_sec": 0.6883352250006283
   },
   {
     "surrounding_text": "shuukannshounennsannde-yashuukannshounennmagajinnyorikouhatsunoshuukannshounennjannpuwo,ichiyakuninnkishounennshinioshiageta",
@@ -1988,10 +1988,10 @@
     "expect": [
       "週刊少年サンデーや週刊少年マガジンより後発の週刊少年ジャンプを、一躍人気少年誌に押し上げた"
     ],
-    "result": "週刊少年サンデー、週刊少年マガジンより高発の週刊少年ジャンプを、一躍人気少年誌に押し上げた。\n",
-    "cer": 0.08888888888888889,
+    "result": "週刊少年サンデーや週刊少年マガジンより後発の週刊少年ジャンプを一躍人気少年誌に押し上げた。\n",
+    "cer": 0.06666666666666667,
     "at1": 0,
-    "elapsed_sec": 0.7242190680044587
+    "elapsed_sec": 0.6550669790012762
   },
   {
     "surrounding_text": "seisakushatokonntenntsuhoruda-kanndeno",
@@ -2003,7 +2003,7 @@
     "result": "制作者とコンテンツホルダー間での",
     "cer": 0.0,
     "at1": 1,
-    "elapsed_sec": 0.5784667350017116
+    "elapsed_sec": 0.5256974220028496
   },
   {
     "surrounding_text": "joudokyounitsuyokuhikareru",
@@ -2011,10 +2011,10 @@
     "expect": [
       "浄土教に強く惹かれる"
     ],
-    "result": "情動に強く惹かれる。\n",
-    "cer": 0.5,
+    "result": "情動強要に強く惹かれる。\n",
+    "cer": 0.6,
     "at1": 0,
-    "elapsed_sec": 0.5200336310008424
+    "elapsed_sec": 0.49764525600039633
   },
   {
     "surrounding_text": "wakajinishitatame,atowotsuida",
@@ -2027,10 +2027,10 @@
       "若死にした為、後を継いだ",
       "若死にした為、あとを継いだ"
     ],
-    "result": "若人に為、跡を継いだ。\n",
-    "cer": 0.4166666666666667,
+    "result": "若人にしたため、後を追った。\n",
+    "cer": 0.46153846153846156,
     "at1": 0,
-    "elapsed_sec": 0.571770539994759
+    "elapsed_sec": 0.4963439009952708
   },
   {
     "surrounding_text": "shuushikateihokennkagaku",
@@ -2038,10 +2038,10 @@
     "expect": [
       "修士課程保健科学"
     ],
-    "result": "終始家定保険科学",
-    "cer": 0.625,
+    "result": "終始火点保険科学。\n",
+    "cer": 0.875,
     "at1": 0,
-    "elapsed_sec": 0.5980114440026227
+    "elapsed_sec": 0.5289325199992163
   },
   {
     "surrounding_text": "円弧を描くようnihanetekuru",
@@ -2051,10 +2051,10 @@
       "に跳ねて来る",
       "に撥ねてくる"
     ],
-    "result": "日本へ出て来る。\n",
-    "cer": 1.0,
+    "result": "に跳ねてくる。\n",
+    "cer": 0.3333333333333333,
     "at1": 0,
-    "elapsed_sec": 0.6175683929977822
+    "elapsed_sec": 0.7866032660022029
   },
   {
     "surrounding_text": "kaitennjikugafuremawaruyouniugokusaisaunndounokoto",
@@ -2062,10 +2062,10 @@
     "expect": [
       "回転軸が振れ回るように動く歳差運動のこと"
     ],
-    "result": "回転軸がふれ回るように動く歳差運動のこと。",
-    "cer": 0.1,
+    "result": "回転軸がふれ回るように動く歳差運動のこと。\n",
+    "cer": 0.15,
     "at1": 0,
-    "elapsed_sec": 0.6132158609980252
+    "elapsed_sec": 0.6600203950001742
   },
   {
     "surrounding_text": "必ずと言ってよいほどこの城の見学行程が組み込まれteori,nipponnjinnmoigainiooi",
@@ -2073,10 +2073,10 @@
     "expect": [
       "ており、日本人も意外に多い"
     ],
-    "result": "ており、日本人も意外に多い。\n",
-    "cer": 0.15384615384615385,
+    "result": "おり、日本人も意外に多い。\n",
+    "cer": 0.23076923076923078,
     "at1": 0,
-    "elapsed_sec": 0.5280696059999173
+    "elapsed_sec": 0.5071422869950766
   },
   {
     "surrounding_text": "dennkitsuushinnjutsunogoukakushahadennkitsuushinnjutsuwoshikennnoyokugetsunohajime",
@@ -2084,10 +2084,10 @@
     "expect": [
       "電気通信術の合格者は電気通信術を試験の翌月の初め"
     ],
-    "result": "電気通信術の合格者は電気通信術を試験の翌月の初め。",
-    "cer": 0.041666666666666664,
+    "result": "電気通信術の合格者は電気通信術を試験の翌月の初め。\n",
+    "cer": 0.08333333333333333,
     "at1": 0,
-    "elapsed_sec": 0.5478503959966474
+    "elapsed_sec": 0.6128156859995215
   },
   {
     "surrounding_text": "kyuubakufugunnkannnokoubounobutaihanikkouniutsuru",
@@ -2095,10 +2095,10 @@
     "expect": [
       "旧幕府軍間の攻防の舞台は日光に移る"
     ],
-    "result": "旧爆風軍艦の工廠の舞台が日誌に映る。\n",
+    "result": "旧爆風軍艦の工房の舞台が日刊に映る。\n",
     "cer": 0.5882352941176471,
     "at1": 0,
-    "elapsed_sec": 0.6167426829997567
+    "elapsed_sec": 0.5927389030039194
   },
   {
     "surrounding_text": "haichishi,sorewokakusannbannnitepanerujounikakusannshitetyokusetsushousha",
@@ -2109,7 +2109,7 @@
     "result": "配置し、それを拡散版にてパネル状に拡散して直接照射。\n",
     "cer": 0.16,
     "at1": 0,
-    "elapsed_sec": 0.5358121690005646
+    "elapsed_sec": 0.7200778589976835
   },
   {
     "surrounding_text": "この設定でもまだユリとは一緒になっていnairashii(taisetsunamononiyuriwoage",
@@ -2122,10 +2122,10 @@
       "ないらしい（大切なモノにユリをあげ",
       "ないらしい（大切な物にユリをあげ"
     ],
-    "result": "ないらしい（大切な物にユリを上げ）",
-    "cer": 0.125,
+    "result": "ないらしい（大切な物に百合を上げ）。\n",
+    "cer": 0.375,
     "at1": 0,
-    "elapsed_sec": 0.5284827610012144
+    "elapsed_sec": 0.6043142440030351
   },
   {
     "surrounding_text": "kennryokukouiwoseitoudukerukennihakokuminnnisonnsurutoiu",
@@ -2134,10 +2134,10 @@
       "権力行為を正当づける権威は国民に存するという",
       "権力行為を正当付ける権威は国民に存するという"
     ],
-    "result": "権力行為を正当化する権利は国民に損するという。\n",
-    "cer": 0.2727272727272727,
+    "result": "権力行為を正当化する権利には、国民に損するという。\n",
+    "cer": 0.36363636363636365,
     "at1": 0,
-    "elapsed_sec": 0.5189969600032782
+    "elapsed_sec": 0.5539504469998064
   },
   {
     "surrounding_text": "の系統関係がこの体系にどう反映してirunokawotsuikyuushi,mata,yuuseisedainoakirakaninatteinaifukannzennkinnnokeitoukannkeiwotannkyuushi,koreworaifuwa-ku",
@@ -2148,7 +2148,7 @@
     "result": "いるのかを追及し、また、優勢世代の明らかになっていない不完全菌の系統関係を探求し、これをライフワーク",
     "cer": 0.06,
     "at1": 0,
-    "elapsed_sec": 0.6127234189989395
+    "elapsed_sec": 0.6106793840008322
   },
   {
     "surrounding_text": "人使いの上手い人物であることがukagaeru",
@@ -2157,10 +2157,10 @@
       "窺える",
       "うかがえる"
     ],
-    "result": "伺える。\n",
-    "cer": 1.0,
+    "result": "窺える。\n",
+    "cer": 0.6666666666666666,
     "at1": 0,
-    "elapsed_sec": 0.457108808994235
+    "elapsed_sec": 0.46216327200090745
   },
   {
     "surrounding_text": "dainijisekaitaisenngojuunenn",
@@ -2176,10 +2176,10 @@
       "第二次世界大戦後１０年",
       "第二次世界大戦後10年"
     ],
-    "result": "第二次世界大戦の50年。\n",
-    "cer": 0.36363636363636365,
+    "result": "第二次世界大戦五十nen。\n",
+    "cer": 0.6,
     "at1": 0,
-    "elapsed_sec": 0.49576102900027763
+    "elapsed_sec": 0.5207774399968912
   },
   {
     "surrounding_text": "beikokuhanndoutaikyoukai",
@@ -2187,10 +2187,10 @@
     "expect": [
       "米国半導体協会"
     ],
-    "result": "米国反動大教会",
-    "cer": 0.5714285714285714,
+    "result": "米国半導体協会。\n",
+    "cer": 0.2857142857142857,
     "at1": 0,
-    "elapsed_sec": 0.5427145059948089
+    "elapsed_sec": 0.5124038590001874
   },
   {
     "surrounding_text": "kannshasuruhidatokougennshi",
@@ -2198,10 +2198,10 @@
     "expect": [
       "感謝する日だと公言し"
     ],
-    "result": "感謝する日と公演し",
-    "cer": 0.2,
+    "result": "感謝する日と、高原詩。\n",
+    "cer": 0.7,
     "at1": 0,
-    "elapsed_sec": 0.4665504089934984
+    "elapsed_sec": 0.5249662790010916
   },
   {
     "surrounding_text": "sakaini,kitaparada,minamiparadanogerenndeniwakareteiru",
@@ -2209,10 +2209,10 @@
     "expect": [
       "境に、北パラダ、南パラダのゲレンデに分かれている"
     ],
-    "result": "境に、北パラダ、南パラダのゲレンデに分かれている。\n",
-    "cer": 0.08333333333333333,
+    "result": "更に、北パレード、南パレードのゲレンデに分かれている。\n",
+    "cer": 0.375,
     "at1": 0,
-    "elapsed_sec": 0.5367295679970994
+    "elapsed_sec": 0.5480122820008546
   },
   {
     "surrounding_text": "作曲はnakunattatoshimade",
@@ -2222,10 +2222,10 @@
       "亡くなった歳まで",
       "亡くなった齢まで"
     ],
-    "result": "亡くなるまで。\n",
-    "cer": 0.625,
+    "result": "亡くなった時まで。\n",
+    "cer": 0.375,
     "at1": 0,
-    "elapsed_sec": 0.4842560089964536
+    "elapsed_sec": 0.4654230570013169
   },
   {
     "surrounding_text": "その滝ha,gennzainohonndounourawonagareruogawaniattarashiku,gennzaihakishibenisecchisaretafennsuni[shoukannnonn",
@@ -2233,10 +2233,10 @@
     "expect": [
       "は、現在の本堂の裏を流れる小川にあったらしく、現在は岸辺に設置されたフェンスに「聖観音"
     ],
-    "result": "は、現在は本堂の裏を流れる小川にあり、現在は岸辺に設置されたフェンスに[紹介んん",
-    "cer": 0.2558139534883721,
+    "result": "は、現在は本堂の裏を流れる小川にありらしく、現在は岸辺に設置されたフェンスに[召喚のん",
+    "cer": 0.18604651162790697,
     "at1": 0,
-    "elapsed_sec": 0.6401008410030045
+    "elapsed_sec": 0.6521354990036343
   },
   {
     "surrounding_text": "れるが、大学進学率を照らし合わせてみても両校のkokkouritsudaigakuhaishutsushasuuhagojuppohyappo",
@@ -2244,10 +2244,10 @@
     "expect": [
       "国公立大学輩出者数は五十歩百歩"
     ],
-    "result": "国公立大学輩出数も五十歩百歩",
-    "cer": 0.13333333333333333,
+    "result": "国公立大学輩出数も五十歩百歩。\n",
+    "cer": 0.26666666666666666,
     "at1": 0,
-    "elapsed_sec": 0.5033872419953695
+    "elapsed_sec": 0.5678701079959865
   },
   {
     "surrounding_text": "レッド・ツェッペリンのdaifanndeari,budoukannkouennde",
@@ -2255,10 +2255,10 @@
     "expect": [
       "大ファンであり、武道館公演で"
     ],
-    "result": "大ファンであり、武道館公演で",
-    "cer": 0.0,
-    "at1": 1,
-    "elapsed_sec": 0.4505480389998411
+    "result": "大ファンであり、武道館公演で。\n",
+    "cer": 0.14285714285714285,
+    "at1": 0,
+    "elapsed_sec": 0.5621649919994525
   },
   {
     "surrounding_text": "の若者が黒の皮ジャンに皮パンwohaitetannkitouennjinn",
@@ -2266,10 +2266,10 @@
     "expect": [
       "を履いて単気筒エンジン"
     ],
-    "result": "を履いて単車に乗って。",
-    "cer": 0.5454545454545454,
+    "result": "を履いて、単騎特攻エン陣。\n",
+    "cer": 0.6363636363636364,
     "at1": 0,
-    "elapsed_sec": 0.6052971640019678
+    "elapsed_sec": 0.5669491389999166
   },
   {
     "surrounding_text": "ノンスクランブル放送」には、当初はwauwaugaseisakunikatannsurukotoha",
@@ -2278,10 +2278,10 @@
       "ＷＯＷＯＷが制作に加担することは",
       "WOWOWが制作に加担することは"
     ],
-    "result": "wauwauが制作に担うことは。\n",
+    "result": "wauwauが製作に加担する事は。\n",
     "cer": 0.6875,
     "at1": 0,
-    "elapsed_sec": 0.571335104003083
+    "elapsed_sec": 0.5272406610019971
   },
   {
     "surrounding_text": "nokekka,jakkannjuusannsainishi",
@@ -2291,10 +2291,10 @@
       "の結果、弱冠13歳にし",
       "の結果、弱冠十三歳にし"
     ],
-    "result": "結果、若干13歳に。\n",
+    "result": "結果、若干十三歳にし。\n",
     "cer": 0.45454545454545453,
     "at1": 0,
-    "elapsed_sec": 0.48471159399923636
+    "elapsed_sec": 0.49624981800297974
   },
   {
     "surrounding_text": "近年知名度gaagattekiteori",
@@ -2305,7 +2305,7 @@
     "result": "が上がってきており",
     "cer": 0.0,
     "at1": 1,
-    "elapsed_sec": 0.4564251970004989
+    "elapsed_sec": 0.4514931300000171
   },
   {
     "surrounding_text": "内燃機関における冷却水は、前記の船舶などに用いられteirukaihougatanobaaiwonozoki,tojitareikyakukeikairowonagareteori,seijounikadoushiteirumahakannkyouhenoakueikyou",
@@ -2313,10 +2313,10 @@
     "expect": [
       "ている開放型の場合を除き、閉じた冷却系回路を流れており、正常に稼働している間は環境への悪影響"
     ],
-    "result": "て居る開放型の場合を除き、閉じられた冷却系回路を流れており、正常に稼動している間は環境への悪影響",
-    "cer": 0.08695652173913043,
+    "result": "用いられている開放型の場合を除き、閉じた冷却系を流れており、正常に稼働している間は環境への悪影響。",
+    "cer": 0.15217391304347827,
     "at1": 0,
-    "elapsed_sec": 0.6586483329956536
+    "elapsed_sec": 0.6227805929956958
   },
   {
     "surrounding_text": "増えたkotode,onnjouwotorimodoshi,",
@@ -2325,10 +2325,10 @@
       "ことで、温情を取り戻し、",
       "事で、温情を取り戻し、"
     ],
-    "result": "ことで、温情を取り戻し、\n",
-    "cer": 0.08333333333333333,
-    "at1": 0,
-    "elapsed_sec": 0.5101550960025634
+    "result": "ことで、温情を取り戻し、",
+    "cer": 0.0,
+    "at1": 1,
+    "elapsed_sec": 0.5035211630020058
   },
   {
     "surrounding_text": "furi-nitennshinn",
@@ -2336,10 +2336,10 @@
     "expect": [
       "フリーに転身"
     ],
-    "result": "フリーニ転進。\n",
-    "cer": 0.6666666666666666,
+    "result": "振り二転身。\n",
+    "cer": 1.0,
     "at1": 0,
-    "elapsed_sec": 0.49652249100472545
+    "elapsed_sec": 0.4603334569983417
   },
   {
     "surrounding_text": "が単独提供していtaga,konobanngumiikouhatoushibawofukumufukusuushano",
@@ -2347,10 +2347,10 @@
     "expect": [
       "たが、この番組以降は東芝を含む複数社の"
     ],
-    "result": "だが、この番組以降は東芝を含む複数社の",
-    "cer": 0.05263157894736842,
+    "result": "だが、この番組以降は東芝を含む複数社の。\n",
+    "cer": 0.15789473684210525,
     "at1": 0,
-    "elapsed_sec": 0.5482292259985115
+    "elapsed_sec": 0.5708058329983032
   },
   {
     "surrounding_text": "大柄なtaikeinohaiyuugaennjiru",
@@ -2361,7 +2361,7 @@
     "result": "大柄な俳優が演じる。\n",
     "cer": 0.5555555555555556,
     "at1": 0,
-    "elapsed_sec": 0.4769609350041719
+    "elapsed_sec": 0.4381712289978168
   },
   {
     "surrounding_text": "家政科をhokennkanikaishou",
@@ -2369,10 +2369,10 @@
     "expect": [
       "保健科に改称"
     ],
-    "result": "保険科に改修。\n",
+    "result": "保健科に解消。\n",
     "cer": 0.6666666666666666,
     "at1": 0,
-    "elapsed_sec": 0.5049343990031048
+    "elapsed_sec": 0.5065002629999071
   },
   {
     "surrounding_text": "shironichikaiirodemoroku,ushinochichi",
@@ -2380,10 +2380,10 @@
     "expect": [
       "白に近い色で脆く、牛の乳"
     ],
-    "result": "白に近い色でも録、牛の乳。\n",
-    "cer": 0.3333333333333333,
+    "result": "白に近き色でも録、牛の乳。\n",
+    "cer": 0.4166666666666667,
     "at1": 0,
-    "elapsed_sec": 0.7526756820006995
+    "elapsed_sec": 0.5898945439985255
   },
   {
     "surrounding_text": "bouryokubamennnoissouwookonatta",
@@ -2393,10 +2393,10 @@
       "暴力場面の一掃をおこなった",
       "暴力場面の一掃を行なった"
     ],
-    "result": "暴力団排除の会合を行った。\n",
+    "result": "暴力団排除の入札を行った。\n",
     "cer": 0.6363636363636364,
     "at1": 0,
-    "elapsed_sec": 0.5490278329962166
+    "elapsed_sec": 0.5465525470062857
   },
   {
     "surrounding_text": "政治思想などに興味を持ち、yukuyukuhaseikaishinnshutsuwomokuronn",
@@ -2405,10 +2405,10 @@
       "ゆくゆくは政界進出を目論ん",
       "行く行くは政界進出を目論ん"
     ],
-    "result": "行く行くは政治進出をもくろん",
+    "result": "行く行くは政治進出を企論ん。\n",
     "cer": 0.3076923076923077,
     "at1": 0,
-    "elapsed_sec": 0.5498444559998461
+    "elapsed_sec": 0.5687240190018201
   },
   {
     "surrounding_text": "瀕死の明のshougenndehashinnpyouseinikakeruto",
@@ -2416,9 +2416,9 @@
     "expect": [
       "証言では信憑性に欠けると"
     ],
-    "result": "証言で判断をすると。\n",
-    "cer": 0.75,
+    "result": "証言で判断に掛けると。\n",
+    "cer": 0.5833333333333334,
     "at1": 0,
-    "elapsed_sec": 0.6247985200025141
+    "elapsed_sec": 0.5304208660018048
   }
 ]
