@@ -18,12 +18,16 @@ help:
 	@echo "  clean     remove result JSONs"
 	@echo "  plots     generate plot PNG images"
 
-all: $(addprefix result_ver2.3.0/,$(RESULTS))
+all: $(addprefix result_ver2.3.0/,$(RESULTS) result_ver2.4.0/,$(RESULTS))
 
 aggregate:
 	python3 aggregate_results.py result_ver2.3.0/*.json
+	python3 aggregate_results.py result_ver2.4.0/*.json
 
 result_ver2.3.0/%.json: $(EVAL) $(SCRIPT)
+	python3 $(SCRIPT) $(EVAL) $@
+
+result_ver2.4.0/%.json: $(EVAL) $(SCRIPT)
 	python3 $(SCRIPT) $(EVAL) $@
 
 # Generate plot images in the project's images directory
