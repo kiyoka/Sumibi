@@ -56,13 +56,6 @@ class SumibiTypicalConvertClient:
                 ),
             },
             {
-                "role": "assistant",
-                "content": (
-                    "了解しました。ローマ字の字面を忠実に漢字仮名混じり文へ変換し、"
-                    "元のローマ字にない文章は作り出しません。"
-                ),
-            },
-            {
                 "role": "user",
                 "content": (
                     "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
