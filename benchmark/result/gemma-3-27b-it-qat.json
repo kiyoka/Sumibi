@@ -6,10 +6,10 @@
       "青年誌で描くことの理由として、男性青年誌における男性優位の性意識（",
       "青年誌で書くことの理由として、男性青年誌における男性優位の性意識（"
     ],
-    "result": "男性青年誌で描くことが多いが、男性としての男性青年誌に於ける男性優位の性意識（",
-    "cer": 0.3333333333333333,
+    "result": "青年誌で描くことが多いが、男性青年誌において男性優位の性意識（\n",
+    "cer": 0.2727272727272727,
     "at1": 0,
-    "elapsed_sec": 84.43296690000011
+    "elapsed_sec": 26.817613199999982
   },
   {
     "surrounding_text": "きっかけで、漫画の仕事noiraigakuruyowuni",
@@ -17,10 +17,10 @@
     "expect": [
       "の依頼が来るように"
     ],
-    "result": "noir 学院において。",
-    "cer": 1.3333333333333333,
+    "result": "怒髪天を衝くように。",
+    "cer": 0.7777777777777778,
     "at1": 0,
-    "elapsed_sec": 0.2511893000000782
+    "elapsed_sec": 4.895297200000016
   },
   {
     "surrounding_text": "２００６年７月５日、名古屋市内の６７歳nodannseikatanodozowukara,munakatashikowusakuhinntoomowareruhannganado,kottowuhinnsannbyakutenngatowunann",
@@ -30,10 +30,10 @@
       "の男性方の土蔵から、棟方志功作品と思われる版画など、骨董品300点が盗難",
       "の男性方の土蔵から、棟方志功作品と思われる版画など、骨董品三百点が盗難"
     ],
-    "result": "野丹清坐の図のように、門火を咲く人とも思われながら、この場所は百聞千雁塔の上",
-    "cer": 0.8888888888888888,
+    "result": "老女の生活から、身近な食料品の値上がりや燃料費の増加など、苦痛を伴う負担が増加している。",
+    "cer": 1.0277777777777777,
     "at1": 0,
-    "elapsed_sec": 1.0897500999999465
+    "elapsed_sec": 15.20777559999999
   },
   {
     "surrounding_text": "tatoebatyokkowuzahyowuheimennjowunoninninotennnogenntennkara",
@@ -42,10 +42,10 @@
       "例えば直交座標平面上の任意の点の原点から",
       "たとえば直交座標平面上の任意の点の原点から"
     ],
-    "result": "特定できません。文脈が非常に不明瞭で、意味を推測することが難しいです。周辺の文章も同様に意味を理解できませんでした。",
-    "cer": 2.619047619047619,
+    "result": "例えば、著作物著作権法に基づき、面接中の人の名前から…（となっていますが、文脈が非常に不明瞭です。続きの文章があれば、より適切な変換が可能です。）\n",
+    "cer": 3.2857142857142856,
     "at1": 0,
-    "elapsed_sec": 1.1729183000002195
+    "elapsed_sec": 13.985066700000004
   },
   {
     "surrounding_text": "主人公とすることが多く,honnsakumosono",
@@ -53,10 +53,10 @@
     "expect": [
       "、本作もその"
     ],
-    "result": "本筋のものです。",
-    "cer": 1.1666666666666667,
+    "result": "、本作品はそのように。",
+    "cer": 1.0,
     "at1": 0,
-    "elapsed_sec": 0.2537648999996236
+    "elapsed_sec": 4.146377600000051
   },
   {
     "surrounding_text": "ある。それが無かったら、その後の重要な科学的な発見は成しえなかっta.]tokojinntekinakannsowuwonokoshitaga,ainnshutainnharekishiwosennkowushiteorazu,konoyowunakannchigaiwoshita",
@@ -64,10 +64,10 @@
     "expect": [
       "た。」と個人的な感想を残したが、アインシュタインは歴史を専攻しておらず、このような勘違いをした"
     ],
-    "result": "それが無かったら、その後の重要な科学的な発見は成しえなかった違いをしました。",
-    "cer": 0.9148936170212766,
+    "result": "ただ、特異的な勘繰りを残したが、暗殺体例を先駆としておらず、この世に難癖をした。",
+    "cer": 0.6170212765957447,
     "at1": 0,
-    "elapsed_sec": 0.8506398999998055
+    "elapsed_sec": 14.676664799999912
   },
   {
     "surrounding_text": "deha,giinnnofutaihotokkenn",
@@ -75,10 +75,10 @@
     "expect": [
       "では、議員の不逮捕特権"
     ],
-    "result": "では、今後のことは検討しましょう。",
-    "cer": 1.1818181818181819,
+    "result": "では、銀行の負債補転勘定です。",
+    "cer": 1.0,
     "at1": 0,
-    "elapsed_sec": 0.3166940999999497
+    "elapsed_sec": 6.077364200000034
   },
   {
     "surrounding_text": "配偶者の氏nihennkowu,aruihafukugowuseiwosenntakusurutamenihasonoyowunikonninnmaenitetsudukiwookonawa",
@@ -89,10 +89,10 @@
       "に変更、あるいは複合姓を選択する為にはそのように婚姻前に手続きを行わ",
       "に変更、あるいは複合姓を選択する為にはそのように婚姻前に手続きをおこなわ"
     ],
-    "result": "二親交を深め、互いに扶合し生計を立てるため、今はそのように今に至るまで付き合いを కొనawa。",
-    "cer": 0.9459459459459459,
+    "result": "配偶者の氏名に変更、あるいは復婚手続きのために必要書類に添って確認を願いします。\n",
+    "cer": 0.8648648648648649,
     "at1": 0,
-    "elapsed_sec": 1.2337233000002925
+    "elapsed_sec": 11.828778900000088
   },
   {
     "surrounding_text": "改暦以降hashinnrekihachigatsutsuitachimoshikuhatsukiokurenokugatsutsuitachi",
@@ -102,10 +102,10 @@
       "は新暦八月一日もしくは月遅れの九月一日",
       "は新暦8月1日もしくは月遅れの9月1日"
     ],
-    "result": "改暦以降、新暦八月二十七日より始まって、睦月朔日（新年）を以て旧暦九月二十七日に至るまで。",
-    "cer": 1.894736842105263,
+    "result": "申し訳ありませんが、前後の文脈から判断するに、これは日付を表している可能性が高いですが、具体的な暦の種類や年号などが不明なため、正確な漢字への変換は困難です。\n\n強いて解釈するとすれば、「明治八月一日」の誤記である可能性がありますが、確証はありません。\n\nもし、この日付に関する情報（年号、暦の種類など）を補足していただければ、より適切な漢字表記に変換できます。\n",
+    "cer": 9.105263157894736,
     "at1": 0,
-    "elapsed_sec": 1.3338124000001699
+    "elapsed_sec": 26.88427360000003
   },
   {
     "surrounding_text": "mitasebahennshinnberutowotenishitamonogadaredemokamennraida-ninarerutoiwu,kokomadenoheiseiraida-detsuchikawaretaime-jinoshuwutaiseitekinasakuhinn",
@@ -114,10 +114,10 @@
       "満たせば変身ベルトを手にしたものが誰でも仮面ライダーになれるという、ここまでの平成ライダーで培われたイメージの集大成的な作品",
       "満たせば変身ベルトを手にした者が誰でも仮面ライダーになれるという、ここまでの平成ライダーで培われたイメージの集大成的な作品"
     ],
-    "result": "見せば勉強して、それを成し遂げた者でなくても、皆平等に扱われるという、ここまでの平定は得たちかわせられた偉人の数々の先駆的な作品です。",
-    "cer": 0.7377049180327869,
+    "result": "見たまば遍身不裂の誓いをとるやうに、此迄の平生を脱却された偉人の秀歌集的私物。\n",
+    "cer": 0.8225806451612904,
     "at1": 0,
-    "elapsed_sec": 1.6261356999998497
+    "elapsed_sec": 16.464014500000076
   },
   {
     "surrounding_text": "路線はその西端の中野駅から東京都心部を横断しtaato,sonomamahigashihowukowuninobi",
@@ -128,10 +128,10 @@
       "たあと、そのまま東方向に延び",
       "たあと、そのまま東方向に伸び"
     ],
-    "result": "そのままで東へと伸びています。",
-    "cer": 0.9230769230769231,
+    "result": "東京へと伸びています。",
+    "cer": 0.9285714285714286,
     "at1": 0,
-    "elapsed_sec": 0.38004640000008294
+    "elapsed_sec": 5.51222359999997
   },
   {
     "surrounding_text": "歳だった１９６sannnennkugatsujuwugonichi,yuwujinnnodeni-su・makune-agahakujinnyuwuetsuronnshaniyorujuwurokubanngaiseiyohanekyowukaidenobakudanntero",
@@ -147,10 +147,10 @@
       "三年九月十五日、友人のデニース・マクネーアが白人優越論者による16番街聖ヨハネ教会での爆弾テロ",
       "三年九月十五日、友人のデニース・マクネーアが白人優越論者による十六番街聖ヨハネ教会での爆弾テロ"
     ],
-    "result": "1963年5月1日、湯羽仁郎殿に・真紅亜白人由月春二朗十六番外性陽研教委会伝の幕田貫照",
-    "cer": 0.7872340425531915,
+    "result": "1963年5月15日、湯路進のデビューです。幕開け速攻陣入賞を制して、以降重賞勝ちを決めて京華会館杯出走となりました。",
+    "cer": 1.0212765957446808,
     "at1": 0,
-    "elapsed_sec": 1.6275541999998495
+    "elapsed_sec": 19.14781650000009
   },
   {
     "surrounding_text": "kukeijowunihairetsushita",
@@ -158,10 +158,10 @@
     "expect": [
       "矩形状に配列した"
     ],
-    "result": "規定により、入退室しました。",
-    "cer": 1.5,
+    "result": "物件調査に入れた。",
+    "cer": 1.0,
     "at1": 0,
-    "elapsed_sec": 0.34923620000017763
+    "elapsed_sec": 4.219707500000027
   },
   {
     "surrounding_text": "nokennkyuwute-madearutahennsuwufukusokannsuwuronn",
@@ -170,10 +170,10 @@
       "の研究テーマである多変数複素関数論",
       "の研究テーマである多変数複素函数論"
     ],
-    "result": "これは、意味を理解することが難しい文字列です。周辺の文章が非常に特殊なため、推測で漢字仮名混じりに変換すると不自然になる可能性があります。\n\nもし、この文字列に何らかの意味や文脈があれば教えていただけますでしょうか？そうすれば、より適切に変換できるかもしれません。",
-    "cer": 7.529411764705882,
+    "result": "農研救手まである程度不適合数覆う論。\n\n（※非常に難しい変換で、文脈から推測した結果です。正確な意味が不明確なため、誤りがある可能性があります。）\n",
+    "cer": 4.117647058823529,
     "at1": 0,
-    "elapsed_sec": 2.2206191000000217
+    "elapsed_sec": 14.819777599999952
   },
   {
     "surrounding_text": "また同シリーズのキャラクター商品権によるビジネスで成功woosametaru-kasuhasonoshikinnwoeizowu・onnkyowukannkeinodejitarukawotyuwushinntoshitagijutsukaihatsunitowushishi,eigakainitadai",
@@ -181,10 +181,10 @@
     "expect": [
       "を収めたルーカスはその資金を映像・音響関係のデジタル化を中心とした技術開発に投資し、映画界に多大"
     ],
-    "result": "有望なキャラクター商品権によるビジネスで成功を収められる可能性は、限られた知識や経験では難しい技術開発に投資し、映画産業にも対します。",
-    "cer": 1.0833333333333333,
+    "result": "を成功させたる案件の資金を投入し、音響効果関係のデジタル化を推進する技術開発に投資し、映画界に貢献。",
+    "cer": 0.4791666666666667,
     "at1": 0,
-    "elapsed_sec": 1.3452265999999327
+    "elapsed_sec": 15.753891199999998
   },
   {
     "surrounding_text": "、急性中毒や、sapurimenntonosesshunadoniyorikeizokutekinikajowusesshushitabaainihaikanoyowu",
@@ -192,10 +192,10 @@
     "expect": [
       "サプリメントの摂取などにより継続的に過剰摂取した場合には以下のよう"
     ],
-    "result": "安全管理体制に外観上の問題はありません。",
-    "cer": 0.9696969696969697,
+    "result": "申し訳ありませんが、提示された周辺の文章は意味不明であり、適切な語彙を選択することができません。文脈が全く理解できないため、漢字仮名混じり文に変換することは不可能です。\n\nもし、誤字脱字やタイプミスがある場合は、修正して再度ご指示ください。より正確な変換を試みます。\n",
+    "cer": 3.8484848484848486,
     "at1": 0,
-    "elapsed_sec": 0.4418820999999298
+    "elapsed_sec": 21.90388070000006
   },
   {
     "surrounding_text": "部屋新設の基準が厳格化されたこともari(kowujutsu),sumowubeyanokazuhagennshowukeikowu",
@@ -203,10 +203,10 @@
     "expect": [
       "あり（後述）、相撲部屋の数は減少傾向"
     ],
-    "result": "あり（工事中）、住居表示の数及び厳守を強化しました。",
-    "cer": 1.0555555555555556,
+    "result": "要因（構造）、相撲部屋や年功序列の件数厳選措置も考慮。",
+    "cer": 1.0,
     "at1": 0,
-    "elapsed_sec": 0.6803641999999854
+    "elapsed_sec": 9.63149199999998
   },
   {
     "surrounding_text": "jowudoshinnshuwujitennga,doreniteishokusurunndesu",
@@ -215,10 +215,10 @@
       "浄土真宗事典が、どれに抵触するんです",
       "浄土真宗辞典が、どれに抵触するんです"
     ],
-    "result": "どのような新興市場で投資するのですか。",
-    "cer": 0.8888888888888888,
+    "result": "上付注文献では、どこに記述するのですか？",
+    "cer": 0.7222222222222222,
     "at1": 0,
-    "elapsed_sec": 0.42986770000015895
+    "elapsed_sec": 7.1968440999999075
   },
   {
     "surrounding_text": "釈尊の入滅はsuwusetsuaruga,",
@@ -226,10 +226,10 @@
     "expect": [
       "数説あるが、"
     ],
-    "result": "数説ありますが、",
-    "cer": 0.5,
+    "result": "末期の寂滅であると解します。",
+    "cer": 2.0,
     "at1": 0,
-    "elapsed_sec": 0.2197529999998551
+    "elapsed_sec": 5.156233000000043
   },
   {
     "surrounding_text": "歯のないくちばしを持つこと、kataikarawomotsutamagowowumukoto,takaitaisharitsu",
@@ -242,10 +242,10 @@
       "固い殻を持つ卵を生むこと、高い代謝率",
       "硬い殻を持つ卵を生むこと、高い代謝率"
     ],
-    "result": "肩書きと高い地位です。",
-    "cer": 0.9444444444444444,
+    "result": "硬い殻を持つ卵を産むこと、高い滞在率。",
+    "cer": 0.16666666666666666,
     "at1": 0,
-    "elapsed_sec": 0.33267839999962234
+    "elapsed_sec": 7.9143825999999535
   },
   {
     "surrounding_text": "滞在中のshukushotoshitetsukuttashiro",
@@ -253,10 +253,10 @@
     "expect": [
       "宿所として造った城"
     ],
-    "result": "宿泊中は室を使用してください。",
-    "cer": 1.3333333333333333,
+    "result": "宿泊施設として利用しました。",
+    "cer": 1.0,
     "at1": 0,
-    "elapsed_sec": 0.2819649999996727
+    "elapsed_sec": 4.601672399999984
   },
   {
     "surrounding_text": "公共交通機関は、basugakushiroekikaraakannkohannmade",
@@ -264,10 +264,10 @@
     "expect": [
       "バスが釧路駅から阿寒湖畔まで"
     ],
-    "result": "バスが高校から駅までです。",
+    "result": "バス停から赤間港まで。",
     "cer": 0.6428571428571429,
     "at1": 0,
-    "elapsed_sec": 0.3570386999999755
+    "elapsed_sec": 5.427420999999981
   },
   {
     "surrounding_text": "死刑判決を受けたスコッツボロー事件では大規模な釈放運動を行い、saishinnnowuekaihowuwokachitotta",
@@ -278,10 +278,10 @@
       "再審の上解放を勝ちとった",
       "再審のうえ解放を勝ちとった"
     ],
-    "result": "死刑判決を受けた",
-    "cer": 0.8333333333333334,
+    "result": "再審請求を勝ち取った。",
+    "cer": 0.4166666666666667,
     "at1": 0,
-    "elapsed_sec": 0.2605823999997483
+    "elapsed_sec": 6.230955699999981
   },
   {
     "surrounding_text": "遺言に従い、jikikowuteinihakarenomusukodearu",
@@ -289,10 +289,10 @@
     "expect": [
       "次期皇帝には彼の息子である"
     ],
-    "result": "執行委任状に記載のとおりでございます。",
-    "cer": 1.2307692307692308,
+    "result": "自機故障で退任不可の理由である。",
+    "cer": 0.9230769230769231,
     "at1": 0,
-    "elapsed_sec": 0.4583239000003232
+    "elapsed_sec": 6.210697400000072
   },
   {
     "surrounding_text": "鉄道ファンによる鉄道撮影へのyokkyuwunomuyaminakanetsuwoosaetai",
@@ -301,10 +301,10 @@
       "欲求の無闇な過熱を抑えたい",
       "欲求のむやみな過熱を抑えたい"
     ],
-    "result": "より多くの沿線者の理解と協力を得たい。",
-    "cer": 1.1428571428571428,
+    "result": "抑留中の無理な熱意を抑えたい。",
+    "cer": 0.5384615384615384,
     "at1": 0,
-    "elapsed_sec": 0.49124940000001516
+    "elapsed_sec": 6.5650702000000365
   },
   {
     "surrounding_text": "入学案内に経営者２世のyowuseiwowutatteita",
@@ -312,10 +312,10 @@
     "expect": [
       "養成を謳っていた"
     ],
-    "result": "優秀生徒であったと",
-    "cer": 1.0,
+    "result": "優勢を保っていた。",
+    "cer": 0.5,
     "at1": 0,
-    "elapsed_sec": 0.20953200000030847
+    "elapsed_sec": 4.3396754999999985
   },
   {
     "surrounding_text": "しかしエフレムはshowunennjidaihatannkidewagamamanaseikakudeari",
@@ -323,10 +323,10 @@
     "expect": [
       "少年時代は短気でわがままな性格であり"
     ],
-    "result": "証明年次段階で私は主客格であり。",
-    "cer": 0.7777777777777778,
+    "result": "しかし、エフレムは昭和年代初頭の画壇気でわがままな性質であり。",
+    "cer": 1.0555555555555556,
     "at1": 0,
-    "elapsed_sec": 0.45542070000010426
+    "elapsed_sec": 8.94707500000004
   },
   {
     "surrounding_text": "本人がjishinnganakattatamekyohishiteita",
@@ -337,10 +337,10 @@
       "自信が無かった為拒否していた",
       "自信がなかった為拒否していた"
     ],
-    "result": "地震が発生したため、休憩していました。",
-    "cer": 0.7333333333333333,
+    "result": "自認がなかったため強行していた。",
+    "cer": 0.26666666666666666,
     "at1": 0,
-    "elapsed_sec": 0.35014819999969404
+    "elapsed_sec": 5.480535199999963
   },
   {
     "surrounding_text": "設楽統（バナナマン）とは誕生日が同じであり、家族ぐるみで誕生日パーティーを開いたりba-sude-sonnguwookuttarisurunaka.",
@@ -349,10 +349,10 @@
       "バースデーソングを送ったりする仲。",
       "バースデーソングを贈ったりする仲。"
     ],
-    "result": "バズデソン（グック）とも親しい関係にあるようです。",
-    "cer": 1.1764705882352942,
+    "result": "バースデーソングを歌ったりするなか。",
+    "cer": 0.17647058823529413,
     "at1": 0,
-    "elapsed_sec": 0.6035812999998598
+    "elapsed_sec": 7.103676899999982
   },
   {
     "surrounding_text": "koboreochitashushihaakinimebae,rozettodefuyuwokosu",
@@ -362,10 +362,10 @@
       "溢れ落ちた種子は秋に芽生え、ロゼットで冬を越す",
       "零れ落ちた種子は秋に芽生え、ロゼットで冬を越す"
     ],
-    "result": "小ぼれ落ちた寿司は、飢えた海に放れ、ロゼットで冬を我慢する。",
-    "cer": 0.625,
+    "result": "申し訳ありませんが、この文は意味を理解することができませんでした。「koboreochitashushihaakinimebae,rozettodefuyuwokosu」という文字列は、ローマ字とひらがなが混ざっているものの、一般的な単語やフレーズの組み合わせではないため、適切な漢字仮名混じり文に変換することが難しいです。\n\nもしこの文字列が何かの専門用語や固有名詞の一部である場合、その分野の知識がないため、正確な変換はできません。\n\n文脈の情報として「説明はここまでです。それ以外は ikano toori desu .」とありますが、これだけでは「koboreochitashushihaakinimebae,rozettodefuyuwokosu」の意味を推測することは困難です。\n\nもしこの文字列の正確な意味や背景について教えていただければ、より適切な変換を試みることができます。",
+    "cer": 16.166666666666668,
     "at1": 0,
-    "elapsed_sec": 0.942634999999882
+    "elapsed_sec": 45.891189199999985
   },
   {
     "surrounding_text": "sakuhinnwotennjisurutamenisetsuritsushitabijutsukannde,sonozannshinnnagaikannha",
@@ -374,10 +374,10 @@
       "作品を展示するために設立した美術館で、その斬新な外観は",
       "作品を展示する為に設立した美術館で、その斬新な外観は"
     ],
-    "result": "作品を展示するため設置した美術館で、その斬新な外観は",
-    "cer": 0.07407407407407407,
+    "result": "作品を展示するために特別史画館で、その斬新なが企画が。",
+    "cer": 0.4074074074074074,
     "at1": 0,
-    "elapsed_sec": 0.6496525999996265
+    "elapsed_sec": 9.144647400000053
   },
   {
     "surrounding_text": "「飛鳥」のkannjiwowakunnniateteiruyurai",
@@ -386,10 +386,10 @@
       "漢字を和訓に当てている由来",
       "漢字を和訓に充てている由来"
     ],
-    "result": "漢字の使い方について説明しています。",
-    "cer": 0.9230769230769231,
+    "result": "漢字を弱く区分けています。",
+    "cer": 0.6153846153846154,
     "at1": 0,
-    "elapsed_sec": 0.28622459999996863
+    "elapsed_sec": 5.2591972999999825
   },
   {
     "surrounding_text": "dabinifusaretaitai",
@@ -398,10 +398,10 @@
       "荼毘にふされた遺体",
       "荼毘に付された遺体"
     ],
-    "result": "羽化発展したい。",
-    "cer": 0.8888888888888888,
+    "result": "抱擁されたい。",
+    "cer": 0.6666666666666666,
     "at1": 0,
-    "elapsed_sec": 0.24312659999986863
+    "elapsed_sec": 3.8935162999999875
   },
   {
     "surrounding_text": "gaibunokashunogakkyokuseisakudeha",
@@ -409,10 +409,10 @@
     "expect": [
       "外部の歌手の楽曲制作では"
     ],
-    "result": "外文科の学課使用では。",
+    "result": "外部課税の学級是正では。\n",
     "cer": 0.75,
     "at1": 0,
-    "elapsed_sec": 0.3861192999997911
+    "elapsed_sec": 5.884250599999973
   },
   {
     "surrounding_text": "両ホームは挟んでいる交差点に関してtenntaishowunoichi",
@@ -420,10 +420,10 @@
     "expect": [
       "点対称の位置"
     ],
-    "result": "点対称の一",
-    "cer": 0.3333333333333333,
+    "result": "両ホームは挟んでいる交差点に関して、点灯信号の配置です。",
+    "cer": 4.166666666666667,
     "at1": 0,
-    "elapsed_sec": 0.17392930000005435
+    "elapsed_sec": 6.695684599999936
   },
   {
     "surrounding_text": "tehoshiitonaduketatokiita]tohonnninngaizennkatatteiru",
@@ -434,10 +434,10 @@
       "て欲しいと名づけたと聞いた」と本人が依然語っている",
       "てほしいと名付けたと聞いた」と本人が依然語っている"
     ],
-    "result": "手持ちの間違いを伝えていると、本人が内部で確認しています。",
-    "cer": 0.92,
+    "result": "申し訳ありませんが、前後の文脈から意味を推測することが非常に困難です。「tehoshiitonaduketatokiita]tohonnninngaizennkatatteiru」という文字列からは、どのような状況で使われているのか、どのような意図なのかを判断できません。\n\nそのため、正確な漢字仮名混じり文への変換はできません。\n\nもしこの文字列が何かの略語や専門用語である場合、その情報を提供していただけると、より適切な変換が可能になります。\n",
+    "cer": 8.6,
     "at1": 0,
-    "elapsed_sec": 0.6354442000001654
+    "elapsed_sec": 27.905463599999962
   },
   {
     "surrounding_text": "ディーゼルエンジンとhatsudennkikennyowunodennkimo-ta-wokumiawasetesowukowusurunogatokutyowude,jisokuyonnjuwugokirome-torumimannhadennkimo-ta-",
@@ -450,10 +450,10 @@
       "発電機兼用の電気モーターを組み合わせて走行するのが特徴で、時速45キロメートル未満は電気モーター",
       "発電機兼用の電気モーターを組み合わせて走行するのが特徴で、時速四十五キロメートル未満は電気モーター"
     ],
-    "result": "発動研機規約の運転基板を組み合わせて、効率よく燃料を燃焼させる方式で、自触延年規則化ローマ字の運転基板です。",
-    "cer": 0.8979591836734694,
+    "result": "発電機兼用の伝動機構を組み合わせて、速効ヨンジュウ五極回転磁石を搭載した。",
+    "cer": 0.6888888888888889,
     "at1": 0,
-    "elapsed_sec": 1.459234199999628
+    "elapsed_sec": 13.877356200000008
   },
   {
     "surrounding_text": "wokaerubekutyowusennshitaissaku(honnninndann)]de,",
@@ -463,10 +463,10 @@
       "を変えるべく挑戦した１作（本人談）」で、",
       "を変えるべく挑戦した1作（本人談）」で、"
     ],
-    "result": "応援してくれる先生方に感謝いたします。（本人は断念）で、",
-    "cer": 1.05,
+    "result": "回収すべき調書（本人担当）で、",
+    "cer": 0.7,
     "at1": 0,
-    "elapsed_sec": 0.569469499999741
+    "elapsed_sec": 6.639770700000099
   },
   {
     "surrounding_text": "ドクター・ランドへnofukushuwu",
@@ -474,10 +474,10 @@
     "expect": [
       "の復讐"
     ],
-    "result": "無福寿無",
-    "cer": 1.3333333333333333,
+    "result": "連絡用です。",
+    "cer": 2.0,
     "at1": 0,
-    "elapsed_sec": 0.2123263000003135
+    "elapsed_sec": 3.69660470000008
   },
   {
     "surrounding_text": "))nokowukann(sowushowushitegiseikanntoiwu)wosasuyowugo",
@@ -485,10 +485,10 @@
     "expect": [
       "））の高官（総称して議政官という）を指す用語"
     ],
-    "result": "このままでは、解釈が難しく、適切な漢字仮名混じりに変換できません。文章全体に意味が通じるようにするには、文脈をもう少し詳しく教えていただけますでしょうか？例えば、どのような状況でこの文章が出現するのか、前後の文脈などを教えていただけると助かります。\n",
-    "cer": 5.454545454545454,
+    "result": "この文はローマ字とひらがなが混ざっており、かつ意味を判別することが非常に困難です。周辺の文章も同様に解読不能であるため、適切な漢字仮名混じり文への変換はできません。\n\n無理やり推測すると「残しておく(そう来る仕掛けがない)わさすよ吾」のように分割できますが、これらは文法的に正しくなく、意味も不明です。\n\nもしこの文に誤字脱字やタイプミスが含まれているようでしたら、正しいローマ字表記をお知らせいただけると、より正確な変換を試みることができます。\n",
+    "cer": 9.863636363636363,
     "at1": 0,
-    "elapsed_sec": 2.260496100000182
+    "elapsed_sec": 33.489069900000004
   },
   {
     "surrounding_text": "ha,fuseichiwozennryokushissowusurumo-kuga",
@@ -496,10 +496,10 @@
     "expect": [
       "は、不整地を全力疾走するモークが"
     ],
-    "result": "発電地を電源として使用する母貨",
-    "cer": 0.9375,
+    "result": "葉、不適一を全緑視送うすもーくが。\n\n（この文脈は非常に難解で、一般的な文章とはかけ離れています。推測に基づき、植物に関する詩的な表現であると仮定して変換しました。）\n",
+    "cer": 4.875,
     "at1": 0,
-    "elapsed_sec": 0.3918898000001718
+    "elapsed_sec": 16.24672810000004
   },
   {
     "surrounding_text": "の場面で登板し現役最終dasekiwomukaetayokohamabeisuta-zunodaidasuzukitakanoriwofa-sutogoroniwuchito",
@@ -507,10 +507,10 @@
     "expect": [
       "打席を迎えた横浜ベイスターズの代打鈴木尚典をファーストゴロに打ち取っ"
     ],
-    "result": "退場を告げると、横浜ベイスターズ監督である鈴木貴規氏に声をかけられました。",
-    "cer": 0.7941176470588235,
+    "result": "場面で登板し、現役最終ダ席を迎えた横浜ベイスターズ・筒井大輔が力強くピッチングを行った。\n",
+    "cer": 0.9411764705882353,
     "at1": 0,
-    "elapsed_sec": 0.8951772999998866
+    "elapsed_sec": 13.45183320000001
   },
   {
     "surrounding_text": "６５dowokoeru",
@@ -519,10 +519,10 @@
       "℃を超える",
       "度を超える"
     ],
-    "result": "どのように崩壊する",
-    "cer": 1.6,
+    "result": "を超える",
+    "cer": 0.2,
     "at1": 0,
-    "elapsed_sec": 0.21072770000000673
+    "elapsed_sec": 2.397508499999958
   },
   {
     "surrounding_text": "shatorubasugawunnkowusareteitajiki",
@@ -530,10 +530,10 @@
     "expect": [
       "シャトルバスが運行されていた時期"
     ],
-    "result": "シャトルバスが運行されており、定期便です。",
-    "cer": 0.5,
+    "result": "申し訳ありませんが、前後の文脈から判断できる情報が少なすぎて、適切な漢字に変換することができません。「shatorubasugawunnkowusareteitajiki」という文字列からは意味を推測することが難しく、どのような状況で使われているのかが不明です。\n\nもしよろしければ、もう少し文脈や単語の意味合いなど教えていただけますでしょうか？ 例えば、「shatorubasugawunnkowusareteitajiki」が何について説明している文章なのか、この言葉が属する分野（医学、法律、技術など）などを教えていただけると、より適切な変換が可能になります。\n",
+    "cer": 17.4375,
     "at1": 0,
-    "elapsed_sec": 0.45705599999973856
+    "elapsed_sec": 31.97017889999995
   },
   {
     "surrounding_text": "９０年から)gappeigohafukushityowu",
@@ -541,10 +541,10 @@
     "expect": [
       "）合併後は副市長"
     ],
-    "result": "隔年ご法復試了う",
-    "cer": 1.0,
+    "result": "ガペイゴハ復写中。",
+    "cer": 1.125,
     "at1": 0,
-    "elapsed_sec": 0.351911299999756
+    "elapsed_sec": 5.069984500000032
   },
   {
     "surrounding_text": "は５～６チームずつのguru-puniwakareteri-gusennwookonai,ichiiga",
@@ -557,10 +557,10 @@
       "グループに分かれてリーグ戦をおこない、1位が",
       "グループに分かれてリーグ戦をおこない、一位が"
     ],
-    "result": "グループ分けして、一チームが",
+    "result": "グループごとに離れて、それぞれ行います。",
     "cer": 0.65,
     "at1": 0,
-    "elapsed_sec": 0.3282269000001179
+    "elapsed_sec": 6.247784300000035
   },
   {
     "surrounding_text": "シーズンでamerikashijowuhatsunojoseishusekihosakann",
@@ -568,10 +568,10 @@
     "expect": [
       "アメリカ史上初の女性首席補佐官"
     ],
-    "result": "アメリカにおける初めての世界最高峰セールスカーン。",
-    "cer": 1.2666666666666666,
+    "result": "アメリカ市場初の上場適格株式勘定。",
+    "cer": 0.7333333333333333,
     "at1": 0,
-    "elapsed_sec": 0.45662869999978284
+    "elapsed_sec": 6.38579320000008
   },
   {
     "surrounding_text": "なると思いますので、とくにコメントは出さず、状況wotyuwushishitaitoomoimasuga,saishonoiraidehadetekonakatta",
@@ -579,10 +579,10 @@
     "expect": [
       "を注視したいと思いますが、最初の依頼では出てこなかった"
     ],
-    "result": "特に言いたいことはありませんが、最終的な決定はできかねました。",
-    "cer": 0.8148148148148148,
+    "result": "状況を注視したいと思います。最後に依頼は出なかった。",
+    "cer": 0.37037037037037035,
     "at1": 0,
-    "elapsed_sec": 0.6164700999997876
+    "elapsed_sec": 8.045721999999955
   },
   {
     "surrounding_text": ",ichininnmaeninarukotode,jitadomoniseijinnishikiwofukame,konotokikarakarerahahajimetekekkonnshikakuwokowuninnsare,",
@@ -597,10 +597,10 @@
       "、一人前になることで、自他ともに成人意識を深め、この時から彼等は初めて結婚資格を公認され、",
       "、一人前になることで、自他ともに成人意識を深め、この時から彼らは初めて結婚資格を公認され、"
     ],
-    "result": "一人の男性である故に、自他ともに世辞を弄し、この時以来母は初めて形なく無人され。",
-    "cer": 0.6,
+    "result": "一人娘になることで、地頭門の正式な礼装を重ね、この時より彼女は始めて結婚式官位を勤めることになり、",
+    "cer": 0.6222222222222222,
     "at1": 0,
-    "elapsed_sec": 1.0907088000003569
+    "elapsed_sec": 14.823986200000036
   },
   {
     "surrounding_text": "setsuritsukannrennjigyowutoshite[dennwamowunonakanomienaimyu-jiamu]gadennwamowunonakanikaisetsusa",
@@ -608,10 +608,10 @@
     "expect": [
       "設立関連事業として「電話網の中の見えないミュージアム」が電話網の中に開設さ"
     ],
-    "result": "セットリツクアンレンジギョウとして、[電販は未だに中野の面会名由美且]が、電販は未だに中野会議設立者です。",
-    "cer": 1.2432432432432432,
+    "result": "設備関連業務として[電波 mourning 中野面内ミュージャム]が電波 mourning 中野に重要です。",
+    "cer": 1.027027027027027,
     "at1": 0,
-    "elapsed_sec": 1.6370053000000553
+    "elapsed_sec": 12.548072199999979
   },
   {
     "surrounding_text": "に集金を行う事を[asagake],gyakunishinnyanishuwukinnwookonawukotowo[yogake]toiwu",
@@ -619,10 +619,10 @@
     "expect": [
       "「朝駆け」、逆に深夜に集金を行う事を「夜駆け」という"
     ],
-    "result": "早朝課、過日新年度末に送付いたしました費用分担金について言いました。",
-    "cer": 1.1923076923076923,
+    "result": "朝掛け、逆新日本水巾を交うと申す。\n",
+    "cer": 0.7692307692307693,
     "at1": 0,
-    "elapsed_sec": 0.8203846999999769
+    "elapsed_sec": 9.064236700000038
   },
   {
     "surrounding_text": "saremasu』toiwuhyowugennha,ikanimowatashigadokokanosaitokaragazowuwotowuyowushi",
@@ -637,10 +637,10 @@
       "されます』という表現は、如何にも私がどこかのサイトから画像を盗用し",
       "されます』という表現は、如何にも私が何処かのサイトから画像を盗用し"
     ],
-    "result": "「されますと、言われる限りは、如何にも私がどこかのサイトから贈られた物と思われる。」",
-    "cer": 0.6060606060606061,
+    "result": "申し訳ありませんが、前後の文脈から判断すると、この文章は非常に読みにくく、意味を解釈することが困難です。無理に漢字仮名混じり文に変換しようとすると、不自然な文章になってしまう可能性があります。\n\n元のローマ字表記の文字列に誤りがないか確認していただくか、より明確な文脈をご提供いただけますでしょうか？ \n\nもし、どうしても変換する必要がある場合は、以下のように解釈して変換してみます。\n\n「されます」という表現は、何かが行われることを表していると考えられます。しかし、残りの部分は不明瞭です。\n\n例：\n「されます」と言われています。しかし、私にはどうすることも分かりません。\n\nただし、これはあくまで推測に基づいた結果であり、正確な意味を表しているとは限りません。",
+    "cer": 9.515151515151516,
     "at1": 0,
-    "elapsed_sec": 0.8209900000001653
+    "elapsed_sec": 43.59921069999996
   },
   {
     "surrounding_text": "jinnbunnkagakukennkyuwukahakushi",
@@ -648,10 +648,10 @@
     "expect": [
       "人文科学研究科博士"
     ],
-    "result": "人文科学研究に権威者",
-    "cer": 0.4444444444444444,
+    "result": "神文学研究科博士",
+    "cer": 0.2222222222222222,
     "at1": 0,
-    "elapsed_sec": 0.3215519000000313
+    "elapsed_sec": 4.538962500000025
   },
   {
     "surrounding_text": "naku,gamirasunodesura-sowutowukarahajimetenyuwudennshitatokiniha,sakugasutaffuni",
@@ -662,10 +662,10 @@
       "無く、ガミラスのデスラー総統から初めて入電したときには、作画スタッフに",
       "なく、ガミラスのデスラー総統から初めて入電したときには、作画スタッフに"
     ],
-    "result": "なく、ガミラスノデ、スール（そうと）いうことから始めさせていただく日には、制作スタッフに",
-    "cer": 0.6571428571428571,
+    "result": "泣く、がみらすのですらそう言うところからはじめて入社したときには、作画スタッフに…\n\n（※文脈から推測し、意味の通るように補完しました。元のローマ字表記は非常に不明瞭なため、正確な変換は困難です。）",
+    "cer": 2.2,
     "at1": 0,
-    "elapsed_sec": 0.9603229999997893
+    "elapsed_sec": 19.968764200000123
   },
   {
     "surrounding_text": "koreikowunozokuhennwokakukotowonanndokairaisarerumo,[gojirawokorosunogakawaisowudakara",
@@ -674,10 +674,10 @@
       "これ以降の続編を書くことを何度か依頼されるも、「ゴジラを殺すのがかわいそうだから",
       "これ以降の続編を書くことを何度か依頼されるも、「ゴジラを殺すのが可哀想だから"
     ],
-    "result": "今回の所属部署は、各部門への配属となります。[今後も五日ほど研修が続くため]",
-    "cer": 0.975,
+    "result": "これ以降の続編を解読することは難しいため、[ゴジラを破滅させるのが怖いので]…\n\n**補足:** 文脈が非常に断片的で推測が多く含まれます。 \"koreikowu\" や \"zokuhennu\" などが何を指すのか不明なため、仮に「続編」と解釈し、全体として「ゴジラを破滅させるのが怖いので…」という状況に関連付けられる文だと判断しました。",
+    "cer": 3.65,
     "at1": 0,
-    "elapsed_sec": 0.8634286000001339
+    "elapsed_sec": 29.26504880000016
   },
   {
     "surrounding_text": "nokyowudowujisshiwohaikeinikyowuryoku・rennkeikannkeinotsumikasanegaari,kennnaidemogappeimadenoshoyowukikannhasaisokudea",
@@ -692,10 +692,10 @@
       "の共同実施を背景に協力・連携関係の積み重ねがあり、県内でも合併までの所要期間は最速であっ",
       "の共同実施を背景に協力・連携関係の積み重ねがあり、圏内でも合併までの所要期間は最速であっ"
     ],
-    "result": "多くの無事事項を廃機に、期約力・連啓幹鍵の積算が有りと、懸念而も八偏麻淀の招優喫難必速的と。",
-    "cer": 0.7727272727272727,
+    "result": "農業関連実質を把握し、連携関係の積み重ねが有り、謙那出間でもガッペイマデノ少用機簡査速度で。\n\n（注：元の文脈があまりにも専門的かつ判読困難なため、上記は推測に基づく翻訳です。より正確な翻訳のためには、文脈に関する追加情報が必要となります。）\n",
+    "cer": 2.340909090909091,
     "at1": 0,
-    "elapsed_sec": 1.6177130999999463
+    "elapsed_sec": 24.95641549999982
   },
   {
     "surrounding_text": "koremomatazennkokudehajimeteno",
@@ -703,10 +703,10 @@
     "expect": [
       "これもまた全国で初めての"
     ],
-    "result": "このまま全国で始めての",
-    "cer": 0.3333333333333333,
+    "result": "結局、全国で初めての…（状況によって「こと」「試み」など補完が必要です）",
+    "cer": 2.5833333333333335,
     "at1": 0,
-    "elapsed_sec": 0.28505989999985104
+    "elapsed_sec": 7.662858599999936
   },
   {
     "surrounding_text": "本人曰く「田園気質」であり、中学２年生の頃、横浜から奈良nitennkowushi,[jibunnnoibashohakokonannda]tokannji",
@@ -715,10 +715,10 @@
       "に転校し、「自分の居場所はここなんだ」と感じ",
       "に転校し、「自分の居場所は此処なんだ」と感じ"
     ],
-    "result": "日天宮氏、自身の家柄は高野南山と関係があるとのこと",
-    "cer": 1.0,
+    "result": "に行っていたようです。[自分の意思で初めてのことだった]とのことです。",
+    "cer": 1.3181818181818181,
     "at1": 0,
-    "elapsed_sec": 0.6838674000000537
+    "elapsed_sec": 8.187006999999994
   },
   {
     "surrounding_text": ",yomiwuriterebi",
@@ -730,10 +730,10 @@
       "、よみうりTV",
       "、読売TV"
     ],
-    "result": "読み物テレビ",
-    "cer": 0.5,
+    "result": "読売テレビ",
+    "cer": 0.16666666666666666,
     "at1": 0,
-    "elapsed_sec": 0.17713269999967451
+    "elapsed_sec": 3.0926312999999936
   },
   {
     "surrounding_text": "緑茶生産においては、タンニンによる渋味を抑え、テアニンによる甘味を与えるため,tyajuwoshakowuka",
@@ -741,10 +741,10 @@
     "expect": [
       "、茶樹を遮光下"
     ],
-    "result": "製造過程において、",
-    "cer": 1.2857142857142858,
+    "result": "茶樹品種交配を行います。",
+    "cer": 1.4285714285714286,
     "at1": 0,
-    "elapsed_sec": 0.22075959999983752
+    "elapsed_sec": 5.7367077999999765
   },
   {
     "surrounding_text": "shagekishiseiwotamochiyasukushi",
@@ -753,10 +753,10 @@
       "射撃姿勢を保ち易くし",
       "射撃姿勢を保ちやすくし"
     ],
-    "result": "賃金引き下げは容易です。",
-    "cer": 1.0909090909090908,
+    "result": "申し訳ありませんが、前後の文脈が非常に不明瞭で、\"shagekishiseiwotamochiyasukushi\" がどのような意味を持つのか判断できません。\n\nもしこの言葉が特定の専門用語や固有名詞である場合、適切な漢字に変換することが難しいです。\n\n推測に基づいた回答を試みることもできますが、誤った情報を提示する可能性が高いため、今回は控えさせていただきます。\n\nより正確な変換を行うために、以下の情報を提供していただけると助かります。\n\n*   \"shagekishiseiwotamochiyasukushi\" の意味\n*   この言葉が使われている分野 (例: 歴史、医学、技術など)\n*   前後の文脈（もう少し詳しい文章）",
+    "cer": 28.636363636363637,
     "at1": 0,
-    "elapsed_sec": 0.3448855999999978
+    "elapsed_sec": 36.8085701
   },
   {
     "surrounding_text": "これら喪失領土や、sennryowuchiniita",
@@ -765,10 +765,10 @@
       "占領地にいた",
       "占領地に居た"
     ],
-    "result": "千百年も治りにいた",
-    "cer": 1.0,
+    "result": "戦利品を奪い取った。",
+    "cer": 1.3333333333333333,
     "at1": 0,
-    "elapsed_sec": 0.2881348999999318
+    "elapsed_sec": 5.233054100000118
   },
   {
     "surrounding_text": "ha-zogukanntokuga[yogenn]shitatoori,honnkyochibusshu・sutajiamudehonnruidawowutenainadokitaiwowuragiri,dowunennkagiridekaikosare",
@@ -777,10 +777,10 @@
       "ハーゾグ監督が「予言」した通り、本拠地ブッシュ・スタジアムで本塁打を打てないなど期待を裏切り、同年限りで解雇され",
       "ハーゾグ監督が「予言」したとおり、本拠地ブッシュ・スタジアムで本塁打を打てないなど期待を裏切り、同年限りで解雇され"
     ],
-    "result": "発想館と工画（洋麺）した通り、本校地域部数・スタジアムで本入度をわおてない地区台腰裏ぎり、どうん年かぎりで開校され。",
-    "cer": 0.6071428571428571,
+    "result": "発足間もなく、本件チーム・スタイアムで本類だわを無駄なく効率的に運用したい希望を抱き、ダウンエンカギリで解雇されました。",
+    "cer": 0.9642857142857143,
     "at1": 0,
-    "elapsed_sec": 1.813920500000222
+    "elapsed_sec": 16.687375900000006
   },
   {
     "surrounding_text": "torannpuwotewatashi,makaotojomanochikyuwuseifukukeikakuwososhisuruyowutanomuga,makaotojomano",
@@ -788,10 +788,10 @@
     "expect": [
       "トランプを手渡し、マカオとジョマの地球征服計画を阻止するよう頼むが、マカオとジョマの"
     ],
-    "result": "とらんぷを私たち、誠実に宇宙復帰計画を実施するようにが、誠実に。",
-    "cer": 0.7380952380952381,
+    "result": "トランプを渡したい、真理子様のお地球衛生復旧計画を助力するような嘆願が、真理子様…\n\n（※文脈から推測して、意味の通るように漢字と仮名に変換しました。元の文章が非常に不自然なため、解釈に誤りがある可能性があります。）\n",
+    "cer": 2.142857142857143,
     "at1": 0,
-    "elapsed_sec": 0.7939362000001893
+    "elapsed_sec": 21.759168199999976
   },
   {
     "surrounding_text": "chichinotennkinnnitomonai,ronndonnyaro-ma",
@@ -799,10 +799,10 @@
     "expect": [
       "父の転勤に伴い、ロンドンやローマ"
     ],
-    "result": "千円天金にも耐え、ロンドン也羅馬。",
-    "cer": 0.6875,
+    "result": "父の転勤で、ロンドンに住むことになりました。",
+    "cer": 0.9375,
     "at1": 0,
-    "elapsed_sec": 0.5682769000000008
+    "elapsed_sec": 6.733899100000144
   },
   {
     "surrounding_text": "tomonisuiheiannteibannnonaibunihanennryowutannkugamowukerare,shuyokutannkutonoaidadenennryowuwoidowusase,kitainojuwushinnichiwoseigyosurushisutemugatowusai",
@@ -810,10 +810,10 @@
     "expect": [
       "ともに水平安定板の内部には燃料タンクが設けられ、主翼タンクとの間で燃料を移動させ、機体の重心位置を制御するシステムが搭載"
     ],
-    "result": "戸門随平年定番の内部班年漁薄短苦餓も無課れ、終欲短苦のあいだ年漁薄を以度臼座せ、機台に授新日和せ給すり膳が度臼哉。",
-    "cer": 0.8166666666666667,
+    "result": "共に水瓶座内定盤の内部利権を担うグループは主要な活動援助を認め、期待する活動要員を投入し、機内多数制日和世議するシステムが整いました。\n",
+    "cer": 0.9,
     "at1": 0,
-    "elapsed_sec": 2.0597061000003123
+    "elapsed_sec": 19.925453800000014
   },
   {
     "surrounding_text": "nyu-gyarari-nokaikannnisuxwe-dennwodaihyowushite",
@@ -821,10 +821,10 @@
     "expect": [
       "ニューギャラリーの開館にスウェーデンを代表して"
     ],
-    "result": "ニューグラリーノ会館にスウェーデン大使団で対評価して",
-    "cer": 0.4782608695652174,
+    "result": "新しいギャラリーの企画会議に鈴木田代表として出席します。",
+    "cer": 0.8695652173913043,
     "at1": 0,
-    "elapsed_sec": 0.6749257000001307
+    "elapsed_sec": 7.382850400000052
   },
   {
     "surrounding_text": "損害をkuwaetabaainioite,jikonokowuinosekininnwobennshikisurunitaruchinowuwosonaeteinaitokiha,sonokowuinitsuitebaishowusekininnwoowanaiga,sonosekininnmunowuryokushawokanntokusuruhowuteinogimuwoowumonohabaishowusekininnwo",
@@ -833,10 +833,10 @@
       "加えた場合において、自己の行為の責任を弁識するに足る知能を備えていない時は、その行為について賠償責任を負わないが、その責任無能力者を監督する法定の義務を負う者は賠償責任を",
       "加えた場合において、自己の行為の責任を弁識するに足る知能を備えていないときは、その行為について賠償責任を負わないが、その責任無能力者を監督する法定の義務を負う者は賠償責任を"
     ],
-    "result": "過失を犯した場合、事故の負傷者に対する損害賠償については、当事者間に協議をして解決しない場合は、その負傷者に対して支払うべき損害賠償金額について、当裁判所の勧告に従い、調停期日の定めなしに、当事者の請求に応じて行う調停において、当事者双方の主張する損害賠償金額を審査し、相当と認める損害賠償金額を定めるものとする。",
-    "cer": 1.5465116279069768,
+    "result": "苦痛を来した場合には、自己の行為の結果責任を弁識する能力を欠いている時や、その行為について白状証拠責任を負うことが、その責任能力を勘奪するほどに重要な義務を委託の白状証拠責任を…\n\n（この文脈は非常に専門的で、法的な内容を含んでいるようです。完全に正確な訳出は難しいですが、上記が文意を最も近い形で表現できると考えられます。）\n",
+    "cer": 1.411764705882353,
     "at1": 0,
-    "elapsed_sec": 3.611268800000289
+    "elapsed_sec": 33.55685300000005
   },
   {
     "surrounding_text": "nikoganeironokinnitsunayowukaginnnomakuwokeisei",
@@ -845,10 +845,10 @@
       "に黄金色の均一なヨウ化銀の膜を形成",
       "に黄金色の均一な沃化銀の膜を形成"
     ],
-    "result": "これは意味不明な文字列です。文脈から適切な漢字仮名混じりに変換できません。何か意図した内容があれば教えていただけますでしょうか？\n",
-    "cer": 3.764705882352941,
+    "result": "申し訳ありませんが、提示された周辺の文章は意味不明な文字列であり、文脈を把握できません。そのため、適切な漢字仮名混じり文に変換することができません。「nikoganeironokinnitsunayowukaginnnomakuwokeisei」というローマ字とひらがなの文字列をそのまま記述するか、より具体的な文脈を提供していただけますでしょうか？\n",
+    "cer": 10.117647058823529,
     "at1": 0,
-    "elapsed_sec": 1.1581429999996544
+    "elapsed_sec": 21.658829000000196
   },
   {
     "surrounding_text": ",nipponnhatsunosuijowujettoko-suta-",
@@ -856,10 +856,10 @@
     "expect": [
       "、日本初の水上ジェットコースター"
     ],
-    "result": "日本発の水素ジェットコースター。",
-    "cer": 0.25,
+    "result": "申し訳ありませんが、このローマ字表記は解読できませんでした。意味をなさない文字列であるか、または非常に専門的な分野の言葉である可能性があります。文脈も不明確なため、適切な漢字仮名混じり文に変換することができません。\n\nもしよろしければ、別の文章をお試しください。",
+    "cer": 8.0625,
     "at1": 0,
-    "elapsed_sec": 0.36034380000000965
+    "elapsed_sec": 18.24668440000005
   },
   {
     "surrounding_text": "、夫・献帝に禅譲を強要したsaini[futyuwusha]tohinannshi",
@@ -867,10 +867,10 @@
     "expect": [
       "際に「不忠者」と非難し"
     ],
-    "result": "司徒・傅育王師と陳安世",
-    "cer": 0.9090909090909091,
+    "result": "蔡琰（夫・献帝に禅譲を強要した）と非難し",
+    "cer": 1.3636363636363635,
     "at1": 0,
-    "elapsed_sec": 0.46196980000013355
+    "elapsed_sec": 8.13790680000011
   },
   {
     "surrounding_text": "wotoorudowurozoinijuwutakuchiga",
@@ -878,10 +878,10 @@
     "expect": [
       "を通る道路沿いに住宅地が"
     ],
-    "result": "以下の通りです。",
-    "cer": 1.0,
+    "result": "申し訳ありませんが、前後の文脈から判断できる情報が不足しており、「wotoorudowurozoinijuwutakuchiga」を適切な漢字仮名混じり文に変換することができません。\n\nこの文字列はローマ字表記と思われますが、日本語の単語やフレーズに対応するものではない可能性が高いです。\n\nもし、この文字列が何かの固有名詞（人名、地名など）の一部である場合、正しい漢字表記を知るためには、追加の情報が必要です。\n",
+    "cer": 16.833333333333332,
     "at1": 0,
-    "elapsed_sec": 0.21731959999988248
+    "elapsed_sec": 27.06894699999998
   },
   {
     "surrounding_text": "peteruburugugunnnokyotennatokarahokutoragahakkutsu",
@@ -889,10 +889,10 @@
     "expect": [
       "ペテルブルグ軍の拠点跡から北斗らが発掘"
     ],
-    "result": "これは解読できません。周辺の文脈が非常に特殊で、意味を推測することが困難です。「peteruburugugunnnokyotennatokarahokutoragahakkutsu」という文字列自体に具体的な意味がないため、漢字仮名混じりに変換することができません。",
-    "cer": 6.894736842105263,
+    "result": "ペテルブルクの教典からホクトラが発見された。\n",
+    "cer": 0.7894736842105263,
     "at1": 0,
-    "elapsed_sec": 2.150959099999909
+    "elapsed_sec": 7.487291400000004
   },
   {
     "surrounding_text": "gunntoshitehennseishihajimetaga,kijunnniattakosakkuhahotonndoinakattanode,naimujinnminniinnbunoshikannyasekigunnnoheishi",
@@ -903,10 +903,10 @@
       "軍として編成し始めたが、基準に合ったコサックはほとんどいなかったので、内務人民委員部の士官や赤軍の兵士",
       "軍として編成し始めたが、基準にあったコサックはほとんどいなかったので、内務人民委員部の士官や赤軍の兵士"
     ],
-    "result": "軍として現在始まっており、急遽発生した事故のため本部署の事務員各位、内部の仕組みに関する訓練を郡の本部に。",
-    "cer": 0.8979591836734694,
+    "result": "一般的に見て、この文は非常に難解で、医学・研究分野の専門用語が多数含まれているように見受けられます。また、ローマ字表記に誤りや不正確な部分があるため、正確な解釈が困難です。\n\nしかし、周辺の文脈から推測すると、「研究開始当初は基準にあった操作方法をホットドック犬に行わなかったため、内因性物質の識別セクションの費用」といった意味合いである可能性があります。\n\nしたがって、漢字仮名混じり文としては以下のようになります。\n\n**「研究開始当初は基準に沿った操作方法をホットドッグ犬に行わなかったため、内因性物質の識別セクションの費用」**\n\nただし、これはあくまで推測であり、正確な意味合いを把握するためには、専門家による確認が必要です。\n",
+    "cer": 5.8431372549019605,
     "at1": 0,
-    "elapsed_sec": 1.1640062000001308
+    "elapsed_sec": 45.551107799999954
   },
   {
     "surrounding_text": "kannpannwakinohacchikarataikuwukijuwugunn",
@@ -914,10 +914,10 @@
     "expect": [
       "甲板脇のハッチから対空機銃群"
     ],
-    "result": "これは、意味を推測することが非常に困難です。周囲の文章も理解できません。「限片温和機立右句雲」と解釈するのが最も可能性が高いと思われますが、文脈がないため、正確な漢字化は不可能です。\n\nこのままでは適切な漢字仮名混じり文に変換することはできません。もし何か意図された意味や文脈があれば教えてください。\n",
-    "cer": 10.642857142857142,
+    "result": "勘弁してください。 (または、書かれている内容が非常に不明瞭なため、正確な変換は困難です。文脈から推測して「勘弁」としましたが、意図された言葉とは異なる可能性があります。)",
+    "cer": 6.0,
     "at1": 0,
-    "elapsed_sec": 2.9619270999996843
+    "elapsed_sec": 13.505004099999951
   },
   {
     "surrounding_text": "ha[saradapann]toyobareru,mayone-zudeaetatakuannnokomagiriwohasanndasowuzaipanngaseizowu",
@@ -926,10 +926,10 @@
       "は「サラダパン」と呼ばれる、マヨネーズで和えたたくあんの細切りを挟んだ惣菜パンが製造",
       "は「サラダパン」と呼ばれる、マヨネーズで和えた沢庵の細切りを挟んだ惣菜パンが製造"
     ],
-    "result": "把握できませんでした。",
-    "cer": 0.95,
+    "result": "葉が繁る、マヨネーズで揚げた海老の魔術を試すぞと叫び声。\n",
+    "cer": 0.725,
     "at1": 0,
-    "elapsed_sec": 0.24410429999988992
+    "elapsed_sec": 12.06304440000008
   },
   {
     "surrounding_text": "nado,shokuseikatsunotetteiburinihakannshinnsarerarerumono",
@@ -938,10 +938,10 @@
       "など、食生活の徹底ぶりには感心されられるもの",
       "等、食生活の徹底ぶりには感心されられるもの"
     ],
-    "result": "など、生活態度によっては罰金が課せられるもの。",
-    "cer": 0.5909090909090909,
+    "result": "など、食生活の定期的二反勘診されるるもの。 \n\n（注：文脈が非常に専門的で断片的なため、一般的な解釈では意味が通じにくい部分があります。より適切な変換のためには、前後の文章全体を提示いただけると助かります。）",
+    "cer": 4.2272727272727275,
     "at1": 0,
-    "elapsed_sec": 0.5383449000000837
+    "elapsed_sec": 17.962995899999896
   },
   {
     "surrounding_text": "認められる企業会計nokannkowunishitagawubekikoto,nioite,kabushikigaishaha,howumushowurei(kaishakeisannkisoku)desadamerutokoroniyori,",
@@ -949,10 +949,10 @@
     "expect": [
       "の慣行に従うべきこと、において、株式会社は、法務省令（会社計算規則）で定めるところにより、"
     ],
-    "result": "認められる企業会計の原則として、株式会社は法人会計基準に基づいて作成される必要があります。",
-    "cer": 0.8222222222222222,
+    "result": "認められる企業会計の関連業務に支障をきたす場合、株式会社は、法務省令（会社計算規則）に基づき、",
+    "cer": 0.7111111111111111,
     "at1": 0,
-    "elapsed_sec": 0.7446967999999288
+    "elapsed_sec": 14.059822499999882
   },
   {
     "surrounding_text": "nakeitsuigaikutsukahakkennsareteori,sawuroposeidonnto",
@@ -963,10 +963,10 @@
       "な頸椎がいくつか発見されており、サウロポセイドンと",
       "な頸椎が幾つか発見されており、サウロポセイドンと"
     ],
-    "result": "鳴海津が外骨格に薄絹され、澤ウポセイドンと。",
-    "cer": 0.6,
+    "result": "化石がいくつか発見されており、サウロポセイドンと。",
+    "cer": 0.16,
     "at1": 0,
-    "elapsed_sec": 0.7807094999998299
+    "elapsed_sec": 7.42384600000014
   },
   {
     "surrounding_text": "keisatsuhenokokuhatsuwofukumetakeijisekininnnotsuikyuwuwosusumeteiru",
@@ -974,10 +974,10 @@
     "expect": [
       "警察への告発を含めた刑事責任の追及を進めている"
     ],
-    "result": "警察署の許可を得て、刑事職員に捜査を指示している。",
-    "cer": 0.6521739130434783,
+    "result": "警察弁護録発を付く目的に刑事責任追究を推奨している。",
+    "cer": 0.6086956521739131,
     "at1": 0,
-    "elapsed_sec": 0.6414160000003903
+    "elapsed_sec": 9.106702300000052
   },
   {
     "surrounding_text": "awutogawaninagasarerutooohaba",
@@ -985,10 +985,10 @@
     "expect": [
       "アウト側に流されると大幅"
     ],
-    "result": "オートガワンに長されてお話します。",
+    "result": "自動回転長蛇の尾羽です。\n",
     "cer": 1.0833333333333333,
     "at1": 0,
-    "elapsed_sec": 0.4211398000002191
+    "elapsed_sec": 5.284529499999962
   },
   {
     "surrounding_text": "aitenoashibarai",
@@ -996,10 +996,10 @@
     "expect": [
       "相手の足払い"
     ],
-    "result": "内職の洗い",
-    "cer": 0.6666666666666666,
+    "result": "愛情表現。",
+    "cer": 1.0,
     "at1": 0,
-    "elapsed_sec": 0.2112704000001031
+    "elapsed_sec": 3.0627322000000277
   },
   {
     "surrounding_text": "昆虫型ゾイドを思念伝達で自在にコントロールし、個体ないしは群体による直接攻撃やそれらの毒性を利用した幻覚操作によって他者を支配下に置くtokushunanowuryokuwoyuwushiteori,supekyura-hasononowuryokuwosenntowutyuwudemozowufukushitekatsuyowudekiruyowunihonnkiwokyowukashiteori,koreniyottehonnkitokuyuwuno『gennei",
@@ -1007,10 +1007,10 @@
     "expect": [
       "特殊な能力を有しており、スペキュラーはその能力を戦闘中でも増幅して活用できるように本機を強化しており、これによって本機特有の『幻影"
     ],
-    "result": "特殊能力を使用して、スペキュラ・ハッソンの能力を念伝投与することで敵を服属させ、強力で機動力の高い本機を攻撃にかけており、これによって本機の特異な「源内」",
-    "cer": 0.6923076923076923,
+    "result": "特殊能力を有効視しており、スペキュラ仮説の能力を千眼闘爪で補完し強化でき、よって本気特有の『現界』。",
+    "cer": 0.5538461538461539,
     "at1": 0,
-    "elapsed_sec": 1.872812999999951
+    "elapsed_sec": 21.27881329999991
   },
   {
     "surrounding_text": "gorufa-toshitemoyuwumeidesannjuwumonakabanishitetotsuzenn",
@@ -1020,10 +1020,10 @@
       "ゴルファーとしても有名で30も半ばにして突然",
       "ゴルファーとしても有名で三十も半ばにして突然"
     ],
-    "result": "グループとして、無意味な30文字以上の組み合わせは、全く意味がないです。",
-    "cer": 1.4090909090909092,
+    "result": "ゴルフとしても優勝目指し三十番仲間に徹して突然。\n",
+    "cer": 0.5909090909090909,
     "at1": 0,
-    "elapsed_sec": 0.7451456000003418
+    "elapsed_sec": 7.5934021000000484
   },
   {
     "surrounding_text": "made,isuraerunokannsennhasuezuwunngawotsuwukowu",
@@ -1032,10 +1032,10 @@
       "まで、イスラエルの艦船はスエズ運河を通航",
       "まで、イスラエルの艦船はスエズ運河を通行"
     ],
-    "result": "申し訳ございませんが、その文字列は意味を理解することができませんでした。文脈から判断しても推測できる単語が見つかりません。別の表現で試していただけますでしょうか？",
-    "cer": 3.9,
+    "result": "申し訳ありませんが、周囲の文脈から判断できる情報が非常に限られており、「made, isuraerunokannsennhasuezuwunngawotsuwukowu」の部分を適切な漢字仮名混じり文に変換することができません。\n\nこの文字列はローマ字表記と思われますが、意味をなさない単語の羅列に見えます。文脈から推測できる範囲ではありますが、例えば「最後まで、為せる能力で戦う」といった解釈も考えられますが、確実性がありません。\n\nもし可能であれば、より多くの文脈情報を提供していただけますでしょうか？ 例えば、この文章全体のテーマや、前後の文の内容などがあると、より適切な変換が可能になります。",
+    "cer": 14.7,
     "at1": 0,
-    "elapsed_sec": 1.4464241000000584
+    "elapsed_sec": 37.57660600000008
   },
   {
     "surrounding_text": "四国のリアクションは不自然で、hamadaha[majideitaimitaidesuyo]tohatsugenn",
@@ -1046,10 +1046,10 @@
       "浜田は「本気で痛いみたいですよ」と発言",
       "濱田は「本気で痛いみたいですよ」と発言"
     ],
-    "result": "恥だは（真面目に言い間違えたそうです）と脱冠します。",
-    "cer": 1.105263157894737,
+    "result": "まさか[本当に見たかったのです]と発言。",
+    "cer": 0.7368421052631579,
     "at1": 0,
-    "elapsed_sec": 0.687123100000008
+    "elapsed_sec": 7.018718300000046
   },
   {
     "surrounding_text": "史実をmotonishinagaramo,sorenitorawarezujiyuwuna",
@@ -1062,10 +1062,10 @@
       "もとにしながらも、それにとらわれず自由な",
       "基にしながらも、それにとらわれず自由な"
     ],
-    "result": "元に敷納るも、それに取り和えずゆえな。",
-    "cer": 0.5789473684210527,
+    "result": "元に信長が如し、されど取られずじゆな。\n",
+    "cer": 0.631578947368421,
     "at1": 0,
-    "elapsed_sec": 0.606072199999744
+    "elapsed_sec": 8.019488000000138
   },
   {
     "surrounding_text": "motakaku,shunnsokuwobukinishikaketekurudoribura-nisupi-dodemakerukotohahotonndonaku,subayakukaradawoiretebo-ruwodasshusurukotomoshibashibamirare",
@@ -1078,10 +1078,10 @@
       "も高く、俊足を武器に仕掛けてくるドリブラーにスピードで負けることはほとんどなく、素速く体を入れてボールを奪取することもしばしば見られ",
       "も高く、俊足を武器に仕掛けくるドリブラーにスピードで負けることはほとんどなく、素速く体を入れてボールを奪取することもしばしば見られ"
     ],
-    "result": "勿体なく、迅速を武に仕掛けてくるドライバーにスピードメーカーは捕頓度無く、素早くデータを入れればボーラスする事も始々見られる。",
-    "cer": 0.5606060606060606,
+    "result": "もたかく、俊速を武器に仕掛けて来るドリブラーに対しスピードメーカーをする事が殆どなく、素早い体で入ってボールを奪う事も試みられない。\n",
+    "cer": 0.484375,
     "at1": 0,
-    "elapsed_sec": 1.5138946000001852
+    "elapsed_sec": 18.011286100000007
   },
   {
     "surrounding_text": "ほか，クエン酸、シアン化水素、シュウ酸、フッ化水素,rakusann,ryuwukasuiso",
@@ -1089,10 +1089,10 @@
     "expect": [
       "、酪酸、硫化水素"
     ],
-    "result": "酪酸、融解水素酸",
-    "cer": 0.5,
+    "result": "らくさん、リュウカスイソ",
+    "cer": 1.375,
     "at1": 0,
-    "elapsed_sec": 0.32344759999978123
+    "elapsed_sec": 5.765214699999888
   },
   {
     "surrounding_text": "は水上見張り用の二十二号レーダーwoshagekiyowunimochiirujunnbiwoshitaga,nido",
@@ -1105,10 +1105,10 @@
       "を射撃用にもちいる準備をしたが、２度",
       "を射撃用にもちいる準備をしたが、2度"
     ],
-    "result": "私は敵機を雲に包まれ、二度",
-    "cer": 0.8235294117647058,
+    "result": "我々警戒員に持ち入る準備をしたが、二度と。\n",
+    "cer": 0.5555555555555556,
     "at1": 0,
-    "elapsed_sec": 0.47343709999995554
+    "elapsed_sec": 8.678064899999981
   },
   {
     "surrounding_text": "コンパス航空の３社が,kononamaede",
@@ -1116,10 +1116,10 @@
     "expect": [
       "、この名前で"
     ],
-    "result": "公表済みです。",
-    "cer": 1.1666666666666667,
+    "result": ",このように",
+    "cer": 0.6666666666666666,
     "at1": 0,
-    "elapsed_sec": 0.24767740000015692
+    "elapsed_sec": 3.3818711999999778
   },
   {
     "surrounding_text": "デッドボールが頭wokyowuda,shibowushi",
@@ -1127,10 +1127,10 @@
     "expect": [
       "を強打、死亡し"
     ],
-    "result": "脳を揺動し、痺り出す。",
-    "cer": 1.2857142857142858,
+    "result": "を強打し、死球。",
+    "cer": 0.42857142857142855,
     "at1": 0,
-    "elapsed_sec": 0.41717730000027586
+    "elapsed_sec": 4.810867800000096
   },
   {
     "surrounding_text": "karahagennsannkokuwokaezuni",
@@ -1138,10 +1138,10 @@
     "expect": [
       "からは原産国を変えずに"
     ],
-    "result": "から、はげんさんの国へ帰るに。",
+    "result": "からかげんさんの国へ返らずに。\n",
     "cer": 1.0,
     "at1": 0,
-    "elapsed_sec": 0.49479780000001483
+    "elapsed_sec": 5.878292299999885
   },
   {
     "surrounding_text": "nosennyowuwunnyowukann",
@@ -1149,10 +1149,10 @@
     "expect": [
       "の専用運用艦"
     ],
-    "result": "これは意味不明な文字列なので、文脈を汲み取るのが困難です。しかし、周辺の文章が非常にランダムであることから、おそらく意図的に無意味な文字列に変換することを求めていると推測します。\n\nしたがって、そのまま「ノセンヨウウウンニョウウカン」と返答します。",
-    "cer": 20.5,
+    "result": "申し訳ありませんが、周辺の文脈が全く見当つかず、意味を解釈できませんでした。「nosennyowuwunnyowukann」という単語は一般的な日本語として存在しないようです。\n\nもし可能であれば、もう少し文脈や意図を教えていただけますでしょうか？例えば、以下のような情報があると助かります。\n\n*   この文はどのような状況で使われていますか？\n*   「nosennyowuwunnyowukann」が表したい意味合いは何ですか？\n*   他に似た単語やフレーズはありますか？\n\n情報が不足しているため、現時点では適切な漢字仮名混じり文を作成することができません。ご協力いただければ幸いです。",
+    "cer": 49.5,
     "at1": 0,
-    "elapsed_sec": 2.4706311999998434
+    "elapsed_sec": 37.0870281
   },
   {
     "surrounding_text": "釣りビジョンの『五畳半の狼』ではshikaiwotsutome,jishinnnoburogudemosonotyowuka",
@@ -1160,10 +1160,10 @@
     "expect": [
       "司会を務め、自身のブログでもその釣果"
     ],
-    "result": "尺切りで、自身を風呂場でもそうとよわか",
-    "cer": 0.7777777777777778,
+    "result": "支配を続け、自陣のブログデモとその他活動。",
+    "cer": 0.6666666666666666,
     "at1": 0,
-    "elapsed_sec": 0.5749954000002617
+    "elapsed_sec": 8.179647400000022
   },
   {
     "surrounding_text": "noosusumenoshowuhinnnogaiyowu,naiyowunadowo",
@@ -1174,10 +1174,10 @@
       "のおすすめの商品の概要、内容などを",
       "のお勧めの商品の概要、内容などを"
     ],
-    "result": "推奨する商品はありません、ないのでわかりません。",
-    "cer": 1.2941176470588236,
+    "result": "おすすめ商品の概要や内容などを…\n",
+    "cer": 0.29411764705882354,
     "at1": 0,
-    "elapsed_sec": 0.40143269999998665
+    "elapsed_sec": 6.073800199999823
   },
   {
     "surrounding_text": "taga,hannnainohabatsuarasoiniyaburete,ichijiha",
@@ -1185,10 +1185,10 @@
     "expect": [
       "たが、藩内の派閥争いに敗れて、一時は"
     ],
-    "result": "多分、脱がれてしまい、一には…",
-    "cer": 0.7777777777777778,
+    "result": "長雨、旱魃に遭うに至り、一時破綻し、…（以下、文脈が途切れているため、この部分で終わります。）\n\n※「taga」を「長雨」、「hannnainohabatsu」を「旱魃」と解釈しました。後半部分は文脈が不明瞭なため、このままローマ字表記のままにしています。\n",
+    "cer": 6.888888888888889,
     "at1": 0,
-    "elapsed_sec": 0.4455030999997689
+    "elapsed_sec": 22.916654899999912
   },
   {
     "surrounding_text": "wochikattejowumaewokakerubashogayowuisareteori,ooigawatetsudowudehakonojowumae・kagiwohannbaishite",
@@ -1197,10 +1197,10 @@
       "を誓って錠前をかける場所が用意されており、大井川鉄道ではこの錠前・鍵を販売して",
       "を誓って錠前をかける場所が用意されており、大井川鐵道ではこの錠前・鍵を販売して"
     ],
-    "result": "我々が特注で受け取った、大きな鉄製の箱の前で鍵を反転ばして。",
-    "cer": 0.7948717948717948,
+    "result": "落札者様、ジョウマエをかける場所が余っており、大口で手配の羽目になりました。箱のジョウマエ・カギをハンバイします。\n",
+    "cer": 1.1282051282051282,
     "at1": 0,
-    "elapsed_sec": 0.9060035000002244
+    "elapsed_sec": 15.813117000000148
   },
   {
     "surrounding_text": "ikenngawakarete",
@@ -1208,10 +1208,10 @@
     "expect": [
       "意見が分かれて"
     ],
-    "result": "意見が分かれております。",
-    "cer": 0.7142857142857143,
+    "result": "意見が分かれて。\n",
+    "cer": 0.2857142857142857,
     "at1": 0,
-    "elapsed_sec": 0.2785847999998623
+    "elapsed_sec": 3.6375617000001057
   },
   {
     "surrounding_text": "shitemukae",
@@ -1219,10 +1219,10 @@
     "expect": [
       "して迎え"
     ],
-    "result": "済みました。",
+    "result": "お迎えします。",
     "cer": 1.5,
     "at1": 0,
-    "elapsed_sec": 0.18026449999979377
+    "elapsed_sec": 3.1009205000000293
   },
   {
     "surrounding_text": "似た形をしteitagasennkyuwuhyakukyuwujuwuichinennnidaikaishuwuwohodokoshi,fukugowuko-na-gatasuwuhaichisaregennzai",
@@ -1233,10 +1233,10 @@
       "ていたが一九九一年に大改修を施し、複合コーナーが多数配置され現在",
       "ていたが千九百九十一年に大改修を施し、複合コーナーが多数配置され現在"
     ],
-    "result": "類似した形状の技術、百九拾五十二日間は代行業を補足し、服飾の更なる型は非営業内です。",
-    "cer": 1.0294117647058822,
+    "result": "定価千九百九十五年、付込型小形は一割減。",
+    "cer": 0.7941176470588235,
     "at1": 0,
-    "elapsed_sec": 1.2323268000000098
+    "elapsed_sec": 12.130740600000081
   },
   {
     "surrounding_text": "反論で動揺すると「目が泳ぐ」nodesuguniwakaru",
@@ -1257,10 +1257,10 @@
       "ので直ぐに理解る",
       "のですぐに理解る"
     ],
-    "result": "戸惑って理解できない。",
-    "cer": 1.25,
+    "result": "納得する、理解できる。",
+    "cer": 0.875,
     "at1": 0,
-    "elapsed_sec": 0.28616859999965527
+    "elapsed_sec": 4.574675999999954
   },
   {
     "surrounding_text": "誕生日というkotode,tategojuwusennchime-toruyokogojuwusennchime-torunoba-sude-ke-kitonagasagojuwusennchime-toruno",
@@ -1279,10 +1279,10 @@
       "ことで、縦五十センチメートル横五十センチメートルのバースデーケーキと長さ五十センチメートルの",
       "ことで、縦五十㎝横五十cmのバースデーケーキと長さ五十cmの"
     ],
-    "result": "そのことでは、五十歳と七十歳の間に挟まれた八十歳まで生きるというものですね。",
-    "cer": 0.8913043478260869,
+    "result": "この文は非常に読みにくいため、文脈から判断することが困難です。しかしながら、無理に解釈すると「言動」のように推測できますが、これはあくまで推測であり、誤っている可能性が高いです。\n\nより正確な変換を行うためには、前後の文脈や、この言葉が使われている状況について詳しく教えていただけると助かります。\n",
+    "cer": 3.130434782608696,
     "at1": 0,
-    "elapsed_sec": 0.9219740000003185
+    "elapsed_sec": 24.78758589999984
   },
   {
     "surrounding_text": "テレビ朝日(seisakukyoku",
@@ -1293,7 +1293,7 @@
     "result": "制作局",
     "cer": 0.25,
     "at1": 0,
-    "elapsed_sec": 0.14342849999957252
+    "elapsed_sec": 2.923758499999849
   },
   {
     "surrounding_text": "hazennshuwumatsu)noshiaiwofurikaeruhoka,tanntowuanawunnsa-gatyuwukeisakinotennkowu,rennshuwunomoyowu,sennshu・",
@@ -1301,10 +1301,10 @@
     "expect": [
       "は前週末）の試合を振り返るほか、担当アナウンサーが中継先の天候、練習の模様、選手・"
     ],
-    "result": "返信数末の状況を振り返るか、断続的なワンスーガードで計器の転換後、連信数の母又、選修…",
-    "cer": 0.7073170731707317,
+    "result": "昨週末の試合を振り返れば、淡々と課題分析の転換図、練習の模様、選出…",
+    "cer": 0.5609756097560976,
     "at1": 0,
-    "elapsed_sec": 1.3495398000000023
+    "elapsed_sec": 13.307842299999947
   },
   {
     "surrounding_text": "連動式noburasuta-kyanonnwoniki,toxu・ke-burunohasshakanowunaha-pu-nn・gann(moriwuchihowu)wo",
@@ -1314,10 +1314,10 @@
       "のブラスターキャノンを2基、トゥ・ケーブルの発射可能なハープーン・ガン（銛撃ち砲）を",
       "のブラスターキャノンを二基、トゥ・ケーブルの発射可能なハープーン・ガン（銛撃ち砲）を"
     ],
-    "result": "ノーブラスタキャンオンウィキ、遠征・ケーブルの接続及びナップザック（森вич飛howu）を。",
-    "cer": 0.7380952380952381,
+    "result": "連動式ノブラスターキャノン、トクス・ケブルの八尺判のハープンガン（森武方法）を。\n",
+    "cer": 0.5476190476190477,
     "at1": 0,
-    "elapsed_sec": 1.0595227999997405
+    "elapsed_sec": 14.184147100000018
   },
   {
     "surrounding_text": "分岐器nokeijowuhakatabirakibunnkidea",
@@ -1326,10 +1326,10 @@
       "の形状は片開き分岐であっ",
       "の形状は片開分岐であっ"
     ],
-    "result": "野圭譲輔葉学園分科医会",
-    "cer": 0.9166666666666666,
+    "result": "分岐器の制御方法を説明します。",
+    "cer": 1.1666666666666667,
     "at1": 0,
-    "elapsed_sec": 0.4613672000000406
+    "elapsed_sec": 5.474896100000024
   },
   {
     "surrounding_text": "taitorurogowoisshinn",
@@ -1337,10 +1337,10 @@
     "expect": [
       "タイトルロゴを一新"
     ],
-    "result": "タイトルロールをご依頼いたしますね。",
-    "cer": 1.3333333333333333,
+    "result": "大変恐縮です。 (または、大抵の場合は「申し訳ありません。」)\n\n---\n\n文脈が非常に不明瞭なため、正確な変換は困難です。「taitorurogowoisshinn」という単語だけでは意味を特定できません。 \n\n*   **taitoru**: 「大変」のローマ字表記（ただし一般的ではありません）\n*   **rogowo**: 推測ですが、「恐縮」や「申し訳ない」に関連する言葉かもしれません。\n*   **isshinn**: 「一同」や「一誠」など、状況によって様々な解釈が可能です。\n\n上記を考慮し、最も可能性の高い候補として「大変恐縮です。」または「申し訳ありません。」としました。より正確な変換のためには、前後の文脈や状況をご提供いただけますでしょうか？\n",
+    "cer": 37.111111111111114,
     "at1": 0,
-    "elapsed_sec": 0.31608939999978247
+    "elapsed_sec": 41.90569890000006
   },
   {
     "surrounding_text": "京都に設置saretaheigakkowuga",
@@ -1348,10 +1348,10 @@
     "expect": [
       "された兵学校が"
     ],
-    "result": "設立された学校が",
+    "result": "設置された学校が",
     "cer": 0.42857142857142855,
     "at1": 0,
-    "elapsed_sec": 0.22302350000018123
+    "elapsed_sec": 3.9209780000001047
   },
   {
     "surrounding_text": "shigotodeshirarerurikku・ru-binnwopurodexyu-sa-nimukaetaarubamu[",
@@ -1359,10 +1359,10 @@
     "expect": [
       "仕事で知られるリック・ルービンをプロデューサーに迎えたアルバム「"
     ],
-    "result": "シフトで知りラーリクル・ルビンとプロデックス業務に加わえたアルバム[",
-    "cer": 0.5625,
+    "result": "仕事で試されたルビンワークプロデックスニューに書き換えたアルバムです。",
+    "cer": 0.6875,
     "at1": 0,
-    "elapsed_sec": 0.7564330000000155
+    "elapsed_sec": 8.922172000000046
   },
   {
     "surrounding_text": "nenn),chichinoshiniyoriatowotsugu",
@@ -1371,10 +1371,10 @@
       "年）、父の死により跡を継ぐ",
       "年）、父の死により後を継ぐ"
     ],
-    "result": "年々、遅れを取りつつ",
-    "cer": 0.7692307692307693,
+    "result": "念のため、父の死により言いつけられました。",
+    "cer": 1.0769230769230769,
     "at1": 0,
-    "elapsed_sec": 0.32268329999988055
+    "elapsed_sec": 6.15723550000007
   },
   {
     "surrounding_text": "の双方で活躍し、それぞれ数多くnojushowuoyobinomine-toreki",
@@ -1383,10 +1383,10 @@
       "の受賞およびノミネート歴",
       "の受賞及びノミネート歴"
     ],
-    "result": "多くの用職において実績を上げています。",
-    "cer": 1.4166666666666667,
+    "result": "の両賞を受賞しています。",
+    "cer": 0.8333333333333334,
     "at1": 0,
-    "elapsed_sec": 0.3938607000000047
+    "elapsed_sec": 5.352324499999895
   },
   {
     "surrounding_text": "zennkokukowutowugakkowuyakyuwusennshukennkanagawataikai(ripo-ta-",
@@ -1394,10 +1394,10 @@
     "expect": [
       "全国高等学校野球選手権神奈川大会（リポーター"
     ],
-    "result": "全国大会で優勝、県内高校で唯一の神奈川代表（リポート）。",
-    "cer": 0.8636363636363636,
+    "result": "全国高校野球選手権神奈川大会（レポート）",
+    "cer": 0.22727272727272727,
     "at1": 0,
-    "elapsed_sec": 0.6889880000003359
+    "elapsed_sec": 7.393399000000045
   },
   {
     "surrounding_text": "しtakennpowukaiseiwotadachini",
@@ -1405,10 +1405,10 @@
     "expect": [
       "た憲法改正を直ちに"
     ],
-    "result": "対策・改善を確かに",
-    "cer": 0.6666666666666666,
+    "result": "目標達成のために。\n",
+    "cer": 1.1111111111111112,
     "at1": 0,
-    "elapsed_sec": 0.2484444000001531
+    "elapsed_sec": 4.348708800000168
   },
   {
     "surrounding_text": "は各shisetsunokaisetsuwosannshowu",
@@ -1416,10 +1416,10 @@
     "expect": [
       "施設の解説を参照"
     ],
-    "result": "施設の説明を詳細に説明します。",
+    "result": "施設のお知らせを参昭いたします。",
     "cer": 1.375,
     "at1": 0,
-    "elapsed_sec": 0.3557240999998612
+    "elapsed_sec": 4.978487099999938
   },
   {
     "surrounding_text": "に失敗作となってshimattaga,onajitominoyoshiyukikanntokusakuhinndearu[dennsetsukyojinnideonn][kidowusennshize-taganndamu]nitsuranaru,dowukanntokudokutokunosukuinonaida-kunamonogatarini",
@@ -1432,10 +1432,10 @@
       "しまったが、同じ富野由悠季監督作品である「伝説巨神イデオン」「機動戦士Ζガンダム」に連なる、同監督独特の救いのないダークな物語に",
       "しまったが、おなじ富野由悠季監督作品である「伝説巨神イデオン」「機動戦士Ζガンダム」に連なる、同監督独特の救いのないダークな物語に"
     ],
-    "result": "失敗作となってしまいが、小人よしの裕貴さんの特産品である [伝熱式調理器に音][既倒の線施化田南島]に似る。どうかんとの結束の苦い因果に。",
-    "cer": 0.9230769230769231,
+    "result": "失敗作となってしまいましたが、同じ土味の吉幸勘特撮作品である[電戦巨神イデオン][機動戦士ガンダム]に匹敵する、どうが勘特読独特の趣味野内だーくな物語に。\n",
+    "cer": 0.671875,
     "at1": 0,
-    "elapsed_sec": 1.9438577999999325
+    "elapsed_sec": 22.698345100000097
   },
   {
     "surrounding_text": "senngohadakaikkannkara",
@@ -1443,10 +1443,10 @@
     "expect": [
       "戦後裸一貫から"
     ],
-    "result": "千円まで一週間から",
+    "result": "先ほどから。",
     "cer": 0.8571428571428571,
     "at1": 0,
-    "elapsed_sec": 0.2806891000000178
+    "elapsed_sec": 3.7061897000000954
   },
   {
     "surrounding_text": "ookikufukasugi,hyowumennbannni",
@@ -1455,10 +1455,10 @@
       "大きく深すぎ、表面板に",
       "大きく深過ぎ、表面板に"
     ],
-    "result": "大きく吹きすぎ、費用無念番々に。",
-    "cer": 0.8181818181818182,
+    "result": "大きすぎて、表面板に。\n",
+    "cer": 0.45454545454545453,
     "at1": 0,
-    "elapsed_sec": 0.42350870000018404
+    "elapsed_sec": 5.199522099999967
   },
   {
     "surrounding_text": "現象があるが）「とゆう」が「ちゅう」nitennjitarisurukotoha",
@@ -1466,10 +1466,10 @@
     "expect": [
       "に転じたりすることは"
     ],
-    "result": "二転三転して苦労することでしょう。",
-    "cer": 1.2,
+    "result": "似て非なることば。",
+    "cer": 0.8,
     "at1": 0,
-    "elapsed_sec": 0.4455260999998245
+    "elapsed_sec": 5.2475116999999045
   },
   {
     "surrounding_text": "、「私は演技が下手だ」と発言しteori,[geirekimoasaku,sennmonngakkowudenobennkyowuyaressunnwowuketeinainodejibunnnochikaradegannbarushikanai.ima,",
@@ -1477,10 +1477,10 @@
     "expect": [
       "ており、「芸歴も浅く、専門学校での勉強やレッスンを受けていないので自分の力で頑張るしかない。今、"
     ],
-    "result": "「私は演技が下手だ」と発言し、稽古母体、専門学問の伝授やレッスンを受けても改善には至らず、今も自分の力で頑張れない。",
-    "cer": 0.8125,
+    "result": "理論、偽レキモアサク、専門学校伝文の勉強屋が無理を承知の上で自分の力で頑張るしかない。今、\n",
+    "cer": 0.5208333333333334,
     "at1": 0,
-    "elapsed_sec": 1.5158707999999024
+    "elapsed_sec": 15.553040600000031
   },
   {
     "surrounding_text": "代表作nikonnseigasshowu",
@@ -1488,10 +1488,10 @@
     "expect": [
       "に混声合唱"
     ],
-    "result": "日康成画集",
-    "cer": 1.0,
+    "result": "代表作には、燃音清我秀が含まれます。",
+    "cer": 3.4,
     "at1": 0,
-    "elapsed_sec": 0.24880450000000565
+    "elapsed_sec": 5.478420299999925
   },
   {
     "surrounding_text": "nonaibunoyowunamitooshinokikanaikuwukann",
@@ -1500,10 +1500,10 @@
       "の内部のような見通しの利かない空間",
       "の内部のような見通しのきかない空間"
     ],
-    "result": "（この入力は意味不明な文字列なので、文脈から判断できないため、そのまま返します。）\n\nノナブンヨウナミトシノキカナイクワクアン",
-    "cer": 3.3529411764705883,
+    "result": "申し訳ありませんが、周辺の文章が意味をなさないため、適切な漢字仮名混じり文に変換することができません。文脈から判断できる情報が不足しています。「nonaibunoyowunamitooshinokikanaikuwukann」という文字列だけでは、どのような内容なのか、何を意図しているのかが全く分かりません。\n\nもし可能であれば、より具体的な文脈や、この文章が表す意味合いについて教えていただけますでしょうか？ そうすれば、適切な変換を試みることができます。\n",
+    "cer": 13.0,
     "at1": 0,
-    "elapsed_sec": 1.3820495999998457
+    "elapsed_sec": 28.08973479999986
   },
   {
     "surrounding_text": "sugufukukyaputennnishuwuninn",
@@ -1511,10 +1511,10 @@
     "expect": [
       "すぐ副キャプテンに就任"
     ],
-    "result": "数不可解なパターンです。",
-    "cer": 1.0,
+    "result": "すぐ副キャプテンになります。\n",
+    "cer": 0.5454545454545454,
     "at1": 0,
-    "elapsed_sec": 0.3165266999999403
+    "elapsed_sec": 4.779520699999921
   },
   {
     "surrounding_text": "ピアノと管弦楽のための幻想曲（後nikaiteisare",
@@ -1522,10 +1522,10 @@
     "expect": [
       "に改訂され"
     ],
-    "result": "階層構造で",
-    "cer": 1.0,
+    "result": "二回提示され",
+    "cer": 0.8,
     "at1": 0,
-    "elapsed_sec": 0.2217318999996678
+    "elapsed_sec": 3.85796490000007
   },
   {
     "surrounding_text": "nasukunasa]deatte,[towubunnnokajowusesshu]haakumade",
@@ -1533,10 +1533,10 @@
     "expect": [
       "な少なさ」であって、「糖分の過剰摂取」はあくまで"
     ],
-    "result": "長年会って、2分の稼業は薄暗いまで。",
-    "cer": 0.75,
+    "result": "直ぐに会って、途方もない数の案件まで…\n\n（注：元の文が非常に不明瞭なため、文脈から推測して最も可能性の高い解釈で変換しました。語彙の選択には限界があります。）\n",
+    "cer": 3.0833333333333335,
     "at1": 0,
-    "elapsed_sec": 0.6084528000001228
+    "elapsed_sec": 15.674940000000106
   },
   {
     "surrounding_text": "声優さん（白鳥由里sannfannrekigakowukowujidaikara…)toseijikannkeinokiji(wakaijibunnnityoppirishinntowusakigakenikakawattajidaiari)nimotowukowusurutoomoimasu",
@@ -1544,10 +1544,10 @@
     "expect": [
       "さんファン歴が高校時代から…）と政治関係の記事（若い時分にちょっぴり新党さきがけに関った時代有り）にも投稿すると思います"
     ],
-    "result": "声優さん（白鳥由里さんが脚本家兼演出家として、若い自分にトップクリエイターとして変わっていただき）にもともと声優をしてもらいと思います。",
-    "cer": 0.9333333333333333,
+    "result": "声優さん（白鳥由里さんのファンレキガクウ記録研究から…）と政治関係の記述（若い時の個人的な意見や偏見で書き散らかしていた日記）に目を通するのも良いでしょう。",
+    "cer": 0.8833333333333333,
     "at1": 0,
-    "elapsed_sec": 1.479975100000047
+    "elapsed_sec": 20.112042599999768
   },
   {
     "surrounding_text": "hagirishianiyabure",
@@ -1555,10 +1555,10 @@
     "expect": [
       "はギリシアに敗れ"
     ],
-    "result": "破損や剥離です。",
-    "cer": 1.0,
+    "result": "申し訳ありませんが、周辺の文章が「hagirishianiyabure」のみでは文脈を判断することができません。「hagirishianiyabure」という言葉の意味や状況が分からず、適切な漢字仮名混じり文に変換することが困難です。\n\nもし可能であれば、もう少し広い範囲の文脈（前後の文章など）を提供していただけますでしょうか？ そうすれば、より正確な変換を試みることができます。\n",
+    "cer": 23.625,
     "at1": 0,
-    "elapsed_sec": 0.2793898999998419
+    "elapsed_sec": 23.485316199999943
   },
   {
     "surrounding_text": "『吸血姫美夕』notowujowujinnbutsu",
@@ -1566,10 +1566,10 @@
     "expect": [
       "の登場人物"
     ],
-    "result": "ノトウジューウジンブツ",
-    "cer": 2.2,
+    "result": "ノトウジュウジョウジンブツ（如月 穣）",
+    "cer": 3.8,
     "at1": 0,
-    "elapsed_sec": 0.3834907000000385
+    "elapsed_sec": 6.57103189999998
   },
   {
     "surrounding_text": ",ichinichinoshowuginobennkyowujikanngajuwujikannwokoerutokotaetakotoga",
@@ -1579,10 +1579,10 @@
       "、1日の将棋の勉強時間が10時間を超えると答えたことが",
       "、一日の将棋の勉強時間が十時間を超えると答えたことが"
     ],
-    "result": "一日の学習時間をご調整いただくことが大切です。",
-    "cer": 0.8076923076923077,
+    "result": "一日少量の勉強時間を何十分も越えることをただ求めているだけです。\n",
+    "cer": 0.9615384615384616,
     "at1": 0,
-    "elapsed_sec": 0.4768362999998317
+    "elapsed_sec": 9.13057179999987
   },
   {
     "surrounding_text": "ムッシュ・ルモンド(chikyuwusannka)ha",
@@ -1593,7 +1593,7 @@
     "result": "地球温暖化は",
     "cer": 0.5714285714285714,
     "at1": 0,
-    "elapsed_sec": 0.20924090000016804
+    "elapsed_sec": 3.914836500000092
   },
   {
     "surrounding_text": "jishukaisannniyorutogisenndehasuginamikukarashutsubasurugarakusenn,shikashinagarahowuteitokuhyowusuwuwowuwamawariichibuno",
@@ -1601,10 +1601,10 @@
     "expect": [
       "自主解散による都議選では杉並区から出馬するが落選、しかしながら法定得票数を上回り一部の"
     ],
-    "result": "自己紹介という形で進めさせていただき、皆様にご迷惑をおかけすることなく、今後とも弊社にて適格な評価をさせていただきます。",
-    "cer": 1.2790697674418605,
+    "result": "指数関数による近似で、非常に不正確な数値を算出してしまう。しかしながら方法としては特標数を用いて周囲1補の…\n\n（注：原文が非常に不明瞭で、文脈も難しく、推測に基づいた変換になっています。より正確な変換のためには、前後の文章や意図を教えていただけると助かります。）\n",
+    "cer": 2.7674418604651163,
     "at1": 0,
-    "elapsed_sec": 1.0997926999998526
+    "elapsed_sec": 24.428855199999816
   },
   {
     "surrounding_text": "kareragayaminoshiokijinndearutokenntowuwotsuketa",
@@ -1612,10 +1612,10 @@
     "expect": [
       "彼らが闇の仕置人であると見当をつけた"
     ],
-    "result": "彼らは皆、塩辛い味を好んでおり、今ではそれを理解しています。",
-    "cer": 1.4444444444444444,
+    "result": "彼らはがやみ、塩基神であると認識した。\n",
+    "cer": 0.7222222222222222,
     "at1": 0,
-    "elapsed_sec": 0.7487406999998711
+    "elapsed_sec": 7.666858600000069
   },
   {
     "surrounding_text": "１０月からも登場するが、バッキー守岡はnisenngonennkugatsunijuwurokunichinohowusowuwomottesotsugyowu",
@@ -1626,10 +1626,10 @@
       "二〇〇五年九月二十六日の放送をもって卒業",
       "二千五年九月二十六日の放送をもって卒業"
     ],
-    "result": "2000年10月12日～16日に開催されるその部署での勤務です。",
-    "cer": 1.2105263157894737,
+    "result": "2020年6月2日に宝くじを所持して卒業する。",
+    "cer": 0.7368421052631579,
     "at1": 0,
-    "elapsed_sec": 0.9000077999999121
+    "elapsed_sec": 10.166263399999934
   },
   {
     "surrounding_text": "以外notenntaikaranoekkususennwo",
@@ -1641,10 +1641,10 @@
       "の天体からのｘ線を",
       "の天体からのエックス線を"
     ],
-    "result": "若干、文脈が不明瞭です。「以外」という単語から推測すると「その他のエクスキューズを」といった意味合いでしょうか。\n\nより自然な文章にするには、もう少し情報が必要です。例えば、「ノートンタイカーのアクセサリーを」のように具体的なものが分かれば、適切な漢字を選ぶことができます。\n\nもし、元の文が「その他のエクスキューズを」という意味であれば、以下のような変換が考えられます。\n\n**その他のエクスキューズを**\n",
-    "cer": 16.416666666666668,
+    "result": "例外的なアクセスを…（この後が不明瞭なため、文脈に合うように補完する必要があります。）\n\n周辺の文脈から推測すると、「例外的なアクセス」に関連する言葉かもしれません。いくつか候補を挙げます。\n\n* 例外的なアクセスを許可します。\n* 例外的なアクセスを制限します。\n* 例外的なアクセスが発生しました。\n\nもし、より正確な変換が必要でしたら、文全体または前後の文章を提供していただけると助かります。",
+    "cer": 16.083333333333332,
     "at1": 0,
-    "elapsed_sec": 3.4171802000000753
+    "elapsed_sec": 26.21987309999986
   },
   {
     "surrounding_text": "失態集(onnseiganarunodetyuwui)nosaitokara",
@@ -1652,10 +1652,10 @@
     "expect": [
       "（音声が鳴るので注意）のサイトから"
     ],
-    "result": "お陰が浅いから",
-    "cer": 0.8235294117647058,
+    "result": "失態集（音声学なるので注意）の細部から",
+    "cer": 0.47058823529411764,
     "at1": 0,
-    "elapsed_sec": 0.285582400000294
+    "elapsed_sec": 7.290397499999926
   },
   {
     "surrounding_text": "、水害により落橋してしまったため、に鋼鈑桁nodowuro・kidowuheiyowukyowunikakenaosareta",
@@ -1663,10 +1663,10 @@
     "expect": [
       "の道路・軌道併用橋に架け直された"
     ],
-    "result": "鋼鈑桁の倒壊・海底横ずれ化により、現在橋脚が損なわれた",
-    "cer": 1.375,
+    "result": "道路・仮設便道橋に架け直された。",
+    "cer": 0.375,
     "at1": 0,
-    "elapsed_sec": 0.8172476999998253
+    "elapsed_sec": 7.625266200000169
   },
   {
     "surrounding_text": "[shuruihannbaigyowumennkyo]niokerusoshikihennkowuno",
@@ -1674,10 +1674,10 @@
     "expect": [
       "「酒類販売業免許」における組織変更の"
     ],
-    "result": "種類・販売業者免許において、書類の審査に関する規定のもの",
-    "cer": 1.1111111111111112,
+    "result": "種類販売業目録における組織変更の",
+    "cer": 0.2777777777777778,
     "at1": 0,
-    "elapsed_sec": 0.5653204000000187
+    "elapsed_sec": 6.379003399999874
   },
   {
     "surrounding_text": "ninnmudehakarekaramusenndeshijiwowukete",
@@ -1685,10 +1685,10 @@
     "expect": [
       "任務では彼から無線で指示を受けて"
     ],
-    "result": "認むでなく、結果を理解してください。",
-    "cer": 1.0625,
+    "result": "人間で欲張るから先生でしょう。\n",
+    "cer": 0.8125,
     "at1": 0,
-    "elapsed_sec": 0.4319854000000305
+    "elapsed_sec": 5.916542899999968
   },
   {
     "surrounding_text": "信欣三らとともに移動劇団・瑞穂劇団(taiseiyokusannkaisannkanonihonnidowuenngekirennmeinikamei",
@@ -1696,10 +1696,10 @@
     "expect": [
       "（大政翼賛会傘下の日本移動演劇連盟に加盟"
     ],
-    "result": "大勢若狭三会撰華園日本同運動劇連盟と命名。",
-    "cer": 0.75,
+    "result": "大正劇団（瑞穂劇団）と命名。",
+    "cer": 0.95,
     "at1": 0,
-    "elapsed_sec": 0.7267367999997987
+    "elapsed_sec": 8.153934400000253
   },
   {
     "surrounding_text": "saserushuhowuwohajime,shashinnnowuekarakowumyowuniewokaki,ifukuwo",
@@ -1710,10 +1710,10 @@
       "させる手法を始め、写真の上から巧妙に絵を書き、衣服を",
       "させる手法をはじめ、写真の上から巧妙に絵を書き、衣服を"
     ],
-    "result": "作業を始めて、写真のうえからこぼれ出す夢に翼をかけて、衣を",
-    "cer": 0.7307692307692307,
+    "result": "さっそく手順を始め、写真などを元に各人物を書き、衣装を…\n\n（文脈から推測すると、イラスト制作やゲーム開発などの準備段階の指示文であると考えられます。文が途切れているため、「衣装を」の後に続く言葉によって、より適切な表現になる可能性があります。）",
+    "cer": 4.111111111111111,
     "at1": 0,
-    "elapsed_sec": 0.8128832000002149
+    "elapsed_sec": 19.96994480000012
   },
   {
     "surrounding_text": "noshinnninnwoeta",
@@ -1722,10 +1722,10 @@
       "の信任を得た",
       "の信認を得た"
     ],
-    "result": "どのようなことでしょうね。",
-    "cer": 2.0,
+    "result": "申し訳ありませんが、文脈から判断できる情報が不足しており、「noshinnninnwoeta」を適切な漢字仮名混じり文に変換することができません。「noshinnninnwoeta」という言葉自体が一般的な日本語として認識できません。\n\nより正確な変換を行うためには、以下のいずれかの情報を提供していただけますでしょうか？\n\n*   「noshinnninnwoeta」の意図する意味\n*   前後の文章全体（より広い文脈）\n*   この言葉が使われている状況や分野\n\nこれらの情報があれば、より適切な漢字仮名混じり文を作成できます。",
+    "cer": 44.0,
     "at1": 0,
-    "elapsed_sec": 0.2484334000000672
+    "elapsed_sec": 32.42626450000034
   },
   {
     "surrounding_text": "ものをirerarerunowofusegunotobowuhannjowunoriyuwukara,kannshikameragasecchisa",
@@ -1733,10 +1733,10 @@
     "expect": [
       "入れられるのを防ぐのと防犯上の理由から、監視カメラが設置さ"
     ],
-    "result": "利用されることなく、確認ができました。",
-    "cer": 0.8620689655172413,
+    "result": "申し訳ありませんが、周辺の文章があまりにも不明瞭で意味を理解できませんでした。そのため、適切な漢字仮名混じり文を作成することが難しいです。\n\n「irerarerunowofusegunotobowuhannjowunoriyuwukara,kannshikameragasecchisa」という文字列だけでは、どのような文脈なのか、どの語彙を選ぶべきか判断できません。 \n\nもし可能であれば、もう少し詳しい情報や、より理解しやすい周辺の文章を提供していただけますでしょうか？\n",
+    "cer": 7.9655172413793105,
     "at1": 0,
-    "elapsed_sec": 0.3873066999999537
+    "elapsed_sec": 30.960920499999702
   },
   {
     "surrounding_text": "ijowudetowujowu.saigononannkannnifusawashiku,fannta,geroppa",
@@ -1745,10 +1745,10 @@
       "以上で登場。最後の難関に相応しく、ファンタ、ゲロッパ",
       "以上で登場。最後の難関にふさわしく、ファンタ、ゲロッパ"
     ],
-    "result": "以下でどうでしょうか。 Saigon の影響はなかなか難しいですが、ファンタ、ゲロッパといった言葉から、何かゲームやエンターテイメントに関連する文脈と推測しました。",
-    "cer": 2.4814814814814814,
+    "result": "状況に応じて、いくつかの解釈が考えられます。周辺の文章が非常に不明瞭であるため、一般的な文脈に沿った推測で回答します。\n\n以下は可能性のある例です。\n\n* **「以上です。西郷さんの案、不適切ですが、ファンタ、ゲロッパ」** \n   （西郷さんの提案がうまくいかなかった状況で、冗談めかして終わらせるニュアンス）\n\n文脈がないため、正確な変換は困難です。より適切な解釈のためには、前後の文章や状況に関する情報が必要です。\n",
+    "cer": 7.296296296296297,
     "at1": 0,
-    "elapsed_sec": 1.4727570000000014
+    "elapsed_sec": 32.70730709999998
   },
   {
     "surrounding_text": "たが、採取によって漁場が荒れるなどの漁業への影響gahasseishitakotonadokarajojonikiseigasusumi,setonaikaidehazennmennkiseimo",
@@ -1756,10 +1756,10 @@
     "expect": [
       "が発生したことなどから徐々に規制が進み、瀬戸内海では全面規制も"
     ],
-    "result": "漁業への影響が損なわれること、また漁獲量の減少につながる可能性があります。",
-    "cer": 1.1290322580645162,
+    "result": "が発生したことから、漁業への影響が懸念され、瀬戸内海沿岸では全面禁漁も検討されています。",
+    "cer": 0.8387096774193549,
     "at1": 0,
-    "elapsed_sec": 0.7689420000001519
+    "elapsed_sec": 12.256005200000345
   },
   {
     "surrounding_text": "raibarushadeattatoyotanovittsu,honndanofittogateinennpiseiwowuchidashitebakuhatsutekininnkiwoeteitajikini,supo-tsuseiwo",
@@ -1767,10 +1767,10 @@
     "expect": [
       "ライバル車であったトヨタのヴィッツ、ホンダのフィットが低燃費性を打ち出して爆発的人気を得ていた時期に、スポーツ性を"
     ],
-    "result": "ライブラッシュでアッという間に夜のヒット数、本番のフィット感を試すべくピセーウを打ち出して爆発的インキーを入れて対地気に、スーパーチェイサーを。",
-    "cer": 0.8421052631578947,
+    "result": "ライブで会った時、本能的なフィット感と根源的なピセいを打ち出して爆発的な人気を上げていた時に、スポットライトを…\n\n（文脈から推測すると、アーティストやパフォーマンスについて語っている文章のようです。ただし、「ピセ」という単語が不明確なため、完全に正確な翻訳は困難です。）\n",
+    "cer": 2.0350877192982457,
     "at1": 0,
-    "elapsed_sec": 1.6619402000001173
+    "elapsed_sec": 24.616779499999666
   },
   {
     "surrounding_text": "アッバース朝５代目カリフnitsukaeta",
@@ -1778,10 +1778,10 @@
     "expect": [
       "に仕えた"
     ],
-    "result": "使解太",
-    "cer": 1.0,
+    "result": "二束田です。\n",
+    "cer": 1.75,
     "at1": 0,
-    "elapsed_sec": 0.17907289999993736
+    "elapsed_sec": 4.110041899999942
   },
   {
     "surrounding_text": "kyuwuzowushi,zennkokudemozerosennpuramoderuwohatsubaishiteirume-ka-noseisanngaoitsukazu,ichijitekininyuwukamachijowutaininarunado",
@@ -1792,10 +1792,10 @@
       "急増し、全国でも零戦プラモデルを発売しているメーカーの生産が追いつかず、一時的に入荷待ち状態になるなど",
       "急増し、全国でもゼロ戦プラモデルを発売しているメーカーの生産が追いつかず、一時的に入荷待ち状態になるなど"
     ],
-    "result": "旧州無死、全国でも最先端プラモデルを初配信して以来の生産高に達せず、一日に数十人位の客待ち状態である。",
-    "cer": 0.6346153846153846,
+    "result": "九州造船、全国でもゼロ戦プラモデルを多数発注し、一時は月産十数万機という生産能力に達するなど。",
+    "cer": 0.6730769230769231,
     "at1": 0,
-    "elapsed_sec": 1.344879100000071
+    "elapsed_sec": 14.749912499999937
   },
   {
     "surrounding_text": "はブルジョワ国家のsaishuwudannkaitosareruga,jissaihaburujoaji-nojowushowukinishutsugennshi,jinnminntowuhyowuyafutsuwusennkyonadominnshushugiyowuinnwofukumudokusaiseitoiwutokuinakinndainokennryoku",
@@ -1803,10 +1803,10 @@
     "expect": [
       "最終段階とされるが、実際はブルジョアジーの上昇期に出現し、人民投票や普通選挙など民主主義要因を含む独裁制という特異な近代の権力"
     ],
-    "result": "最終的団結が迫られるが、実際はブルジョアジーの層出層に穿透し、人民との不協和音や無秩序な連環と闘う民主主義要員を補完的社会制度に取り込んで大権力を顕現化する。",
-    "cer": 0.7619047619047619,
+    "result": "最高水準に到達するが、実質ブルジョワジーの調和的な労働収益に収斂し、人民は不平等な普遍選挙民主主義を覆う独裁性を付与しない大権力を…（以下続く）\n\n**注記:** 提示された文脈があまりにも難解で、完全な翻訳は困難です。上記は可能な限り推測に基づいた解釈であり、文法的な誤りや不自然な表現が含まれている可能性があります。文全体を把握するためには、より広いコンテキストが必要となります。\n",
+    "cer": 2.6666666666666665,
     "at1": 0,
-    "elapsed_sec": 2.239735500000279
+    "elapsed_sec": 37.68175239999982
   },
   {
     "surrounding_text": "nojishaseisaku",
@@ -1814,10 +1814,10 @@
     "expect": [
       "の自社制作"
     ],
-    "result": "条例です。",
+    "result": "脳死清算。",
     "cer": 1.0,
     "at1": 0,
-    "elapsed_sec": 0.17473919999974896
+    "elapsed_sec": 3.4754063999998834
   },
   {
     "surrounding_text": "三段変速機、大型で頑丈なスチールbasuketto,sekisaiseinisugurerunidaigasowutyaku",
@@ -1825,10 +1825,10 @@
     "expect": [
       "バスケット、積載性に優れる荷台が装着"
     ],
-    "result": "バスケット、セカイスイーニスグレルニダガスオウutyaku",
-    "cer": 1.2777777777777777,
+    "result": "バスケット、設計が秀逸な大型ソウダ車。",
+    "cer": 0.7222222222222222,
     "at1": 0,
-    "elapsed_sec": 0.7510201999998571
+    "elapsed_sec": 7.684976500000175
   },
   {
     "surrounding_text": "daigakkowukowukyuwukateidesennryakuwo",
@@ -1836,10 +1836,10 @@
     "expect": [
       "大学校高級課程で戦略を"
     ],
-    "result": "大学への留学方法について説明をします。",
-    "cer": 1.4545454545454546,
+    "result": "大学広告研究カタログを…（以下、文が途切れているため、推測が必要です）\n\nより正確な変換のためには、完全な文を提供していただけると助かります。例えば、「daigakkowukowukyuwukateidesennryakuwo mitai desu」であれば「大学広告研究カタログを見たいです。」となります。\n",
+    "cer": 13.727272727272727,
     "at1": 0,
-    "elapsed_sec": 0.39719360000026427
+    "elapsed_sec": 20.453341100000216
   },
   {
     "surrounding_text": "hajieitainotokushusakusenngunnnosenntowuyowuinnnimohaibisareruyowuni",
@@ -1847,10 +1847,10 @@
     "expect": [
       "は自衛隊の特殊作戦群の戦闘要員にも配備されるように"
     ],
-    "result": "該当する部分が不明瞭なため、正確な変換ができません。文全体をより詳しく教えていただけますでしょうか？ \n\n周辺の文章「hajieitainotokushusakusenngunnnosenntowuyowuinnnimohaibisareruyowuni」も意味不明です。もし意図された単語やフレーズがあれば、それを教えていただけると助かります。\n",
-    "cer": 6.76,
+    "result": "特異点トークスサクセッション軍々戦湯煙に包まれるように。\n",
+    "cer": 0.96,
     "at1": 0,
-    "elapsed_sec": 2.9541841000000204
+    "elapsed_sec": 9.786338899999919
   },
   {
     "surrounding_text": "daritsuyashowurisuwutoittapopyura-namonokara,heisatsudaritsuyahihonnruidaritsunadomaniakkunamonomadeshuwurokusareteiru",
@@ -1858,10 +1858,10 @@
     "expect": [
       "打率や勝利数といったポピュラーなものから、併殺打率や被本塁打率などマニアックなものまで収録されている"
     ],
-    "result": "説明はここまでです。それ以外は、平素から色々試していただき、ありがとうございます。",
-    "cer": 0.94,
+    "result": "ダリツヤショーワリスウトイッタポピュラーなものから、平刷だりつやひほんるいだりつなどまにゃくなものまで数えられています。\n",
+    "cer": 0.8,
     "at1": 0,
-    "elapsed_sec": 0.781267299999854
+    "elapsed_sec": 16.578907900000104
   },
   {
     "surrounding_text": "kakeiwotasukerutame,ryowushunoienihowukowushi",
@@ -1870,10 +1870,10 @@
       "家計を助けるため、領主の家に奉公し",
       "家計を助ける為、領主の家に奉公し"
     ],
-    "result": "課題を助けるため、両雄の言に倣うべきです。",
-    "cer": 0.7058823529411765,
+    "result": "家計を助けるため、両夫婦の円滑な協力が必要です。",
+    "cer": 0.8235294117647058,
     "at1": 0,
-    "elapsed_sec": 0.6609193999997842
+    "elapsed_sec": 7.993637900000067
   },
   {
     "surrounding_text": "土佐料理店がzowuteishitafunamorino",
@@ -1882,10 +1882,10 @@
       "贈呈した舟盛りの",
       "贈呈した船盛りの"
     ],
-    "result": "増田屋です。",
-    "cer": 1.0,
+    "result": "造営史太夫なもりのようです。\n",
+    "cer": 1.625,
     "at1": 0,
-    "elapsed_sec": 0.2496566999998322
+    "elapsed_sec": 5.514290099999926
   },
   {
     "surrounding_text": "daishinnsaihisaichishiennjiaitoshiteo-punnsenn・kyojinntaihannshinngashikowusare,kaijowunibokinnbakogasecchisaretahoka,hannkikeiyowu,mokutowuga",
@@ -1893,10 +1893,10 @@
     "expect": [
       "大震災被災地支援試合としてオープン戦・巨人対阪神が施行され、会場に募金箱が設置されたほか、半旗掲揚、黙祷が"
     ],
-    "result": "大震災における自己責任化として、一万点・教訓的代替分析が敷われ、貝殻雲に輻輳がセシカされ他も、半期計約舞、目指す我方",
-    "cer": 0.8490566037735849,
+    "result": "大真々試合支援員としてオープン戦・巨人対阪神が非常に好況され、皆で応援バックを成功させたほか、反響も良く、目標を達成しました。",
+    "cer": 0.7169811320754716,
     "at1": 0,
-    "elapsed_sec": 1.8425418000001628
+    "elapsed_sec": 17.59238090000008
   },
   {
     "surrounding_text": "４年６月１８日、鹿児島空港に着陸しようとした全日空３５１便（エアバスＡ３２０−２００、ＪＡ８３９２）は、滑走路に機体尾部を接触sase,atsuryokukakuhekikabuwosonnshowusurunadoshi",
@@ -1904,10 +1904,10 @@
     "expect": [
       "させ、圧力隔壁下部を損傷するなどし"
     ],
-    "result": "発生、初速落下機体尾部を接触するような状態です。",
-    "cer": 1.0588235294117647,
+    "result": "させ、油圧脚・機体尾部を接触損壊するなどしました。",
+    "cer": 0.7647058823529411,
     "at1": 0,
-    "elapsed_sec": 0.6886847000000671
+    "elapsed_sec": 10.981238299999859
   },
   {
     "surrounding_text": "見世物小屋もsakannnikowugyowusare",
@@ -1915,10 +1915,10 @@
     "expect": [
       "盛んに興行され"
     ],
-    "result": "坂間二宮遊芸者",
-    "cer": 1.0,
+    "result": "色鮮やかに染め上げられました。",
+    "cer": 1.8571428571428572,
     "at1": 0,
-    "elapsed_sec": 0.31997070000034
+    "elapsed_sec": 4.7886217000000215
   },
   {
     "surrounding_text": "なお、化学的消臭法を用いた消臭剤nitsuiteha,showushuwuzaijitaino",
@@ -1926,10 +1926,10 @@
     "expect": [
       "については、消臭剤自体の"
     ],
-    "result": "については、消臭剤自体の",
-    "cer": 0.0,
-    "at1": 1,
-    "elapsed_sec": 0.34410139999999956
+    "result": "については、消臭剤等に",
+    "cer": 0.25,
+    "at1": 0,
+    "elapsed_sec": 5.49868239999978
   },
   {
     "surrounding_text": "[warainoyakyuwu",
@@ -1937,10 +1937,10 @@
     "expect": [
       "「笑いの野球"
     ],
-    "result": "[笑い野曲遊舞]",
-    "cer": 1.0,
+    "result": "笑いの野球部（わらいのやきゅうぶ）\n",
+    "cer": 2.3333333333333335,
     "at1": 0,
-    "elapsed_sec": 0.3512129000000641
+    "elapsed_sec": 5.925892399999611
   },
   {
     "surrounding_text": "kawaisowunaomoiwosaseta",
@@ -1951,10 +1951,10 @@
       "可哀想な想いをさせた",
       "かわいそうな想いをさせた"
     ],
-    "result": "心配ながらも、お世話になりました。",
-    "cer": 1.3333333333333333,
+    "result": "可愛そうなおもいを抱かせた。\n",
+    "cer": 0.75,
     "at1": 0,
-    "elapsed_sec": 0.35734089999959906
+    "elapsed_sec": 5.326344999999947
   },
   {
     "surrounding_text": "saiakunojitaiwokaihisurutame",
@@ -1963,10 +1963,10 @@
       "最悪の事態を回避するため",
       "最悪の事態を回避する為"
     ],
-    "result": "最悪の状態を回避するため",
+    "result": "最悪の事態を回避するため。",
     "cer": 0.08333333333333333,
     "at1": 0,
-    "elapsed_sec": 0.28247620000001916
+    "elapsed_sec": 5.142483799999809
   },
   {
     "surrounding_text": "武器と危険人物が集まっteirukotowokakuninnshitaemuaishikkusuharoshiagawanogowuiniyorikaijowukarajunnkowumisairu",
@@ -1977,10 +1977,10 @@
       "ていることを確認したｍｉ６はロシア側の合意により海上から巡航ミサイル",
       "ていることを確認したmi6はロシア側の合意により海上から巡航ミサイル"
     ],
-    "result": "集っている人物が危険な状況に陥り、悪しき者たちが集い、陰謀を企てている場所であると見受けられます。",
-    "cer": 1.2941176470588236,
+    "result": "（…）が集まっていることを確認しました。エミュアイシックスハロス亜が腕の強さに依り、危機状況から順調に委細を済ませる。\n\n**注記:** 前後の文章が非常に難解で文脈の把握が困難なため、上記はあくまで可能性の高い解釈に基づいた変換です。より正確な翻訳には、文全体の意図や背景情報が必要となります。\n",
+    "cer": 3.911764705882353,
     "at1": 0,
-    "elapsed_sec": 1.218833899999936
+    "elapsed_sec": 26.516054000000167
   },
   {
     "surrounding_text": "shuwukannshowunennsannde-yashuwukannshowunennmagajinnyorikowuhatsunoshuwukannshowunennjannpuwo,ichiyakuninnkishowunennshinioshiageta",
@@ -1988,10 +1988,10 @@
     "expect": [
       "週刊少年サンデーや週刊少年マガジンより後発の週刊少年ジャンプを、一躍人気少年誌に押し上げた"
     ],
-    "result": "週刊新聞三版でやさせていただき、週刊新聞 magazineより以下の週間新聞ジャンピューを、一貫性のある日誌にておしあげてみました。",
-    "cer": 1.0444444444444445,
+    "result": "週刊少年サンデーで、マガジンに寄りこわって、週刊少年ジャンプを、一躍人気少年誌に押し上げた。",
+    "cer": 0.28888888888888886,
     "at1": 0,
-    "elapsed_sec": 1.365169899999728
+    "elapsed_sec": 15.253158200000144
   },
   {
     "surrounding_text": "seisakushatokonntenntsuhoruda-kanndeno",
@@ -2000,10 +2000,10 @@
       "制作者とコンテンツホルダー間での",
       "製作者とコンテンツホルダー間での"
     ],
-    "result": "政策とコンテンツロードマップ関連の",
-    "cer": 0.6875,
+    "result": "政策実行担当者によるホールダーカンデノ…（※文脈が不明瞭なため、この部分で終わらせます。より詳細な情報をいただければ、適切な漢字仮名混じり文に変換できます。）",
+    "cer": 4.625,
     "at1": 0,
-    "elapsed_sec": 0.32936789999985194
+    "elapsed_sec": 14.074451400000271
   },
   {
     "surrounding_text": "jowudokyowunitsuyokuhikareru",
@@ -2011,10 +2011,10 @@
     "expect": [
       "浄土教に強く惹かれる"
     ],
-    "result": "重要と認められます。",
-    "cer": 1.0,
+    "result": "徐々に強固になる。\n",
+    "cer": 0.9,
     "at1": 0,
-    "elapsed_sec": 0.2478609999998298
+    "elapsed_sec": 4.881276600000092
   },
   {
     "surrounding_text": "wakajinishitatame,atowotsuida",
@@ -2027,10 +2027,10 @@
       "若死にした為、後を継いだ",
       "若死にした為、あとを継いだ"
     ],
-    "result": "若木真似玉、あとをついだ。",
-    "cer": 0.5384615384615384,
+    "result": "若人に対して、あとに続く者たちのために。",
+    "cer": 1.1428571428571428,
     "at1": 0,
-    "elapsed_sec": 0.41748250000000553
+    "elapsed_sec": 5.809271300000091
   },
   {
     "surrounding_text": "shuwushikateihokennkagaku",
@@ -2038,10 +2038,10 @@
     "expect": [
       "修士課程保健科学"
     ],
-    "result": "住職と法権下学",
-    "cer": 0.875,
+    "result": "私立学校保険学（しゅふしがっこうほけんがかく）",
+    "cer": 2.75,
     "at1": 0,
-    "elapsed_sec": 0.3161795999999413
+    "elapsed_sec": 7.0676811000003
   },
   {
     "surrounding_text": "円弧を描くようnihanetekuru",
@@ -2051,10 +2051,10 @@
       "に跳ねて来る",
       "に撥ねてくる"
     ],
-    "result": "二つ折になる",
-    "cer": 0.8333333333333334,
+    "result": "曲線を描いてくる。",
+    "cer": 1.0,
     "at1": 0,
-    "elapsed_sec": 0.21014249999961976
+    "elapsed_sec": 3.7049550999995517
   },
   {
     "surrounding_text": "kaitennjikugafuremawaruyowuniwugokusaisawunndowunokoto",
@@ -2062,10 +2062,10 @@
     "expect": [
       "回転軸が振れ回るように動く歳差運動のこと"
     ],
-    "result": "回転軸がフレーム内で負荷分散されていること。",
-    "cer": 0.8,
+    "result": "回転軸がフレーム回りに歪むようなことがありました。\n",
+    "cer": 0.95,
     "at1": 0,
-    "elapsed_sec": 0.4381794999999329
+    "elapsed_sec": 7.248043900000084
   },
   {
     "surrounding_text": "必ずと言ってよいほどこの城の見学行程が組み込まれteori,nipponnjinnmoigainiooi",
@@ -2073,10 +2073,10 @@
     "expect": [
       "ており、日本人も意外に多い"
     ],
-    "result": "理論、日本人の大部分に及んでいます。",
-    "cer": 1.0,
+    "result": "理論、日本人も異国に多い。",
+    "cer": 0.46153846153846156,
     "at1": 0,
-    "elapsed_sec": 0.3941053000003194
+    "elapsed_sec": 5.957613600000059
   },
   {
     "surrounding_text": "dennkitsuwushinnjutsunogowukakushahadennkitsuwushinnjutsuwoshikennnoyokugetsunohajime",
@@ -2084,10 +2084,10 @@
     "expect": [
       "電気通信術の合格者は電気通信術を試験の翌月の初め"
     ],
-    "result": "電気無心忍術のご武活は、電気無心忍術を識る闇の始まりです。",
-    "cer": 0.7916666666666666,
+    "result": "電機物資核社は電機物資を試験の予句月の日始（め）。\n\n---\n\n注：文脈が非常に専門的で、一般的な語彙では解釈が難しいため、直訳に近い形にしています。より正確な翻訳には、この分野の専門知識が必要になります。",
+    "cer": 4.041666666666667,
     "at1": 0,
-    "elapsed_sec": 0.8990531999997984
+    "elapsed_sec": 20.619311899999957
   },
   {
     "surrounding_text": "kyuwubakufugunnkannnokowubowunobutaihanikkowuniwutsuru",
@@ -2095,10 +2095,10 @@
     "expect": [
       "旧幕府軍間の攻防の舞台は日光に移る"
     ],
-    "result": "区域把握困難な状況において、発生する",
-    "cer": 1.0,
+    "result": "状況が分かりかねます。周辺の文章が非常に不自然であり、どのような文脈で「kyuwubakufugunnkannnokowubowunobutaihanikkowuniwutsuru」という文字列が出現しているのか理解できません。\n\nこの文字列から意味を推測することも困難です。無理やり漢字仮名混じり文に変換しようとすると、以下のようなものが考えられますが、**全く意図と異なる可能性が高い**です。\n\n*   急務不可不感、好況武運の舞台般、一行二無突\n*   休符苦難勘能、後方武運の舞台端、一孝二無突\n\nもしこの文字列が何かの誤字やタイプミスである場合、正しいローマ字表記を教えていただければ、適切な漢字仮名混じり文に変換できます。\n",
+    "cer": 18.470588235294116,
     "at1": 0,
-    "elapsed_sec": 0.40137030000005325
+    "elapsed_sec": 44.9228736
   },
   {
     "surrounding_text": "haichishi,sorewokakusannbannnitepanerujowunikakusannshitetyokusetsushowusha",
@@ -2106,10 +2106,10 @@
     "expect": [
       "配置し、それを拡散板にてパネル上に拡散して直接照射"
     ],
-    "result": "はい、それをご理解いただきありがとうございます。",
-    "cer": 0.84,
+    "result": "倍置し、それを各産晩にパネル上二枚挿入して複数指定読者。（文脈が非常に不明瞭なため、推測による回答です。より正確な変換のためには、前後の文章や状況を詳しく教えていただけると助かります。）",
+    "cer": 3.2,
     "at1": 0,
-    "elapsed_sec": 0.37269540000033885
+    "elapsed_sec": 17.550887500000044
   },
   {
     "surrounding_text": "この設定でもまだユリとは一緒になっていnairashii(taisetsunamononiyuriwoage",
@@ -2122,10 +2122,10 @@
       "ないらしい（大切なモノにユリをあげ",
       "ないらしい（大切な物にユリをあげ"
     ],
-    "result": "梨我を上げられない（大切なものに由莉を上げる）",
-    "cer": 0.7058823529411765,
+    "result": "ならしい（大切なものにユリを添え）",
+    "cer": 0.23529411764705882,
     "at1": 0,
-    "elapsed_sec": 0.5779081000000588
+    "elapsed_sec": 6.942950399999972
   },
   {
     "surrounding_text": "kennryokukowuiwoseitowudukerukennihakokuminnnisonnsurutoiwu",
@@ -2134,10 +2134,10 @@
       "権力行為を正当づける権威は国民に存するという",
       "権力行為を正当付ける権威は国民に存するという"
     ],
-    "result": "懸念力高委意誤差と置く限り薄故に認識する問いです。",
+    "result": "経済協力銀行法に基づく国民への融資を行うという。\n",
     "cer": 0.9545454545454546,
     "at1": 0,
-    "elapsed_sec": 0.7496710000000348
+    "elapsed_sec": 7.8171269999998
   },
   {
     "surrounding_text": "の系統関係がこの体系にどう反映してirunokawotsuikyuwushi,mata,yuwuseisedainoakirakaninatteinaifukannzennkinnnokeitowukannkeiwotannkyuwushi,koreworaifuwa-ku",
@@ -2145,10 +2145,10 @@
     "expect": [
       "いるのかを追究し、また、有性世代の明らかになっていない不完全菌の系統関係を探求し、これをライフワーク"
     ],
-    "result": "反映されており、また、優勢な制度の帰刊が内在的な根幹に影響を与え、関連性を担う体系を断重すると確固たる基盤となります。これはライフワークです。",
-    "cer": 1.14,
+    "result": "この体系にどう反映しているか、また、有効性代入の近似値になっていない不確実な健全性係数を探求し、これはライフワーク。",
+    "cer": 0.58,
     "at1": 0,
-    "elapsed_sec": 1.6477764000001116
+    "elapsed_sec": 16.60587919999989
   },
   {
     "surrounding_text": "人使いの上手い人物であることがwukagaeru",
@@ -2157,10 +2157,10 @@
       "窺える",
       "うかがえる"
     ],
-    "result": "無敵化する",
-    "cer": 0.8,
+    "result": "売り物です。",
+    "cer": 1.2,
     "at1": 0,
-    "elapsed_sec": 0.21446389999982785
+    "elapsed_sec": 3.5499273000000358
   },
   {
     "surrounding_text": "dainijisekaitaisenngojuwunenn",
@@ -2176,10 +2176,10 @@
       "第二次世界大戦後１０年",
       "第二次世界大戦後10年"
     ],
-    "result": "第二次世界大戦五十五年",
-    "cer": 0.2,
+    "result": "大二世界大戦後５０年。",
+    "cer": 0.36363636363636365,
     "at1": 0,
-    "elapsed_sec": 0.31433359999982713
+    "elapsed_sec": 5.437717799999973
   },
   {
     "surrounding_text": "beikokuhanndowutaikyowukai",
@@ -2187,10 +2187,10 @@
     "expect": [
       "米国半導体協会"
     ],
-    "result": "米国の地政学的脅威化",
+    "result": "米国反ドーピング機構",
     "cer": 1.1428571428571428,
     "at1": 0,
-    "elapsed_sec": 0.36045210000020234
+    "elapsed_sec": 4.184701700000005
   },
   {
     "surrounding_text": "kannshasuruhidatokowugennshi",
@@ -2198,10 +2198,10 @@
     "expect": [
       "感謝する日だと公言し"
     ],
-    "result": "感謝するいただき、心より申し上げます。",
-    "cer": 1.3,
+    "result": "感謝するだけでも玄志です。",
+    "cer": 0.9,
     "at1": 0,
-    "elapsed_sec": 0.384699400000045
+    "elapsed_sec": 4.73713029999999
   },
   {
     "surrounding_text": "sakaini,kitaparada,minamiparadanogerenndeniwakareteiru",
@@ -2209,10 +2209,10 @@
     "expect": [
       "境に、北パラダ、南パラダのゲレンデに分かれている"
     ],
-    "result": "左に、北原田、南原田の限られた場所に分かれている。",
-    "cer": 0.5833333333333334,
+    "result": "左隣、北パラダ、南パラダのゲレンデに分かれている。",
+    "cer": 0.125,
     "at1": 0,
-    "elapsed_sec": 0.6767371999999341
+    "elapsed_sec": 8.011476700000003
   },
   {
     "surrounding_text": "作曲はnakunattatoshimade",
@@ -2222,10 +2222,10 @@
       "亡くなった歳まで",
       "亡くなった齢まで"
     ],
-    "result": "なくなかったとしながら",
-    "cer": 0.875,
+    "result": "作曲はなくなってしまいました。",
+    "cer": 1.375,
     "at1": 0,
-    "elapsed_sec": 0.2129586000000927
+    "elapsed_sec": 4.097580799999832
   },
   {
     "surrounding_text": "その滝ha,gennzainohonndowunowurawonagareruogawaniattarashiku,gennzaihakishibenisecchisaretafennsuni[showukannnonn",
@@ -2233,10 +2233,10 @@
     "expect": [
       "は、現在の本堂の裏を流れる小川にあったらしく、現在は岸辺に設置されたフェンスに「聖観音"
     ],
-    "result": "その滝は、縁 Zain ほ ん とど う の 武 輪 が 絡 る 音 河 に あ っ た り し く、縁 財 析 弁 は 世 治 さ れ た 面々 で す。",
-    "cer": 1.4883720930232558,
+    "result": "は、現在本堂の裏を流れる御川に当たり、現在は岸壁が紅色に染められています。[昭和館]",
+    "cer": 0.5581395348837209,
     "at1": 0,
-    "elapsed_sec": 1.8387449000001652
+    "elapsed_sec": 13.508027099999708
   },
   {
     "surrounding_text": "れるが、大学進学率を照らし合わせてみても両校のkokkowuritsudaigakuhaishutsushasuwuhagojuppohyappo",
@@ -2244,10 +2244,10 @@
     "expect": [
       "国公立大学輩出者数は五十歩百歩"
     ],
-    "result": "合格率を大学進学率を照らし合わせてみても両校のコースは５０％超",
-    "cer": 1.9333333333333333,
+    "result": "国公立大学への合格者数は500人を超えています。",
+    "cer": 1.0666666666666667,
     "at1": 0,
-    "elapsed_sec": 0.8632256999999299
+    "elapsed_sec": 8.443854699999974
   },
   {
     "surrounding_text": "レッド・ツェッペリンのdaifanndeari,budowukannkowuennde",
@@ -2255,10 +2255,10 @@
     "expect": [
       "大ファンであり、武道館公演で"
     ],
-    "result": "ダイナミクなアリア、ブドウの木が並ぶ園地で。",
-    "cer": 1.4285714285714286,
+    "result": "大変であります、武道館コンサートで。\n",
+    "cer": 0.8571428571428571,
     "at1": 0,
-    "elapsed_sec": 0.7435150999999678
+    "elapsed_sec": 6.418759800000316
   },
   {
     "surrounding_text": "の若者が黒の皮ジャンに皮パンwohaitetannkitowuennjinn",
@@ -2266,10 +2266,10 @@
     "expect": [
       "を履いて単気筒エンジン"
     ],
-    "result": "服を羽織って、ニットを着ていますね。",
-    "cer": 1.4545454545454546,
+    "result": "を履いてたんきとうえんじん。\n\n（少し不自然な文脈ですが、周辺の文章から推測して「履いて」と解釈し、また「たんきとうえんじん」は意味が不明瞭なのでそのままにしました。）\n",
+    "cer": 7.363636363636363,
     "at1": 0,
-    "elapsed_sec": 0.4658389999999599
+    "elapsed_sec": 16.15234210000017
   },
   {
     "surrounding_text": "ノンスクランブル放送」には、当初はwawuwawugaseisakunikatannsurukotoha",
@@ -2278,10 +2278,10 @@
       "ＷＯＷＯＷが制作に加担することは",
       "WOWOWが制作に加担することは"
     ],
-    "result": "わうわうぐ放送ではなく、ノン scramble 放送という事態です。",
-    "cer": 2.0625,
+    "result": "滑走路が塞がれることがないように。",
+    "cer": 1.0,
     "at1": 0,
-    "elapsed_sec": 0.6751878000000033
+    "elapsed_sec": 6.502405599999747
   },
   {
     "surrounding_text": "nokekka,jakkannjuwusannsainishi",
@@ -2291,10 +2291,10 @@
       "の結果、弱冠13歳にし",
       "の結果、弱冠十三歳にし"
     ],
-    "result": "結果、若干改善されました。",
-    "cer": 0.9090909090909091,
+    "result": "結果、〇〇（数字）人死亡です。\n\n※「nokekka」が「結果」、「jakkannjuwusannsainishi」が「〇〇（数字）人死亡」と解釈しました。具体的な数字が不明なため、「〇〇」としています。文脈から推測し、災害や事故などの報告である可能性が高いと考えられます。\n",
+    "cer": 12.181818181818182,
     "at1": 0,
-    "elapsed_sec": 0.28664329999992333
+    "elapsed_sec": 21.154989699999987
   },
   {
     "surrounding_text": "近年知名度gaagattekiteori",
@@ -2302,10 +2302,10 @@
     "expect": [
       "が上がってきており"
     ],
-    "result": "高まっており",
-    "cer": 0.5555555555555556,
+    "result": "人気が高まってきています。",
+    "cer": 0.8888888888888888,
     "at1": 0,
-    "elapsed_sec": 0.1771297999998751
+    "elapsed_sec": 3.958312699999624
   },
   {
     "surrounding_text": "内燃機関における冷却水は、前記の船舶などに用いられteirukaihowugatanobaaiwonozoki,tojitareikyakukeikairowonagareteori,seijowunikadowushiteirumahakannkyowuhenoakueikyowu",
@@ -2313,10 +2313,10 @@
     "expect": [
       "ている開放型の場合を除き、閉じた冷却系回路を流れており、正常に稼働している間は環境への悪影響"
     ],
-    "result": "特有の冷却方式が用いられ、例えば内燃機関の冷却水は流れ落ち、制御に加えて、排気管の水冷却を行う。",
-    "cer": 0.9565217391304348,
+    "result": "テイル冷却水は、前記の船舶などに用いられ、吐出熱交換器を流れており、静常的に加えて仕ている魔法環状系の外気冷却。",
+    "cer": 0.8913043478260869,
     "at1": 0,
-    "elapsed_sec": 1.2184680000000299
+    "elapsed_sec": 16.233147800000097
   },
   {
     "surrounding_text": "増えたkotode,onnjowuwotorimodoshi,",
@@ -2325,10 +2325,10 @@
       "ことで、温情を取り戻し、",
       "事で、温情を取り戻し、"
     ],
-    "result": "ことであるので、女房を捕まえてもどし",
-    "cer": 1.0833333333333333,
+    "result": "事で、温情を返してもらい、",
+    "cer": 0.5454545454545454,
     "at1": 0,
-    "elapsed_sec": 0.529062900000099
+    "elapsed_sec": 5.411722800000007
   },
   {
     "surrounding_text": "furi-nitennshinn",
@@ -2336,10 +2336,10 @@
     "expect": [
       "フリーに転身"
     ],
-    "result": "振肉店新（ふりにくでんしん）",
-    "cer": 2.1666666666666665,
+    "result": "不二天神。\n",
+    "cer": 1.0,
     "at1": 0,
-    "elapsed_sec": 0.5209878000000572
+    "elapsed_sec": 4.07119640000019
   },
   {
     "surrounding_text": "が単独提供していtaga,konobanngumiikowuhatowushibawofukumufukusuwushano",
@@ -2347,10 +2347,10 @@
     "expect": [
       "たが、この番組以降は東芝を含む複数社の"
     ],
-    "result": "大変な状況ですね。詳細が分かりかねますが、何かお手伝いできることがあればお気軽にお尋ねください。",
-    "cer": 2.3684210526315788,
+    "result": "提供していますが、個別組み込みは付随してません。",
+    "cer": 1.1578947368421053,
     "at1": 0,
-    "elapsed_sec": 0.965084299999944
+    "elapsed_sec": 7.5242935999999645
   },
   {
     "surrounding_text": "大柄なtaikeinohaiyuwugaennjiru",
@@ -2358,10 +2358,10 @@
     "expect": [
       "体型の俳優が演じる"
     ],
-    "result": "体格の高い人物が賑じると",
-    "cer": 0.7777777777777778,
+    "result": "体格の良い外様が円熟している。",
+    "cer": 1.2222222222222223,
     "at1": 0,
-    "elapsed_sec": 0.35790220000035333
+    "elapsed_sec": 5.4826130000001285
   },
   {
     "surrounding_text": "家政科をhokennkanikaishowu",
@@ -2369,10 +2369,10 @@
     "expect": [
       "保健科に改称"
     ],
-    "result": "保健看護学科",
-    "cer": 0.6666666666666666,
+    "result": "家政科を保護兼内示用。\n",
+    "cer": 1.8333333333333333,
     "at1": 0,
-    "elapsed_sec": 0.17767400000002453
+    "elapsed_sec": 5.506154400000014
   },
   {
     "surrounding_text": "shironichikaiirodemoroku,wushinochichi",
@@ -2380,10 +2380,10 @@
     "expect": [
       "白に近い色で脆く、牛の乳"
     ],
-    "result": "白露に似た色、無数の父。",
-    "cer": 0.8333333333333334,
+    "result": "申し訳ありませんが、前後の文脈から判断するに、この文字列は日本語として成立していません。意味を推測することが難しいため、漢字仮名混じり文への変換を行うことができません。\n\nもし、意図された単語やフレーズがあれば、具体的な情報を教えていただけますでしょうか？\n",
+    "cer": 10.416666666666666,
     "at1": 0,
-    "elapsed_sec": 0.46051959999977043
+    "elapsed_sec": 18.00602740000022
   },
   {
     "surrounding_text": "bowuryokubamennnoissowuwookonatta",
@@ -2393,10 +2393,10 @@
       "暴力場面の一掃をおこなった",
       "暴力場面の一掃を行なった"
     ],
-    "result": "暴力的メンバーの異色発生が発生しました。",
-    "cer": 1.2307692307692308,
+    "result": "ボリューム満麺がおすすめでした。\n",
+    "cer": 1.1538461538461537,
     "at1": 0,
-    "elapsed_sec": 0.430412200000319
+    "elapsed_sec": 5.176320199999736
   },
   {
     "surrounding_text": "政治思想などに興味を持ち、yukuyukuhaseikaishinnshutsuwomokuronn",
@@ -2405,10 +2405,10 @@
       "ゆくゆくは政界進出を目論ん",
       "行く行くは政界進出を目論ん"
     ],
-    "result": "ゆっくりと深く会釈いたします。",
+    "result": "有志による社会刷新運動を目標論。",
     "cer": 1.0,
     "at1": 0,
-    "elapsed_sec": 0.32839419999982056
+    "elapsed_sec": 6.240312800000083
   },
   {
     "surrounding_text": "瀕死の明のshowugenndehashinnpyowuseinikakeruto",
@@ -2416,9 +2416,9 @@
     "expect": [
       "証言では信憑性に欠けると"
     ],
-    "result": "将軍代行に陥ると",
-    "cer": 0.75,
+    "result": "照源音頭でばっしんぴょううせいにかけると。\n",
+    "cer": 1.4166666666666667,
     "at1": 0,
-    "elapsed_sec": 0.32409519999964687
+    "elapsed_sec": 7.656035400000292
   }
 ]

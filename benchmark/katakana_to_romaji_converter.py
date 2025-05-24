@@ -14,7 +14,7 @@ class KatakanaToRomajiConverter:
     # This dictionary is derived from the original list structure,
     # ensuring that later definitions for the same Kana key override earlier ones.
     _FIXED_RAW_TABLE = {
-        "あ": "a", "い": "i", "う": "wu", "え": "e", "お": "o", # "う" is "wu" due to ("wu", "う") being last for "う"
+        "あ": "a", "い": "i", "う": "u", "え": "e", "お": "o", # "う" is "wu" due to ("wu", "う") being last for "う"
         "か": "ka", "き": "ki", "く": "ku", "け": "ke", "こ": "ko",
         "さ": "sa", "し": "shi", "す": "su", "せ": "se", "そ": "so", # "し" is "shi"
         "た": "ta", "ち": "chi", "つ": "tsu", "て": "te", "と": "to", # "ち" is "chi", "つ" is "tsu"
