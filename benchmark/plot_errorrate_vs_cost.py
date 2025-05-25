@@ -82,12 +82,18 @@ DATA_V23: Dict[str, Dict[str, float]] = {
 
 # v2.4.0
 DATA_V24: Dict[str, Dict[str, float]] = {
+    "gpt-3.5-turbo": {"cer": 0.645358, "elapsed": 0.827224},
     "gemini-2.0-flash-lite": {"cer": 0.322322, "elapsed": 0.590890},
     "gemini-2.0-flash": {"cer": 0.192571, "elapsed": 0.609305},
     "gemini-2.5-flash-preview-04-17": {"cer": 0.088799, "elapsed": 4.177074},
     "gemini-2.5-pro-preview-05-06": {"cer": 0.061644, "elapsed": 17.666037},
     "gpt-4.1-mini": {"cer": 0.308427, "elapsed": 0.979534},
     "gpt-4.1": {"cer": 0.117064, "elapsed": 1.276582},
+    "gpt-4o-mini": {"cer": 0.514936, "elapsed": 1.059017},
+    "gpt-4o": {"cer": 0.130022, "elapsed": 0.983554},
+
+    "deepseek-v3": {"cer": 0.296198, "elapsed": 5.139222},
+    "o4-mini": {"cer": 0.196260, "elapsed": 14.309153},
 }
 
 # ---------------------------------------------------------------------------
