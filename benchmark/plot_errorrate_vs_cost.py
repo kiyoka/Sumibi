@@ -110,8 +110,12 @@ def plot_version(
     alpha: float,
     face_filled: bool,
     zorder: int,
+    annotate: bool = True,
 ):
-    """一つのバージョンの散布図を描く"""
+    """一つのバージョンの散布図を描く
+
+    annotate が True のときのみモデル名ラベルを表示する。
+    """
     for model, metrics in data.items():
         cost = MASTER_COST.get(model)
         if cost is None:
@@ -145,17 +149,19 @@ def plot_version(
                 label=version_label if model == next(iter(data)) else None,
                 zorder=zorder,
             )
-        # 各点にモデル名を注釈
-        plt.annotate(
-            model,
-            xy=(cost, cer_pct),
-            xytext=(5, 5),
-            textcoords="offset points",
-            ha="left",
-            va="bottom",
-            clip_on=False,
-            fontsize=8,
-        )
+
+        # モデル名の注釈
+        if annotate:
+            plt.annotate(
+                model,
+                xy=(cost, cer_pct),
+                xytext=(5, 5),
+                textcoords="offset points",
+                ha="left",
+                va="bottom",
+                clip_on=False,
+                fontsize=8,
+            )
 
 
 def draw_improvement_arrows():
@@ -250,11 +256,25 @@ def main():
 
     plt.figure(figsize=(8, 6))
 
-    # v2.3.0 — 薄い枠円
-    plot_version(DATA_V23, "v2.3.0", alpha=0.4, face_filled=False, zorder=2)
+    # v2.3.0 — 薄い枠円（ラベル無し）
+    plot_version(
+        DATA_V23,
+        "v2.3.0",
+        alpha=0.4,
+        face_filled=False,
+        zorder=2,
+        annotate=False,
+    )
 
-    # v2.4.0 — 濃い塗りつぶし円
-    plot_version(DATA_V24, "v2.4.0", alpha=1.0, face_filled=True, zorder=3)
+    # v2.4.0 — 濃い塗りつぶし円（ラベルあり）
+    plot_version(
+        DATA_V24,
+        "v2.4.0",
+        alpha=1.0,
+        face_filled=True,
+        zorder=3,
+        annotate=True,
+    )
 
     # 改善矢印
     draw_improvement_arrows()
@@ -265,8 +285,8 @@ def main():
     plt.title("Error Rate vs Cost of LLM Model (v2.3.0 → v2.4.0)")
     plt.grid(True, which="both", linestyle=":", linewidth=0.5)
 
-    # Y 軸 0–110 %
-    plt.ylim(0, 110)
+    # Y 軸 0–80 %
+    plt.ylim(0, 80)
     # 余白 (x 軸)
     plt.margins(x=0.05)
 
