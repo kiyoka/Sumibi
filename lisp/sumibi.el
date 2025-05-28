@@ -384,12 +384,13 @@ Argument FALLBACK: fallback function."
       (message "%s" "Emacs version 28.1 or higher is required.")))))
 
 (defun sumibi-escape-for-json (str)
-  "引数STRで指定した、JSON文字列に含まれるバックスペースとダブルクォーテーションと改行を削除する."
+  "引数STRで指定した、JSON文字列に含まれるバックスペース、ダブルクォーテーション、改行、タブをエスケープする."
   (let* ((str1 (string-replace "\\" "" str))
          (str2 (string-replace "\"" "\\\"" str1))
          (str3 (string-replace "\n" "\\n" str2))
-         (str4 (unicode-escape str3)))
-    str4))
+         (str4 (string-replace "	" "\\t" str3))
+         (str5 (unicode-escape str4)))
+    str5))
 
 (defun sumibi-parse-http-body (buf)
   "Pickup http status and body string from buf string.
@@ -1734,5 +1735,14 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
 ;; Local Variables:
 ;; coding: utf-8
 ;; End:
+
+(when nil
+  ;; unit test for tab character escaping
+  (let ((test-string "hello	world")
+        (expected-string "hello\\tworld") ; In Lisp, this is "hello\tworld"
+        (actual-string (sumibi-escape-for-json "hello	world")))
+    (if (string= actual-string expected-string)
+        (message "Tab escape test passed: %s" actual-string)
+      (message "Tab escape test FAILED. Expected: %s, Got: %s" expected-string actual-string))))
 
 ;;; sumibi.el ends here
