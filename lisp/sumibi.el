@@ -129,7 +129,7 @@ SUMIBI_AI_BASEURL環境変数が未設定の場合はデフォルトURL\"https:/
 
 
 ;; ローマ字漢字変換時、対象とするローマ字を設定するための変数
-(defvar sumibi-skip-chars "a-zA-Z0-9.,@:`\\-+!\\[\\]?;' ")
+(defvar sumibi-skip-chars "a-zA-Z0-9.,@:`\\-+!\\[\\]?;' \t")
 (defvar sumibi-rK-trans-key "\C-j"
   "*漢字変換キーを設定する.")
 (defvar sumibi-mode-map
