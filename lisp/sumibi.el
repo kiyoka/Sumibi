@@ -5,7 +5,7 @@
 ;; Copyright (C) 2023 Kiyoka Nishiyama
 ;;
 ;; Author: Kiyoka Nishiyama <kiyoka@sumibi.org>
-;; Version: 2.3.0
+;; Version: 2.4.0
 ;; Keywords: lisp, ime, japanese
 ;; Package-Requires: ((emacs "28.1") (popup "0.5.9") (unicode-escape "1.1") (deferred "0.5.1"))
 ;; URL: https://github.com/kiyoka/Sumibi
@@ -129,7 +129,7 @@ SUMIBI_AI_BASEURL環境変数が未設定の場合はデフォルトURL\"https:/
 
 
 ;; ローマ字漢字変換時、対象とするローマ字を設定するための変数
-(defvar sumibi-skip-chars "a-zA-Z0-9.,@:`\\-+!\\[\\]?;' ")
+(defvar sumibi-skip-chars "a-zA-Z0-9.,@:`\\-+!\\[\\]?;' \t")
 (defvar sumibi-rK-trans-key "\C-j"
   "*漢字変換キーを設定する.")
 (defvar sumibi-mode-map
@@ -384,12 +384,13 @@ Argument FALLBACK: fallback function."
       (message "%s" "Emacs version 28.1 or higher is required.")))))
 
 (defun sumibi-escape-for-json (str)
-  "引数STRで指定した、JSON文字列に含まれるバックスペースとダブルクォーテーションと改行を削除する."
+  "引数STRで指定した、JSON文字列に含まれるバックスペース、ダブルクォーテーション、改行、タブをエスケープする."
   (let* ((str1 (string-replace "\\" "" str))
          (str2 (string-replace "\"" "\\\"" str1))
          (str3 (string-replace "\n" "\\n" str2))
-         (str4 (unicode-escape str3)))
-    str4))
+         (str4 (string-replace "	" "\\t" str3))
+         (str5 (unicode-escape str4)))
+    str5))
 
 (defun sumibi-parse-http-body (buf)
   "Pickup http status and body string from buf string.
@@ -522,7 +523,11 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
              "あなたはローマ字とひらがなを日本語に変換するアシスタントです。"
              "ローマ字の 「nn」 は 「ん」と読んでください。"
              "[](URL)のようなmarkdown構文は維持してください。"
-             "# や ## や ### や #### のようなmarkdown構文は維持してください。"))
+             "# や ## や ### や #### のようなmarkdown構文は維持してください。"
+	     "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
+             "ローマ字の字面をそのままひらがなや漢字にするだけで、元のローマ字にない文章を作り出さないでください。"
+             "出力は変換後の一文のみ。注釈や説明は一切付けないください。"
+             "もし、入力された文章が英語の文章と判断できた場合は、日本語に翻訳してください。"))
       (cons "user"
 	    (concat
 	     "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
@@ -1702,7 +1707,7 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
 
 
 (defconst sumibi-version
-  "2.3.0" ;;SUMIBI-VERSION
+  "2.4.0" ;;SUMIBI-VERSION
   )
 (defun sumibi-version (&optional _arg)
   "Sumibiのバージョン番号をミニバッファに表示する.
@@ -1730,5 +1735,14 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
 ;; Local Variables:
 ;; coding: utf-8
 ;; End:
+
+(when nil
+  ;; unit test for tab character escaping
+  (let ((test-string "hello	world")
+        (expected-string "hello\\tworld") ; In Lisp, this is "hello\tworld"
+        (actual-string (sumibi-escape-for-json "hello	world")))
+    (if (string= actual-string expected-string)
+        (message "Tab escape test passed: %s" actual-string)
+      (message "Tab escape test FAILED. Expected: %s, Got: %s" expected-string actual-string))))
 
 ;;; sumibi.el ends here
