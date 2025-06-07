@@ -38,8 +38,8 @@ response = self.client.chat.completions.create(
 | assistant | 以下の通りです。 |
 | user      | ローマ字とひらがなの文を漢字仮名混じり文にしてください。 周辺の文章は、「{**surrounding_text**}」のような文章になっています。 周辺の文脈を見てそれに合った語彙を選んでください。: {**text**} |
 
-※ **surrounding_text** 部分には「増えたkotode,onnjowuwotorimodoshi,」のような変換対象の周辺文章を含む文字列が埋め込まれて実行されます。
-※ **text**部分には「kotode,onnjowuwotorimodoshi,」のような変換対象の文字列が埋め込まれて実行されます。
+※ **surrounding_text** 部分には「近年知名度gaagattekiteori」のような変換対象の周辺文章を含む文字列が入ります。
+※ **text**部分には「gaagattekiteori」のような変換対象の文字列が入ります。
 
 ### プロンプト (`messages`) の内容(Sumibi ver2.4.0追加部分)
 
