@@ -1,0 +1,5 @@
+
+plot_errorrate_vs_cost.py のAPIのコストは、sumibi_typical_convert_client.pyのプロンプトが、
+1回のリクエスト500トークン、レスポンス200トークンを消費するため、それをベースに計算している。
+
+

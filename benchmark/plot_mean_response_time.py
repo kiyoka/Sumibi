@@ -5,25 +5,18 @@
 グラフ構成
 ============
 1. X 軸 (主軸, ax1)
-   • 各モデルの平均応答時間 mean_elapsed_sec (v2.3.0)
+   • 各モデルの平均応答時間 mean_elapsed_sec (v2.4.0)
      -> 横向きバーで表示
 
-   • 同じモデルの mean_elapsed_sec (v2.4.0)
-     -> ネイビー破線 & 四角マーカーで折れ線表示
-
 2. X 軸 (副軸, ax2 – 上側)
-   • 各モデルの誤り率 mean_cer (v2.3.0)
-     -> 赤丸 & 実線の折れ線表示
-
-   • 同じモデルの mean_cer (v2.4.0)
+   • 各モデルの誤り率 mean_cer (v2.4.0)
      -> ティール菱形 & 破線の折れ線表示
 
 凡例
 ----
-• 左下 : Mean Response (v2.4.0)
-• 右下 : Error Rate (v2.3.0 / v2.4.0)
+• 右下 : Error Rate (v2.4.0)
 
-バーの右横には v2.3.0 の平均応答時間値を注釈。
+バーの右横には v2.4.0 の平均応答時間値を注釈。
 """
 
 from __future__ import annotations
@@ -49,23 +42,10 @@ MODELS: List[str] = [
     "gemini-2.0-flash-lite",
     "gemini-2.5-flash-preview-04-17",
     "gemini-2.5-pro-preview-05-06",
+    "o3",
 ]
 
-# 平均応答時間 (sec)
-MEAN_ELAPSED_V23 = [
-    0.836779,
-    0.908558,
-    0.985278,
-    0.912621,
-    0.821817,
-    21.780880,
-    6.444244,
-    0.651836,
-    0.709727,
-    6.640661,
-    28.210514,
-]
-
+# 平均応答時間 (sec) v2.4.0
 MEAN_ELAPSED_V24 = [
     0.827224,
     0.979534,
@@ -78,21 +58,7 @@ MEAN_ELAPSED_V24 = [
     0.590890,
     4.177074,
     17.666037,
-]
-
-# 誤り率 (CER)
-MEAN_CER_V23 = [
-    0.721777,
-    0.430172,
-    0.218878,
-    0.735027,
-    0.197426,
-    0.332583,
-    0.592557,
-    0.266489,
-    0.356546,
-    0.137815,
-    0.093759,
+    12.771444,
 ]
 
 MEAN_CER_V24 = [
@@ -107,6 +73,7 @@ MEAN_CER_V24 = [
     0.322322,
     0.088799,
     0.061644,
+    0.077915,
 ]
 
 # カラー (plot_errorrate_vs_cost.py と合わせている)
@@ -122,18 +89,15 @@ BAR_COLORS = [
     "silver",
     "darkgray",
     "gray",
+    "cyan",
 ]
 
 # ---------------------------------------------------------------------------
-# 並び替え : v2.3.0 の mean_elapsed_sec が長い順
-# ---------------------------------------------------------------------------
-
-sorted_idx = sorted(range(len(MODELS)), key=lambda i: MEAN_ELAPSED_V23[i], reverse=True)
+# 並び替え : v2.4.0 の mean_elapsed_sec が長い順
+sorted_idx = sorted(range(len(MODELS)), key=lambda i: MEAN_ELAPSED_V24[i], reverse=True)
 
 models_sorted = [MODELS[i] for i in sorted_idx]
-elapsed_v23_sorted = [MEAN_ELAPSED_V23[i] for i in sorted_idx]
 elapsed_v24_sorted = [MEAN_ELAPSED_V24[i] for i in sorted_idx]
-cer_v23_sorted = [MEAN_CER_V23[i] for i in sorted_idx]
 cer_v24_sorted = [MEAN_CER_V24[i] for i in sorted_idx]
 bar_colors_sorted = [BAR_COLORS[i] for i in sorted_idx]
 
@@ -145,8 +109,8 @@ bar_colors_sorted = [BAR_COLORS[i] for i in sorted_idx]
 
 fig, ax1 = plt.subplots(figsize=(10, 6))
 
-# -- v2.3.0: 横棒バー
-bars = ax1.barh(models_sorted, elapsed_v23_sorted, color=bar_colors_sorted)
+# -- v2.4.0: 横棒バー
+bars = ax1.barh(models_sorted, elapsed_v24_sorted, color=bar_colors_sorted)
 
 ax1.set_xlabel("Mean Response Time (sec)")
 ax1.set_ylabel("Model")
@@ -155,27 +119,12 @@ ax1.grid(axis="x", linestyle="--", alpha=0.7)
 # バーの中心 y 座標
 y_centers = [bar.get_y() + bar.get_height() / 2 for bar in bars]
 
-# (削除) v2.4.0 の mean response 折れ線 — 要件変更により表示しない
 
 # -------- 副軸 (上): CER --------
 ax2 = ax1.twiny()
 
-cer_pct_v23 = [c * 100 for c in cer_v23_sorted]
+# Error Rate v2.4.0: Filled circle
 cer_pct_v24 = [c * 100 for c in cer_v24_sorted]
-
-# ---- Error Rate v2.3.0: Hollow circle ----
-ax2.plot(
-    cer_pct_v23,
-    y_centers,
-    linestyle="-",
-    marker="o",
-    markerfacecolor="none",  # hollow
-    markeredgecolor="firebrick",
-    color="firebrick",
-    label="Error Rate (v2.3.0)",
-)
-
-# ---- Error Rate v2.4.0: Filled circle ----
 ax2.plot(
     cer_pct_v24,
     y_centers,
@@ -197,7 +146,8 @@ ax2.xaxis.set_ticks_position("top")
 ax2.legend(loc="upper right")
 
 # -- バーに数値を注釈（v2.3.0）
-for bar, val in zip(bars, elapsed_v23_sorted):
+# -- バーに数値を注釈（v2.4.0）
+for bar, val in zip(bars, elapsed_v24_sorted):
     x = bar.get_width()
     y = bar.get_y() + bar.get_height() / 2
     ax1.annotate(

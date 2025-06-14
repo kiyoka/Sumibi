@@ -31,13 +31,15 @@ from matplotlib.lines import Line2D
 # ---------------------------------------------------------------------------
 # マスタ情報 (コスト & 色)
 # ---------------------------------------------------------------------------
-# 価格は従来スクリプトの値を流用
+# 価格は sumibi_typical_convert_client のプロンプト (入力500トークン、出力200トークン) を想定し、
+# Text tokens per 1M tokens: Input $2.00, Cached input $0.50, Output $8.00 に基づき計算
 MASTER_COST: Dict[str, float] = {
     "gpt-3.5-turbo": 0.00055,
     "gpt-4.1-mini": 0.00052,
     "gpt-4.1": 0.00260,
     "gpt-4o-mini": 0.000195,
     "gpt-4o": 0.00550,
+    "o3": 0.00260,
     "o4-mini": 0.00143,
     "deepseek-v3": 0.000355,
     "gemini-2.0-flash": 0.00013,
@@ -55,6 +57,7 @@ COLOR_MAP: Dict[str, str] = {
     "gpt-4o-mini": "springgreen",
     "gpt-4o": "mediumseagreen",
     "o4-mini": "springgreen",
+    "o3": "cyan",
     "deepseek-v3": "pink",
     "gemini-2.0-flash": "lightgray",
     "gemini-2.0-flash-lite": "silver",
@@ -93,7 +96,8 @@ DATA_V24: Dict[str, Dict[str, float]] = {
     "gpt-4o": {"cer": 0.130022, "elapsed": 0.983554},
 
     "deepseek-v3": {"cer": 0.296198, "elapsed": 5.139222},
-    "o4-mini": {"cer": 0.196260, "elapsed": 14.309153},
+    "o3":           {"cer": 0.077915, "elapsed": 12.771444},
+    "o4-mini":     {"cer": 0.196260, "elapsed": 14.309153},
 }
 
 # ---------------------------------------------------------------------------
