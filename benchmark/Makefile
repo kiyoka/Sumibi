@@ -5,7 +5,8 @@ RESULTS := gpt-3.5-turbe.json gpt-4.1-mini.json gpt-4.1.json gpt-4o-mini.json gp
 	   gemma-3-12b-it-qat.json gemma-3-27b-it-qat.json gemma-3-27b-it-Q8_0.json japanese-stablelm-instruct-gamma-7b.json \
 	   hermes-3-llama-3.2-3b.json llama-4-scout-17b-16e-instruct.json \
 	   llama-3.3-70b-instruct.json \
-	   stockmark-2-100b-instruct-beta@q3_k_m.json
+	   stockmark-2-100b-instruct-beta@q3_k_m.json \
+	   llm-jp-3.1-8x13b-instruct4.json
 
 .DEFAULT_GOAL := help
 .PHONY: help all aggregate clean plots

@@ -19,7 +19,8 @@ modules = [
     'hermes-3-llama-3.2-3b',
     'llama-4-scout-17b-16e-instruct',
     'llama-3.3-70b-instruct',
-    'stockmark-2-100b-instruct-beta@q3_k_m'
+    'stockmark-2-100b-instruct-beta@q3_k_m',
+    'llm-jp-3.1-8x13b-instruct4'
 ]
 # エラー率 (mean CER)
 error_rates = [
@@ -31,6 +32,7 @@ error_rates = [
     0.874311,
     0.902066,
     0.891659,
+    0.735276,
 ]
 # パラメータ数 (ビリオン単位)
 param_sizes = [
@@ -42,6 +44,7 @@ param_sizes = [
     17,
     70,
     100,
+    104,
 ]
 markers = [
     's',
@@ -51,6 +54,7 @@ markers = [
     's',
     's',
     's',
+    'o',
     'o',
 ]
 
@@ -64,6 +68,7 @@ base_colors = [
     'tab:brown',   # 茶
     'tab:pink',    # ピンク
     'tab:gray',    # グレー
+    'tab:cyan',    # シアン
 ]
 colors = base_colors[:len(modules)]
 
