@@ -20,7 +20,8 @@ modules = [
     'llama-4-scout-17b-16e-instruct',
     'llama-3.3-70b-instruct',
     'stockmark-2-100b-instruct-beta@q3_k_m',
-    'llm-jp-3.1-8x13b-instruct4'
+    'llm-jp-3.1-8x13b-instruct4',
+    'llm-jp-3.1-13b-instruct4'
 ]
 # エラー率 (mean CER)
 error_rates = [
@@ -33,6 +34,7 @@ error_rates = [
     0.902066,
     0.891659,
     0.735276,
+    0.903498,
 ]
 # パラメータ数 (ビリオン単位)
 param_sizes = [
@@ -45,11 +47,13 @@ param_sizes = [
     70,
     100,
     104,
+    13,
 ]
 markers = [
     's',
     's',
     's',
+    'o',
     'o',
     's',
     's',
@@ -69,6 +73,7 @@ base_colors = [
     'tab:pink',    # ピンク
     'tab:gray',    # グレー
     'tab:cyan',    # シアン
+    'tab:olive',   # オリーブ (for 13b)
 ]
 colors = base_colors[:len(modules)]
 
