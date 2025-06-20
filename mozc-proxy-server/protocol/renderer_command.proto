@@ -69,6 +69,59 @@ message RendererCommand {
   // Preedit rectangle
   optional Rectangle preedit_rectangle = 4;
 
+  // TODO(yukawa): make a common font format for all platforms.
+  message WinLogFont {
+    optional int32 height = 1 [default = 0];
+    optional int32 width = 2 [default = 0];
+    optional int32 escapement = 3 [default = 0];
+    optional int32 orientation = 4 [default = 0];
+    optional int32 weight = 5 [default = 0];  // FW_DONTCARE
+    optional bool italic = 6 [default = false];
+    optional bool underline = 7 [default = false];
+    optional bool strike_out = 8 [default = false];
+    optional int32 char_set = 9 [default = 1];           // DEFAULT_CHARSET
+    optional int32 out_precision = 10 [default = 0];     // OUT_DEFAULT_PRECIS
+    optional int32 clip_precision = 11 [default = 0];    // CLIP_DEFAULT_PRECIS
+    optional int32 quality = 12 [default = 0];           // DEFAULT_QUALITY
+    optional int32 pitch_and_family = 13 [default = 0];  // DEFAULT_PITCH
+    optional string face_name = 14;  // should be within 32 TCHARs (w/ '\0')
+  }
+
+  // An equivalent to COMPOSITIONFORM in IMM32. (For Windows only)
+  // TODO(yukawa): make a common composition form format for all platforms.
+  message CompositionForm {
+    reserved 1;
+    reserved "style";
+    optional Point current_position = 2;
+    optional Rectangle area = 3;
+    // Used as bit flags in |style_bits|.
+    // These constants correspond to CFS_* in Imm.h
+    enum Style {
+      DEFAULT = 0;          // CFS_DEFAULT
+      RECT = 1;             // CFS_RECT
+      POINT = 2;            // CFS_POINT
+      FORCE_POSITION = 32;  // CFS_FORCE_POSITION
+    }
+    optional uint32 style_bits = 4 [default = 0];  // 0 means Style::DEFAULT
+  }
+
+  // An equivalent to CANDIDATEFORM in IMM32. (For Windows only)
+  // TODO(yukawa): make a common candidate form format for all platforms.
+  message CandidateForm {
+    reserved 1;
+    reserved "style";
+    optional Point current_position = 2;
+    optional Rectangle area = 3;
+    // Used as bit flags in |style_bits|.
+    // These constants correspond to CFS_* in Imm.h
+    enum Style {
+      DEFAULT = 0;        // CFS_DEFAULT
+      CANDIDATEPOS = 64;  // CFS_CANDIDATEPOS
+      EXCLUDE = 128;      // CFS_EXCLUDE
+    }
+    optional uint32 style_bits = 4 [default = 0];  // 0 means Style::DEFAULT
+  }
+
   // An equivalent to IMECHARPOSITION in IMM32. (For Windows only)
   // TODO(yukawa): make a common candidate form format for all platforms.
   message CharacterPosition {
@@ -76,9 +129,14 @@ message RendererCommand {
     optional Point top_left = 2;
     optional uint32 line_height = 3;
     optional Rectangle document_area = 4;
-    // A quick solution for vertical writing support.
-    // Strictly speaking, this is not part of IMECHARPOSITION in IMM32.
-    optional bool vertical_writing = 5;
+  }
+
+  // This message is a subset of Win32 GUITHREADINFO. (For Windows only)
+  // TODO(yukawa): make a common candidate form format for all platforms.
+  message CaretInfo {
+    optional bool blinking = 1 [default = false];
+    optional Rectangle caret_rect = 2;
+    optional uint32 target_window_handle = 3;
   }
 
   // Visual information about mode indicator.
@@ -96,17 +154,16 @@ message RendererCommand {
     // used in Windows:
     // HWND of the window where composition is displayed.
     optional uint32 target_window_handle = 4;
-
-    reserved 5;
-    reserved "composition_font";
+    // used in Windows:
+    // Preferred font for composition string.
+    optional WinLogFont composition_font = 5;
 
     // Represents IM Framework used in the client.
     // Currently only Windows IM frameworks are supported.
     enum InputFrameworkType {
       UNKNOWN_FRAMEWORK = 0;  // Default. For backward compatibility.
       TSF = 1;
-      reserved 2;
-      reserved "IMM32";
+      IMM32 = 2;
       IMKit = 3;
       IBus = 4;
     }
@@ -114,11 +171,17 @@ message RendererCommand {
     optional InputFrameworkType input_framework = 6
         [default = UNKNOWN_FRAMEWORK];
 
-    reserved 7;
-    reserved "composition_form";
+    // used in Windows:
+    // Specifies where and how the renderer process shows the composition
+    // window (if necessary).
+    optional CompositionForm composition_form = 7;
 
-    reserved 8;
-    reserved "candidate_form";
+    // used in Windows:
+    // Specifies where and how the renderer process shows the candidate
+    // window (if necessary).
+    // Currently only one candidate window is supported.
+    // TODO(yukawa): support multiple candidate windows.
+    optional CandidateForm candidate_form = 8;
 
     // used in Windows:
     // Indicates if a UI element is expected to be displayed or not.  Note
@@ -127,8 +190,7 @@ message RendererCommand {
     // regardless of the visibility specified in this field.
     enum UIVisibility {
       ShowUIDefault = 0;
-      reserved 1;
-      reserved "ShowCompositionWindow";
+      ShowCompositionWindow = 1;
       ShowCandidateWindow = 2;
       ShowSuggestWindow = 4;
     }
@@ -139,8 +201,9 @@ message RendererCommand {
     // Specifies the target position in composition window.
     optional CharacterPosition composition_target = 10;
 
-    reserved 11;
-    reserved "caret_info";
+    // used in Windows:
+    // Represents caret information.
+    optional CaretInfo caret_info = 11;
 
     reserved 12;
     reserved "message_sender_type";

@@ -32,7 +32,7 @@ syntax = "proto2";
 
 package mozc.protocol;
 
-import "protocol/candidate_window.proto";
+import "protocol/candidates.proto";
 import "protocol/commands.proto";
 
 message SessionState {
@@ -58,8 +58,8 @@ message SessionState {
   // last preedit state
   optional mozc.commands.Preedit preedit = 20;
 
-  // last candidate window state
-  optional mozc.commands.CandidateWindow candidate_window = 21;
+  // last candidates state
+  optional mozc.commands.Candidates candidates = 21;
 
   reserved 22;
   reserved "all_candidate_words";

@@ -27,24 +27,30 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-load("@com_google_protobuf//bazel:cc_proto_library.bzl", "cc_proto_library")
-load("@com_google_protobuf//bazel:java_lite_proto_library.bzl", "java_lite_proto_library")
-load("@com_google_protobuf//bazel:proto_library.bzl", "proto_library")
-load("//bazel:stubs.bzl", "jspb_proto_library")
+load("//tools/build_defs:stubs.bzl", "jspb_proto_library")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = [
+    "//:__subpackages__",
+])
 
-proto_library(
-    name = "commands_proto",
-    srcs = [
-        "commands.proto",
-    ],
-    deps = [
-        ":candidate_window_proto",
-        ":config_proto",
-        ":engine_builder_proto",
-        ":user_dictionary_storage_proto",
-    ],
+cc_proto_library(
+    name = "user_dictionary_storage_cc_proto",
+    deps = [":user_dictionary_storage_proto"],
+)
+
+cc_proto_library(
+    name = "candidates_cc_proto",
+    deps = [":candidates_proto"],
+)
+
+cc_proto_library(
+    name = "config_cc_proto",
+    deps = [":config_proto"],
+)
+
+cc_proto_library(
+    name = "engine_builder_cc_proto",
+    deps = [":engine_builder_proto"],
 )
 
 cc_proto_library(
@@ -52,33 +58,61 @@ cc_proto_library(
     deps = [":commands_proto"],
 )
 
+cc_proto_library(
+    name = "state_cc_proto",
+    deps = ["state_proto"],
+)
+
+proto_library(
+    name = "commands_proto",
+    srcs = [
+        "commands.proto",
+    ],
+    deps = [
+        ":candidates_proto",
+        ":config_proto",
+        ":engine_builder_proto",
+        ":user_dictionary_storage_proto",
+    ],
+)
+
 jspb_proto_library(
     name = "commands_jspb_proto",
+    visibility = [],
     deps = [":commands_proto"],
 )
 
+# Proto library for Android Java.
+JAVA_PROTO_VISIBILITY = [
+]
+
 java_lite_proto_library(
-    name = "candidate_window_java_proto_lite",
-    deps = [":candidate_window_proto"],
+    name = "candidates_java_proto_lite",
+    visibility = JAVA_PROTO_VISIBILITY,
+    deps = [":candidates_proto"],
 )
 
 java_lite_proto_library(
     name = "commands_java_proto_lite",
+    visibility = JAVA_PROTO_VISIBILITY,
     deps = [":commands_proto"],
 )
 
 java_lite_proto_library(
     name = "config_java_proto_lite",
+    visibility = JAVA_PROTO_VISIBILITY,
     deps = [":config_proto"],
 )
 
 java_lite_proto_library(
     name = "engine_builder_java_proto_lite",
+    visibility = JAVA_PROTO_VISIBILITY,
     deps = [":engine_builder_proto"],
 )
 
 java_lite_proto_library(
     name = "user_dictionary_storage_java_proto_lite",
+    visibility = JAVA_PROTO_VISIBILITY,
     deps = [":user_dictionary_storage_proto"],
 )
 
@@ -87,13 +121,9 @@ proto_library(
     srcs = ["config.proto"],
 )
 
-cc_proto_library(
-    name = "config_cc_proto",
-    deps = [":config_proto"],
-)
-
 jspb_proto_library(
     name = "config_jspb_proto",
+    visibility = [],
     deps = [":config_proto"],
 )
 
@@ -103,6 +133,7 @@ proto_library(
         "renderer_command.proto",
         "renderer_style.proto",
     ],
+    visibility = ["//visibility:private"],
     deps = [":commands_proto"],
 )
 
@@ -112,32 +143,26 @@ cc_proto_library(
 )
 
 proto_library(
-    name = "candidate_window_proto",
-    srcs = ["candidate_window.proto"],
-)
-
-cc_proto_library(
-    name = "candidate_window_cc_proto",
-    deps = [":candidate_window_proto"],
+    name = "candidates_proto",
+    srcs = [
+        "candidates.proto",
+    ],
 )
 
 jspb_proto_library(
-    name = "candidate_window_jspb_proto",
-    deps = [":candidate_window_proto"],
+    name = "candidates_jspb_proto",
+    visibility = [],
+    deps = [":candidates_proto"],
 )
 
 proto_library(
     name = "state_proto",
     srcs = ["state.proto"],
+    visibility = ["//visibility:private"],
     deps = [
-        ":candidate_window_proto",
+        ":candidates_proto",
         ":commands_proto",
     ],
-)
-
-cc_proto_library(
-    name = "state_cc_proto",
-    deps = ["state_proto"],
 )
 
 proto_library(
@@ -145,19 +170,16 @@ proto_library(
     srcs = ["user_dictionary_storage.proto"],
 )
 
-cc_proto_library(
-    name = "user_dictionary_storage_cc_proto",
-    deps = [":user_dictionary_storage_proto"],
-)
-
 jspb_proto_library(
     name = "user_dictionary_storage_jspb_proto",
+    visibility = [],
     deps = [":user_dictionary_storage_proto"],
 )
 
 proto_library(
     name = "segmenter_data_proto",
     srcs = ["segmenter_data.proto"],
+    visibility = ["//visibility:private"],
 )
 
 cc_proto_library(
@@ -168,9 +190,5 @@ cc_proto_library(
 proto_library(
     name = "engine_builder_proto",
     srcs = ["engine_builder.proto"],
-)
-
-cc_proto_library(
-    name = "engine_builder_cc_proto",
-    deps = [":engine_builder_proto"],
+    visibility = ["//visibility:private"],
 )

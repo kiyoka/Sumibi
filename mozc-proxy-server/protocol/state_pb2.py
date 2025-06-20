@@ -11,11 +11,11 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
-from protocol import candidate_window_pb2 as protocol_dot_candidate__window__pb2
+from protocol import candidates_pb2 as protocol_dot_candidates__pb2
 from protocol import commands_pb2 as protocol_dot_commands__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14protocol/state.proto\x12\rmozc.protocol\x1a\x1fprotocol/candidate_window.proto\x1a\x17protocol/commands.proto\"\xcb\x04\n\x0cSessionState\x12\x0e\n\x02id\x18\x01 \x02(\x04\x42\x02\x30\x01\x12\x18\n\x0c\x63reated_time\x18\x02 \x01(\x04\x42\x02\x30\x01\x12\x18\n\tcommitted\x18\x03 \x01(\x08:\x05\x66\x61lse\x12\x1e\n\x12start_preedit_time\x18\n \x01(\x04\x42\x02\x30\x01\x12(\n\x1cstart_conversion_window_time\x18\x0b \x01(\x04\x42\x02\x30\x01\x12(\n\x1cstart_prediction_window_time\x18\x0c \x01(\x04\x42\x02\x30\x01\x12(\n\x1cstart_suggestion_window_time\x18\r \x01(\x04\x42\x02\x30\x01\x12&\n\x1astart_infolist_window_time\x18\x0e \x01(\x04\x42\x02\x30\x01\x12\'\n\x07preedit\x18\x14 \x01(\x0b\x32\x16.mozc.commands.Preedit\x12\x38\n\x10\x63\x61ndidate_window\x18\x15 \x01(\x0b\x32\x1e.mozc.commands.CandidateWindow\x12%\n\x06result\x18\x17 \x01(\x0b\x32\x15.mozc.commands.Result\x12\'\n\x07request\x18\x18 \x01(\x0b\x32\x16.mozc.commands.Request\x12?\n\x10input_field_type\x18\x19 \x01(\x0e\x32%.mozc.commands.Context.InputFieldTypeJ\x04\x08\x04\x10\x05J\x04\x08\x05\x10\x06J\x04\x08\x16\x10\x17R\x10selected_indicesR\x04modeR\x13\x61ll_candidate_words')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14protocol/state.proto\x12\rmozc.protocol\x1a\x19protocol/candidates.proto\x1a\x17protocol/commands.proto\"\xc0\x04\n\x0cSessionState\x12\x0e\n\x02id\x18\x01 \x02(\x04\x42\x02\x30\x01\x12\x18\n\x0c\x63reated_time\x18\x02 \x01(\x04\x42\x02\x30\x01\x12\x18\n\tcommitted\x18\x03 \x01(\x08:\x05\x66\x61lse\x12\x1e\n\x12start_preedit_time\x18\n \x01(\x04\x42\x02\x30\x01\x12(\n\x1cstart_conversion_window_time\x18\x0b \x01(\x04\x42\x02\x30\x01\x12(\n\x1cstart_prediction_window_time\x18\x0c \x01(\x04\x42\x02\x30\x01\x12(\n\x1cstart_suggestion_window_time\x18\r \x01(\x04\x42\x02\x30\x01\x12&\n\x1astart_infolist_window_time\x18\x0e \x01(\x04\x42\x02\x30\x01\x12\'\n\x07preedit\x18\x14 \x01(\x0b\x32\x16.mozc.commands.Preedit\x12-\n\ncandidates\x18\x15 \x01(\x0b\x32\x19.mozc.commands.Candidates\x12%\n\x06result\x18\x17 \x01(\x0b\x32\x15.mozc.commands.Result\x12\'\n\x07request\x18\x18 \x01(\x0b\x32\x16.mozc.commands.Request\x12?\n\x10input_field_type\x18\x19 \x01(\x0e\x32%.mozc.commands.Context.InputFieldTypeJ\x04\x08\x04\x10\x05J\x04\x08\x05\x10\x06J\x04\x08\x16\x10\x17R\x10selected_indicesR\x04modeR\x13\x61ll_candidate_words')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protocol.state_pb2', globals())
@@ -36,6 +36,6 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _SESSIONSTATE.fields_by_name['start_suggestion_window_time']._serialized_options = b'0\001'
   _SESSIONSTATE.fields_by_name['start_infolist_window_time']._options = None
   _SESSIONSTATE.fields_by_name['start_infolist_window_time']._serialized_options = b'0\001'
-  _SESSIONSTATE._serialized_start=98
-  _SESSIONSTATE._serialized_end=685
+  _SESSIONSTATE._serialized_start=92
+  _SESSIONSTATE._serialized_end=668
 # @@protoc_insertion_point(module_scope)

@@ -35,11 +35,7 @@ option java_outer_classname = "ProtoUserDictionaryStorage";
 option java_package = "org.mozc.android.inputmethod.japanese.protobuf";
 
 message UserDictionary {
-  // LINT.IfChange
   enum PosType {
-    // Use this when the POS tag is not provided or unknown.
-    NO_POS = 0;  // "品詞なし"
-
     NOUN = 1;                            // "名詞"
     ABBREVIATION = 2;                    // "短縮よみ"
     SUGGESTION_ONLY = 3;                 // "サジェストのみ"
@@ -90,13 +86,14 @@ message UserDictionary {
 
     SUPPRESSION_WORD = 44;  // "抑制単語"
   }
-  // LINT.ThenChange(
-  //     dictionary/user_dictionary_util.cc
-  // )
+
   // ID of this dictionary
   optional uint64 id = 1 [default = 0, jstype = JS_STRING];
 
-  reserved 2;  // deprecated enabled
+  // set false if this dictionary is not used.
+  // Even if |enabled| is false, the dictionary
+  // itself is visible to user.
+  optional bool enabled = 2 [default = true];
 
   // name of dictionary
   optional string name = 3 [default = ""];
@@ -112,11 +109,7 @@ message UserDictionary {
     // Historically we used to use tag number '3' for POS in string format.
     // In order to switch it to enum based POS, we removed (deprecated) the
     // tag number '3' field and created another field numbered '5'.
-    // Historically the default POS tag was NOUN, and "NO_POS" is added later.
-    // In order to preserve the original default behavior, default POS tag is
-    // explicitly specified as NOUN. However, this can be changed if there is no
-    // problem with "NO_POS".
-    optional PosType pos = 5 [default = NOUN];
+    optional PosType pos = 5;
 
     // In multilingual settings, Gboard's personal dictionary will feed entries
     // with locale information. We can change the behavior (filter or demote)
@@ -125,14 +118,29 @@ message UserDictionary {
     // "名詞:ja".
     optional string locale = 12 [default = ""];
 
-    reserved 10;  // deprecated removed
-    reserved 11;  // deprecated auto_registered
+    // set true if this entry is removed.
+    // This flag is used for cloud sync feature.
+    // Cloud sync feature is already deprecated and this flag is only
+    // used to convert sync dictionary to normal dictionary.
+    optional bool removed = 10 [default = false];
+
+    // set true if this entry is automatically registered
+    // by converter.
+    optional bool auto_registered = 11 [default = false];
   }
 
   repeated Entry entries = 4;
 
-  reserved 5;  // deprecated removed
-  reserved 6;  // deprecated syncable
+  // set true if this dictionary is removed.
+  // This flag is used for cloud sync feature.
+  // Cloud sync feature is already deprecated and this flag is only
+  // used to convert sync dictionary to normal dictionary.
+  optional bool removed = 5 [default = false];
+
+  // This flag is used for cloud sync feature.
+  // Cloud sync feature is already deprecated and this flag is only
+  // used to convert sync dictionary to normal dictionary.
+  optional bool syncable = 6 [default = false];
 }
 
 message UserDictionaryStorage {
@@ -142,7 +150,12 @@ message UserDictionaryStorage {
   // dictionary body
   repeated UserDictionary dictionaries = 2;
 
-  reserved 10;  // deprecated storage_type
+  enum StorageType {
+    SNAPSHOT = 1;  // This storage is a snapshot.
+    UPDATE = 2;    // This storage is a diff of some snapshots.
+  }
+
+  optional StorageType storage_type = 10 [default = SNAPSHOT];
 }
 
 message UserDictionaryCommand {

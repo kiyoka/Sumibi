@@ -34,11 +34,11 @@
   },
   'targets': [
     {
-      'target_name': 'genproto_candidate_window_proto',
+      'target_name': 'genproto_candidates_proto',
       'type': 'none',
       'toolsets': ['host'],
       'sources': [
-        'candidate_window.proto',
+        'candidates.proto',
       ],
       'includes': [
         '../protobuf/genproto.gypi',
@@ -48,18 +48,18 @@
       ],
     },
     {
-      'target_name': 'candidate_window_proto',
+      'target_name': 'candidates_proto',
       'type': 'static_library',
       'hard_dependency': 1,
       'sources': [
-        '<(proto_out_dir)/<(relative_dir)/candidate_window.pb.cc',
+        '<(proto_out_dir)/<(relative_dir)/candidates.pb.cc',
       ],
       'dependencies': [
-        '<(mozc_oss_src_dir)/protobuf/protobuf.gyp:protobuf',
-        'genproto_candidate_window_proto#host',
+        '../protobuf/protobuf.gyp:protobuf',
+        'genproto_candidates_proto#host',
       ],
       'export_dependent_settings': [
-        'genproto_candidate_window_proto#host',
+        'genproto_candidates_proto#host',
       ],
     },
     {
@@ -85,8 +85,8 @@
         '<(proto_out_dir)/<(relative_dir)/commands.pb.cc',
       ],
       'dependencies': [
-        '<(mozc_oss_src_dir)/protobuf/protobuf.gyp:protobuf',
-        'candidate_window_proto',
+        '../protobuf/protobuf.gyp:protobuf',
+        'candidates_proto',
         'config_proto',
         'engine_builder_proto',
         'genproto_commands_proto#host',
@@ -115,7 +115,7 @@
         '<(proto_out_dir)/<(relative_dir)/config.pb.cc',
       ],
       'dependencies': [
-        '<(mozc_oss_src_dir)/protobuf/protobuf.gyp:protobuf',
+        '../protobuf/protobuf.gyp:protobuf',
         'genproto_config_proto#host',
       ],
       'export_dependent_settings': [
@@ -143,7 +143,7 @@
         '<(proto_out_dir)/<(relative_dir)/renderer_style.pb.cc',
       ],
       'dependencies': [
-        '<(mozc_oss_src_dir)/protobuf/protobuf.gyp:protobuf',
+        '../protobuf/protobuf.gyp:protobuf',
         'commands_proto',
         'config_proto',
         'genproto_renderer_proto#host'
@@ -163,7 +163,7 @@
         '../protobuf/genproto.gypi',
       ],
       'dependencies': [
-        'genproto_candidate_window_proto',
+        'genproto_candidates_proto',
         'genproto_commands_proto',
       ],
     },
@@ -175,8 +175,8 @@
         '<(proto_out_dir)/<(relative_dir)/state.pb.cc',
       ],
       'dependencies': [
-        '<(mozc_oss_src_dir)/protobuf/protobuf.gyp:protobuf',
-        'candidate_window_proto',
+        '../protobuf/protobuf.gyp:protobuf',
+        'candidates_proto',
         'commands_proto',
         'genproto_state_proto#host',
       ],
@@ -203,7 +203,7 @@
         '<(proto_out_dir)/<(relative_dir)/user_dictionary_storage.pb.cc',
       ],
       'dependencies': [
-        '<(mozc_oss_src_dir)/protobuf/protobuf.gyp:protobuf',
+        '../protobuf/protobuf.gyp:protobuf',
         'genproto_user_dictionary_storage_proto#host',
       ],
       'export_dependent_settings': [
@@ -230,7 +230,7 @@
         '<(proto_out_dir)/<(relative_dir)/segmenter_data.pb.cc',
       ],
       'dependencies': [
-        '<(mozc_oss_src_dir)/protobuf/protobuf.gyp:protobuf',
+        '../protobuf/protobuf.gyp:protobuf',
         'genproto_segmenter_data_proto#host',
       ],
       'export_dependent_settings': [
@@ -257,7 +257,7 @@
         '<(proto_out_dir)/<(relative_dir)/engine_builder.pb.cc',
       ],
       'dependencies': [
-        '<(mozc_oss_src_dir)/protobuf/protobuf.gyp:protobuf',
+        '../protobuf/protobuf.gyp:protobuf',
         'genproto_engine_builder_proto#host',
       ],
       'export_dependent_settings': [

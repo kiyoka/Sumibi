@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 from protocol import commands_pb2 as protocol_dot_commands__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1fprotocol/renderer_command.proto\x12\rmozc.commands\x1a\x17protocol/commands.proto\"\xac\x0b\n\x0fRendererCommand\x12>\n\x04type\x18\x01 \x01(\x0e\x32*.mozc.commands.RendererCommand.CommandType:\x04NOOP\x12\x16\n\x07visible\x18\x02 \x01(\x08:\x05\x66\x61lse\x12%\n\x06output\x18\x03 \x01(\x0b\x32\x15.mozc.commands.Output\x12\x43\n\x11preedit_rectangle\x18\x04 \x01(\x0b\x32(.mozc.commands.RendererCommand.Rectangle\x12H\n\x10\x61pplication_info\x18\x05 \x01(\x0b\x32..mozc.commands.RendererCommand.ApplicationInfo\x1a\x45\n\tRectangle\x12\x0c\n\x04left\x18\x01 \x01(\x05\x12\x0b\n\x03top\x18\x02 \x01(\x05\x12\r\n\x05right\x18\x03 \x01(\x05\x12\x0e\n\x06\x62ottom\x18\x04 \x01(\x05\x1a\x1d\n\x05Point\x12\t\n\x01x\x18\x01 \x01(\x05\x12\t\n\x01y\x18\x02 \x01(\x05\x1a\xcd\x01\n\x11\x43haracterPosition\x12\x10\n\x08position\x18\x01 \x01(\r\x12\x36\n\x08top_left\x18\x02 \x01(\x0b\x32$.mozc.commands.RendererCommand.Point\x12\x13\n\x0bline_height\x18\x03 \x01(\r\x12?\n\rdocument_area\x18\x04 \x01(\x0b\x32(.mozc.commands.RendererCommand.Rectangle\x12\x18\n\x10vertical_writing\x18\x05 \x01(\x08\x1a\x36\n\rIndicatorInfo\x12%\n\x06status\x18\x01 \x01(\x0b\x32\x15.mozc.commands.Status\x1a\xe9\x05\n\x0f\x41pplicationInfo\x12\x12\n\nprocess_id\x18\x01 \x01(\r\x12\x11\n\tthread_id\x18\x02 \x01(\r\x12\x17\n\x0freceiver_handle\x18\x03 \x01(\r\x12\x1c\n\x14target_window_handle\x18\x04 \x01(\r\x12m\n\x0finput_framework\x18\x06 \x01(\x0e\x32\x41.mozc.commands.RendererCommand.ApplicationInfo.InputFrameworkType:\x11UNKNOWN_FRAMEWORK\x12\x1a\n\x0fui_visibilities\x18\t \x01(\x05:\x01\x30\x12L\n\x12\x63omposition_target\x18\n \x01(\x0b\x32\x30.mozc.commands.RendererCommand.CharacterPosition\x12\x1e\n\x16pango_font_description\x18\r \x01(\t\x12\x44\n\x0eindicator_info\x18\x0e \x01(\x0b\x32,.mozc.commands.RendererCommand.IndicatorInfo\"V\n\x12InputFrameworkType\x12\x15\n\x11UNKNOWN_FRAMEWORK\x10\x00\x12\x07\n\x03TSF\x10\x01\x12\t\n\x05IMKit\x10\x03\x12\x08\n\x04IBus\x10\x04\"\x04\x08\x02\x10\x02*\x05IMM32\"n\n\x0cUIVisibility\x12\x11\n\rShowUIDefault\x10\x00\x12\x17\n\x13ShowCandidateWindow\x10\x02\x12\x15\n\x11ShowSuggestWindow\x10\x04\"\x04\x08\x01\x10\x01*\x15ShowCompositionWindowJ\x04\x08\x05\x10\x06J\x04\x08\x07\x10\x08J\x04\x08\x08\x10\tJ\x04\x08\x0b\x10\x0cJ\x04\x08\x0c\x10\rR\x10\x63omposition_fontR\x10\x63omposition_formR\x0e\x63\x61ndidate_formR\ncaret_infoR\x13message_sender_type\"1\n\x0b\x43ommandType\x12\x08\n\x04NOOP\x10\x00\x12\n\n\x06UPDATE\x10\x01\x12\x0c\n\x08SHUTDOWN\x10\x02')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1fprotocol/renderer_command.proto\x12\rmozc.commands\x1a\x17protocol/commands.proto\"\xef\x13\n\x0fRendererCommand\x12>\n\x04type\x18\x01 \x01(\x0e\x32*.mozc.commands.RendererCommand.CommandType:\x04NOOP\x12\x16\n\x07visible\x18\x02 \x01(\x08:\x05\x66\x61lse\x12%\n\x06output\x18\x03 \x01(\x0b\x32\x15.mozc.commands.Output\x12\x43\n\x11preedit_rectangle\x18\x04 \x01(\x0b\x32(.mozc.commands.RendererCommand.Rectangle\x12H\n\x10\x61pplication_info\x18\x05 \x01(\x0b\x32..mozc.commands.RendererCommand.ApplicationInfo\x1a\x45\n\tRectangle\x12\x0c\n\x04left\x18\x01 \x01(\x05\x12\x0b\n\x03top\x18\x02 \x01(\x05\x12\r\n\x05right\x18\x03 \x01(\x05\x12\x0e\n\x06\x62ottom\x18\x04 \x01(\x05\x1a\x1d\n\x05Point\x12\t\n\x01x\x18\x01 \x01(\x05\x12\t\n\x01y\x18\x02 \x01(\x05\x1a\xcd\x02\n\nWinLogFont\x12\x11\n\x06height\x18\x01 \x01(\x05:\x01\x30\x12\x10\n\x05width\x18\x02 \x01(\x05:\x01\x30\x12\x15\n\nescapement\x18\x03 \x01(\x05:\x01\x30\x12\x16\n\x0borientation\x18\x04 \x01(\x05:\x01\x30\x12\x11\n\x06weight\x18\x05 \x01(\x05:\x01\x30\x12\x15\n\x06italic\x18\x06 \x01(\x08:\x05\x66\x61lse\x12\x18\n\tunderline\x18\x07 \x01(\x08:\x05\x66\x61lse\x12\x19\n\nstrike_out\x18\x08 \x01(\x08:\x05\x66\x61lse\x12\x13\n\x08\x63har_set\x18\t \x01(\x05:\x01\x31\x12\x18\n\rout_precision\x18\n \x01(\x05:\x01\x30\x12\x19\n\x0e\x63lip_precision\x18\x0b \x01(\x05:\x01\x30\x12\x12\n\x07quality\x18\x0c \x01(\x05:\x01\x30\x12\x1b\n\x10pitch_and_family\x18\r \x01(\x05:\x01\x30\x12\x11\n\tface_name\x18\x0e \x01(\t\x1a\xec\x01\n\x0f\x43ompositionForm\x12>\n\x10\x63urrent_position\x18\x02 \x01(\x0b\x32$.mozc.commands.RendererCommand.Point\x12\x36\n\x04\x61rea\x18\x03 \x01(\x0b\x32(.mozc.commands.RendererCommand.Rectangle\x12\x15\n\nstyle_bits\x18\x04 \x01(\r:\x01\x30\"=\n\x05Style\x12\x0b\n\x07\x44\x45\x46\x41ULT\x10\x00\x12\x08\n\x04RECT\x10\x01\x12\t\n\x05POINT\x10\x02\x12\x12\n\x0e\x46ORCE_POSITION\x10 J\x04\x08\x01\x10\x02R\x05style\x1a\xe1\x01\n\rCandidateForm\x12>\n\x10\x63urrent_position\x18\x02 \x01(\x0b\x32$.mozc.commands.RendererCommand.Point\x12\x36\n\x04\x61rea\x18\x03 \x01(\x0b\x32(.mozc.commands.RendererCommand.Rectangle\x12\x15\n\nstyle_bits\x18\x04 \x01(\r:\x01\x30\"4\n\x05Style\x12\x0b\n\x07\x44\x45\x46\x41ULT\x10\x00\x12\x10\n\x0c\x43\x41NDIDATEPOS\x10@\x12\x0c\n\x07\x45XCLUDE\x10\x80\x01J\x04\x08\x01\x10\x02R\x05style\x1a\xb3\x01\n\x11\x43haracterPosition\x12\x10\n\x08position\x18\x01 \x01(\r\x12\x36\n\x08top_left\x18\x02 \x01(\x0b\x32$.mozc.commands.RendererCommand.Point\x12\x13\n\x0bline_height\x18\x03 \x01(\r\x12?\n\rdocument_area\x18\x04 \x01(\x0b\x32(.mozc.commands.RendererCommand.Rectangle\x1a\x80\x01\n\tCaretInfo\x12\x17\n\x08\x62linking\x18\x01 \x01(\x08:\x05\x66\x61lse\x12<\n\ncaret_rect\x18\x02 \x01(\x0b\x32(.mozc.commands.RendererCommand.Rectangle\x12\x1c\n\x14target_window_handle\x18\x03 \x01(\r\x1a\x36\n\rIndicatorInfo\x12%\n\x06status\x18\x01 \x01(\x0b\x32\x15.mozc.commands.Status\x1a\xa0\x07\n\x0f\x41pplicationInfo\x12\x12\n\nprocess_id\x18\x01 \x01(\r\x12\x11\n\tthread_id\x18\x02 \x01(\r\x12\x17\n\x0freceiver_handle\x18\x03 \x01(\r\x12\x1c\n\x14target_window_handle\x18\x04 \x01(\r\x12\x43\n\x10\x63omposition_font\x18\x05 \x01(\x0b\x32).mozc.commands.RendererCommand.WinLogFont\x12m\n\x0finput_framework\x18\x06 \x01(\x0e\x32\x41.mozc.commands.RendererCommand.ApplicationInfo.InputFrameworkType:\x11UNKNOWN_FRAMEWORK\x12H\n\x10\x63omposition_form\x18\x07 \x01(\x0b\x32..mozc.commands.RendererCommand.CompositionForm\x12\x44\n\x0e\x63\x61ndidate_form\x18\x08 \x01(\x0b\x32,.mozc.commands.RendererCommand.CandidateForm\x12\x1a\n\x0fui_visibilities\x18\t \x01(\x05:\x01\x30\x12L\n\x12\x63omposition_target\x18\n \x01(\x0b\x32\x30.mozc.commands.RendererCommand.CharacterPosition\x12<\n\ncaret_info\x18\x0b \x01(\x0b\x32(.mozc.commands.RendererCommand.CaretInfo\x12\x1e\n\x16pango_font_description\x18\r \x01(\t\x12\x44\n\x0eindicator_info\x18\x0e \x01(\x0b\x32,.mozc.commands.RendererCommand.IndicatorInfo\"T\n\x12InputFrameworkType\x12\x15\n\x11UNKNOWN_FRAMEWORK\x10\x00\x12\x07\n\x03TSF\x10\x01\x12\t\n\x05IMM32\x10\x02\x12\t\n\x05IMKit\x10\x03\x12\x08\n\x04IBus\x10\x04\"l\n\x0cUIVisibility\x12\x11\n\rShowUIDefault\x10\x00\x12\x19\n\x15ShowCompositionWindow\x10\x01\x12\x17\n\x13ShowCandidateWindow\x10\x02\x12\x15\n\x11ShowSuggestWindow\x10\x04J\x04\x08\x0c\x10\rR\x13message_sender_type\"1\n\x0b\x43ommandType\x12\x08\n\x04NOOP\x10\x00\x12\n\n\x06UPDATE\x10\x01\x12\x0c\n\x08SHUTDOWN\x10\x02')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protocol.renderer_command_pb2', globals())
@@ -22,21 +22,33 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   _RENDERERCOMMAND._serialized_start=76
-  _RENDERERCOMMAND._serialized_end=1528
+  _RENDERERCOMMAND._serialized_end=2619
   _RENDERERCOMMAND_RECTANGLE._serialized_start=365
   _RENDERERCOMMAND_RECTANGLE._serialized_end=434
   _RENDERERCOMMAND_POINT._serialized_start=436
   _RENDERERCOMMAND_POINT._serialized_end=465
-  _RENDERERCOMMAND_CHARACTERPOSITION._serialized_start=468
-  _RENDERERCOMMAND_CHARACTERPOSITION._serialized_end=673
-  _RENDERERCOMMAND_INDICATORINFO._serialized_start=675
-  _RENDERERCOMMAND_INDICATORINFO._serialized_end=729
-  _RENDERERCOMMAND_APPLICATIONINFO._serialized_start=732
-  _RENDERERCOMMAND_APPLICATIONINFO._serialized_end=1477
-  _RENDERERCOMMAND_APPLICATIONINFO_INPUTFRAMEWORKTYPE._serialized_start=1164
-  _RENDERERCOMMAND_APPLICATIONINFO_INPUTFRAMEWORKTYPE._serialized_end=1250
-  _RENDERERCOMMAND_APPLICATIONINFO_UIVISIBILITY._serialized_start=1252
-  _RENDERERCOMMAND_APPLICATIONINFO_UIVISIBILITY._serialized_end=1362
-  _RENDERERCOMMAND_COMMANDTYPE._serialized_start=1479
-  _RENDERERCOMMAND_COMMANDTYPE._serialized_end=1528
+  _RENDERERCOMMAND_WINLOGFONT._serialized_start=468
+  _RENDERERCOMMAND_WINLOGFONT._serialized_end=801
+  _RENDERERCOMMAND_COMPOSITIONFORM._serialized_start=804
+  _RENDERERCOMMAND_COMPOSITIONFORM._serialized_end=1040
+  _RENDERERCOMMAND_COMPOSITIONFORM_STYLE._serialized_start=966
+  _RENDERERCOMMAND_COMPOSITIONFORM_STYLE._serialized_end=1027
+  _RENDERERCOMMAND_CANDIDATEFORM._serialized_start=1043
+  _RENDERERCOMMAND_CANDIDATEFORM._serialized_end=1268
+  _RENDERERCOMMAND_CANDIDATEFORM_STYLE._serialized_start=1203
+  _RENDERERCOMMAND_CANDIDATEFORM_STYLE._serialized_end=1255
+  _RENDERERCOMMAND_CHARACTERPOSITION._serialized_start=1271
+  _RENDERERCOMMAND_CHARACTERPOSITION._serialized_end=1450
+  _RENDERERCOMMAND_CARETINFO._serialized_start=1453
+  _RENDERERCOMMAND_CARETINFO._serialized_end=1581
+  _RENDERERCOMMAND_INDICATORINFO._serialized_start=1583
+  _RENDERERCOMMAND_INDICATORINFO._serialized_end=1637
+  _RENDERERCOMMAND_APPLICATIONINFO._serialized_start=1640
+  _RENDERERCOMMAND_APPLICATIONINFO._serialized_end=2568
+  _RENDERERCOMMAND_APPLICATIONINFO_INPUTFRAMEWORKTYPE._serialized_start=2347
+  _RENDERERCOMMAND_APPLICATIONINFO_INPUTFRAMEWORKTYPE._serialized_end=2431
+  _RENDERERCOMMAND_APPLICATIONINFO_UIVISIBILITY._serialized_start=2433
+  _RENDERERCOMMAND_APPLICATIONINFO_UIVISIBILITY._serialized_end=2541
+  _RENDERERCOMMAND_COMMANDTYPE._serialized_start=2570
+  _RENDERERCOMMAND_COMMANDTYPE._serialized_end=2619
 # @@protoc_insertion_point(module_scope)

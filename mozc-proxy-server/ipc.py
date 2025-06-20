@@ -146,35 +146,51 @@ _commands_pb2 = _import_mozc_protobufs()
 
 
 def _detect_socket() -> Optional[Path]:
-    """Guess the path of the running ``mozc_server``'s UNIX domain socket.
+    """Locate the running ``mozc_server``'s UNIX domain socket.
 
-    A default Mozc build creates sockets in ``/tmp``, using the following
-    pattern::
-
-        /tmp/.mozc.<uid>*.unix
-
-    Some distributions tweak the name, therefore we try a reasonably wide
-    glob.  The first match *that is a socket* is returned.  If nothing is
-    found ``None`` is returned instead.
+    1) Honor explicit override via environment variables.
+       MOZC_SERVER_SOCKET or MOZC_SOCKET_PATH yields an absolute or abstract path.
+    2) Otherwise search for filesystem sockets under XDG_RUNTIME_DIR (if set),
+       then under /tmp.
+       We look for common naming patterns used by various distributions.
+    If no candidate is found, return None.
     """
 
     uid = os.getuid()
-    base_dir = Path("/tmp")
+    # 1) Environment override for explicit socket path/address.
+    for env_var in ("MOZC_SERVER_SOCKET", "MOZC_SOCKET_PATH"):
+        sock = os.environ.get(env_var)
+        if sock:
+            # abstract socket if leading NUL, else filesystem path
+            if sock.startswith("\0"):
+                return sock  # type: ignore[return-value]
+            p = Path(sock)
+            if p.exists():
+                return p
+
+    # 2) Search candidate directories: XDG_RUNTIME_DIR or /run/user/<uid>, then /tmp
+    search_dirs: list[Path] = []
+    xdg = os.environ.get("XDG_RUNTIME_DIR")
+    if xdg:
+        search_dirs.append(Path(xdg))
+    else:
+        search_dirs.append(Path(f"/run/user/{uid}"))
+    search_dirs.append(Path("/tmp"))
+
+    # Common socket name substrings for various builds
     pattern_parts = [
-        f".mozc.{uid}.",  # Upstream naming
-        f".mozc_unix.{uid}.",  # Debian / Ubuntu
+        f".mozc.{uid}.",     # Upstream naming
+        f".mozc_unix.{uid}.", # Debian / Ubuntu
         f".mozc.unix.{uid}",  # Arch Linux
     ]
 
-    for entry in base_dir.iterdir():
-        if not entry.is_socket():
+    for base in search_dirs:
+        if not base.is_dir():
             continue
-
-        # Rough heuristic: file name *contains* one of the above substrings
-        name = entry.name
         for part in pattern_parts:
-            if part in name:
-                return entry
+            for entry in base.glob(f"*{part}*"):
+                if entry.is_socket():
+                    return entry
 
     return None
 
@@ -206,10 +222,7 @@ class MozcClient:
 
         if socket_path is None:
             socket_path = _detect_socket()
-
-            # If no *filesystem* socket was found, fall back to Mozc's
-            # default *abstract* UNIX domain socket name (it starts with a
-            # NUL byte and therefore is *not* visible in the file-system).
+            # If still not found, fall back to default abstract protobuf socket
             if socket_path is None:
                 self._abstract_socket_name = f"\0.mozc.{os.getuid()}.unix"
 
@@ -252,7 +265,18 @@ class MozcClient:
         # 1.  Make sure we have a session.
         # ----------------------------------------------------------
         if self._session_id is None:
-            self._session_id = self._create_session()
+            try:
+                self._session_id = self._create_session()
+            except ConnectionError:
+                # reconnect and retry CREATE_SESSION if socket closed unexpectedly
+                if self._sock:
+                    try:
+                        self._sock.close()
+                    except Exception:
+                        pass
+                self._sock = None
+                self._connect()
+                self._session_id = self._create_session()
 
         # ----------------------------------------------------------
         # 2.  Send a *SUBMIT* command with the whole string.
@@ -357,7 +381,8 @@ class MozcClient:
 
         input_pb = commands_pb2.Input()
         input_pb.Clear()
-        input_pb.session_command.type = commands_pb2.SessionCommand.CREATE_SESSION  # type: ignore[attr-defined]
+        # Use Input.CommandType.CREATE_SESSION to start a new session.
+        input_pb.type = commands_pb2.Input.CREATE_SESSION  # type: ignore[attr-defined]
 
         self._send_message(input_pb)
 

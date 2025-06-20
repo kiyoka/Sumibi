@@ -87,9 +87,6 @@ message Config {
 
   // Incognito mode:
   // Disable all mutable operation if incognito_mode is true
-  // Clients needs to check ConversionRequest::incognito_mode() instead
-  // of Config::incognito_mode(), as the incoginto mode can also set
-  // via Options.
   optional bool incognito_mode = 20 [default = false];
 
   reserved 21;
@@ -129,8 +126,6 @@ message Config {
     KOTOERI = 3;
     MOBILE = 4;
     CHROMEOS = 5;
-    OVERLAY_HENKAN_MUHENKAN_TO_IME_ON_OFF = 100;
-    OVERLAY_FOR_TEST = 10000;
   }
   optional SessionKeymap session_keymap = 41 [default = NONE];
 
@@ -192,9 +187,6 @@ message Config {
   optional HistoryLearningLevel history_learning_level = 50
       [default = DEFAULT_HISTORY];
 
-  // The style of candidate selection shortcut.
-  // Note that if the current Request has SpecialRomajiTable (== the keyevent
-  // is from a virtual keyboard), shortcut is no-op.
   enum SelectionShortcut {
     NO_SHORTCUT = 0;
     SHORTCUT_123456789 = 1;
@@ -291,12 +283,6 @@ message Config {
   // If the value is 0, STOP_KEY_TOGGLING is not sent.
   optional int32 composing_timeout_threshold_msec = 67 [default = 0];
 
-  // The keymaps which are loaded on top of `session_keymap`.
-  // Overlay keymaps are prioritized over `session_keymap`.
-  // They are used to partially modify the session keymap, for example
-  // using Henkan key as IME_ON.
-  repeated SessionKeymap overlay_keymaps = 68 [packed = true];
-
   //////////////////////////////////////////////////////////////
   //
   // Dictionary (80-99)
@@ -334,17 +320,10 @@ message Config {
   //
   // Suggest (100-119)
   //
-  // Suggest is a feature of word suggestion with prefix search.
-  // When you type "あ", you may get "ありがとう", "朝" (あさ), "明日" (あした)
-  // as suggested words.
-  //
   // Use history-based suggest feature.
-  // If this is true, your previously typed words are prioritized.
   optional bool use_history_suggest = 100 [default = true];
 
   // Use dictionary-based suggest feature.
-  // If this is true, words in the word dictionary are suggested even if
-  // you haven't typed before.
   optional bool use_dictionary_suggest = 101 [default = true];
 
   // Use realtime conversion feature.

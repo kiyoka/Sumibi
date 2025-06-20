@@ -27,14 +27,14 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// Protocol messages of candidate window to be used for mozc client/server
+// Protocol messages of candidates to be used for mozc client/server
 // communication and client/renderer communication.
 
 syntax = "proto2";
 
 package mozc.commands;
 
-option java_outer_classname = "ProtoCandidateWindow";
+option java_outer_classname = "ProtoCandidates";
 option java_package = "org.mozc.android.inputmethod.japanese.protobuf";
 
 // Annotation against a candidate.
@@ -50,10 +50,6 @@ message Annotation {
   optional string shortcut = 4;
   // Set to true if this candidate can be deleted from history.
   optional bool deletable = 5 [default = false];
-  // Description of the candidate for A11y support.
-  // One of the example usage of this field is android:contentDescription in
-  // Android.
-  optional string a11y_description = 6;
 }
 
 // Additional information to a candidate word.  This message is
@@ -96,7 +92,7 @@ enum CandidateAttribute {
   USER_DICTIONARY = 1;
   USER_HISTORY = 2;
   SPELLING_CORRECTION = 3;  // "ふいんき"→"雰囲気"
-  TYPING_CORRECTION = 4;    // "やんしょん"(with 12-key)→"マンション"
+  TYPING_CORRECTION = 4;  // "やんしょん"(with 12-key)→"マンション"
 }
 
 message InformationList {
@@ -127,7 +123,7 @@ message Footer {
 }
 
 message CandidateWord {
-  // Unique number specifying the candidate. This may be a negative value.
+  // Unique number specifing the candidate.  This may be a negative value.
   optional int32 id = 1;
   // The first index should be zero and index numbers should increase by one.
   optional uint32 index = 2;
@@ -163,7 +159,8 @@ message CandidateList {
   optional Category category = 3 [default = CONVERSION];
 }
 
-message CandidateWindow {
+// TODO(komatsu) rename it to CandidateWindow.
+message Candidates {
   // TODO(komatsu): Use CandidateList.
   // When has_focused_index() is true, this message contains predicted and
   // normally converted candidates. Otherwise, when the field is not set,
@@ -190,11 +187,11 @@ message CandidateWindow {
   // if the composition is "あいう" and the cursor is the position is between
   // "あ" and "い" (e.g. "あ|いう"), the number should be 1.
   // Note, Util::CharsLen does not take care of IVS or combining character
-  // so much.  Thus CharsLen's behavior on those characters might be changed.
+  // so much.  Thus CharsLen's behavoir on those characters might be changed.
   required uint32 position = 6;
 
   // Nested candidates aka cascading window.
-  optional CandidateWindow sub_candidate_window = 8;
+  optional Candidates subcandidates = 8;
 
   // Usages of candidates.
   optional InformationList usages = 10;

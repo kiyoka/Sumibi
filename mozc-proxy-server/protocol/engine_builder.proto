@@ -45,19 +45,18 @@ message EngineReloadRequest {
   // Path to the data file to be loaded in a new engine.
   required string file_path = 2;
 
-  reserved 3;  // Deprecated install_location
+  // If provided, also atomically renames |file_path| to this location.  Since
+  // EngineBuilder validates the data file content before creating a new engine
+  // instance, this option is useful when you want to perform i) data
+  // verification, ii) install (file rename), and iii) engine reload at the same
+  // time in Mozc server side.
+  optional string install_location = 3;
 
   // Explicitly specifies the magic number to be used for data validation.
   // Since acceptable magic number is embedded in Mozc server, this option is
   // unnecessary for normal cases.  However, this is required for some unit
   // tests as test data has a different magic number.
   optional string magic_number = 4;
-
-  // Priority of the request (smaller is more prioritized).
-  // The decoder keeps all the requests, and uses the most prioritized one.
-  // For the same priority request, later one overrides existing one.
-  // Effective only with CommandType.SEND_ENGINE_RELOAD_REQUEST.
-  optional int32 priority = 5;
 }
 
 message EngineReloadResponse {
@@ -76,7 +75,7 @@ message EngineReloadResponse {
     // Failed to start reload because another reload job is currently running.
     ALREADY_RUNNING = 3;
 
-    // Errors in data file.
+    // Erros in data file.
     ENGINE_VERSION_MISMATCH = 4;
     DATA_MISSING = 5;
     DATA_BROKEN = 6;
@@ -84,7 +83,8 @@ message EngineReloadResponse {
     // File doesn't exist or underlying memory mapping failed.
     MMAP_FAILURE = 7;
 
-    reserved "INSTALL_FAILURE";  // Deprecated INSTALL_FAILURE
+    // File rename is failed.
+    INSTALL_FAILURE = 8;
 
     UNKNOWN_ERROR = 9;
   }

@@ -29,3 +29,14 @@ Mozc が有効なら変換、無ければ原文
 ```
 {"text": "おはよう"}
 ```
+
+#### 変換有効化の前提
+実際に MozcServer と通信して変換結果を得るには、稼働中の `mozc_server` と同一バージョンの Python プロトバッファバインディングが必要です。
+以下のようにパッケージをインストールするか、`mozc.proto.commands_pb2` が import 可能な状態にしてください。
+
+- Debian/Ubuntu 系環境:
+  ```bash
+  sudo apt install python3-mozc
+  ```
+- その他環境:
+  `mozc` の Python protobuf モジュールを PYTHONPATH に追加
