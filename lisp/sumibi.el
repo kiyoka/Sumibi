@@ -169,6 +169,8 @@ SUMIBI_AI_BASEURL環境変数が未設定の場合はデフォルトURL\"https:/
 それ以外の場合は、値から末尾のスラッシュを除去し、末尾に\"/v1\"を付加して返す."
   (let ((env (getenv "SUMIBI_AI_BASEURL")))
     (cond
+     ((eq sumibi-backend 'mozc)
+      "mozc_server")
      ((not env)
       "https://api.openai.com/v1")
      ((string-match-p "/v1" env)
