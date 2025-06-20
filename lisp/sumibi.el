@@ -45,6 +45,50 @@
 (require 'deferred)
 (require 'sumibi-localdic)
 
+;; --------------------------------------------------------------
+;; Optional: use mozc.el as a local backend when the model name
+;; `mozc' is specified.
+;; --------------------------------------------------------------
+
+(eval-when-compile (require 'cl-lib))
+
+(defvar sumibi--mozc-available-p (require 'mozc nil 'noerror)
+  "Non-nil if `mozc.el' could be loaded successfully.")
+
+(defun sumibi-mozc--candidate-list (roman arg-n)
+  "Return up to ARG-N candidate strings for ROMAN using mozc.
+
+If mozc.el is unavailable, or Mozc raises any error, a list containing
+ROMAN itself is returned so that callers can safely fall back."
+  (if (not sumibi--mozc-available-p)
+      (list roman)
+    (condition-case _err
+        ;; normal path -------------------------------------------------
+        (progn
+          (mozc-session-create t)          ; fresh session
+          (dolist (ch (string-to-list roman))
+            (mozc-session-sendkey (list ch)))
+
+          (let* ((iteration 0)
+                 resp cands)
+            ;; press space repeatedly until we get candidates or try 3 times
+            (while (and (< iteration 3)
+                        (progn
+                          (setq resp (mozc-session-sendkey '(space)))
+                          (setq cands (and resp (mozc-protobuf-get resp 'candidates)))
+                          (null cands)))
+              (setq iteration (1+ iteration)))
+
+            (if (not cands)
+                (list roman)
+              (let* ((cand-list (mozc-protobuf-get cands 'candidate))
+                     (take      (min arg-n (length cand-list))))
+                (cl-loop for i from 0 below take
+                         collect (mozc-protobuf-get (nth i cand-list) 'value))))))
+      ;; error path ----------------------------------------------------
+      (error
+       (list roman)))))
+
 ;;; 
 ;;;
 ;;; customize variables
@@ -59,13 +103,34 @@
   :type  'string
   :group 'sumibi)
 
+;; --------------------------------------------------------------
+;; Backend selection for roman→kanji conversion.
+;;   'openai (default) : use OpenAI ChatCompletions API
+;;   'mozc            : use local mozc.el session
+;; --------------------------------------------------------------
+(defcustom sumibi-backend 'openai
+  "Backend engine used for *ローマ字→漢字かな混じり文* 変換.
+
+openai : 従来どおり OpenAI ChatCompletions API を使用する。
+mozc   : ネットワークを使わずローカルの mozc.el で変換する。
+
+読み仮名生成や翻訳など、ローマ字変換以外のルーチンは常に OpenAI
+を利用するため、この設定の影響を受けない。"
+  :type '(choice (const :tag "OpenAI" openai)
+                 (const :tag "Mozc (local)" mozc))
+  :group 'sumibi)
+
 (defcustom sumibi-current-model "gpt-4.1-mini"
-  "OpenAPIのLLM使用モデル名を指定する (デフォルトは gpt-4.1-mini)."
+  "使用する AI モデル名を指定する (デフォルトは gpt-4.1-mini)。
+
+この変数は OpenAI に渡す **LLM モデル名** を示します。
+OpenAI を利用しない（ローマ字→漢字を mozc で処理したい）場合は
+後述の `sumibi-backend' を `mozc' に設定してください。"
   :type  'string
   :group 'sumibi)
 
 (defcustom sumibi-model-list '("gpt-4.1" "gpt-4.1-mini" "gpt-4o" "gpt-4o-mini")
-  "OpenAPIのLLM使用モデル名の候補を定義する (gpt-4シリーズ以上)."
+  "AI モデル名の候補を定義する (gpt-4 シリーズ以上)。"
   :type  '(repeat string)
   :group 'sumibi)
 
@@ -515,8 +580,12 @@ SURROUNDING: \"長い文章になってしまいましたが、これがbunsyou 
 ARG-N: 候補を何件返すか
 DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 戻り値: (\"1番目の文章の文字列\" \"2番目の文章の文字列\" \"3番目の文章の文字列\" ...)"
-  (let ((saved-marker (point-marker)))
-    (sumibi-openai-http-post
+  ;; `mozc' backend ---------------------------------------------------
+  (if (eq sumibi-backend 'mozc)
+      (sumibi-mozc--candidate-list roman arg-n)
+    ;; default: OpenAI backend ---------------------------------------
+    (let ((saved-marker (point-marker)))
+      (sumibi-openai-http-post
      (list
       (cons "system"
             (concat
@@ -592,7 +661,7 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
              (goto-char (marker-position saved-marker))
              (insert (car lst))
              (goto-char (marker-position saved-marker))))))
-     deferred-func2)))
+     deferred-func2))))
 
 (defun sumibi-roman-to-yomigana (roman deferred-func2)
   "ローマ字で書かれた文章をOpenAIサーバーを使って読み仮名を返す.
@@ -600,7 +669,7 @@ ROMAN: \"shita\" や \"nano\"
 ARG-N: 候補を何件返すか
 DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 戻り値: (\"した\" \"シタ\") や (\"なの\" \"ナノ\")"
-  (let ((saved-marker (point-marker)))
+    (let ((saved-marker (point-marker)))
     (sumibi-openai-http-post
      (list
       (cons "system"
@@ -638,7 +707,7 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 KANJI: \"日本語\" のような文字列
 DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 戻り値: (\"にほんご\" \"ニホンゴ\")"
-  (let ((saved-marker (point-marker)))
+    (let ((saved-marker (point-marker)))
     (sumibi-openai-http-post
      (list
       (cons "system"
@@ -673,7 +742,7 @@ KANJI: \"私の名前は中野です。\" のような文字列
 ARG-N: 候補を何件返すか
 DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 戻り値: (\"My name is Nakano.\" \"My name is Nakano.\" \"My name is Nakano.\")"
-  (let ((saved-marker (point-marker)))
+    (let ((saved-marker (point-marker)))
     (sumibi-openai-http-post
      (list
       (cons "system"
@@ -741,7 +810,7 @@ KOUHO-LST: (\"にほんご\" \"ニホンゴ\") のようなリスト.
 "
   ;; ひらがな候補を探す
   (let ((hiragana-kouho-lst
-	 (-filter
+	  (-filter
 	  (lambda (str)
 	    (string-match-p "^[ぁ-ん]+$" str))
 	  kouho-lst)))
