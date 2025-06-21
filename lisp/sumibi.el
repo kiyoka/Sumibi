@@ -85,20 +85,20 @@ ROMAN itself is returned so that callers can safely fall back."
     
 	      (sumibi-debug-print (format "sumibi-mozc--candidate-list cands=%s\n" cands))
               (if (not cands)
-		  (progn
-		    (sumibi-debug-print (format "sumibi-mozc--candidate-list:1 cands=%s\n" cands))
-                    (list roman))
+                  (list roman)
                 (let* ((cand-list (mozc-protobuf-get cands 'candidate))
-		       (_ (sumibi-debug-print (format "sumibi-mozc--candidate-list:2 cand-list=%s\n" cand-list)))
+                       ;; 候補の文字列リスト
                        (values   (mapcar (lambda (cand)
                                            (mozc-protobuf-get cand 'value))
                                          cand-list))
-                       (anno     (mozc-protobuf-get (nth 0 cand-list) 'annotation))
-                       (hira     (and anno (sumibi-katakana-to-hiragana anno)))
-                       (kata     anno))
-		  (sumibi-debug-print (format "sumibi-mozc--candidate-list:3 values=%s hira=%s kata=%s\n" values hira kata))
-                  (append values (delq nil (list hira kata)))
-		  values)))))
+                       ;; annotation の description（カタカナ読み）
+                       (raw-anno  (mozc-protobuf-get (nth 0 cand-list) 'annotation))
+                       (anno-desc (and raw-anno (mozc-protobuf-get raw-anno 'description)))
+                       (kata      anno-desc)
+                       ;; ひらがなに変換
+                       (hira      (and kata (sumibi-katakana-to-hiragana kata))))
+                  ;; 候補 + ひらがな読み + カタカナ読み
+                  (append values (delq nil (list hira kata))))))))
       ;; error path ----------------------------------------------------
       (error
        (sumibi-debug-print (format "sumibi-mozc--candidate-list:error\n"))
