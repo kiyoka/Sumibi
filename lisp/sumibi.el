@@ -63,28 +63,34 @@ ROMAN itself is returned so that callers can safely fall back."
   (if (not sumibi--mozc-available-p)
       (list roman)
     (condition-case _err
-        ;; normal path -------------------------------------------------
-        (progn
-          (mozc-session-create t)          ; fresh session
-          (dolist (ch (string-to-list roman))
-            (mozc-session-sendkey (list ch)))
-
-          (let* ((iteration 0)
-                 resp cands)
-            ;; press space repeatedly until we get candidates or try 3 times
-            (while (and (< iteration 3)
-                        (progn
-                          (setq resp (mozc-session-sendkey '(space)))
-                          (setq cands (and resp (mozc-protobuf-get resp 'candidates)))
-                          (null cands)))
-              (setq iteration (1+ iteration)))
-
-            (if (not cands)
-                (list roman)
-              (let* ((cand-list (mozc-protobuf-get cands 'candidate))
-                     (take      (min arg-n (length cand-list))))
-                (cl-loop for i from 0 below take
-                         collect (mozc-protobuf-get (nth i cand-list) 'value))))))
+        (if (string-match-p "[ \t]" roman)
+            ;; 空白で分割 → 各セグメントを再帰的に1件だけ変換 → つなげて返す
+            (list (apply #'concat
+                         (mapcar (lambda (w)
+                                   (car (sumibi-mozc--candidate-list w 1)))
+                                 (split-string roman "[ \t]+" t))))
+          ;; セグメント1件のときは従来ロジック
+          (progn
+            (mozc-session-create t)
+            (ignore-errors (mozc-session-sendkey '(mode_phrase)))
+            (dolist (ch (string-to-list roman))
+              (mozc-session-sendkey (list ch)))
+    
+            (let* ((iteration 0) resp cands)
+              (while (and (< iteration 3)
+                          (progn
+                            (setq resp (mozc-session-sendkey '(space)))
+                            (setq cands (and resp (mozc-protobuf-get resp 'candidates)))
+                            (null cands)))
+                (setq iteration (1+ iteration)))
+    
+              (if (not cands)
+                  (list roman)
+                (let* ((cand-list (mozc-protobuf-get cands 'candidate))
+                       (take      (min arg-n (length cand-list))))
+                  (cl-loop for i from 0 below take
+                           collect (mozc-protobuf-get
+                                    (nth i cand-list) 'value)))))))
       ;; error path ----------------------------------------------------
       (error
        (list roman)))))
