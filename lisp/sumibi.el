@@ -83,14 +83,25 @@ ROMAN itself is returned so that callers can safely fall back."
                             (null cands)))
                 (setq iteration (1+ iteration)))
     
+	      (sumibi-debug-print (format "sumibi-mozc--candidate-list cands=%s\n" cands))
               (if (not cands)
-                  (list roman)
-                (let ((cand-list (mozc-protobuf-get cands 'candidate)))
-                  (mapcar (lambda (cand)
-                            (mozc-protobuf-get cand 'value))
-                          cand-list))))))
+		  (progn
+		    (sumibi-debug-print (format "sumibi-mozc--candidate-list:1 cands=%s\n" cands))
+                    (list roman))
+                (let* ((cand-list (mozc-protobuf-get cands 'candidate))
+		       (_ (sumibi-debug-print (format "sumibi-mozc--candidate-list:2 cand-list=%s\n" cand-list)))
+                       (values   (mapcar (lambda (cand)
+                                           (mozc-protobuf-get cand 'value))
+                                         cand-list))
+                       (anno     (mozc-protobuf-get (nth 0 cand-list) 'annotation))
+                       (hira     (and anno (sumibi-katakana-to-hiragana anno)))
+                       (kata     anno))
+		  (sumibi-debug-print (format "sumibi-mozc--candidate-list:3 values=%s hira=%s kata=%s\n" values hira kata))
+                  (append values (delq nil (list hira kata)))
+		  values)))))
       ;; error path ----------------------------------------------------
       (error
+       (sumibi-debug-print (format "sumibi-mozc--candidate-list:error\n"))
        (list roman)))))
 
 ;;; 
@@ -909,6 +920,15 @@ str: ひらがな文字列"
                          (string (+ char #x60))
 		       (string char)))
                    (string-to-list str)))))
+
+(defun sumibi-katakana-to-hiragana (str)
+  "カタカナ文字列STRをひらがなに変換して返す。カタカナ以外の文字はそのまま返す。"
+  (apply 'concat
+         (mapcar (lambda (char)
+                   (if (and (>= char #x30A1) (<= char #x30F6))
+                       (string (- char #x60))
+                     (string char)))
+                 (string-to-list str))))
 
 (defun sumibi-henkan-request (roman surrounding-text inverse-flag deferred-func2)
   "ローマ字で書かれた文章を複数候補作成して返す.
