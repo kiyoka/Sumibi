@@ -72,7 +72,6 @@ ROMAN itself is returned so that callers can safely fall back."
           ;; セグメント1件のときは従来ロジック
           (progn
             (mozc-session-create t)
-            (ignore-errors (mozc-session-sendkey '(mode_phrase)))
             (dolist (ch (string-to-list roman))
               (mozc-session-sendkey (list ch)))
     
