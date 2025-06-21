@@ -85,11 +85,10 @@ ROMAN itself is returned so that callers can safely fall back."
     
               (if (not cands)
                   (list roman)
-                (let* ((cand-list (mozc-protobuf-get cands 'candidate))
-                       (take      (min arg-n (length cand-list))))
-                  (cl-loop for i from 0 below take
-                           collect (mozc-protobuf-get
-                                    (nth i cand-list) 'value)))))))
+                (let ((cand-list (mozc-protobuf-get cands 'candidate)))
+                  (mapcar (lambda (cand)
+                            (mozc-protobuf-get cand 'value))
+                          cand-list))))))
       ;; error path ----------------------------------------------------
       (error
        (list roman)))))
