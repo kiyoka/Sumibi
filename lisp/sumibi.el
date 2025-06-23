@@ -62,6 +62,7 @@ If mozc.el is unavailable, or Mozc raises any error, a list containing
 ROMAN itself is returned so that callers can safely fall back."
   (if (not sumibi--mozc-available-p)
       (list roman)
+    (setq roman (downcase roman))
     (condition-case _err
         (if (string-match-p "[ \t]" roman)
             ;; 空白で分割 → 各セグメントを再帰的に1件だけ変換 → つなげて返す
