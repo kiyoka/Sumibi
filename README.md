@@ -19,7 +19,7 @@ Sumibiはモードレスです。
 
 ## 利用可能なEmacsバージョン
 
-Emacs version 29.x (Windows/Linux/macOS) で動作します。Emacs以外の追加ソフトウェアは不要です。
+Emacs version 28.1 (Windows/Linux/macOS) で動作します。Emacs以外の追加ソフトウェアは不要です。
 
 ## Emacsクライアントのインストール
 

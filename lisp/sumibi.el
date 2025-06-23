@@ -136,6 +136,10 @@ mozc   : ネットワークを使わずローカルの mozc.el で変換する�
                  (const :tag "Mozc (local)" mozc))
   :group 'sumibi)
 
+(defun sumibi-backend-mozc-p ()
+  "Return non-nil if `sumibi-backend' is `mozc'."
+  (eq sumibi-backend 'mozc))
+
 (defcustom sumibi-current-model "gpt-4.1-mini"
   "使用する AI モデル名を指定する (デフォルトは gpt-4.1-mini)。
 
@@ -185,7 +189,7 @@ SUMIBI_AI_BASEURL環境変数が未設定の場合はデフォルトURL\"https:/
 それ以外の場合は、値から末尾のスラッシュを除去し、末尾に\"/v1\"を付加して返す."
   (let ((env (getenv "SUMIBI_AI_BASEURL")))
     (cond
-     ((eq sumibi-backend 'mozc)
+     ((sumibi-backend-mozc-p)
       "mozc_server")
      ((not env)
       "https://api.openai.com/v1")
@@ -198,7 +202,9 @@ SUMIBI_AI_BASEURL環境変数が未設定の場合はデフォルトURL\"https:/
 
 (defun sumibi-ai-model ()
   "利用中のAIモデル名を返す."
-  (or (getenv "SUMIBI_AI_MODEL") sumibi-current-model))
+  (if (sumibi-backend-mozc-p)
+      "mozc"
+    (or (getenv "SUMIBI_AI_MODEL") sumibi-current-model)))
 
 (defun sumibi-modeline-string ()
   "利用するモデル名を表示する."
@@ -457,7 +463,8 @@ Argument FALLBACK: fallback function."
   (if sumibi-init
       t
     (cond
-     ((and (not (getenv "SUMIBI_AI_API_KEY"))
+     ((and (not (sumibi-backend-mozc-p))
+	   (not (getenv "SUMIBI_AI_API_KEY"))
            (not (getenv "OPENAI_API_KEY")))
       (message "%s" "Please set SUMIBI_AI_API_KEY or OPENAI_API_KEY environment variable."))
      ((and (>= emacs-major-version 28) (>= emacs-minor-version 1))
@@ -601,7 +608,7 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 戻り値: (\"1番目の文章の文字列\" \"2番目の文章の文字列\" \"3番目の文章の文字列\" ...)"
   ;; `mozc' backend ---------------------------------------------------
   (sumibi-debug-print (format "sumibi-roman-to-kanji-with-surrounding()\n"))
-  (if (eq sumibi-backend 'mozc)
+  (if (sumibi-backend-mozc-p)
       (sumibi-mozc--candidate-list roman arg-n)
     ;; default: OpenAI backend ---------------------------------------
     (let ((saved-marker (point-marker)))
@@ -690,7 +697,7 @@ ARG-N: 候補を何件返すか
 DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 戻り値: (\"した\" \"シタ\") や (\"なの\" \"ナノ\")"
   (sumibi-debug-print (format "sumibi-roman-to-yomigana()\n"))
-  (if (eq sumibi-backend 'mozc)
+  (if (sumibi-backend-mozc-p)
       '()
     (let ((saved-marker (point-marker)))
       (sumibi-openai-http-post
