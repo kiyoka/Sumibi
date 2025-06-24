@@ -46,3 +46,11 @@ mozc_emacs_helperがインストールされていないか、起動に失敗し
 ```
 mozc.el: Failed to start mozc-helper-process.
 ```
+## mozcの個人設定について
+
+mozcはUIツールで設定変更できます。
+変換結果が意図通りでないと感じたら、Clear all historyなど実施してヒストリをリセットしてください。
+
+```
+/usr/lib/mozc/mozc_tool --mode=config_dialog
+```
