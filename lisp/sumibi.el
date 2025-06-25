@@ -121,18 +121,21 @@ ROMAN itself is returned so that callers can safely fall back."
 
 ;; --------------------------------------------------------------
 ;; Backend selection for roman→kanji conversion.
-;;   'openai (default) : use OpenAI ChatCompletions API
+;;   'openai (default) : use an OpenAI-compatible ChatCompletions API
 ;;   'mozc            : use local mozc.el session
 ;; --------------------------------------------------------------
 (defcustom sumibi-backend 'openai
   "Backend engine used for *ローマ字→漢字かな混じり文* 変換.
 
-openai : 従来どおり OpenAI ChatCompletions API を使用する。
+openai : OpenAI だけでなく **OpenAI 互換** の ChatCompletions API
+         (例: OpenAI, Google Gemini、ローカル LLM など) を利用する。
+         利用するサービスは `SUMIBI_AI_BASEURL' で指定した URL に
+         よって切り替えられます。
 mozc   : ネットワークを使わずローカルの mozc.el で変換する。
 
-読み仮名生成や翻訳など、ローマ字変換以外のルーチンは常に OpenAI
-を利用するため、この設定の影響を受けない。"
-  :type '(choice (const :tag "OpenAI" openai)
+読み仮名生成や翻訳など、ローマ字変換以外のルーチンは常に
+OpenAI 互換 API を利用するため、この設定の影響を受けません。"
+  :type '(choice (const :tag "OpenAI互換 API" openai)
                  (const :tag "Mozc (local)" mozc))
   :group 'sumibi)
 
@@ -143,8 +146,8 @@ mozc   : ネットワークを使わずローカルの mozc.el で変換する�
 (defcustom sumibi-current-model "gpt-4.1-mini"
   "使用する AI モデル名を指定する (デフォルトは gpt-4.1-mini)。
 
-この変数は OpenAI に渡す **LLM モデル名** を示します。
-OpenAI を利用しない（ローマ字→漢字を mozc で処理したい）場合は
+この変数は OpenAI 互換 API に渡す **LLM モデル名** を示します。
+OpenAI 互換 API を利用しない（ローマ字→漢字を mozc で処理したい）場合は
 後述の `sumibi-backend' を `mozc' に設定してください。"
   :type  'string
   :group 'sumibi)
@@ -160,12 +163,13 @@ OpenAI を利用しない（ローマ字→漢字を mozc で処理したい）�
   :group 'sumibi)
 
 (defcustom sumibi-api-timeout 60
-  "OpenAIサーバーと通信する時のタイムアウトを指定する。(秒数)."
+  "OpenAI 互換サーバーと通信する時のタイムアウトを指定する。(秒数)。"
   :type  'integer
   :group 'sumibi)
 
 (defcustom sumibi-threshold-letters-of-long-sentence 100
-  "OpenAIサーバーに送信する際、長文として判断する文字数。この文字数を超えるとOpenAI APIの引数nを1に減らす."
+  "OpenAI 互換サーバーに送信する際、長文として判断する文字数。
+この文字数を超えると ChatCompletions API の引数 n を 1 に減らします。"
   :type  'integer
   :group 'sumibi)
 
@@ -428,9 +432,9 @@ SUMIBI_AI_BASEURL環境変数が未設定の場合はデフォルトURL\"https:/
 (defvar sumibi-timer-rest  0)            ; あと何回呼出されたら、インターバルタイマの呼出を止めるか
 (defvar sumibi-last-lineno 0)            ; 最後に変換を実行した行番号
 (defvar sumibi-guide-overlay   nil)      ; リアルタイムガイドに使用するオーバーレイ
-(defvar sumibi-last-request-time 0)      ; OpenAIサーバーにリクエストした最後の時刻(単位は秒)
-(defvar sumibi-guide-lastquery  "")      ; OpenAIサーバーにリクエストした最後のクエリ文字列
-(defvar sumibi-guide-lastresult '())     ; OpenAIサーバーにリクエストした最後のクエリ結果
+(defvar sumibi-last-request-time 0)      ; OpenAI 互換サーバーへ最後にリクエストした時刻 (秒)
+(defvar sumibi-guide-lastquery  "")      ; OpenAI 互換サーバーへ最後に送ったクエリ文字列
+(defvar sumibi-guide-lastresult '())     ; OpenAI 互換サーバーから最後に受け取った結果
 
 
 
@@ -504,20 +508,19 @@ Argument BUF : http response buffer"
        (buffer-substring (point) (point-max))))))
 
 ;;
-;; OpenAPIにプロンプトを発行する
+;; OpenAI 互換 API にプロンプトを発行する
 ;;
 (defun sumibi-openai-http-post (message-lst
                                 arg-n
                                 sync-func
                                 deferred-func
                                 deferred-func2)
-  "Call OpenAI completions API.
-Argument MESSAGE-LST : OpenAI API に渡す role と content のリスト.
-Argument ARG-N : OpenAI API の引数nの値.
-Argument SYNC-FUNC : OpenAI API を同期呼び出しで呼び出す場合は
-  コールバック関数を指定する。非同期呼び出しの場合は、nilを指定する.
-Argument DEFERRED-FUNC: 非同期呼び出し時のコールバック関数(1).
-Argument DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
+  "OpenAI 互換 ChatCompletions API を呼び出します。
+Argument MESSAGE-LST : ChatCompletions API に渡す role と content のリスト。
+Argument ARG-N : ChatCompletions API の引数 n の値。
+Argument SYNC-FUNC : 同期呼び出し時のコールバック関数。非同期呼び出しの場合は nil を指定します。
+Argument DEFERRED-FUNC : 非同期呼び出し時のコールバック関数 (1)。
+Argument DEFERRED-FUNC2 : 非同期呼び出し時のコールバック関数 (2)。"
   (sumibi-debug-print (format "sumibi-openai-http-post()\n"))
   (let* ((base (sumibi-ai-base-url))
          (url (concat base "/chat/completions")))
@@ -600,7 +603,8 @@ Argument DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
       result))))
 
 (defun sumibi-roman-to-kanji-with-surrounding (roman surrounding arg-n deferred-func2)
-  "ローマ字で書かれた文章をOpenAIサーバーを使って変換し、結果を文字列で返す.変換対象の文章の修変の文章も受け取る.
+  "ローマ字で書かれた文章を **OpenAI 互換** サーバーを使って変換し、
+結果を文字列で返します。変換対象の文章の周辺の文章も受け取ります。
 ROMAN: \"bunsyou no mojiretu
 SURROUNDING: \"長い文章になってしまいましたが、これがbunsyou no mojiretuです。
 ARG-N: 候補を何件返すか
@@ -691,7 +695,7 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
        deferred-func2))))
 
 (defun sumibi-roman-to-yomigana (roman deferred-func2)
-  "ローマ字で書かれた文章をOpenAIサーバーを使って読み仮名を返す.
+  "ローマ字で書かれた文章を **OpenAI 互換** サーバーを使って読み仮名を返します。
 ROMAN: \"shita\" や \"nano\"
 ARG-N: 候補を何件返すか
 DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
@@ -733,7 +737,7 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
        deferred-func2))))
 
 (defun sumibi-kanji-to-yomigana (kanji deferred-func2)
-  "漢字仮名混じりで書かれた文章をOpenAIサーバーを使って読み仮名を返す.
+  "漢字仮名混じりで書かれた文章を **OpenAI 互換** サーバーを使って読み仮名を返します。
 KANJI: \"日本語\" のような文字列
 DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 戻り値: (\"にほんご\" \"ニホンゴ\")"
@@ -768,7 +772,7 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
      deferred-func2)))
 
 (defun sumibi-kanji-to-english (kanji arg-n deferred-func2)
-  "日本語の文章を、OpenAIサーバーを使って英語に翻訳する.
+  "日本語の文章を、**OpenAI 互換** サーバーを使って英語に翻訳します。
 KANJI: \"私の名前は中野です。\" のような文字列
 ARG-N: 候補を何件返すか
 DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
@@ -804,7 +808,7 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
      deferred-func2)))
 
 (defun sumibi-determine-number-of-n (request-str)
-  "引数REQUEST-STRからOpenAI APIの引数「n」に指定する数を決める."
+  "引数 REQUEST-STR から ChatCompletions API の引数「n」に指定する数を決める。"
   (if (string= (sumibi-ai-base-url) "https://api.openai.com")
       (if (<= sumibi-threshold-letters-of-long-sentence (length request-str))
 	  1
@@ -812,7 +816,7 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
     1))
 
 (defun sumibi-determine-sync-p (request-str)
-  "引数REQUEST-STRからOpenAI APIを非同期で呼び出すかを決める."
+  "引数 REQUEST-STR から ChatCompletions API を非同期で呼び出すかを決める。"
   (> sumibi-threshold-letters-of-long-sentence (length request-str)))
 
 
