@@ -475,25 +475,36 @@ preserved. BODY is the portion that should be converted."
    (t
     (cons "" str))))
 
+;; Ensure a single space after Markdown heading (#...) or list marker (-,*)
 (defun sumibi--ensure-space-after-heading (pos)
-  "Ensure a single space exists right after a Markdown heading marker.
+  "Insert a single space after Markdown marker if missing.
 
-POS is the buffer position where the converted text starts (i.e. the
-beginning of the text we just inserted).  If immediately before POS
-there are one or more '#' characters and *no* whitespace, insert a
-space so that `###見出し` → `### 見出し`.
-
-This keeps the semantic meaning of Markdown headings intact even when
-the original input lacked an explicit space or when the space was
-lost during conversion."
+POS is the buffer position where converted text starts.  If the
+character immediately before POS is one of `#', `-' or `*' *and* we
+are at the beginning of a Markdown heading or list item (that is,
+only whitespace precedes the marker on that line), ensure there is a
+space between the marker and the text.  This prevents constructs like
+`*項目' or `###見出し' that break Markdown syntax."
   (when (> pos (point-min))
     (save-excursion
       (goto-char pos)
-      (let ((prev (char-before)))
-        (when (and prev (eq prev ?#)
-                   (let ((c (char-after)))
-                     (or (null c) (not (memq c '(?  ?\t))))) )
-          (insert " "))))))
+      (let* ((marker (char-before))
+             (marker? (memq marker '(?# ?- ?*))))
+        (when marker?
+          ;; Verify marker is at list/heading position.
+          (let ((bol (line-beginning-position))
+                (p (1- (point))))
+            ;; Skip backward over additional marker chars for headings (#).
+            (when (eq marker ?#)
+              (while (and (> p bol) (eq (char-before p) ?#))
+                (setq p (1- p))))
+            ;; Skip backward over whitespace.
+            (while (and (> p bol) (memq (char-before p) '(?  ?\t)))
+              (setq p (1- p)))
+            (when (= p bol)
+              ;; Confirm there's no space after the marker(s).
+              (unless (memq (char-after) '(?  ?\t))
+                (insert " ")))))))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
