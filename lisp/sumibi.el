@@ -463,12 +463,16 @@ The PREFIX part is kept as-is and must not be fed to the conversion
 engine so that constructs like `- ', `# ', or indent spaces are
 preserved. BODY is the portion that should be converted."
   (cond
-   ;; Markdown heading: optional indent + one or more '#'
-   ((string-match "\`[ \t]*#+[ \t]+" str)
-    (cons (match-string 0 str) (substring str (match-end 0))))
-   ;; Markdown list marker: optional indent + '-' or '*'
-   ((string-match "\`[ \t]*[-*][ \t]+" str)
-    (cons (match-string 0 str) (substring str (match-end 0))))
+   ;; Markdown heading (with or without trailing space)
+   ((string-match "\`[ \t]*#+[ \t]*" str)
+    (let* ((m (match-string 0 str))
+           (prefix (if (string-suffix-p " " m) m (concat m " "))))
+      (cons prefix (substring str (match-end 0)))))
+   ;; Markdown list marker '-' or '*' (with or without trailing space)
+   ((string-match "\`[ \t]*[-*][ \t]*" str)
+    (let* ((m (match-string 0 str))
+           (prefix (if (string-suffix-p " " m) m (concat m " "))))
+      (cons prefix (substring str (match-end 0)))))
    ;; Pure leading whitespace (code block indent etc.)
    ((string-match "\`[ \t]+" str)
     (cons (match-string 0 str) (substring str (match-end 0))))
