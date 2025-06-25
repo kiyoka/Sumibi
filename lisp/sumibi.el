@@ -55,55 +55,113 @@
 (defvar sumibi--mozc-available-p (require 'mozc nil 'noerror)
   "Non-nil if `mozc.el' could be loaded successfully.")
 
-(defun sumibi-mozc--candidate-list (roman arg-n)
-  "Return up to ARG-N candidate strings for ROMAN using mozc.
+;; Keep the Mozc session object in a global variable so that we can set it
+;; from our own code when we need to reuse an existing session created
+;; outside of `sumibi-mozc--candidate-list'.  Declare it here to avoid
+;; byte-compiler warnings even when mozc.el is unavailable.
+(defvar mozc--session nil)
 
-If mozc.el is unavailable, or Mozc raises any error, a list containing
-ROMAN itself is returned so that callers can safely fall back."
+(defun sumibi-mozc--candidate-list (roman arg-n &optional mozc-session)
+  "Return up to ARG-N candidate strings for ROMAN using Mozc.
+
+ROMAN        : ASCII string to convert.
+ARG-N        : Desired number of candidates (if nil, defaults to 3).
+MOZC-SESSION : Existing Mozc session object.  When non-nil the function
+               reuses the session; otherwise it creates a fresh one with
+               `mozc-session-create'.  The session object is propagated
+               to all recursive calls so that a single session is shared
+               for inputs containing white-space separated words.
+
+If Mozc is unavailable or any error occurs, a 1-element list containing
+the literal ROMAN string is returned so that callers can safely fall
+back."
   (if (not sumibi--mozc-available-p)
+      ;; Mozc がロードできなければ入力そのまま
       (list roman)
-    (setq roman (downcase roman))
-    (condition-case _err
-        (if (string-match-p "[ \t]" roman)
-            ;; 空白で分割 → 各セグメントを再帰的に1件だけ変換 → つなげて返す
-            (list (apply #'concat
-                         (mapcar (lambda (w)
-                                   (car (sumibi-mozc--candidate-list w 1)))
-                                 (split-string roman "[ \t]+" t))))
-          ;; セグメント1件のときは従来ロジック
-          (progn
-            (mozc-session-create t)
-            (dolist (ch (string-to-list roman))
-              (mozc-session-sendkey (list ch)))
-    
-            (let* ((iteration 0) resp cands)
-              (while (and (< iteration 3)
-                          (progn
-                            (setq resp (mozc-session-sendkey '(space)))
-                            (setq cands (and resp (mozc-protobuf-get resp 'candidates)))
-                            (null cands)))
-                (setq iteration (1+ iteration)))
-    
-	      (sumibi-debug-print (format "sumibi-mozc--candidate-list cands=%s\n" cands))
-              (if (not cands)
-                  (list roman)
-                (let* ((cand-list (mozc-protobuf-get cands 'candidate))
-                       ;; 候補の文字列リスト
-                       (values   (mapcar (lambda (cand)
+    (let* ((roman (downcase roman))
+           (limit (or arg-n 3))
+           ;; Mozc セッションを確保（nil のときだけ作成）
+           (session (or mozc-session (ignore-errors (mozc-session-create t)))))
+      ;; mozc が利用できない場合は make-session が失敗する → nil
+      (condition-case _err
+          (if (string-match-p "[ \t]" roman)
+              ;; ------------------------------------------------------
+              ;; 空白区切りの複数語を処理する場合
+              ;;   1. 各語の候補リスト（最大 LIMIT 件）を取得
+              ;;   2. n 番目の候補を連結して文候補を組み立てる
+              ;; ------------------------------------------------------
+	      (progn
+		(mozc-session-create t)
+		(let* ((words (split-string roman "[ \t]+" t))
+                       (per-word-cands
+			(mapcar (lambda (w)
+                                  (sumibi-mozc--candidate-list w limit session))
+				words))
+                       (results '()))
+		  (sumibi-debug-print (format "sumibi-mozc--candidate-list arg-n=%d per-word-cands=%s\n" arg-n per-word-cands))
+                  ;; n 回目の候補を組み立てる
+                  (dotimes (idx limit)
+                    (let ((sentence
+                           (apply #'concat
+                                  (mapcar (lambda (lst)
+                                            ;; idx が範囲外なら最後の要素を使う
+                                            (if (< idx (length lst))
+						(nth idx lst)
+                                              (car (last lst))))
+                                          per-word-cands))))
+                      ;; 文末に句点がなければ付与
+                      (unless (string-match-p "[。．\.！!？?]$" sentence)
+			(setq sentence (concat sentence "。")))
+                      (push sentence results)))
+
+                  ;; 重複削除（順序保持）
+                  (let ((seen (make-hash-table :test 'equal))
+			(dedup '()))
+                    (dolist (x (nreverse results)) ; push の逆順を戻す
+                      (unless (gethash x seen)
+			(puthash x t seen)
+			(push x dedup)))
+                    (nreverse dedup))))
+
+            ;; ------------------------------------------------------
+            ;; 単語（空白を含まない）を Mozc で直接変換
+            ;; ------------------------------------------------------
+            (progn
+              ;; ローマ字を1文字ずつ送り込む
+              ;; セッションを global に設定しておく必要がある環境を考慮
+              (when session
+                (defvar mozc--session nil) ;; declare if not defined
+                (setq mozc--session session))
+
+              (dolist (ch (string-to-list roman))
+                (mozc-session-sendkey (list ch)))
+
+              ;; space を押して候補を取得（最大3回リトライ）
+              (let ((iteration 0) resp cands)
+                (while (and (< iteration 3)
+                            (progn
+                              (setq resp (mozc-session-sendkey '(space)))
+                              (setq cands (and resp (mozc-protobuf-get resp 'candidates)))
+                              (null cands)))
+                  (setq iteration (1+ iteration)))
+
+                (sumibi-debug-print (format "sumibi-mozc--candidate-list cands=%s\n" cands))
+
+                (if (not cands)
+                    (list roman)
+                  (let* ((cand-list (mozc-protobuf-get cands 'candidate))
+                         (values (mapcar (lambda (cand)
                                            (mozc-protobuf-get cand 'value))
                                          cand-list))
-                       ;; annotation の description（カタカナ読み）
-                       (raw-anno  (mozc-protobuf-get (nth 0 cand-list) 'annotation))
-                       (anno-desc (and raw-anno (mozc-protobuf-get raw-anno 'description)))
-                       (kata      anno-desc)
-                       ;; ひらがなに変換
-                       (hira      (and kata (sumibi-katakana-to-hiragana kata))))
-                  ;; 候補 + ひらがな読み + カタカナ読み
-                  (append values (delq nil (list hira kata))))))))
-      ;; error path ----------------------------------------------------
-      (error
-       (sumibi-debug-print (format "sumibi-mozc--candidate-list:error\n"))
-       (list roman)))))
+                         (raw-anno (mozc-protobuf-get (nth 0 cand-list) 'annotation))
+                         (anno-desc (and raw-anno (mozc-protobuf-get raw-anno 'description)))
+                         (kata anno-desc)
+                         (hira (and kata (sumibi-katakana-to-hiragana kata))))
+                    ;; 変換候補 + ひらがな読み + カタカナ読みを返す
+                    (append values (delq nil (list hira kata))))))))
+        (error
+         (sumibi-debug-print (format "sumibi-mozc--candidate-list:error\n"))
+         (list roman))))))
 
 ;;; 
 ;;;
@@ -609,7 +667,7 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
   ;; `mozc' backend ---------------------------------------------------
   (sumibi-debug-print (format "sumibi-roman-to-kanji-with-surrounding()\n"))
   (if (sumibi-backend-mozc-p)
-      (sumibi-mozc--candidate-list roman arg-n)
+      (sumibi-mozc--candidate-list roman arg-n nil)
     ;; default: OpenAI backend ---------------------------------------
     (let ((saved-marker (point-marker)))
       (sumibi-openai-http-post
@@ -805,11 +863,15 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 
 (defun sumibi-determine-number-of-n (request-str)
   "引数REQUEST-STRからOpenAI APIの引数「n」に指定する数を決める."
-  (if (string= (sumibi-ai-base-url) "https://api.openai.com")
-      (if (<= sumibi-threshold-letters-of-long-sentence (length request-str))
-	  1
-	3)
-    1))
+  (cond
+   ((sumibi-backend-mozc-p)
+    3)
+   (t
+    (if (string= (sumibi-ai-base-url) "https://api.openai.com")
+	(if (<= sumibi-threshold-letters-of-long-sentence (length request-str))
+	    1
+	  3)
+      1))))
 
 (defun sumibi-determine-sync-p (request-str)
   "引数REQUEST-STRからOpenAI APIを非同期で呼び出すかを決める."
