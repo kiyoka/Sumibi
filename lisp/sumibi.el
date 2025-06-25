@@ -451,6 +451,50 @@ Argument FALLBACK: fallback function."
         (cdr entry)
       fallback)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 先頭プレフィックス保持ユーティリティ
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun sumibi--split-markdown-prefix (str)
+  "Return cons cell (PREFIX . BODY) by separating STR into a markdown-related
+prefix (leading spaces, list markers, or heading hashes) and the rest.
+
+The PREFIX part is kept as-is and must not be fed to the conversion
+engine so that constructs like `- ', `# ', or indent spaces are
+preserved. BODY is the portion that should be converted."
+  (cond
+   ;; Markdown heading: optional indent + one or more '#'
+   ((string-match "\`[ \t]*#+[ \t]+" str)
+    (cons (match-string 0 str) (substring str (match-end 0))))
+   ;; Markdown list marker: optional indent + '-' or '*'
+   ((string-match "\`[ \t]*[-*][ \t]+" str)
+    (cons (match-string 0 str) (substring str (match-end 0))))
+   ;; Pure leading whitespace (code block indent etc.)
+   ((string-match "\`[ \t]+" str)
+    (cons (match-string 0 str) (substring str (match-end 0))))
+   (t
+    (cons "" str))))
+
+(defun sumibi--ensure-space-after-heading (pos)
+  "Ensure a single space exists right after a Markdown heading marker.
+
+POS is the buffer position where the converted text starts (i.e. the
+beginning of the text we just inserted).  If immediately before POS
+there are one or more '#' characters and *no* whitespace, insert a
+space so that `###見出し` → `### 見出し`.
+
+This keeps the semantic meaning of Markdown headings intact even when
+the original input lacked an explicit space or when the space was
+lost during conversion."
+  (when (> pos (point-min))
+    (save-excursion
+      (goto-char pos)
+      (let ((prev (char-before)))
+        (when (and prev (eq prev ?#)
+                   (let ((c (char-after)))
+                     (or (null c) (not (memq c '(?  ?\t))))) )
+          (insert " "))))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 表示系関数群
@@ -605,19 +649,29 @@ Argument DEFERRED-FUNC2 : 非同期呼び出し時のコールバック関数 (2
 (defun sumibi-roman-to-kanji-with-surrounding (roman surrounding arg-n deferred-func2)
   "ローマ字で書かれた文章を **OpenAI 互換** サーバーを使って変換し、
 結果を文字列で返します。変換対象の文章の周辺の文章も受け取ります。
-ROMAN: \"bunsyou no mojiretu
-SURROUNDING: \"長い文章になってしまいましたが、これがbunsyou no mojiretuです。
+
+本関数は行頭のインデントや Markdown のリスト記号 (\"- \", \"* \")、
+見出し記号 (\"# \", \"## \" など) を *変換対象から除外* して保持します。
+
+ROMAN: 変換対象のローマ字文字列 (行頭のプレフィックス込み)
+SURROUNDING: 変換対象周辺の文章
 ARG-N: 候補を何件返すか
 DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 戻り値: (\"1番目の文章の文字列\" \"2番目の文章の文字列\" \"3番目の文章の文字列\" ...)"
-  ;; `mozc' backend ---------------------------------------------------
+  ;; プレフィックスを抽出して保持 ----------------------------------
   (sumibi-debug-print (format "sumibi-roman-to-kanji-with-surrounding()\n"))
-  (if (sumibi-backend-mozc-p)
-      (sumibi-mozc--candidate-list roman arg-n)
-    ;; default: OpenAI backend ---------------------------------------
-    (let ((saved-marker (point-marker)))
-      (sumibi-openai-http-post
-       (list
+  (let* ((split (sumibi--split-markdown-prefix roman))
+         (prefix (car split))
+         (core-roman (cdr split)))
+    ;; `mozc' backend -------------------------------------------------
+    (if (sumibi-backend-mozc-p)
+        (let ((cands (sumibi-mozc--candidate-list core-roman arg-n)))
+          (mapcar (lambda (s) (concat prefix s)) cands))
+      ;; default: OpenAI backend -------------------------------------
+      (let ((saved-marker (point-marker))
+            (result nil))
+        (sumibi-openai-http-post
+         (list
 	(cons "system"
               (concat
                "あなたはローマ字とひらがなを日本語に変換するアシスタントです。"
@@ -679,20 +733,27 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 		"周辺の文章は、「%s」"
 		"のような文章になっています。"
 		"周辺の文脈を見てそれに合った語彙を選んでください。: %s")
-	       surrounding roman)))
+	       surrounding core-roman)))
        arg-n
        (lambda (json-str)
-	 (let ((json-obj (json-parse-string json-str)))
-           (sumibi-analyze-openai-json-obj json-obj arg-n)))
+	 (let* ((json-obj (json-parse-string json-str))
+                (lst (sumibi-analyze-openai-json-obj json-obj arg-n)))
+           (setq result (mapcar (lambda (s) (concat prefix s)) lst))))
        (lambda (json-str)
 	 (let* ((json-obj (json-parse-string json-str))
-		(lst (sumibi-analyze-openai-json-obj json-obj arg-n)))
+		(lst (mapcar (lambda (s) (concat prefix s))
+		           (sumibi-analyze-openai-json-obj json-obj arg-n))))
+           (when (and lst (null deferred-func2))
+             (setq result lst))
            (when lst
              (save-excursion
                (goto-char (marker-position saved-marker))
                (insert (car lst))
+               ;; 見出し `###` 等の直後にスペースが無ければ補完する
+               (sumibi--ensure-space-after-heading (marker-position saved-marker))
                (goto-char (marker-position saved-marker))))))
-       deferred-func2))))
+       deferred-func2)
+        result))))
 
 (defun sumibi-roman-to-yomigana (roman deferred-func2)
   "ローマ字で書かれた文章を **OpenAI 互換** サーバーを使って読み仮名を返します。
@@ -1037,6 +1098,7 @@ Argument INVERSE-FLAG：逆変換かどうか"
                 (delete-region b e)
                 (goto-char b)
                 (insert (sumibi-get-display-string))
+                (sumibi--ensure-space-after-heading b)
                 (setq e (point))
                 (sumibi-display-function b e nil)
                 (sumibi-select-kakutei)
@@ -1185,6 +1247,7 @@ Argument SELECT-MODE：選択状態"
                (start       (point-marker)))
           (progn
             (insert insert-word)
+            (sumibi--ensure-space-after-heading (marker-position start))
             (message "[%s] candidate (%d/%d)" insert-word (+ sumibi-cand-cur 1) sumibi-cand-len)
             (let* ((end         (point-marker))
                    (ov          (make-overlay start end)))
