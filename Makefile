@@ -59,7 +59,7 @@ test:
 	# If mozc がインストールされていない環境では、この -L オプションは無害です。
 	emacs -batch -Q \
 	      -L lisp \
-	      -L /usr/share/emacs/site-lisp/emacs-mozc \
-	      -l mozc \
+      -L /usr/share/emacs/site-lisp/emacs-mozc \
+      --eval "(require 'mozc nil 'noerror)" \
 	      -l test/sumibi-mozc-tests.el \
 	      -f ert-run-tests-batch-and-exit

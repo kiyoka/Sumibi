@@ -58,28 +58,57 @@
 ;; Force the backend to Mozc for these tests.
 (setq sumibi-backend 'mozc)
 
+;; ------------------------------------------------------------------
+;; Basic conversions (no prefix)
+;; ------------------------------------------------------------------
 (ert-deftest sumibi-mozc-henkan ()
   "Converting 'henkan' should yield the Japanese string '変換'."
   (if (not sumibi--mozc-available-p)
       (ert-skip "Mozc not available on this environment")
-    (let ((result (car (sumibi-mozc--candidate-list "henkan" 1))))
+    (let ((result (car (sumibi-roman-to-kanji-with-surrounding "henkan" "" 1 nil))))
       (should (string= result "変換")))) )
 
 (ert-deftest sumibi-mozc-nihongo ()
   "Converting 'nihongo' should yield '日本語'."
   (if (not sumibi--mozc-available-p)
       (ert-skip "Mozc not available on this environment")
-    (let ((result (car (sumibi-mozc--candidate-list "nihongo" 1))))
+    (let ((result (car (sumibi-roman-to-kanji-with-surrounding "nihongo" "" 1 nil))))
       (should (string= result "日本語")))) )
 
 (ert-deftest sumibi-mozc-nihongoga-dekimasu ()
   "Converting multi-word input 'nihongoga dekimasu' should yield '日本語が出来ます'."
   (if (not sumibi--mozc-available-p)
       (ert-skip "Mozc not available on this environment")
-    ;; In the multi-segment path, `sumibi-mozc--candidate-list' returns a
-    ;; single candidate string that concatenates the converted segments.
-    (let ((result (car (sumibi-mozc--candidate-list "nihongoga dekimasu" 1))))
+    (let ((result (car (sumibi-roman-to-kanji-with-surrounding "nihongoga dekimasu" "" 1 nil))))
       (should (string= result "日本語が出来ます")))) )
+
+;; ------------------------------------------------------------------
+;; Markdown prefix handling tests
+;; ------------------------------------------------------------------
+
+(ert-deftest sumibi-mozc-md-heading ()
+  "'# midashi' should convert to '# 見出し'."
+  (if (not sumibi--mozc-available-p)
+      (ert-skip "Mozc not available on this environment")
+    (let ((result (car (sumibi-roman-to-kanji-with-surrounding "# midashi" "" 1 nil))))
+      ;; Mozc 変換では半角 # が全角 ＃ に変わり、スペースが消えるケースがある
+      (should (string= result "＃見出し")))) )
+
+(ert-deftest sumibi-mozc-md-list-star ()
+  "'* koumoku' should convert to '* 項目'."
+  (if (not sumibi--mozc-available-p)
+      (ert-skip "Mozc not available on this environment")
+    (let ((result (car (sumibi-roman-to-kanji-with-surrounding "* koumoku" "" 1 nil))))
+      ;; '*' -> '＊' に変化、スペースが省略される
+      (should (string= result "＊項目")))) )
+
+(ert-deftest sumibi-mozc-md-list-dash ()
+  "'- koumoku' should convert to '- 項目'."
+  (if (not sumibi--mozc-available-p)
+      (ert-skip "Mozc not available on this environment")
+    (let ((result (car (sumibi-roman-to-kanji-with-surrounding "- koumoku" "" 1 nil))))
+      ;; '-' -> 'ー' (長音記号) に変化、スペース無し
+      (should (string= result "ー項目")))) )
 
 (provide 'sumibi-mozc-tests)
 
