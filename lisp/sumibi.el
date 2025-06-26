@@ -1751,7 +1751,16 @@ _ARG: (未使用)"
             (let ((prefix (and (>= (point-at-eol) (+ bol 2))
                                (buffer-substring-no-properties bol (+ bol 2)))))
               (when (member prefix '("- " "* "))
-                (setq limit-point (+ bol 2))))) )
+                (setq limit-point (+ bol 2)))))
+
+          ;; 行頭に連続する空白/タブがインデントとして存在するときもスキップ
+          (when (= limit-point bol)
+            (let ((indent-len (save-excursion
+                                (goto-char bol)
+                                (skip-chars-forward " \t" (point-at-eol)))))
+              (sumibi-debug-print (format "indent-len = %d\n" indent-len))
+              (when (> indent-len 0)
+                (setq limit-point (+ bol indent-len))))))
 
         ;; (sumibi-debug-print (format "(point) = %d  result = %d  limit-point = %d\n" (point) result limit-point))
         ;; (sumibi-debug-print (format "a = %d b = %d \n" (+ (point) result) limit-point))

@@ -122,7 +122,7 @@ idempotent and side-effect free for other tests."
       (insert input)
       (goto-char (point-max))
       (sumibi-rK-trans)
-      (string-trim (buffer-string)))))
+      (buffer-string))))
 
 (ert-deftest sumibi-mozc-scratch-koumoku-1 ()
   "'* koumoku' → '* 項目' end-to-end conversion via C-j."
@@ -141,6 +141,24 @@ idempotent and side-effect free for other tests."
   (if (not sumibi--mozc-available-p)
       (ert-skip "Mozc not available on this environment")
     (should (string= (sumibi-test--convert-in-scratch "# midashi") "# 見出し"))))
+
+(ert-deftest sumibi-mozc-scratch-indent-1 ()
+  "' indento' → ' インデント' end-to-end conversion via C-j."
+  (if (not sumibi--mozc-available-p)
+      (ert-skip "Mozc not available on this environment")
+    (should (string= (sumibi-test--convert-in-scratch " indento") " インデント"))))
+
+(ert-deftest sumibi-mozc-scratch-indento-2 ()
+  "'  indento' → '  インデント' end-to-end conversion via C-j."
+  (if (not sumibi--mozc-available-p)
+      (ert-skip "Mozc not available on this environment")
+    (should (string= (sumibi-test--convert-in-scratch "  indento") "  インデント"))))
+
+(ert-deftest sumibi-mozc-scratch-indento-3 ()
+  "'   indento' → '   インデント' end-to-end conversion via C-j."
+  (if (not sumibi--mozc-available-p)
+      (ert-skip "Mozc not available on this environment")
+    (should (string= (sumibi-test--convert-in-scratch "   indento") "   インデント"))))
 
 (provide 'sumibi-mozc-tests)
 
