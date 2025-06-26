@@ -103,34 +103,6 @@
       (should (string= result "日本語が出来ます")))))
 
 ;; ------------------------------------------------------------------
-;; Markdown prefix handling tests
-;; ------------------------------------------------------------------
-
-(ert-deftest sumibi-mozc-md-heading ()
-  "'# midashi' should convert to '# 見出し'."
-  (if (not sumibi--mozc-available-p)
-      (ert-skip "Mozc not available on this environment")
-    (let ((result (car (sumibi-roman-to-kanji-with-surrounding "# midashi" "" 1 nil))))
-      ;; Mozc 変換では半角 # が全角 ＃ に変わり、スペースが消えるケースがある
-      (should (string= result "＃見出し")))))
-
-(ert-deftest sumibi-mozc-md-list-star ()
-  "'* koumoku' should convert to '* 項目'."
-  (if (not sumibi--mozc-available-p)
-      (ert-skip "Mozc not available on this environment")
-    (let ((result (car (sumibi-roman-to-kanji-with-surrounding "* koumoku" "" 1 nil))))
-      ;; '*' -> '＊' に変化、スペースが省略される
-      (should (string= result "＊項目")))))
-
-(ert-deftest sumibi-mozc-md-list-dash ()
-  "'- koumoku' should convert to '- 項目'."
-  (if (not sumibi--mozc-available-p)
-      (ert-skip "Mozc not available on this environment")
-    (let ((result (car (sumibi-roman-to-kanji-with-surrounding "- koumoku" "" 1 nil))))
-      ;; '-' -> 'ー' (長音記号) に変化、スペース無し
-      (should (string= result "ー項目")))))
-
-;; ------------------------------------------------------------------
 ;; End-to-end helper & tests on *scratch* buffer
 ;; ------------------------------------------------------------------
 
@@ -152,7 +124,19 @@ idempotent and side-effect free for other tests."
       (sumibi-rK-trans)
       (string-trim (buffer-string)))))
 
-(ert-deftest sumibi-mozc-scratch-heading-ctrl-j ()
+(ert-deftest sumibi-mozc-scratch-koumoku-1 ()
+  "'* koumoku' → '* 項目' end-to-end conversion via C-j."
+  (if (not sumibi--mozc-available-p)
+      (ert-skip "Mozc not available on this environment")
+    (should (string= (sumibi-test--convert-in-scratch "* koumoku") "* 項目"))))
+
+(ert-deftest sumibi-mozc-scratch-koumoku-2 ()
+  "'- koumoku' → 'ー項目' end-to-end conversion via C-j."
+  (if (not sumibi--mozc-available-p)
+      (ert-skip "Mozc not available on this environment")
+    (should (string= (sumibi-test--convert-in-scratch "- koumoku") "ー項目"))))
+
+(ert-deftest sumibi-mozc-scratch-heading-1 ()
   "'# midashi' → '# 見出し' end-to-end conversion via C-j."
   (if (not sumibi--mozc-available-p)
       (ert-skip "Mozc not available on this environment")
