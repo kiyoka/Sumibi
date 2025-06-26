@@ -1742,6 +1742,17 @@ _ARG: (未使用)"
                    start-point
                    (skip-chars-forward sumibi-stop-chars (point-at-eol))))))
 
+        ;; ------------------------------------------------------
+        ;; 行頭に変換対象外の先頭記号 (- , *) が来ていたら 2 文字分スキップ
+        ;; (auto-fill-mode 無効時のみ)
+        ;; ------------------------------------------------------
+        (let ((bol (save-excursion (beginning-of-line) (point))))
+          (when (= limit-point bol)
+            (let ((prefix (and (>= (point-at-eol) (+ bol 2))
+                               (buffer-substring-no-properties bol (+ bol 2)))))
+              (when (member prefix '("- " "* "))
+                (setq limit-point (+ bol 2))))) )
+
         ;; (sumibi-debug-print (format "(point) = %d  result = %d  limit-point = %d\n" (point) result limit-point))
         ;; (sumibi-debug-print (format "a = %d b = %d \n" (+ (point) result) limit-point))
 

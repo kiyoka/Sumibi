@@ -131,10 +131,10 @@ idempotent and side-effect free for other tests."
     (should (string= (sumibi-test--convert-in-scratch "* koumoku") "* 項目"))))
 
 (ert-deftest sumibi-mozc-scratch-koumoku-2 ()
-  "'- koumoku' → 'ー項目' end-to-end conversion via C-j."
+  "'- koumoku' → '- 項目' end-to-end conversion via C-j."
   (if (not sumibi--mozc-available-p)
       (ert-skip "Mozc not available on this environment")
-    (should (string= (sumibi-test--convert-in-scratch "- koumoku") "ー項目"))))
+    (should (string= (sumibi-test--convert-in-scratch "- koumoku") "- 項目"))))
 
 (ert-deftest sumibi-mozc-scratch-heading-1 ()
   "'# midashi' → '# 見出し' end-to-end conversion via C-j."
