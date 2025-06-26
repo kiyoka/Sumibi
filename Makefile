@@ -47,3 +47,19 @@ help:
 	@echo "  release      : create $(ARCHIVE_NAME)"
 	@echo "  clean        : remove generated archives" 
 	@echo "  help         : show this message"
+	@echo "  test         : run ERT unit tests in batch mode (requires Emacs)"
+
+# --------------------------------------------------------------------
+# Run Emacs ERT tests (Mozc tests are skipped if mozc.el is unavailable)
+# --------------------------------------------------------------------
+.PHONY: test
+
+test:
+	# Ensure mozc.el is visible by adding its system path to load-path.
+	# If mozc がインストールされていない環境では、この -L オプションは無害です。
+	emacs -batch -Q \
+	      -L lisp \
+	      -L /usr/share/emacs/site-lisp/emacs-mozc \
+	      -l mozc \
+	      -l test/sumibi-mozc-tests.el \
+	      -f ert-run-tests-batch-and-exit
