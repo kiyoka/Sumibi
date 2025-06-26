@@ -26,6 +26,23 @@
 ;; Test setup helpers
 ;; ------------------------------------------------------------
 
+;; ------------------------------------------------------------------
+;; Ensure MELPA / ELPA is available so that dependencies like dash.el can be
+;; installed on-the-fly when running the test in a pristine environment.
+;; ------------------------------------------------------------------
+
+(require 'package)
+(setq package-check-signature nil)
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
+
+;; Install dash.el automatically if it's missing.
+(unless (require 'dash nil 'noerror)
+  (package-refresh-contents)
+  (package-install 'dash)
+  (require 'dash))
+
 ;; Ensure the `lisp` directory of this repository is on `load-path` so that
 ;; `sumibi.el` can be required from a standalone Emacs process.
 (add-to-list 'load-path (expand-file-name "../lisp" (file-name-directory (or load-file-name buffer-file-name))))
@@ -52,6 +69,9 @@
   (unless (require lib nil 'noerror)
     (provide lib)))
 
+;; Dash.el がインストールされている前提でテストを実行する。
+(require 'dash)
+
 ;; Now we can safely load Sumibi.
 (require 'sumibi)
 
@@ -66,21 +86,21 @@
   (if (not sumibi--mozc-available-p)
       (ert-skip "Mozc not available on this environment")
     (let ((result (car (sumibi-roman-to-kanji-with-surrounding "henkan" "" 1 nil))))
-      (should (string= result "変換")))) )
+      (should (string= result "変換")))))
 
 (ert-deftest sumibi-mozc-nihongo ()
   "Converting 'nihongo' should yield '日本語'."
   (if (not sumibi--mozc-available-p)
       (ert-skip "Mozc not available on this environment")
     (let ((result (car (sumibi-roman-to-kanji-with-surrounding "nihongo" "" 1 nil))))
-      (should (string= result "日本語")))) )
+      (should (string= result "日本語")))))
 
 (ert-deftest sumibi-mozc-nihongoga-dekimasu ()
   "Converting multi-word input 'nihongoga dekimasu' should yield '日本語が出来ます'."
   (if (not sumibi--mozc-available-p)
       (ert-skip "Mozc not available on this environment")
     (let ((result (car (sumibi-roman-to-kanji-with-surrounding "nihongoga dekimasu" "" 1 nil))))
-      (should (string= result "日本語が出来ます")))) )
+      (should (string= result "日本語が出来ます")))))
 
 ;; ------------------------------------------------------------------
 ;; Markdown prefix handling tests
@@ -92,7 +112,7 @@
       (ert-skip "Mozc not available on this environment")
     (let ((result (car (sumibi-roman-to-kanji-with-surrounding "# midashi" "" 1 nil))))
       ;; Mozc 変換では半角 # が全角 ＃ に変わり、スペースが消えるケースがある
-      (should (string= result "＃見出し")))) )
+      (should (string= result "＃見出し")))))
 
 (ert-deftest sumibi-mozc-md-list-star ()
   "'* koumoku' should convert to '* 項目'."
@@ -100,7 +120,7 @@
       (ert-skip "Mozc not available on this environment")
     (let ((result (car (sumibi-roman-to-kanji-with-surrounding "* koumoku" "" 1 nil))))
       ;; '*' -> '＊' に変化、スペースが省略される
-      (should (string= result "＊項目")))) )
+      (should (string= result "＊項目")))))
 
 (ert-deftest sumibi-mozc-md-list-dash ()
   "'- koumoku' should convert to '- 項目'."
@@ -108,7 +128,32 @@
       (ert-skip "Mozc not available on this environment")
     (let ((result (car (sumibi-roman-to-kanji-with-surrounding "- koumoku" "" 1 nil))))
       ;; '-' -> 'ー' (長音記号) に変化、スペース無し
-      (should (string= result "ー項目")))) )
+      (should (string= result "ー項目")))))
+
+;; ------------------------------------------------------------------
+;; End-to-end interaction test on *scratch* buffer
+;; ------------------------------------------------------------------
+
+(ert-deftest sumibi-mozc-scratch-heading-ctrl-j ()
+  "Insert '# midashi' in *scratch*, press C-j, and expect '# 見出し'."
+  (if (not sumibi--mozc-available-p)
+      (ert-skip "Mozc not available on this environment")
+    (with-current-buffer (get-buffer-create "*scratch*")
+      (let ((sumibi-backend 'mozc))
+        ;; 1. バッファをクリアし Sumibi モードを有効化
+        (erase-buffer)
+        (sumibi-mode 1)
+
+        ;; 2. '# midashi' を入力
+        (goto-char (point-min))
+        (insert "# midashi")
+
+        ;; 3. 行末で C-j (sumibi-rK-trans) を呼ぶ
+        (goto-char (point-max))
+        (sumibi-rK-trans)
+
+        ;; 4. バッファ内容を比較 (改行を含む場合はトリム)
+        (should (string= (string-trim (buffer-string)) "# 見出し"))))))
 
 (provide 'sumibi-mozc-tests)
 
