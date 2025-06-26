@@ -131,29 +131,32 @@
       (should (string= result "ー項目")))))
 
 ;; ------------------------------------------------------------------
-;; End-to-end interaction test on *scratch* buffer
+;; End-to-end helper & tests on *scratch* buffer
 ;; ------------------------------------------------------------------
 
+(defun sumibi-test--convert-in-scratch (input)
+  "Convert INPUT in *scratch* buffer by simulating `C-j'.
+
+Return trimmed resulting buffer string.  The Sumibi backend is forced to
+`mozc'.  The *scratch* buffer is cleared for each invocation so the call is
+idempotent and side-effect free for other tests."
+  (unless sumibi--mozc-available-p
+    (error "Mozc not available"))
+  (let ((sumibi-backend 'mozc))
+    (with-current-buffer (get-buffer-create "*scratch*")
+      (erase-buffer)
+      (sumibi-mode 1)
+      (goto-char (point-min))
+      (insert input)
+      (goto-char (point-max))
+      (sumibi-rK-trans)
+      (string-trim (buffer-string)))))
+
 (ert-deftest sumibi-mozc-scratch-heading-ctrl-j ()
-  "Insert '# midashi' in *scratch*, press C-j, and expect '# 見出し'."
+  "'# midashi' → '# 見出し' end-to-end conversion via C-j."
   (if (not sumibi--mozc-available-p)
       (ert-skip "Mozc not available on this environment")
-    (with-current-buffer (get-buffer-create "*scratch*")
-      (let ((sumibi-backend 'mozc))
-        ;; 1. バッファをクリアし Sumibi モードを有効化
-        (erase-buffer)
-        (sumibi-mode 1)
-
-        ;; 2. '# midashi' を入力
-        (goto-char (point-min))
-        (insert "# midashi")
-
-        ;; 3. 行末で C-j (sumibi-rK-trans) を呼ぶ
-        (goto-char (point-max))
-        (sumibi-rK-trans)
-
-        ;; 4. バッファ内容を比較 (改行を含む場合はトリム)
-        (should (string= (string-trim (buffer-string)) "# 見出し"))))))
+    (should (string= (sumibi-test--convert-in-scratch "# midashi") "# 見出し"))))
 
 (provide 'sumibi-mozc-tests)
 
