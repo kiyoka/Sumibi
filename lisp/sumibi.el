@@ -1760,7 +1760,23 @@ _ARG: (未使用)"
                                 (skip-chars-forward " \t" (point-at-eol)))))
               (sumibi-debug-print (format "indent-len = %d\n" indent-len))
               (when (> indent-len 0)
-                (setq limit-point (+ bol indent-len))))))
+                (setq limit-point (+ bol indent-len))
+                ;; --------------------------------------------------
+                ;; When the line begins with indentation followed by a
+                ;; list marker ("- " or "* "), also skip those two
+                ;; characters so that the conversion starts *after*
+                ;; the marker.  This makes constructs such as
+                ;; "  - koumoku" correctly convert only the roman
+                ;; letters part ("koumoku"), keeping the list prefix
+                ;; intact.  Existing behaviour for non-indented list
+                ;; items is preserved by the earlier branch that runs
+                ;; when `limit-point` equals `bol`.
+                (let* ((prefix-pos limit-point)
+                       (eol (point-at-eol))
+                       (prefix (and (>= eol (+ prefix-pos 2))
+                                    (buffer-substring-no-properties prefix-pos (+ prefix-pos 2)))))
+                  (when (member prefix '("- " "* "))
+                    (setq limit-point (+ prefix-pos 2))))))))
 
         ;; (sumibi-debug-print (format "(point) = %d  result = %d  limit-point = %d\n" (point) result limit-point))
         ;; (sumibi-debug-print (format "a = %d b = %d \n" (+ (point) result) limit-point))
