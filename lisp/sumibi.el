@@ -52,8 +52,22 @@
 
 (eval-when-compile (require 'cl-lib))
 
+
 (defvar sumibi--mozc-available-p (require 'mozc nil 'noerror)
   "Non-nil if `mozc.el' could be loaded successfully.")
+
+(defvar sumibi-mozc-session nil
+  "The active mozc session.")
+
+(defun sumibi-mozc-ensure-session ()
+  "Ensure `sumibi-mozc-session' is an active mozc session."
+  (unless sumibi-mozc-session
+    (setq sumibi-mozc-session (mozc-session-create))))
+
+(defvar sumibi-mozc-last-candidate-count 0
+  "Number of candidates returned by the last call to mozc.")
+(defvar sumibi-mozc-focused-index 0
+  "Focused candidate index returned by the last call to mozc.")
 
 (defun sumibi-mozc--candidate-list (roman arg-n)
   "Return up to ARG-N candidate strings for ROMAN using mozc.
@@ -63,7 +77,7 @@ ROMAN itself is returned so that callers can safely fall back."
   (if (not sumibi--mozc-available-p)
       (list roman)
     (setq roman (downcase roman))
-    (condition-case _err
+    (condition-case err
         (if (string-match-p "[ \t]" roman)
             ;; 空白で分割 → 各セグメントを再帰的に1件だけ変換 → つなげて返す
             (list (apply #'concat
@@ -72,38 +86,44 @@ ROMAN itself is returned so that callers can safely fall back."
                                  (split-string roman "[ \t]+" t))))
           ;; セグメント1件のときは従来ロジック
           (progn
-            (mozc-session-create t)
+            (sumibi-debug-print (format "mozc: ensuring session: %s" sumibi-mozc-session))
+            (sumibi-mozc-ensure-session)
+            (sumibi-debug-print (format "mozc: session is: %s" sumibi-mozc-session))
+            (sumibi-debug-print (format "mozc: sending keys for '%s'" roman))
             (dolist (ch (string-to-list roman))
               (mozc-session-sendkey (list ch)))
-    
+
             (let* ((iteration 0) resp cands)
               (while (and (< iteration 3)
                           (progn
+                            (sumibi-debug-print "mozc: sending <space> to get candidates")
                             (setq resp (mozc-session-sendkey '(space)))
                             (setq cands (and resp (mozc-protobuf-get resp 'candidates)))
                             (null cands)))
                 (setq iteration (1+ iteration)))
-    
-	      (sumibi-debug-print (format "sumibi-mozc--candidate-list cands=%s\n" cands))
+
+              (sumibi-debug-print (format "mozc: received candidates: %s\n" cands))
               (if (not cands)
                   (list roman)
                 (let* ((cand-list (mozc-protobuf-get cands 'candidate))
-                       ;; 候補の文字列リスト
-                       (values   (mapcar (lambda (cand)
-                                           (mozc-protobuf-get cand 'value))
-                                         cand-list))
-                       ;; annotation の description（カタカナ読み）
-                       (raw-anno  (mozc-protobuf-get (nth 0 cand-list) 'annotation))
+                       (values (mapcar (lambda (cand)
+                                         (let ((value (mozc-protobuf-get cand 'value))
+                                               (index (mozc-protobuf-get cand 'index)))
+                                           (propertize value :mozc-original-index index)))
+                                       cand-list))
+                       (raw-anno (mozc-protobuf-get (nth 0 cand-list) 'annotation))
                        (anno-desc (and raw-anno (mozc-protobuf-get raw-anno 'description)))
-                       (kata      anno-desc)
-                       ;; ひらがなに変換
-                       (hira      (and kata (sumibi-katakana-to-hiragana kata))))
-                  ;; 候補 + ひらがな読み + カタカナ読み
+                       (kata anno-desc)
+                       (hira (and kata (sumibi-katakana-to-hiragana kata))))
+                  (setq sumibi-mozc-last-candidate-count (length values))
+                  (setq sumibi-mozc-focused-index (mozc-protobuf-get cands 'focused-index))
                   (append values (delq nil (list hira kata))))))))
-      ;; error path ----------------------------------------------------
       (error
-       (sumibi-debug-print (format "sumibi-mozc--candidate-list:error\n"))
+       (sumibi-debug-print (format "mozc: error in candidate-list: %s\n" err))
+       (setq sumibi-mozc-session nil)
        (list roman)))))
+
+
 
 ;;; 
 ;;;
@@ -1361,8 +1381,21 @@ _ARG: (未使用)"
 (defun sumibi-select-kakutei ()
   "候補選択を確定する."
   (interactive)
-  ;; 候補番号リストをバックアップする。
+  (sumibi-debug-print (format "mozc: kakutei: cur=%d, roman=%s" sumibi-cand-cur sumibi-last-roman))
   (setq sumibi-cand-cur-backup sumibi-cand-cur)
+  (when (and (sumibi-backend-mozc-p) (not (string-match-p "[ \t]" sumibi-last-roman)))
+    (sumibi-mozc-ensure-session)
+    (let* ((selected-cand (nth sumibi-cand-cur sumibi-henkan-kouho-list))
+           (original-index (get-text-property 0 :mozc-original-index (car selected-cand))))
+      (if original-index
+          (let ((diff (- original-index sumibi-mozc-focused-index)))
+            (sumibi-debug-print (format "mozc: selecting mozc candidate %d (focused=%d, diff=%d)" original-index sumibi-mozc-focused-index diff))
+            (cond
+             ((< diff 0) (dotimes (_ (* -1 diff)) (mozc-session-sendkey '(up))))
+             ((> diff 0) (dotimes (_ diff) (mozc-session-sendkey '(down)))))
+            (mozc-session-sendkey '(enter)))
+        (sumibi-debug-print "mozc: selecting non-mozc candidate, sending <escape>")
+        (mozc-session-sendkey '(escape)))))
   (setq sumibi-select-mode nil)
   (run-hooks 'sumibi-select-mode-end-hook)
   (sumibi-select-operation-reset)
@@ -1373,7 +1406,11 @@ _ARG: (未使用)"
 (defun sumibi-select-cancel ()
   "候補選択をキャンセルする."
   (interactive)
-  ;; カレント候補番号をバックアップしていた候補番号で復元する。
+  (sumibi-debug-print (format "mozc: cancel: roman=%s" sumibi-last-roman))
+  (when (and (sumibi-backend-mozc-p) (not (string-match-p "[ \t]" sumibi-last-roman)))
+    (sumibi-mozc-ensure-session)
+    (sumibi-debug-print "mozc: sending <escape> to cancel")
+    (mozc-session-sendkey '(escape)))
   (setq sumibi-cand-cur sumibi-cand-cur-backup)
   (setq sumibi-select-mode nil)
   (run-hooks 'sumibi-select-mode-end-hook)
