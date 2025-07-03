@@ -10,7 +10,14 @@ REPO_NAME := $(shell basename $(shell git rev-parse --show-toplevel))
 VERSION   := $(shell git describe --tags --always)
 
 # Archive filename (override by specifying ARCHIVE_NAME)
+# 名前にはこれまで通り "-elisp-" を挟むが、展開した際のディレクトリ階層は
+# 例えば  ``Sumibi-3.1.0/…`` となるように、tar コマンドの --transform を使って
+# ルートディレクトリを付与する。
 ARCHIVE_NAME ?= $(REPO_NAME)-elisp-$(VERSION).tar.gz
+
+# Directory prefix that will be embedded *inside* the archive so that users
+# obtain   <repo>-<version>/   after extracting.
+PACKAGE_DIR := $(REPO_NAME)-$(VERSION)
 
 # Locate all .el files under the lisp directory
 EL_FILES := $(shell find ./lisp -type f -name '*.el')
@@ -31,7 +38,10 @@ release: $(ARCHIVE_NAME)
 # Package Emacs Lisp, Markdown, and LICENSE into tar.gz
 $(ARCHIVE_NAME): $(EL_FILES) $(MD_FILES) $(LICENSE_FILE)
 	@echo "Creating archive $@ containing Emacs Lisp, Markdown, and LICENSE files..."
-	tar czf $@ $^
+	# `tar --transform` でアーカイブ内のパス先頭に $(PACKAGE_DIR)/ を付与する。
+	tar czf $@ \
+	    --transform='s,^,$(PACKAGE_DIR)/,' \
+	    $^
 
 # Remove generated artifacts
 clean:
@@ -44,7 +54,7 @@ help:
 	@echo ""
 	@echo "Targets:"
 	@echo "  all (default): same as 'release'"
-	@echo "  release      : create $(ARCHIVE_NAME)"
+	@echo "  release      : create $(ARCHIVE_NAME) (archive contents are placed under '$(PACKAGE_DIR)/')"
 	@echo "  clean        : remove generated archives" 
 	@echo "  help         : show this message"
 	@echo "  test         : run ERT unit tests in batch mode (requires Emacs)"
