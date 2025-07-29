@@ -57,7 +57,7 @@
 
 ;; 低スペックマシン向けにmozc-helper-processのタイムアウトを延長
 (when sumibi--mozc-available-p
-  (setq mozc-helper-process-timeout-sec 5))
+  (setq mozc-helper-process-timeout-sec 10))
 
 (defun sumibi-mozc--candidate-list (roman arg-n)
   "Return up to ARG-N candidate strings for ROMAN using mozc.
