@@ -46,11 +46,11 @@ MODELS: List[str] = [
     "claude-opus-4-1-20250805",
     "claude-opus-4-20250514",
     "claude-sonnet-4-20250514",
-    "gpt-5-mini--reasoning-medium",
-    "gpt-5-mini--reasoning-minimal",
-    "gpt-5-nano--reasoning-minimal",
-    "gpt-5--reasoning-minimal",
-    "gpt-5--reasoning-medium",
+    "gpt-5-mini(medium)",
+    "gpt-5-mini(minimal)",
+    "gpt-5-nano(minimal)",
+    "gpt-5(minimal)",
+    "gpt-5(medium)",
 ]
 
 # 平均応答時間 (sec) v2.4.0
