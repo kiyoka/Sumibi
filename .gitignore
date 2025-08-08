@@ -3,6 +3,7 @@
 /benchmark/__pycache__
 benchmark/AJIMEE-Bench
 benchmark/evaluation_items.json
+benchmark/venv/
 .claude/settings.local.json
 memo.txt
 .\#memo.txt

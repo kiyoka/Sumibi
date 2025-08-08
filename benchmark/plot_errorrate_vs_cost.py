@@ -41,6 +41,11 @@ MASTER_COST: Dict[str, float] = {
     "claude-opus-4-1-20250805": 0.0225,
     "claude-opus-4-20250514": 0.0225,
     "claude-sonnet-4-20250514": 0.0045,
+    "gpt-5-mini--reasoning-medium": 0.000525,
+    "gpt-5-mini--reasoning-minimal": 0.000525,
+    "gpt-5-nano--reasoning-minimal": 0.000105,
+    "gpt-5--reasoning-minimal": 0.002625,
+    "gpt-5--reasoning-medium": 0.002625,
 }
 
 # モデルごとの基本色。matplotlib の named color もしくは hex
@@ -61,6 +66,11 @@ COLOR_MAP: Dict[str, str] = {
     "claude-opus-4-1-20250805": "mediumpurple",
     "claude-opus-4-20250514": "blueviolet",
     "claude-sonnet-4-20250514": "mediumorchid",
+    "gpt-5-mini--reasoning-medium": "limegreen",
+    "gpt-5-mini--reasoning-minimal": "forestgreen",
+    "gpt-5-nano--reasoning-minimal": "darkgreen",
+    "gpt-5--reasoning-minimal": "seagreen",
+    "gpt-5--reasoning-medium": "green",
 }
 
 # ---------------------------------------------------------------------------
@@ -84,6 +94,11 @@ DATA_V24: Dict[str, Dict[str, float]] = {
     "claude-opus-4-1-20250805": {"cer": 0.119479, "elapsed": 2.616859},
     "claude-opus-4-20250514": {"cer": 0.110761, "elapsed": 2.476723},
     "claude-sonnet-4-20250514": {"cer": 0.125210, "elapsed": 2.790457},
+    "gpt-5-mini--reasoning-medium": {"cer": 0.250286, "elapsed": 15.645264},
+    "gpt-5-mini--reasoning-minimal": {"cer": 0.359281, "elapsed": 1.278602},
+    "gpt-5-nano--reasoning-minimal": {"cer": 0.894475, "elapsed": 1.140173},
+    "gpt-5--reasoning-minimal": {"cer": 0.127556, "elapsed": 1.858604},
+    "gpt-5--reasoning-medium": {"cer": 0.046352, "elapsed": 34.859140},
 }
 
 # ---------------------------------------------------------------------------
@@ -190,7 +205,7 @@ def main():
     parser = argparse.ArgumentParser(description="Plot error rate vs cost (v2.4.0)")
     parser.add_argument("-o", "--output", help="Output image file path")
     parser.add_argument("--range", type=int, default=0, choices=[0, 1],
-                        help="Axis range mode: 0=default (0-70%%, auto x), 1=zoomed (0-35%%, 0-0.008$)")
+                        help="Axis range mode: 0=default (0-70%%, auto x), 1=zoomed (0-40%%, 0-0.008$)")
     args = parser.parse_args()
 
     plt.figure(figsize=(8, 6))
@@ -225,7 +240,7 @@ def main():
         plt.margins(x=0.05)
     elif args.range == 1:
         # ズーム範囲
-        plt.ylim(0, 35)
+        plt.ylim(0, 40)
         plt.xlim(0, 0.008)
 
     # 座標スケールを線形のまま維持（必要に応じて変更可）

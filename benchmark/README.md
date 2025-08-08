@@ -175,3 +175,29 @@ Sumibi のユーザビリティを左右する主要因として、以下の3つ
 | g6e.12xlarge     | 48   | 384          | 4                | 192              | 100                       | 20                |
 | g6e.24xlarge     | 96   | 768          | 4                | 192              | 200                       | 30                |
 | g6e.48xlarge     | 192  | 1,536        | 8                | 384              | 400                       | 60                |
+
+## 開発環境のセットアップ
+
+### venv環境の作成と有効化
+
+```bash
+# venv環境の作成
+python3 -m venv venv
+
+# venv環境の有効化
+source venv/bin/activate
+
+# OpenAIライブラリの最新版をインストール
+pip install --upgrade openai
+
+# venv環境の無効化（作業完了後）
+deactivate
+```
+
+### 環境変数の設定
+
+```bash
+export SUMIBI_AI_API_KEY="your-api-key"
+export SUMIBI_AI_MODEL="gpt-4.1-mini"
+```
+
