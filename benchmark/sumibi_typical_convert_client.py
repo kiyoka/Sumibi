@@ -88,7 +88,7 @@ class SumibiTypicalConvertClient:
             },
         ]
         response = self.client.chat.completions.create(
-            model=self.model, temperature=self.temperature, n=1, messages=messages
+            model=self.model, temperature=self.temperature, n=1, messages=messages, reasoning_effort="minimal"
         )
         return response.choices[0].message.content
 
