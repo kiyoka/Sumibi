@@ -23,7 +23,10 @@ class SumibiBench:
     """
     def __init__(self):
         self.converter = KatakanaToRomajiConverter()
-        self.client = SumibiTypicalConvertClient()
+        # Set temperature=1.0 for gpt-5- models
+        model = os.getenv("SUMIBI_AI_MODEL", "gpt-4.1")
+        temperature = 1.0 if model.startswith("gpt-5-") else None
+        self.client = SumibiTypicalConvertClient(temperature=temperature)
         # collect conversion results
         self.result_arr = []
 
