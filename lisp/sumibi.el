@@ -834,15 +834,26 @@ Argument BUF : http response buffer"
      'utf-8)
     (goto-char (point-min))
     (let ((status-line (buffer-substring (point-min) (progn (end-of-line) (point)))))
-      ;; Extract and return the status code
-      (if (string-match "\\([0-9]+\\) \\(.*\\)" status-line)
-          (match-string 1 status-line)
-	"400")
-      (re-search-forward "^$")
-      (forward-char)
-      (cons
-       status-line
-       (buffer-substring (point) (point-max))))))
+      ;; Extract status code
+      (sumibi-debug-print (format "status-line: [%s]\n" status-line))
+      (let ((status-code (if (string-match "^HTTP/[0-9.]+ \\([0-9]+\\)" status-line)
+                             (match-string 1 status-line)
+                           "400")))
+        (sumibi-debug-print (format "status-code: [%s]\n" status-code))
+        (re-search-forward "^$")
+        (forward-char)
+        (let ((body (buffer-substring (point) (point-max))))
+          ;; Return appropriate response based on status code
+          (if (string= status-code "200")
+              (cons status-code body)
+            ;; For non-200, return structured error message
+            (cond
+             ((string= status-code "401")
+              (cons status-code "{\"error\": { \"message\" : \"認証エラー: APIキーが無効または期限切れです\"}}"))
+             ((string= status-code "403")
+              (cons status-code "{\"error\": { \"message\" : \"認可エラー: このAPIキーにはアクセス権限がありません\"}}"))
+             (t
+              (cons status-code "{\"error\": { \"message\" : \"HTTPエラーが発生しました\"}}")))))))))
 
 ;;
 ;; OpenAI 互換 API にプロンプトを発行する
