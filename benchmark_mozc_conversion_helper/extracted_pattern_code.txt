@@ -1,0 +1,908 @@
+
+        # 青空文庫から抽出した126パターンのテストケース
+        cases = []
+        test_case = TestCase(
+                    context="「あの人はうちのお父さんとはちょうどおまえたちのように小さいときからのお友[tooru]だったそうだよ",
+                    reading="tooru",
+                    correct_answer="達",
+                    source_text="「あの人はうちのお父さんとはちょうどおまえたちのように小さいときからのお友達だったそうだよ"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="待て、と制[tomeru]して、結局また、本を山ほど番頭に背負わせて、金五円也を受け取る",
+                    reading="tomeru",
+                    correct_answer="止",
+                    source_text="待て、と制止して、結局また、本を山ほど番頭に背負わせて、金五円也を受け取る"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="ぼくお父さんはきっと間もなく帰ってくると[omou]よ",
+                    reading="omou",
+                    correct_answer="思う",
+                    source_text="ぼくお父さんはきっと間もなく帰ってくると思うよ"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="よそよそしい<ruby><rb>頭文字</rb><rp>（</rp><rt>かしらもじ</rt><rp>）</rp></ruby>などはとても[tukau]気にならない",
+                    reading="tukau",
+                    correct_answer="使う",
+                    source_text="よそよそしい<ruby><rb>頭文字</rb><rp>（</rp><rt>かしらもじ</rt><rp>）</rp></ruby>などはとても使う気にならない"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="父が変な[kiiroi]ものも<ruby><rb>嘔</rb><rp>（</rp><rt>は</rt><rp>）</rp></ruby>いた時、私はかつて先生と奥さんから聞かされた危険を思い出した",
+                    reading="kiiroi",
+                    correct_answer="黄色い",
+                    source_text="父が変な黄色いものも<ruby><rb>嘔</rb><rp>（</rp><rt>は</rt><rp>）</rp></ruby>いた時、私はかつて先生と奥さんから聞かされた危険を思い出した"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="それはこんやの星祭に[aoi]あかりをこしらえて川へ流す<ruby><rb>烏瓜</rb><rp>（</rp><rt>からすうり</rt><rp>）</rp></ruby>を取りに行く相談らしかったのです",
+                    reading="aoi",
+                    correct_answer="青い",
+                    source_text="それはこんやの星祭に青いあかりをこしらえて川へ流す<ruby><rb>烏瓜</rb><rp>（</rp><rt>からすうり</rt><rp>）</rp></ruby>を取りに行く相談らしかったのです"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="その人は、[akai]眼の下のとこを<ruby><rb>擦</rb><rp>（</rp><rt>こす</rt><rp>）</rp></ruby>りながら、ジョバンニを見おろして云いました",
+                    reading="akai",
+                    correct_answer="赤い",
+                    source_text="その人は、赤い眼の下のとこを<ruby><rb>擦</rb><rp>（</rp><rt>こす</rt><rp>）</rp></ruby>りながら、ジョバンニを見おろして云いました"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="「ではみなさんは、そういうふうに川だと<ruby><rb>云</rb><rp>（</rp><rt>い</rt><rp>）</rp></ruby>われたり、乳の流れたあとだと云われたりしていたこのぼんやりと[shiroi]ものがほんとうは何かご承知ですか",
+                    reading="shiroi",
+                    correct_answer="白い",
+                    source_text="「ではみなさんは、そういうふうに川だと<ruby><rb>云</rb><rp>（</rp><rt>い</rt><rp>）</rp></ruby>われたり、乳の流れたあとだと云われたりしていたこのぼんやりと白いものがほんとうは何かご承知ですか"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="お酒って、とても[yasui]ものじゃないの",
+                    reading="yasui",
+                    correct_answer="安い",
+                    source_text="お酒って、とても安いものじゃないの"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="それに以前からあまり<ruby><rb>[suki]</rb><rp>（</rp><rt>すき</rt><rp>）</rp></ruby>でない方だから」<br />",
+                    reading="suki",
+                    correct_answer="数奇",
+                    source_text="それに以前からあまり<ruby><rb>数奇</rb><rp>（</rp><rt>すき</rt><rp>）</rp></ruby>でない方だから」<br />"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="その方が<ruby><rb>淋</rb><rp>（</rp><rt>さむ</rt><rp>）</rp></ruby>しくなくって[yoi]から」<br />",
+                    reading="yoi",
+                    correct_answer="好い",
+                    source_text="その方が<ruby><rb>淋</rb><rp>（</rp><rt>さむ</rt><rp>）</rp></ruby>しくなくって好いから」<br />"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="お父さんが<ruby><rb>監獄</rb><rp>（</rp><rt>かんごく</rt><rp>）</rp></ruby>へ入るようなそんな[warui]ことをした<ruby><rb>筈</rb><rp>（</rp><rt>はず</rt><rp>）</rp></ruby>がないんだ",
+                    reading="warui",
+                    correct_answer="悪い",
+                    source_text="お父さんが<ruby><rb>監獄</rb><rp>（</rp><rt>かんごく</rt><rp>）</rp></ruby>へ入るようなそんな悪いことをした<ruby><rb>筈</rb><rp>（</rp><rt>はず</rt><rp>）</rp></ruby>がないんだ"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="「両方ともいわれる事はいわれますが、この場合は私の方が[tadashii]のです」<br />",
+                    reading="tadashii",
+                    correct_answer="正しい",
+                    source_text="「両方ともいわれる事はいわれますが、この場合は私の方が正しいのです」<br />"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="「アップはね、髪の毛の[sukunai]ひとがするといいのよ",
+                    reading="sukunai",
+                    correct_answer="少い",
+                    source_text="「アップはね、髪の毛の少いひとがするといいのよ"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="きたなくなった年数の[ooi]ものを先輩と呼ぶならば、私はたしかにあなたより先輩でしょう",
+                    reading="ooi",
+                    correct_answer="多い",
+                    source_text="きたなくなった年数の多いものを先輩と呼ぶならば、私はたしかにあなたより先輩でしょう"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="とお[wakai]二宮巡査も、<br />",
+                    reading="wakai",
+                    correct_answer="若い",
+                    source_text="とお若い二宮巡査も、<br />"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="ドレスの<ruby><rb>生地</rb><rp>（</rp><rt>きじ</rt><rp>）</rp></ruby>を間違って裁断した時みたいに、もうその生地は縫い合せる事も出来ず、全部捨てて、また別の[atarashii]生地の裁断にとりかからなければならぬ",
+                    reading="atarashii",
+                    correct_answer="新しい",
+                    source_text="ドレスの<ruby><rb>生地</rb><rp>（</rp><rt>きじ</rt><rp>）</rp></ruby>を間違って裁断した時みたいに、もうその生地は縫い合せる事も出来ず、全部捨てて、また別の新しい生地の裁断にとりかからなければならぬ"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="「あの人はうちのお父さんとはちょうどおまえたちのように[chiisai]ときからのお友達だったそうだよ",
+                    reading="chiisai",
+                    correct_answer="小さい",
+                    source_text="「あの人はうちのお父さんとはちょうどおまえたちのように小さいときからのお友達だったそうだよ"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="そうして、私は、ああ、お母さまのお顔は、さっきのあの[kanashii]蛇に、どこか似ていらっしゃる、と思った",
+                    reading="kanashii",
+                    correct_answer="悲しい",
+                    source_text="そうして、私は、ああ、お母さまのお顔は、さっきのあの悲しい蛇に、どこか似ていらっしゃる、と思った"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="「いい<ruby><rb>音</rb><rp>（</rp><rt>ね</rt><rp>）</rp></ruby>でしょう、あたし[ureshii]わ」とちゃらちゃらちゃらちゃら続け様に鳴らす",
+                    reading="ureshii",
+                    correct_answer="嬉しい",
+                    source_text="「いい<ruby><rb>音</rb><rp>（</rp><rt>ね</rt><rp>）</rp></ruby>でしょう、あたし嬉しいわ」とちゃらちゃらちゃらちゃら続け様に鳴らす"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="汽車に乗った時には、半分死んでいるような気持で、ここに着いた時も、はじめちょっと[tanoshii]ような気分がしたけど、薄暗くなったら、もう東京がこいしくて、胸がこげるようで、気が遠くなってしまったの",
+                    reading="tanoshii",
+                    correct_answer="楽しい",
+                    source_text="汽車に乗った時には、半分死んでいるような気持で、ここに着いた時も、はじめちょっと楽しいような気分がしたけど、薄暗くなったら、もう東京がこいしくて、胸がこげるようで、気が遠くなってしまったの"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="「[isogashii]でしょう」<br />",
+                    reading="isogashii",
+                    correct_answer="忙しい",
+                    source_text="「忙しいでしょう」<br />"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="お父上がお亡くなりになって十年間、お母さまは、お父上の在世中と少しも変らない、のんきな、[yasashii]お母さまだった",
+                    reading="yasashii",
+                    correct_answer="優しい",
+                    source_text="お父上がお亡くなりになって十年間、お母さまは、お父上の在世中と少しも変らない、のんきな、優しいお母さまだった"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="そしてその天の川の水のなかから四方を見ると、ちょうど水が深いほど青く見えるように、天の川の底の深く[tooi]ところほど星がたくさん集って見えしたがって白くぼんやり見えるのです",
+                    reading="tooi",
+                    correct_answer="遠い",
+                    source_text="そしてその天の川の水のなかから四方を見ると、ちょうど水が深いほど青く見えるように、天の川の底の深く遠いところほど星がたくさん集って見えしたがって白くぼんやり見えるのです"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="ゲエテにだって[chikai]って言える",
+                    reading="chikai",
+                    correct_answer="誓",
+                    source_text="ゲエテにだって誓って言える"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="」と云いながら[kurai]戸口を出ました",
+                    reading="kurai",
+                    correct_answer="暗い",
+                    source_text="」と云いながら暗い戸口を出ました"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="私は直治の好きだった焼き<ruby><rb>林檎</rb><rp>（</rp><rt>りんご</rt><rp>）</rp></ruby>と、それから、卵のお料理などこしらえて、食堂の電球も[akarui]のと取りかえ、ずいぶん待って、そのうちに、お咲さんが、お勝手口からひょいと顔を出し、<br />",
+                    reading="akarui",
+                    correct_answer="明るい",
+                    source_text="私は直治の好きだった焼き<ruby><rb>林檎</rb><rp>（</rp><rt>りんご</rt><rp>）</rp></ruby>と、それから、卵のお料理などこしらえて、食堂の電球も明るいのと取りかえ、ずいぶん待って、そのうちに、お咲さんが、お勝手口からひょいと顔を出し、<br />"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="<ruby><rb>憩</rb><rp>（</rp><rt>いこ</rt><rp>）</rp></ruby>える帆は、例外なく[kitanai]",
+                    reading="kitanai",
+                    correct_answer="汚い",
+                    source_text="<ruby><rb>憩</rb><rp>（</rp><rt>いこ</rt><rp>）</rp></ruby>える帆は、例外なく汚い"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="私はその時にも、ただ[utukushii]蛇だ、という思いばかりが強く、やがて御堂に行って画集を持ち出し、かえりにさっきの蛇のいたところをそっと見たが、もういなかった",
+                    reading="utukushii",
+                    correct_answer="美しい",
+                    source_text="私はその時にも、ただ美しい蛇だ、という思いばかりが強く、やがて御堂に行って画集を持ち出し、かえりにさっきの蛇のいたところをそっと見たが、もういなかった"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="灰色みたいな[samui]西風が吹いて、煙が低く地を<ruby><rb>這</rb><rp>（</rp><rt>は</rt><rp>）</rp></ruby>っていて、私は、ふとお母さまの顔を見上げ、お母さまのお顔色が、いままで見たこともなかったくらいに悪いのにびっくりして、<br />",
+                    reading="samui",
+                    correct_answer="寒い",
+                    source_text="灰色みたいな寒い西風が吹いて、煙が低く地を<ruby><rb>這</rb><rp>（</rp><rt>は</rt><rp>）</rp></ruby>っていて、私は、ふとお母さまの顔を見上げ、お母さまのお顔色が、いままで見たこともなかったくらいに悪いのにびっくりして、<br />"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="霧でお耳が濡れて、お耳の裏が[tumetai]」<br />",
+                    reading="tumetai",
+                    correct_answer="冷たい",
+                    source_text="霧でお耳が濡れて、お耳の裏が冷たい」<br />"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="私は全くそのために先生と人間らしい[atatakai]<ruby><rb>交際</rb><rp>（</rp><rt>つきあい</rt><rp>）</rp></ruby>ができたのだと思う",
+                    reading="atatakai",
+                    correct_answer="温かい",
+                    source_text="私は全くそのために先生と人間らしい温かい<ruby><rb>交際</rb><rp>（</rp><rt>つきあい</rt><rp>）</rp></ruby>ができたのだと思う"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="奥さんの不安も実はそこに<ruby><rb>漂</rb><rp>（</rp><rt>ただよ</rt><rp>）</rp></ruby>う[usui]雲に似た疑惑から出て来ていた",
+                    reading="usui",
+                    correct_answer="薄い",
+                    source_text="奥さんの不安も実はそこに<ruby><rb>漂</rb><rp>（</rp><rt>ただよ</rt><rp>）</rp></ruby>う薄い雲に似た疑惑から出て来ていた"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="こっちやこっちの方はガラスが[atui]ので、光る粒即ち星がたくさん見えその遠いのはぼうっと白く見えるというこれがつまり今日の銀河の説なのです",
+                    reading="atui",
+                    correct_answer="厚い",
+                    source_text="こっちやこっちの方はガラスが厚いので、光る粒即ち星がたくさん見えその遠いのはぼうっと白く見えるというこれがつまり今日の銀河の説なのです"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="先生のいった自然に死ぬとか、不自然の暴力で死ぬとかいう言葉も、その場限りの[asai]印象を与えただけで、<ruby><rb>後</rb><rp>（</rp><rt>あと</rt><rp>）</rp></ruby>は何らのこだわりを私の頭に残さなかった",
+                    reading="asai",
+                    correct_answer="浅い",
+                    source_text="先生のいった自然に死ぬとか、不自然の暴力で死ぬとかいう言葉も、その場限りの浅い印象を与えただけで、<ruby><rb>後</rb><rp>（</rp><rt>あと</rt><rp>）</rp></ruby>は何らのこだわりを私の頭に残さなかった"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="ご[fukai]でも、しのんでいただきます",
+                    reading="fukai",
+                    correct_answer="不快",
+                    source_text="ご不快でも、しのんでいただきます"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="私は先生の交際の範囲の<ruby><rb>極</rb><rp>（</rp><rt>きわ</rt><rp>）</rp></ruby>めて[semai]事を知っていた",
+                    reading="semai",
+                    correct_answer="狭い",
+                    source_text="私は先生の交際の範囲の<ruby><rb>極</rb><rp>（</rp><rt>きわ</rt><rp>）</rp></ruby>めて狭い事を知っていた"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="そこから<ruby><rb>幅</rb><rp>（</rp><rt>はば</rt><rp>）</rp></ruby>の[hiroi]みちが、まっすぐに銀河の青光の中へ通っていました",
+                    reading="hiroi",
+                    correct_answer="広い",
+                    source_text="そこから<ruby><rb>幅</rb><rp>（</rp><rt>はば</rt><rp>）</rp></ruby>の広いみちが、まっすぐに銀河の青光の中へ通っていました"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="強い人に見えますか、[yowai]人に見えますか」<br />",
+                    reading="yowai",
+                    correct_answer="弱い",
+                    source_text="強い人に見えますか、弱い人に見えますか」<br />"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="きょうは一つ、[tuyoi]お注射をしてさし上げますから、お熱もさがる事でしょう」<br />",
+                    reading="tuyoi",
+                    correct_answer="強い",
+                    source_text="きょうは一つ、強いお注射をしてさし上げますから、お熱もさがる事でしょう」<br />"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="「あの、お断りの手紙、いまごろ[karui]沢のほうに着いている事と存じます",
+                    reading="karui",
+                    correct_answer="軽井",
+                    source_text="「あの、お断りの手紙、いまごろ軽井沢のほうに着いている事と存じます"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="そうだといえば、父の病気の[omoi]のを裏書きするようなものであった",
+                    reading="omoi",
+                    correct_answer="重い",
+                    source_text="そうだといえば、父の病気の重いのを裏書きするようなものであった"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="「もう[osoi]から早く帰りたまえ",
+                    reading="osoi",
+                    correct_answer="遅い",
+                    source_text="「もう遅いから早く帰りたまえ"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="私は、編物でもお針でも、人よりずっと[hayai]けれども、しかし、下手だった",
+                    reading="hayai",
+                    correct_answer="早い",
+                    source_text="私は、編物でもお針でも、人よりずっと早いけれども、しかし、下手だった"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="これが私たち親子が神さまからいただいた[mijikai]休息の期間であったとしても、もうすでにこの平和には、何か不吉な、暗い影が忍び寄って来ているような気がしてならない",
+                    reading="mijikai",
+                    correct_answer="短い",
+                    source_text="これが私たち親子が神さまからいただいた短い休息の期間であったとしても、もうすでにこの平和には、何か不吉な、暗い影が忍び寄って来ているような気がしてならない"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="そこら中を見ても、駅[nagai]や<ruby><rb>赤帽</rb><rp>（</rp><rt>あかぼう</rt><rp>）</rp></ruby>らしい人の、<ruby><rb>影</rb><rp>（</rp><rt>かげ</rt><rp>）</rp></ruby>もなかったのです",
+                    reading="nagai",
+                    correct_answer="長",
+                    source_text="そこら中を見ても、駅長や<ruby><rb>赤帽</rb><rp>（</rp><rt>あかぼう</rt><rp>）</rp></ruby>らしい人の、<ruby><rb>影</rb><rp>（</rp><rt>かげ</rt><rp>）</rp></ruby>もなかったのです"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="右手の[hikui]<ruby><rb>丘</rb><rp>（</rp><rt>おか</rt><rp>）</rp></ruby>の上に小さな<ruby><rb>水晶</rb><rp>（</rp><rt>すいしょう</rt><rp>）</rp></ruby>ででもこさえたような二つのお宮がならんで立っていました",
+                    reading="hikui",
+                    correct_answer="低い",
+                    source_text="右手の低い<ruby><rb>丘</rb><rp>（</rp><rt>おか</rt><rp>）</rp></ruby>の上に小さな<ruby><rb>水晶</rb><rp>（</rp><rt>すいしょう</rt><rp>）</rp></ruby>ででもこさえたような二つのお宮がならんで立っていました"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="ジョバンニはすぐ入口から三番目の[takai]<ruby><rb>卓子</rb><rp>（</rp><rt>テーブル</rt><rp>）</rp></ruby>に<ruby><rb>座</rb><rp>（</rp><rt>すわ</rt><rp>）</rp></ruby>った人の所へ行っておじぎをしました",
+                    reading="takai",
+                    correct_answer="高い",
+                    source_text="ジョバンニはすぐ入口から三番目の高い<ruby><rb>卓子</rb><rp>（</rp><rt>テーブル</rt><rp>）</rp></ruby>に<ruby><rb>座</rb><rp>（</rp><rt>すわ</rt><rp>）</rp></ruby>った人の所へ行っておじぎをしました"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="ここは百二十万年前、第三紀のあとのころは海岸でね、この下からは貝がらも[deru]",
+                    reading="deru",
+                    correct_answer="出る",
+                    source_text="ここは百二十万年前、第三紀のあとのころは海岸でね、この下からは貝がらも出る"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="お父さんが<ruby><rb>監獄</rb><rp>（</rp><rt>かんごく</rt><rp>）</rp></ruby>へ[hairu]ようなそんな悪いことをした<ruby><rb>筈</rb><rp>（</rp><rt>はず</rt><rp>）</rp></ruby>がないんだ",
+                    reading="hairu",
+                    correct_answer="入る",
+                    source_text="お父さんが<ruby><rb>監獄</rb><rp>（</rp><rt>かんごく</rt><rp>）</rp></ruby>へ入るようなそんな悪いことをした<ruby><rb>筈</rb><rp>（</rp><rt>はず</rt><rp>）</rp></ruby>がないんだ"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="「なあに品物が[modoru]のよ",
+                    reading="modoru",
+                    correct_answer="戻る",
+                    source_text="「なあに品物が戻るのよ"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="ほんとうにどんなつらいことでもそれがただしいみちを[susumu]中でのできごとなら<ruby><rb>峠</rb><rp>（</rp><rt>とうげ</rt><rp>）</rp></ruby>の上りも下りもみんなほんとうの幸福に近づく一あしずつですから",
+                    reading="susumu",
+                    correct_answer="進む",
+                    source_text="ほんとうにどんなつらいことでもそれがただしいみちを進む中でのできごとなら<ruby><rb>峠</rb><rp>（</rp><rt>とうげ</rt><rp>）</rp></ruby>の上りも下りもみんなほんとうの幸福に近づく一あしずつですから"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="また欺こうとしても、そう長く[tuduku]ものではないと見抜いたのかも知れません",
+                    reading="tuduku",
+                    correct_answer="続く",
+                    source_text="また欺こうとしても、そう長く続くものではないと見抜いたのかも知れません"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="お顔色が[owaru]いわ」<br />",
+                    reading="owaru",
+                    correct_answer="お悪",
+                    source_text="お顔色がお悪いわ」<br />"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="そのくせ話し[hajimeru]時は、危篤の病人とは思われないほど、強い声を出した",
+                    reading="hajimeru",
+                    correct_answer="始める",
+                    source_text="そのくせ話し始める時は、危篤の病人とは思われないほど、強い声を出した"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="弟の直治でさえ、ママにはかなわねえ、と言っているが、つくづく私も、お母さまの真似は困難で、絶望みたいなものをさえ[kanjiru]事がある",
+                    reading="kanjiru",
+                    correct_answer="感じる",
+                    source_text="弟の直治でさえ、ママにはかなわねえ、と言っているが、つくづく私も、お母さまの真似は困難で、絶望みたいなものをさえ感じる事がある"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="またこれを巨きな乳の流れと[kangaeru]ならもっと天の川とよく似ています",
+                    reading="kangaeru",
+                    correct_answer="考える",
+                    source_text="またこれを巨きな乳の流れと考えるならもっと天の川とよく似ています"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="それが[wakaru]くらいなら私だって、こんなに心配しやしません",
+                    reading="wakaru",
+                    correct_answer="解る",
+                    source_text="それが解るくらいなら私だって、こんなに心配しやしません"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="それは、この本の[shiru]者が、何の<ruby><rb>躊躇</rb><rp>（</rp><rt>ちゅうちょ</rt><rp>）</rp></ruby>も無く、片端から旧来の思想を破壊して行くがむしゃらな勇気である",
+                    reading="shiru",
+                    correct_answer="著",
+                    source_text="それは、この本の著者が、何の<ruby><rb>躊躇</rb><rp>（</rp><rt>ちゅうちょ</rt><rp>）</rp></ruby>も無く、片端から旧来の思想を破壊して行くがむしゃらな勇気である"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="小さい時から私は、よく人から、「あなたと一緒にいると苦労を[wasureru]」と言われて来ました",
+                    reading="wasureru",
+                    correct_answer="忘れる",
+                    source_text="小さい時から私は、よく人から、「あなたと一緒にいると苦労を忘れる」と言われて来ました"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="私だって、こうして、ローザルクセンブルグの本など読んで、自分がキザったらしく思われる事もないではないが、けれどもまた、やはり私は私なりに深い興味を[oboeru]のだ",
+                    reading="oboeru",
+                    correct_answer="覚える",
+                    source_text="私だって、こうして、ローザルクセンブルグの本など読んで、自分がキザったらしく思われる事もないではないが、けれどもまた、やはり私は私なりに深い興味を覚えるのだ"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="彼等人間が母から、<ruby><rb>乳母</rb><rp>（</rp><rt>うば</rt><rp>）</rp></ruby>から、他人から実用上の言語を[narau]時には、ただ聞いた通りを繰り返すよりほかに毛頭の野心はないのである",
+                    reading="narau",
+                    correct_answer="習う",
+                    source_text="彼等人間が母から、<ruby><rb>乳母</rb><rp>（</rp><rt>うば</rt><rp>）</rp></ruby>から、他人から実用上の言語を習う時には、ただ聞いた通りを繰り返すよりほかに毛頭の野心はないのである"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="青年は[oshieru]ようにそっと姉弟にまた云いました",
+                    reading="oshieru",
+                    correct_answer="教える",
+                    source_text="青年は教えるようにそっと姉弟にまた云いました"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="そう気づいて、泣き出したくなって立ちつくしていたら、前のお家の西山さんのお嫁さんが垣根の外で、お風呂場が丸焼けだよ、かまどの火の不始末だよ、と<ruby><rb>声高</rb><rp>（</rp><rt>こわだか</rt><rp>）</rp></ruby>に[hanasu]のが聞えた",
+                    reading="hanasu",
+                    correct_answer="話す",
+                    source_text="そう気づいて、泣き出したくなって立ちつくしていたら、前のお家の西山さんのお嫁さんが垣根の外で、お風呂場が丸焼けだよ、かまどの火の不始末だよ、と<ruby><rb>声高</rb><rp>（</rp><rt>こわだか</rt><rp>）</rp></ruby>に話すのが聞えた"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="どうもからだに<ruby><rb>恰度</rb><rp>（</rp><rt>ちょうど</rt><rp>）</rp></ruby>[au]ほど<ruby><rb>稼</rb><rp>（</rp><rt>かせ</rt><rp>）</rp></ruby>いでいるくらい、いいことはありませんな",
+                    reading="au",
+                    correct_answer="合う",
+                    source_text="どうもからだに<ruby><rb>恰度</rb><rp>（</rp><rt>ちょうど</rt><rp>）</rp></ruby>合うほど<ruby><rb>稼</rb><rp>（</rp><rt>かせ</rt><rp>）</rp></ruby>いでいるくらい、いいことはありませんな"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="私は先生と[wakareru]時に、「これから折々お<ruby><rb>宅</rb><rp>（</rp><rt>たく</rt><rp>）</rp></ruby>へ伺っても<ruby><rb>宜</rb><rp>（</rp><rt>よ</rt><rp>）</rp></ruby>ござんすか」と聞いた",
+                    reading="wakareru",
+                    correct_answer="別れる",
+                    source_text="私は先生と別れる時に、「これから折々お<ruby><rb>宅</rb><rp>（</rp><rt>たく</rt><rp>）</rp></ruby>へ伺っても<ruby><rb>宜</rb><rp>（</rp><rt>よ</rt><rp>）</rp></ruby>ござんすか」と聞いた"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="お母さまのように、天性の教養、という言葉もへんだが、そんなものをお持ちのお方は、案外なんでもなく、当然の事として革命を[mukaeru]事が出来るのかも知れない",
+                    reading="mukaeru",
+                    correct_answer="迎える",
+                    source_text="お母さまのように、天性の教養、という言葉もへんだが、そんなものをお持ちのお方は、案外なんでもなく、当然の事として革命を迎える事が出来るのかも知れない"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="親を<ruby><rb>騙</rb><rp>（</rp><rt>だま</rt><rp>）</rp></ruby>すような<ruby><rb>不埒</rb><rp>（</rp><rt>ふらち</rt><rp>）</rp></ruby>なものに学資を[okuru]事はできないという厳しい返事をすぐ寄こしたのです",
+                    reading="okuru",
+                    correct_answer="送る",
+                    source_text="親を<ruby><rb>騙</rb><rp>（</rp><rt>だま</rt><rp>）</rp></ruby>すような<ruby><rb>不埒</rb><rp>（</rp><rt>ふらち</rt><rp>）</rp></ruby>なものに学資を送る事はできないという厳しい返事をすぐ寄こしたのです"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="私はちょうど主人の帰りを待ち[ukeru]客のような気がして済まなかった",
+                    reading="ukeru",
+                    correct_answer="受ける",
+                    source_text="私はちょうど主人の帰りを待ち受ける客のような気がして済まなかった"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="そうして、それが、<ruby><rb>所謂</rb><rp>（</rp><rt>いわゆる</rt><rp>）</rp></ruby>民衆の友になり[eru]<ruby><rb>唯一</rb><rp>（</rp><rt>ゆいいつ</rt><rp>）</rp></ruby>の道だと思ったのです",
+                    reading="eru",
+                    correct_answer="得る",
+                    source_text="そうして、それが、<ruby><rb>所謂</rb><rp>（</rp><rt>いわゆる</rt><rp>）</rp></ruby>民衆の友になり得る<ruby><rb>唯一</rb><rp>（</rp><rt>ゆいいつ</rt><rp>）</rp></ruby>の道だと思ったのです"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="お酒を飲んで、こんなに我を[ushinau]ほど酔ったのも、その時がはじめてでした",
+                    reading="ushinau",
+                    correct_answer="失う",
+                    source_text="お酒を飲んで、こんなに我を失うほど酔ったのも、その時がはじめてでした"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="それでね、直治が帰って来て、お母さまと、直治と、かず子と三人あそんで暮していては、叔父さまもその生活費を都合なさるのにたいへんな苦労をしなければならぬから、いまのうちに、かず子のお嫁入りさきを[sagasu]か、または、御奉公のお家を捜すか、どちらかになさい、という、まあ、お言いつけなの」<br />",
+                    reading="sagasu",
+                    correct_answer="捜す",
+                    source_text="それでね、直治が帰って来て、お母さまと、直治と、かず子と三人あそんで暮していては、叔父さまもその生活費を都合なさるのにたいへんな苦労をしなければならぬから、いまのうちに、かず子のお嫁入りさきを捜すか、または、御奉公のお家を捜すか、どちらかになさい、という、まあ、お言いつけなの」<br />"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="けれども自分はきっとこの病気で命を取られるとまで信じていたかどうか、そこになると[utagau]余地はまだいくらでもあるだろうと思われるのです",
+                    reading="utagau",
+                    correct_answer="疑う",
+                    source_text="けれども自分はきっとこの病気で命を取られるとまで信じていたかどうか、そこになると疑う余地はまだいくらでもあるだろうと思われるのです"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="自分のような、いやらしくおどおどして、ひとの顔いろばかり伺い、人を[shinjiru]能力が、ひび割れてしまっているものにとって、ヨシ子の<ruby><rb>無垢</rb><rp>（</rp><rt>むく</rt><rp>）</rp></ruby>の信頼心は、それこそ青葉の滝のようにすがすがしく思われていたのです",
+                    reading="shinjiru",
+                    correct_answer="信じる",
+                    source_text="自分のような、いやらしくおどおどして、ひとの顔いろばかり伺い、人を信じる能力が、ひび割れてしまっているものにとって、ヨシ子の<ruby><rb>無垢</rb><rp>（</rp><rt>むく</rt><rp>）</rp></ruby>の信頼心は、それこそ青葉の滝のようにすがすがしく思われていたのです"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="これは病人自身のためでもありますし、また[aisuru]妻のためでもありましたが、もっと大きな意味からいうと、ついに人間のためでした",
+                    reading="aisuru",
+                    correct_answer="愛する",
+                    source_text="これは病人自身のためでもありますし、また愛する妻のためでもありましたが、もっと大きな意味からいうと、ついに人間のためでした"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="実をいうと、父の病気は[osoreru]べき<ruby><rb>腸</rb><rp>（</rp><rt>ちょう</rt><rp>）</rp></ruby><ruby><rb>窒扶斯</rb><rp>（</rp><rt>チフス</rt><rp>）</rp></ruby>でした",
+                    reading="osoreru",
+                    correct_answer="恐る",
+                    source_text="実をいうと、父の病気は恐るべき<ruby><rb>腸</rb><rp>（</rp><rt>ちょう</rt><rp>）</rp></ruby><ruby><rb>窒扶斯</rb><rp>（</rp><rt>チフス</rt><rp>）</rp></ruby>でした"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="ちっともしゃがんでいらっしゃらないのには[odoroku]いたが、けれども、私などにはとても真似られない、しんから可愛らしい感じがあった",
+                    reading="odoroku",
+                    correct_answer="驚",
+                    source_text="ちっともしゃがんでいらっしゃらないのには驚いたが、けれども、私などにはとても真似られない、しんから可愛らしい感じがあった"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="<ruby><rb>我儘</rb><rp>（</rp><rt>わがまま</rt><rp>）</rp></ruby>もこのくらいなら我慢するが吾輩は人間の不徳についてこれよりも数倍[kanashimu]べき報道を耳にした事がある",
+                    reading="kanashimu",
+                    correct_answer="悲しむ",
+                    source_text="<ruby><rb>我儘</rb><rp>（</rp><rt>わがまま</rt><rp>）</rp></ruby>もこのくらいなら我慢するが吾輩は人間の不徳についてこれよりも数倍悲しむべき報道を耳にした事がある"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="<ruby><rb>怒</rb><rp>（</rp><rt>おこ</rt><rp>）</rp></ruby>るも[yorokobu]も感情というものがさっぱり出ないんだ",
+                    reading="yorokobu",
+                    correct_answer="喜ぶ",
+                    source_text="<ruby><rb>怒</rb><rp>（</rp><rt>おこ</rt><rp>）</rp></ruby>るも喜ぶも感情というものがさっぱり出ないんだ"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="お火を粗末にすれば火事が[okoru]、というきわめて当然の事にも、気づかないほどの私はあの<ruby><rb>所謂</rb><rp>（</rp><rt>いわゆる</rt><rp>）</rp></ruby>「おひめさま」だったのだろうか",
+                    reading="okoru",
+                    correct_answer="起る",
+                    source_text="お火を粗末にすれば火事が起る、というきわめて当然の事にも、気づかないほどの私はあの<ruby><rb>所謂</rb><rp>（</rp><rt>いわゆる</rt><rp>）</rp></ruby>「おひめさま」だったのだろうか"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="爵位が[naku]ても、天爵というものを持っている立派な貴族のひともあるし、おれたちのように爵位だけは持っていても、貴族どころか、<ruby><rb>賤民</rb><rp>（</rp><rt>せんみん</rt><rp>）</rp></ruby>にちかいのもいる",
+                    reading="naku",
+                    correct_answer="無く",
+                    source_text="爵位が無くても、天爵というものを持っている立派な貴族のひともあるし、おれたちのように爵位だけは持っていても、貴族どころか、<ruby><rb>賤民</rb><rp>（</rp><rt>せんみん</rt><rp>）</rp></ruby>にちかいのもいる"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="顔を見合せ、何か、すっかりわかり合ったものを感じて、うふふと私が[warau]と、お母さまも、にっこりお笑いになった",
+                    reading="warau",
+                    correct_answer="笑う",
+                    source_text="顔を見合せ、何か、すっかりわかり合ったものを感じて、うふふと私が笑うと、お母さまも、にっこりお笑いになった"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="ところが先[ikiru]は早くもそれを<ruby><rb>見附</rb><rp>（</rp><rt>みつ</rt><rp>）</rp></ruby>けたのでした",
+                    reading="ikiru",
+                    correct_answer="生",
+                    source_text="ところが先生は早くもそれを<ruby><rb>見附</rb><rp>（</rp><rt>みつ</rt><rp>）</rp></ruby>けたのでした"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="尾にこんなかぎがあってそれで<ruby><rb>螫</rb><rp>（</rp><rt>さ</rt><rp>）</rp></ruby>されると[shinu]って先生が云ったよ",
+                    reading="shinu",
+                    correct_answer="死ぬ",
+                    source_text="尾にこんなかぎがあってそれで<ruby><rb>螫</rb><rp>（</rp><rt>さ</rt><rp>）</rp></ruby>されると死ぬって先生が云ったよ"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="二人ならんでお母さまの枕もとに[suwaru]と、お母さまは、急にお蒲団の下から手をお出しになって、そうして、黙って直治のほうを指差し、それから私を指差し、それから叔父さまのほうへお顔をお向けになって、両方の掌をひたとお合せになった",
+                    reading="suwaru",
+                    correct_answer="坐る",
+                    source_text="二人ならんでお母さまの枕もとに坐ると、お母さまは、急にお蒲団の下から手をお出しになって、そうして、黙って直治のほうを指差し、それから私を指差し、それから叔父さまのほうへお顔をお向けになって、両方の掌をひたとお合せになった"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="<ruby><rb>身体</rb><rp>（</rp><rt>からだ</rt><rp>）</rp></ruby>を半分起してそれを受け取った先生は、[okiru]とも寝るとも片付かないその姿勢のままで、変な事を私に聞いた",
+                    reading="okiru",
+                    correct_answer="起きる",
+                    source_text="<ruby><rb>身体</rb><rp>（</rp><rt>からだ</rt><rp>）</rp></ruby>を半分起してそれを受け取った先生は、起きるとも寝るとも片付かないその姿勢のままで、変な事を私に聞いた"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="私はその言葉のために、帰ってから安心して[neru]事ができた",
+                    reading="neru",
+                    correct_answer="寝る",
+                    source_text="私はその言葉のために、帰ってから安心して寝る事ができた"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="今夜は[nomu]ぜ」<br />",
+                    reading="nomu",
+                    correct_answer="飲む",
+                    source_text="今夜は飲むぜ」<br />"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="第一おれがきさまらのもってきたものなど[kuu]か",
+                    reading="kuu",
+                    correct_answer="食う",
+                    source_text="第一おれがきさまらのもってきたものなど食うか"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="小僧にいうと、いくらでも出してはくれるが、さてどれを選んでいいのか、[kau]段になっては、ただ迷うだけであった",
+                    reading="kau",
+                    correct_answer="買う",
+                    source_text="小僧にいうと、いくらでも出してはくれるが、さてどれを選んでいいのか、買う段になっては、ただ迷うだけであった"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="「古本屋に[uru]さ」<br />",
+                    reading="uru",
+                    correct_answer="売る",
+                    source_text="「古本屋に売るさ」<br />"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="二人の間にある<ruby><rb>生命</rb><rp>（</rp><rt>いのち</rt><rp>）</rp></ruby>の扉を[akeru]<ruby><rb>鍵</rb><rp>（</rp><rt>かぎ</rt><rp>）</rp></ruby>にはならなかった",
+                    reading="akeru",
+                    correct_answer="開ける",
+                    source_text="二人の間にある<ruby><rb>生命</rb><rp>（</rp><rt>いのち</rt><rp>）</rp></ruby>の扉を開ける<ruby><rb>鍵</rb><rp>（</rp><rt>かぎ</rt><rp>）</rp></ruby>にはならなかった"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="「天の川の水あかりに、十日もつるして[oku]かね、そうでなけぁ、砂に三四日うずめなけぁいけないんだ",
+                    reading="oku",
+                    correct_answer="置く",
+                    source_text="「天の川の水あかりに、十日もつるして置くかね、そうでなけぁ、砂に三四日うずめなけぁいけないんだ"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="あの様子じゃことによるとまだなかなか[motu]かも知れませんよ」<br />",
+                    reading="motu",
+                    correct_answer="持つ",
+                    source_text="あの様子じゃことによるとまだなかなか持つかも知れませんよ」<br />"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="ゴーシュは町の活動写真館でセロを[hiku]係りでした",
+                    reading="hiku",
+                    correct_answer="弾く",
+                    source_text="ゴーシュは町の活動写真館でセロを弾く係りでした"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="そうして「よく考えたのですか」と念を[osu]のです",
+                    reading="osu",
+                    correct_answer="押す",
+                    source_text="そうして「よく考えたのですか」と念を押すのです"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="和田の叔父さまは、私に二千円お手渡しになって、もし万一、入院などしなければならぬようになったら、東京へ電報を[utu]ように、と言い残して、ひとまずその日に帰京なされた",
+                    reading="utu",
+                    correct_answer="打つ",
+                    source_text="和田の叔父さまは、私に二千円お手渡しになって、もし万一、入院などしなければならぬようになったら、東京へ電報を打つように、と言い残して、ひとまずその日に帰京なされた"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="そこで地方の若いものが、女といっしょに[oyogu]事も出来ず、さればと云って遠くから判然その姿を見る事も許されないのを残念に思って、ちょっといたずらをした……」<br />",
+                    reading="oyogu",
+                    correct_answer="泳ぐ",
+                    source_text="そこで地方の若いものが、女といっしょに泳ぐ事も出来ず、さればと云って遠くから判然その姿を見る事も許されないのを残念に思って、ちょっといたずらをした……」<br />"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="川の遠くを[tobu]んでいたって、ぼくはきっと見える",
+                    reading="tobu",
+                    correct_answer="飛",
+                    source_text="川の遠くを飛んでいたって、ぼくはきっと見える"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="カムパネルラのうちにはアルコールラムプで[hashiru]汽車があったんだ",
+                    reading="hashiru",
+                    correct_answer="走る",
+                    source_text="カムパネルラのうちにはアルコールラムプで走る汽車があったんだ"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="<ruby><rb>賑</rb><rp>（</rp><rt>にぎや</rt><rp>）</rp></ruby>かな町の方へ一<ruby><rb>丁</rb><rp>（</rp><rt>ちょう</rt><rp>）</rp></ruby>ほど[aruku]と、私も散歩がてら雑司ヶ谷へ行ってみる気になった",
+                    reading="aruku",
+                    correct_answer="歩く",
+                    source_text="<ruby><rb>賑</rb><rp>（</rp><rt>にぎや</rt><rp>）</rp></ruby>かな町の方へ一<ruby><rb>丁</rb><rp>（</rp><rt>ちょう</rt><rp>）</rp></ruby>ほど歩くと、私も散歩がてら雑司ヶ谷へ行ってみる気になった"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="たしかにあれがみんな星だと、いつか雑誌で読んだのでしたが、このごろはジョバンニはまるで毎日教室でもねむく、本を[yomu]ひまも読む本もないので、なんだかどんなこともよくわからないという気持ちがするのでした",
+                    reading="yomu",
+                    correct_answer="読む",
+                    source_text="たしかにあれがみんな星だと、いつか雑誌で読んだのでしたが、このごろはジョバンニはまるで毎日教室でもねむく、本を読むひまも読む本もないので、なんだかどんなこともよくわからないという気持ちがするのでした"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="<ruby><rb>結[kaku]</rb><rp>（</rp><rt>テーベ</rt><rp>）</rp></ruby>",
+                    reading="kaku",
+                    correct_answer="核",
+                    source_text="<ruby><rb>結核</rb><rp>（</rp><rt>テーベ</rt><rp>）</rp></ruby>"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="あれはね、人間の指で握りしめて[tukuru]からですよ」<br />",
+                    reading="tukuru",
+                    correct_answer="作る",
+                    source_text="あれはね、人間の指で握りしめて作るからですよ」<br />"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="私は飛び[tatu]思いで、<br />",
+                    reading="tatu",
+                    correct_answer="立つ",
+                    source_text="私は飛び立つ思いで、<br />"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="私は、戦争の追憶は語るのも、[kiku]のも、いやだ",
+                    reading="kiku",
+                    correct_answer="聞く",
+                    source_text="私は、戦争の追憶は語るのも、聞くのも、いやだ"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="ジョバンニは<ruby><rb>勢</rb><rp>（</rp><rt>いきおい</rt><rp>）</rp></ruby>よく立ちあがりましたが、立って[miru]ともうはっきりとそれを答えることができないのでした",
+                    reading="miru",
+                    correct_answer="見る",
+                    source_text="ジョバンニは<ruby><rb>勢</rb><rp>（</rp><rt>いきおい</rt><rp>）</rp></ruby>よく立ちあがりましたが、立って見るともうはっきりとそれを答えることができないのでした"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="どうしても、思い[kiru]事が出来ないのですか",
+                    reading="kiru",
+                    correct_answer="切る",
+                    source_text="どうしても、思い切る事が出来ないのですか"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="と[iu]と、子供たちはおどり上がって喜び、私のあとからついて来る",
+                    reading="iu",
+                    correct_answer="言う",
+                    source_text="と言うと、子供たちはおどり上がって喜び、私のあとからついて来る"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="ぼくは学校から[kaeru]<ruby><rb>途中</rb><rp>（</rp><rt>とちゅう</rt><rp>）</rp></ruby>たびたびカムパネルラのうちに寄った",
+                    reading="kaeru",
+                    correct_answer="帰る",
+                    source_text="ぼくは学校から帰る<ruby><rb>途中</rb><rp>（</rp><rt>とちゅう</rt><rp>）</rp></ruby>たびたびカムパネルラのうちに寄った"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="気[toru]という事は、上品という事と、ぜんぜん無関係なあさましい虚勢だ",
+                    reading="toru",
+                    correct_answer="取る",
+                    source_text="気取るという事は、上品という事と、ぜんぜん無関係なあさましい虚勢だ"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="好意的に両家の便宜を[hakaru]というよりも、ずっと<ruby><rb>下卑</rb><rp>（</rp><rt>げび</rt><rp>）</rp></ruby>た利害心に駆られて、結婚問題を私に向けたのです",
+                    reading="hakaru",
+                    correct_answer="計る",
+                    source_text="好意的に両家の便宜を計るというよりも、ずっと<ruby><rb>下卑</rb><rp>（</rp><rt>げび</rt><rp>）</rp></ruby>た利害心に駆られて、結婚問題を私に向けたのです"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="それが単なる自白に過ぎないのか、またはその自白についで、実際的の効果をも[osameru]気なのかと問うたのです",
+                    reading="osameru",
+                    correct_answer="収める",
+                    source_text="それが単なる自白に過ぎないのか、またはその自白についで、実際的の効果をも収める気なのかと問うたのです"
+                )
+                cases.append(test_case)
+
+        return cases
