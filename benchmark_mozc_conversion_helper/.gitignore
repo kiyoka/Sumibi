@@ -1,0 +1,34 @@
+# データファイル（青空文庫ダウンロードファイル）
+data/
+
+# Python関連
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.pytest_cache/
+venv/
+env/
+
+# 結果ファイル
+results/
+
+# ログファイル
+*.log
+
+# 一時ファイル
+*.tmp
+*.swp
+*.swo
+*~
+
+# IDEファイル
+.vscode/
+.idea/
+*.sublime-*
+
+# OS固有ファイル
+.DS_Store
+Thumbs.db
