@@ -12,8 +12,9 @@ import time
 import re
 import os
 import sys
+import random
 from pathlib import Path
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from dataclasses import dataclass
 
 # 親ディレクトリの mozc_helper をロード
@@ -40,6 +41,8 @@ class LLMSelectionBenchmark:
         self.client = openai.OpenAI(api_key=api_key)
         self.model = model
         self.mozc_client = MozcClient()
+        # 再現可能性のためのランダムシード設定
+        random.seed(42)
 
     def _load_cases_from_file(self, pattern_file: str = "extracted_pattern_code.txt") -> List[TestCase]:
         path = Path(pattern_file)
@@ -72,50 +75,124 @@ class LLMSelectionBenchmark:
         if not candidates:
             return test_case.reading
 
-        candidates_text = "\n".join([f"{i+1}. {c['candidate']}" for i, c in enumerate(candidates)])
+        # モデル情報の表示
+        print(f"    Using model: {self.model}")
 
-        prompt = f"""
-以下の文脈で、「{test_case.reading}」を最も適切な漢字に変換してください。
+        # 候補をランダムにシャッフルして、LLMが順序に依存しないかテスト
+        shuffled_candidates = candidates.copy()
+        random.shuffle(shuffled_candidates)
 
-要件:
-- 文中の [reading] 部分を、候補のいずれかで置換したときに、文全体として自然で正しい現代日本語になるものを選ぶこと。
-- 複数の候補が成立する場合は、現代日本語で一般的な表記を優先すること。
-- 回答は候補番号のみ（例: 1）。
+        # デバッグ用：元の順序とシャッフル後の順序を表示
+        original_order = [c['candidate'] for c in candidates]
+        shuffled_order = [c['candidate'] for c in shuffled_candidates]
+        print(f"    Original order: {original_order}")
+        print(f"    Shuffled order: {shuffled_order}")
 
-文脈: {test_case.context}
+        # 正解候補がシャッフル後のどの位置にあるかを確認
+        correct_answer = test_case.correct_answer
+        if correct_answer in shuffled_order:
+            correct_position = shuffled_order.index(correct_answer) + 1
+            print(f"    Correct answer '{correct_answer}' is at position {correct_position} in shuffled list")
+        else:
+            print(f"    Correct answer '{correct_answer}' not found in candidates")
 
-変換候補:
+        # シャッフル後の候補リストとオリジナルのインデックスマッピングを保存
+        shuffle_mapping = {}
+        for new_idx, candidate in enumerate(shuffled_candidates):
+            original_idx = candidates.index(candidate)
+            shuffle_mapping[new_idx] = original_idx
+
+        candidates_text = "\n".join([f"{i+1}. {c['candidate']}" for i, c in enumerate(shuffled_candidates)])
+
+        prompt = f"""文: {test_case.context}
+
+「{test_case.reading}」に最適な漢字を選択肢から選んでください。
+
 {candidates_text}
 
-回答は候補番号のみ答えてください（例: 1）。
-"""
+番号のみ回答してください:"""
+
+        print(f"    Sending prompt to LLM: {prompt[:100]}...")
 
         try:
-            params: Dict = {
-                "model": self.model,
-                "messages": [
-                    {"role": "system", "content": "あなたは日本語の文脈に基づいて最適な漢字変換を選択するアシスタントです。"},
-                    {"role": "user", "content": prompt},
-                ],
-            }
-            # gpt-5 系は temperature 指定不可・max_completion_tokens 指定が必要
-            if str(self.model).startswith("gpt-5"):
-                params["max_completion_tokens"] = 10
-            else:
-                params["temperature"] = 0.1
-                params["max_tokens"] = 10
+            # シンプルなフォールバック用のプロンプトも準備
+            simple_prompt = f"次の選択肢から番号を選んでください:\n{candidates_text}\n文脈: {test_case.context[:50]}...\n答え:"
 
-            response = self.client.chat.completions.create(**params)
-            llm_response = response.choices[0].message.content.strip()
+            for attempt in range(2):
+                current_prompt = prompt if attempt == 0 else simple_prompt
+                print(f"    Attempt {attempt + 1}: {'Original' if attempt == 0 else 'Simple'} prompt")
+
+                # gpt-5用にはより強い指示が必要
+                if "gpt-5" in str(self.model):
+                    system_msg = "You must answer with only a number from the given choices. Answer with just the number, nothing else."
+                else:
+                    system_msg = "選択肢から番号を選んで答えてください。"
+
+                params: Dict = {
+                    "model": self.model,
+                    "messages": [
+                        {"role": "system", "content": system_msg},
+                        {"role": "user", "content": current_prompt},
+                    ],
+                }
+
+                # モデルに応じてパラメータを調整（安全な方法）
+                try:
+                    if "gpt-5" in str(self.model):
+                        # gpt-5系: temperatureは設定しない（デフォルト値使用）
+                        # トークン制限も最小限にして安全性を確保
+                        pass
+                    else:
+                        # その他のモデル
+                        params["temperature"] = 0.1
+                        params["max_tokens"] = 20
+                except Exception as param_error:
+                    print(f"    Warning: Parameter setting failed: {param_error}")
+                    # パラメータ設定に失敗した場合はデフォルト設定で続行
+
+                print(f"    Using params: {[k for k in params.keys()]}")
+
+                response = self.client.chat.completions.create(**params)
+                print(f"    API response finish_reason: {response.choices[0].finish_reason}")
+                print(f"    Full response object available: {hasattr(response.choices[0], 'message')}")
+
+                llm_response = response.choices[0].message.content
+                print(f"    LLM raw response: '{llm_response}' (type: {type(llm_response)})")
+
+                if llm_response is None:
+                    llm_response = ""
+                    print("    Warning: LLM returned None response")
+                else:
+                    llm_response = llm_response.strip()
+                    print(f"    After strip: '{llm_response}'")
+
+                # 空でない応答が得られたら処理続行
+                if llm_response:
+                    break
+
+                print(f"    Empty response on attempt {attempt + 1}, trying {'simple prompt' if attempt == 0 else 'giving up'}")
+
             m = re.search(r"\d+", llm_response)
             if m:
-                idx = int(m.group()) - 1
-                if 0 <= idx < len(candidates):
-                    return candidates[idx]["candidate"]
-        except Exception as e:
-            print(f"LLM selection error: {e}")
+                selected_number = int(m.group())
+                shuffled_idx = selected_number - 1
+                print(f"    LLM selected number: {selected_number} (0-based index: {shuffled_idx})")
 
-        return candidates[0]["candidate"] if candidates else test_case.reading
+                if 0 <= shuffled_idx < len(shuffled_candidates):
+                    selected_candidate = shuffled_candidates[shuffled_idx]["candidate"]
+                    print(f"    Selected candidate: '{selected_candidate}'")
+                    return selected_candidate
+                else:
+                    print(f"    ERROR: Invalid index {shuffled_idx}, using first candidate")
+            else:
+                print(f"    ERROR: No number found in LLM response, using first candidate")
+        except Exception as e:
+            print(f"    ERROR: LLM API error: {e}")
+
+        # フォールバック: 最初の候補を返す
+        fallback_candidate = shuffled_candidates[0]["candidate"] if shuffled_candidates else test_case.reading
+        print(f"    Using fallback candidate: '{fallback_candidate}'")
+        return fallback_candidate
 
     def evaluate_single_case(self, test_case: TestCase) -> Dict:
         candidates = self.mozc_client.get_conversion_candidates(
@@ -131,6 +208,11 @@ class LLMSelectionBenchmark:
             return bool(re.fullmatch(r"[ぁ-ん]+", text))
 
         llm_is_correct = (llm_selection == test_case.correct_answer) or _is_hiragana(llm_selection)
+        mozc_is_correct = mozc_top == test_case.correct_answer
+
+        # 結果判定のデバッグログ
+        print(f"    Results: LLM='{llm_selection}' Mozc='{mozc_top}' Correct='{test_case.correct_answer}'")
+        print(f"    LLM correct: {llm_is_correct}, Mozc correct: {mozc_is_correct}")
 
         return {
             "test_case": {
@@ -139,12 +221,13 @@ class LLMSelectionBenchmark:
                 "correct_answer": test_case.correct_answer,
                 "source_text": test_case.source_text,
             },
-            "candidates": candidates,
+            "candidates": candidates,  # 元の順序（Mozcの順序）
             "llm_selection": llm_selection,
             "mozc_top": mozc_top,
             "llm_correct": llm_is_correct,
-            "mozc_correct": mozc_top == test_case.correct_answer,
+            "mozc_correct": mozc_is_correct,
             "improvement": (llm_selection == test_case.correct_answer) and (mozc_top != test_case.correct_answer),
+            "note": "候補はLLMにランダム順序で提示されました"
         }
 
     def run_benchmark(self, data_files: List[str] = None, output_file: str = None):
