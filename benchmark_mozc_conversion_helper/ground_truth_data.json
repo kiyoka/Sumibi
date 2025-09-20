@@ -345,8 +345,8 @@
   {
     "id": 50,
     "reading": "susumu",
-    "correct_answer": "勧",
-    "context": "最後に、おおさわさんにお[susumu]め絵本を紹介していただいた",
+    "correct_answer": "勧め",
+    "context": "最後に、おおさわさんにお[susumu]絵本を紹介していただいた",
     "source": "aozora_bunko"
   },
   {
