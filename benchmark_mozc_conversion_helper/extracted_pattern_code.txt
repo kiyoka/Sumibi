@@ -1,27 +1,10 @@
-
         # コーパスから抽出したテストケース
         cases = []
-        test_case = TestCase(
-                    context="心が癒されるまでの期間は連絡を断ちきり、それ以降はメールを送るなどして、友[tooru]関係に戻ることが多いですね」 オール・オア・ナッシングだった以前に比べ、今は縁を切る、友人に戻る、メル友関係を続けるなど、別れた後の関係性を選択できるようになった",
-                    reading="tooru",
-                    correct_answer="達",
-                    source_text="心が癒されるまでの期間は連絡を断ちきり、それ以降はメールを送るなどして、友達関係に戻ることが多いですね」 オール・オア・ナッシングだった以前に比べ、今は縁を切る、友人に戻る、メル友関係を続けるなど、別れた後の関係性を選択できるようになった"
-                )
-                cases.append(test_case)
-
                 test_case = TestCase(
                     context="もちろんエッチはナシで」（優さん） 一方「信頼関係がある男友達でも、一人きりで家に[tomaru]のはマナー違反",
                     reading="tomaru",
                     correct_answer="泊まる",
                     source_text="もちろんエッチはナシで」（優さん） 一方「信頼関係がある男友達でも、一人きりで家に泊まるのはマナー違反"
-                )
-                cases.append(test_case)
-
-                test_case = TestCase(
-                    context="医師に筋力の低下を指摘されて、駅までの自転車を[tomeru]めて、片道30分の道のりを毎日往復歩くことに",
-                    reading="tomeru",
-                    correct_answer="止",
-                    source_text="医師に筋力の低下を指摘されて、駅までの自転車を止めて、片道30分の道のりを毎日往復歩くことに"
                 )
                 cases.append(test_case)
 
@@ -78,22 +61,6 @@
                     reading="yasui",
                     correct_answer="安い",
                     source_text="しかし今は不況で夫の収入が減ったとはいえ、外食、ブランド品購入、安いツアーとはいえ海外旅行にも行っている"
-                )
-                cases.append(test_case)
-
-                test_case = TestCase(
-                    context="○自分の[suki]時間はできるだけ彼の側にいる",
-                    reading="suki",
-                    correct_answer="空き",
-                    source_text="○自分の空き時間はできるだけ彼の側にいる"
-                )
-                cases.append(test_case)
-
-                test_case = TestCase(
-                    context="「モデル並みに格好良かったですけど、一緒に歩いていても常に周りの女の子の目を気にするというか、『俺、格[yoi]いだろ』って感じでした",
-                    reading="yoi",
-                    correct_answer="好い",
-                    source_text="「モデル並みに格好良かったですけど、一緒に歩いていても常に周りの女の子の目を気にするというか、『俺、格好いいだろ』って感じでした"
                 )
                 cases.append(test_case)
 
@@ -394,14 +361,6 @@
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="主役はあくまで新郎新婦ながらも、いざとなると緊張し、内容もあれこれ考えて、こっそりリハーサル……そんな人知れず頑張るスピーチ担当独女たちにも幸あれ（[takai]山惠）",
-                    reading="takai",
-                    correct_answer="高",
-                    source_text="主役はあくまで新郎新婦ながらも、いざとなると緊張し、内容もあれこれ考えて、こっそりリハーサル……そんな人知れず頑張るスピーチ担当独女たちにも幸あれ（高山惠）"
-                )
-                cases.append(test_case)
-
-                test_case = TestCase(
                     context="お見合いもさせられたし、母がとにかくしこつくてうるさいから家を[deru]ことも考えたんですけど、職場の同僚にそれを相談しているうちに彼との間に恋愛感情が芽生えたんです",
                     reading="deru",
                     correct_answer="出る",
@@ -658,14 +617,6 @@
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="「女性社員は休憩室で一緒にお昼ご飯を食べるのですが、そのときの話題が社内の噂話や悪口ばかりで[odoroku]いています",
-                    reading="odoroku",
-                    correct_answer="驚",
-                    source_text="「女性社員は休憩室で一緒にお昼ご飯を食べるのですが、そのときの話題が社内の噂話や悪口ばかりで驚いています"
-                )
-                cases.append(test_case)
-
-                test_case = TestCase(
                     context="これに対して喜ぶ人や[kanashimu]人も togetter：一部まとめブログが２ちゃんねるから著作物利用を拒否される ■パクリ疑惑を否定する井上マー氏のオフィシャルブログエントリー ■２ちゃんねる内の警告文 ■２ちゃんねる",
                     reading="kanashimu",
                     correct_answer="悲しむ",
@@ -702,14 +653,6 @@
                     reading="warau",
                     correct_answer="笑う",
                     source_text="「よく笑う明るい娘さんなんですけど、初めて家に来るのにミニスカートをはいてきたんです"
-                )
-                cases.append(test_case)
-
-                test_case = TestCase(
-                    context="ネットなどで友情関係を続けるのはよいが、同時に淡く切ない恋の思い出は[ikiru]活感、現実感にまみれてしまうことがあるので、繋ぎすぎには注意したいところ",
-                    reading="ikiru",
-                    correct_answer="生",
-                    source_text="ネットなどで友情関係を続けるのはよいが、同時に淡く切ない恋の思い出は生活感、現実感にまみれてしまうことがあるので、繋ぎすぎには注意したいところ"
                 )
                 cases.append(test_case)
 
@@ -846,14 +789,6 @@
                     reading="tobu",
                     correct_answer="飛ぶ",
                     source_text="一度火がつけばその人気は一気に全国区となり、関連商品は飛ぶように売れまくる"
-                )
-                cases.append(test_case)
-
-                test_case = TestCase(
-                    context="以降、自分がシカであるくせに、干支の牛や虎になるために気ぐるみを着てみたり、ムーヴコンテに搭載されている新技術の「CVT」を「ちょっと ヴぃっくりな 低燃費」と解説するなど、ちょっとひねくれた辛口評論家という設定を無視するかのごとく、キャラが独[hashiru]を続けている",
-                    reading="hashiru",
-                    correct_answer="走",
-                    source_text="以降、自分がシカであるくせに、干支の牛や虎になるために気ぐるみを着てみたり、ムーヴコンテに搭載されている新技術の「CVT」を「ちょっと ヴぃっくりな 低燃費」と解説するなど、ちょっとひねくれた辛口評論家という設定を無視するかのごとく、キャラが独走を続けている"
                 )
                 cases.append(test_case)
 
