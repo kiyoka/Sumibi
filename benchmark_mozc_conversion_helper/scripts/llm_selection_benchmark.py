@@ -36,6 +36,36 @@ class LLMSelectionBenchmark:
         self.mozc_client = MozcClient()
         self.results = []
 
+    def _load_cases_from_file(self, pattern_file: str = "extracted_pattern_code.txt") -> List[TestCase]:
+        """extracted_pattern_code.txt から TestCase 群を読み込む（存在すれば優先）。"""
+        path = Path(pattern_file)
+        if not path.exists():
+            return []
+
+        try:
+            content = path.read_text(encoding='utf-8')
+        except Exception as e:
+            print(f"Failed to read {pattern_file}: {e}")
+            return []
+
+        # TestCase(context="...", reading="...", correct_answer="...", source_text="...") を抽出
+        patterns = re.findall(r'TestCase\([^)]+\)', content, re.DOTALL)
+        cases: List[TestCase] = []
+        for pat in patterns:
+            context_m = re.search(r'context="([^"]*)"', pat)
+            reading_m = re.search(r'reading="([^"]*)"', pat)
+            correct_m = re.search(r'correct_answer="([^"]*)"', pat)
+            source_m  = re.search(r'source_text="([^"]*)"', pat)
+            if not (context_m and reading_m and correct_m and source_m):
+                continue
+            cases.append(TestCase(
+                context=context_m.group(1),
+                reading=reading_m.group(1),
+                correct_answer=correct_m.group(1),
+                source_text=source_m.group(1)
+            ))
+        return cases
+
     def extract_test_cases_from_aozora(self, text_file: str, num_cases: int = 50) -> List[TestCase]:
         """青空文庫テキストからテストケースを抽出"""
         try:
@@ -212,6 +242,11 @@ class LLMSelectionBenchmark:
         prompt = f"""
 以下の文脈で、「{test_case.reading}」を最も適切な漢字に変換してください。
 
+要件:
+- 文中の [reading] 部分を、候補のいずれかで置換したときに、文全体として自然で正しい現代日本語になるものを選ぶこと。
+- 複数の候補が成立する場合は、現代日本語で一般的な表記を優先すること。
+- 回答は候補番号のみ（例: 1）。
+
 文脈: {test_case.context}
 
 変換候補:
@@ -284,9 +319,13 @@ class LLMSelectionBenchmark:
         print("=== LLM Selection Benchmark ===")
         print(f"Model: {self.model}")
 
-        # 埋め込み済みのテストケースを使用
-        all_test_cases = self._extract_cases_from_sentence("")
-        print(f"Using embedded test cases: {len(all_test_cases)}")
+        # 抽出済みファイル必須（フォールバックは廃止）
+        all_test_cases = self._load_cases_from_file()
+        if not all_test_cases:
+            print("Error: extracted_pattern_code.txt が見つからないか、テストケースが0件です。")
+            print("先に scripts/extract_patterns_from_corpus.py を実行して extracted_pattern_code.txt を生成してください。")
+            return
+        print(f"Using extracted test cases from file: {len(all_test_cases)}")
 
         print(f"\nTotal test cases: {len(all_test_cases)}")
 

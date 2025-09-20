@@ -1,907 +1,963 @@
 
-        # 青空文庫から抽出した126パターンのテストケース
+        # コーパスから抽出したテストケース
         cases = []
         test_case = TestCase(
-                    context="「あの人はうちのお父さんとはちょうどおまえたちのように小さいときからのお友[tooru]だったそうだよ",
+                    context="心が癒されるまでの期間は連絡を断ちきり、それ以降はメールを送るなどして、友[tooru]関係に戻ることが多いですね」 オール・オア・ナッシングだった以前に比べ、今は縁を切る、友人に戻る、メル友関係を続けるなど、別れた後の関係性を選択できるようになった",
                     reading="tooru",
                     correct_answer="達",
-                    source_text="「あの人はうちのお父さんとはちょうどおまえたちのように小さいときからのお友達だったそうだよ"
+                    source_text="心が癒されるまでの期間は連絡を断ちきり、それ以降はメールを送るなどして、友達関係に戻ることが多いですね」 オール・オア・ナッシングだった以前に比べ、今は縁を切る、友人に戻る、メル友関係を続けるなど、別れた後の関係性を選択できるようになった"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="待て、と制[tomeru]して、結局また、本を山ほど番頭に背負わせて、金五円也を受け取る",
+                    context="もちろんエッチはナシで」（優さん） 一方「信頼関係がある男友達でも、一人きりで家に[tomaru]のはマナー違反",
+                    reading="tomaru",
+                    correct_answer="泊まる",
+                    source_text="もちろんエッチはナシで」（優さん） 一方「信頼関係がある男友達でも、一人きりで家に泊まるのはマナー違反"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="医師に筋力の低下を指摘されて、駅までの自転車を[tomeru]めて、片道30分の道のりを毎日往復歩くことに",
                     reading="tomeru",
                     correct_answer="止",
-                    source_text="待て、と制止して、結局また、本を山ほど番頭に背負わせて、金五円也を受け取る"
+                    source_text="医師に筋力の低下を指摘されて、駅までの自転車を止めて、片道30分の道のりを毎日往復歩くことに"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="ぼくお父さんはきっと間もなく帰ってくると[omou]よ",
+                    context="一人暮らしなので聞かせて感想をいってくれる人もいないし、かといって他の友人にわざわざ聞かせるのもどうかと[omou]し……」ということで活用したのが、なんとインターネットの悩み相談サイトに",
                     reading="omou",
                     correct_answer="思う",
-                    source_text="ぼくお父さんはきっと間もなく帰ってくると思うよ"
+                    source_text="一人暮らしなので聞かせて感想をいってくれる人もいないし、かといって他の友人にわざわざ聞かせるのもどうかと思うし……」ということで活用したのが、なんとインターネットの悩み相談サイトに"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="よそよそしい頭文字などはとても[tukau]気にならない",
+                    context="最近、紫外線をジリジリとお肌に感じながらも日やけ止めを[tukau]ことで「肌の負担になるのは嫌」と、使い損ねていた独女の皆さんは、ぜひ試してみては",
                     reading="tukau",
                     correct_answer="使う",
-                    source_text="よそよそしい頭文字などはとても使う気にならない"
+                    source_text="最近、紫外線をジリジリとお肌に感じながらも日やけ止めを使うことで「肌の負担になるのは嫌」と、使い損ねていた独女の皆さんは、ぜひ試してみては"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="父が変な[kiiroi]ものも嘔いた時、私はかつて先生と奥さんから聞かされた危険を思い出した",
+                    context="浴室の壁には一面に富士山のペンキ絵が描かれていて、[kiiroi]洗面器にはケロリンの文字…",
                     reading="kiiroi",
                     correct_answer="黄色い",
-                    source_text="父が変な黄色いものも嘔いた時、私はかつて先生と奥さんから聞かされた危険を思い出した"
+                    source_text="浴室の壁には一面に富士山のペンキ絵が描かれていて、黄色い洗面器にはケロリンの文字…"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="それはこんやの星祭に[aoi]あかりをこしらえて川へ流す烏瓜を取りに行く相談らしかったのです",
+                    context="野菜初心者なので、すでにいくつか[aoi]実のついているミニトマトと、立派なズッキーニが1本なっている鉢植えから始めることにした",
                     reading="aoi",
                     correct_answer="青い",
-                    source_text="それはこんやの星祭に青いあかりをこしらえて川へ流す烏瓜を取りに行く相談らしかったのです"
+                    source_text="野菜初心者なので、すでにいくつか青い実のついているミニトマトと、立派なズッキーニが1本なっている鉢植えから始めることにした"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="その人は、[akai]眼の下のとこを擦りながら、ジョバンニを見おろして云いました",
+                    context="[akai]ドレスや生足がダメなことは分かったが、一番人気のホステスさんはどんなタイプなのだろう? 「普通のお嬢さんという感じのホステスが、お客様には人気です",
                     reading="akai",
                     correct_answer="赤い",
-                    source_text="その人は、赤い眼の下のとこを擦りながら、ジョバンニを見おろして云いました"
+                    source_text="赤いドレスや生足がダメなことは分かったが、一番人気のホステスさんはどんなタイプなのだろう? 「普通のお嬢さんという感じのホステスが、お客様には人気です"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="「ではみなさんは、そういうふうに川だと云われたり、乳の流れたあとだと云われたりしていたこのぼんやりと[shiroi]ものがほんとうは何かご承知ですか",
+                    context="それなのに、レジの前という限られたスペースでこんなに見ているところが違うのは面[shiroi]",
                     reading="shiroi",
                     correct_answer="白い",
-                    source_text="「ではみなさんは、そういうふうに川だと云われたり、乳の流れたあとだと云われたりしていたこのぼんやりと白いものがほんとうは何かご承知ですか"
+                    source_text="それなのに、レジの前という限られたスペースでこんなに見ているところが違うのは面白い"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="お酒って、とても[yasui]ものじゃないの",
+                    context="しかし今は不況で夫の収入が減ったとはいえ、外食、ブランド品購入、[yasui]ツアーとはいえ海外旅行にも行っている",
                     reading="yasui",
                     correct_answer="安い",
-                    source_text="お酒って、とても安いものじゃないの"
+                    source_text="しかし今は不況で夫の収入が減ったとはいえ、外食、ブランド品購入、安いツアーとはいえ海外旅行にも行っている"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="それに以前からあまり[suki]でない方だから」",
+                    context="○自分の[suki]時間はできるだけ彼の側にいる",
                     reading="suki",
-                    correct_answer="数奇",
-                    source_text="それに以前からあまり数奇でない方だから」"
+                    correct_answer="空き",
+                    source_text="○自分の空き時間はできるだけ彼の側にいる"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="その方が淋しくなくって[yoi]から」",
+                    context="「モデル並みに格好良かったですけど、一緒に歩いていても常に周りの女の子の目を気にするというか、『俺、格[yoi]いだろ』って感じでした",
                     reading="yoi",
                     correct_answer="好い",
-                    source_text="その方が淋しくなくって好いから」"
+                    source_text="「モデル並みに格好良かったですけど、一緒に歩いていても常に周りの女の子の目を気にするというか、『俺、格好いいだろ』って感じでした"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="お父さんが監獄へ入るようなそんな[warui]ことをした筈がないんだ",
+                    context="先日は在日外国人男性がタイで養子縁組をしたと称する554人分の子ども手当を申請しようとして市から却下されたニュースが報じられたが、[warui]人間がちょっと考えれば簡単に不正ができるような不備だらけの子ども手当って、一体どうなっているの",
                     reading="warui",
                     correct_answer="悪い",
-                    source_text="お父さんが監獄へ入るようなそんな悪いことをした筈がないんだ"
+                    source_text="先日は在日外国人男性がタイで養子縁組をしたと称する554人分の子ども手当を申請しようとして市から却下されたニュースが報じられたが、悪い人間がちょっと考えれば簡単に不正ができるような不備だらけの子ども手当って、一体どうなっているの"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="「両方ともいわれる事はいわれますが、この場合は私の方が[tadashii]のです」",
+                    context="規則[tadashii]生活を送り、運動をしていれば自然排卵が起こり妊娠しやすくなります",
                     reading="tadashii",
                     correct_answer="正しい",
-                    source_text="「両方ともいわれる事はいわれますが、この場合は私の方が正しいのです」"
+                    source_text="規則正しい生活を送り、運動をしていれば自然排卵が起こり妊娠しやすくなります"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="「アップはね、髪の毛の[sukunai]ひとがするといいのよ",
-                    reading="sukunai",
-                    correct_answer="少い",
-                    source_text="「アップはね、髪の毛の少いひとがするといいのよ"
-                )
-                cases.append(test_case)
-
-                test_case = TestCase(
-                    context="きたなくなった年数の[ooi]ものを先輩と呼ぶならば、私はたしかにあなたより先輩でしょう",
+                    context="独女の中には自分の式はまだなのに呼ばれてばかり……という「お祝い貧乏」状態の人も[ooi]のではないだろうか",
                     reading="ooi",
                     correct_answer="多い",
-                    source_text="きたなくなった年数の多いものを先輩と呼ぶならば、私はたしかにあなたより先輩でしょう"
+                    source_text="独女の中には自分の式はまだなのに呼ばれてばかり……という「お祝い貧乏」状態の人も多いのではないだろうか"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="とお[wakai]二宮巡査も、",
+                    context="「10代や20代前半の[wakai]女の子がすっぴんを載せているのは、“ああ、やっぱり可愛いな”と心から思えるんですけど、私と同年代の人が披露していると自分のすっぴんと比べてゲンナリします」と、美しい芸能人すっぴんを見た後に独女達は人知れず傷ついているのである",
                     reading="wakai",
                     correct_answer="若い",
-                    source_text="とお若い二宮巡査も、"
+                    source_text="「10代や20代前半の若い女の子がすっぴんを載せているのは、“ああ、やっぱり可愛いな”と心から思えるんですけど、私と同年代の人が披露していると自分のすっぴんと比べてゲンナリします」と、美しい芸能人すっぴんを見た後に独女達は人知れず傷ついているのである"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="ドレスの生地を間違って裁断した時みたいに、もうその生地は縫い合せる事も出来ず、全部捨てて、また別の[atarashii]生地の裁断にとりかからなければならぬ",
+                    context="日本人として、負けてられないな、と気持ちも[furui]立たされることもあります",
+                    reading="furui",
+                    correct_answer="奮い",
+                    source_text="日本人として、負けてられないな、と気持ちも奮い立たされることもあります"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="友達は人脈だったり取り巻きだったり、でもどんな関係であっても、[atarashii]縁を作るには行動を起こさなければならない",
                     reading="atarashii",
                     correct_answer="新しい",
-                    source_text="ドレスの生地を間違って裁断した時みたいに、もうその生地は縫い合せる事も出来ず、全部捨てて、また別の新しい生地の裁断にとりかからなければならぬ"
+                    source_text="友達は人脈だったり取り巻きだったり、でもどんな関係であっても、新しい縁を作るには行動を起こさなければならない"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="「あの人はうちのお父さんとはちょうどおまえたちのように[chiisai]ときからのお友達だったそうだよ",
+                    context="育児は毎日新しい発見があって楽しいですが、子どもが[chiisai]うちはいろいろと不自由な生活でもあります",
                     reading="chiisai",
                     correct_answer="小さい",
-                    source_text="「あの人はうちのお父さんとはちょうどおまえたちのように小さいときからのお友達だったそうだよ"
+                    source_text="育児は毎日新しい発見があって楽しいですが、子どもが小さいうちはいろいろと不自由な生活でもあります"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="そうして、私は、ああ、お母さまのお顔は、さっきのあの[kanashii]蛇に、どこか似ていらっしゃる、と思った",
+                    context="豪華なトイレでも、埃だらけでは[kanashii]",
                     reading="kanashii",
                     correct_answer="悲しい",
-                    source_text="そうして、私は、ああ、お母さまのお顔は、さっきのあの悲しい蛇に、どこか似ていらっしゃる、と思った"
+                    source_text="豪華なトイレでも、埃だらけでは悲しい"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="「いい音でしょう、あたし[ureshii]わ」とちゃらちゃらちゃらちゃら続け様に鳴らす",
+                    context="ファンにとっては、好きな芸能人の素顔が垣間見れる[ureshii]サービスなのだろう",
                     reading="ureshii",
                     correct_answer="嬉しい",
-                    source_text="「いい音でしょう、あたし嬉しいわ」とちゃらちゃらちゃらちゃら続け様に鳴らす"
+                    source_text="ファンにとっては、好きな芸能人の素顔が垣間見れる嬉しいサービスなのだろう"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="汽車に乗った時には、半分死んでいるような気持で、ここに着いた時も、はじめちょっと[tanoshii]ような気分がしたけど、薄暗くなったら、もう東京がこいしくて、胸がこげるようで、気が遠くなってしまったの",
+                    context="絵本講座を受講した生徒さんたちは、一度絵本を仕上げると『もっと作りたい、[tanoshii]",
                     reading="tanoshii",
                     correct_answer="楽しい",
-                    source_text="汽車に乗った時には、半分死んでいるような気持で、ここに着いた時も、はじめちょっと楽しいような気分がしたけど、薄暗くなったら、もう東京がこいしくて、胸がこげるようで、気が遠くなってしまったの"
+                    source_text="絵本講座を受講した生徒さんたちは、一度絵本を仕上げると『もっと作りたい、楽しい"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="「[isogashii]でしょう」",
+                    context="30代になって、お昼休みのことで悩むとは思ってもいませんでした」（カナコさん） [isogashii]一日の中で、唯一休息できるのがお昼休みという人も多いはず",
                     reading="isogashii",
                     correct_answer="忙しい",
-                    source_text="「忙しいでしょう」"
+                    source_text="30代になって、お昼休みのことで悩むとは思ってもいませんでした」（カナコさん） 忙しい一日の中で、唯一休息できるのがお昼休みという人も多いはず"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="お父上がお亡くなりになって十年間、お母さまは、お父上の在世中と少しも変らない、のんきな、[yasashii]お母さまだった",
+                    context="[yasashii]ピンク色が印象的な『うさぎのくれたバレエシューズ』は、表紙が見えるように今モトコさんの部屋に飾られている",
                     reading="yasashii",
                     correct_answer="優しい",
-                    source_text="お父上がお亡くなりになって十年間、お母さまは、お父上の在世中と少しも変らない、のんきな、優しいお母さまだった"
+                    source_text="優しいピンク色が印象的な『うさぎのくれたバレエシューズ』は、表紙が見えるように今モトコさんの部屋に飾られている"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="そしてその天の川の水のなかから四方を見ると、ちょうど水が深いほど青く見えるように、天の川の底の深く[tooi]ところほど星がたくさん集って見えしたがって白くぼんやり見えるのです",
+                    context="[muzukashii]と思うとどんどん描けなくなるんですよね",
+                    reading="muzukashii",
+                    correct_answer="難しい",
+                    source_text="難しいと思うとどんどん描けなくなるんですよね"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="と、言うのも裕美さんが以前同僚の男性に合コンをセッティングしてもらった際「カッコイイ人がたくさん来るからお楽しみにね」と言われ、喜んでいたら、店にいたのは小池徹平ファンの裕美さんが想像していたイケメンとはほど[tooi]、ルックスはソコソコのかなり年上の男性達だったというのだ",
                     reading="tooi",
                     correct_answer="遠い",
-                    source_text="そしてその天の川の水のなかから四方を見ると、ちょうど水が深いほど青く見えるように、天の川の底の深く遠いところほど星がたくさん集って見えしたがって白くぼんやり見えるのです"
+                    source_text="と、言うのも裕美さんが以前同僚の男性に合コンをセッティングしてもらった際「カッコイイ人がたくさん来るからお楽しみにね」と言われ、喜んでいたら、店にいたのは小池徹平ファンの裕美さんが想像していたイケメンとはほど遠い、ルックスはソコソコのかなり年上の男性達だったというのだ"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="ゲエテにだって[chikai]って言える",
+                    context="育った環境によって金銭感覚は異なるのは当然だが、価値観が[chikai]方が問題は生じにくいかもしれない",
                     reading="chikai",
-                    correct_answer="誓",
-                    source_text="ゲエテにだって誓って言える"
+                    correct_answer="近い",
+                    source_text="育った環境によって金銭感覚は異なるのは当然だが、価値観が近い方が問題は生じにくいかもしれない"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="」と云いながら[kurai]戸口を出ました",
+                    context="また被害が少なかった東京でも電力不足による節電対策で、今でも街全体が薄[kurai]日々が続いている",
                     reading="kurai",
                     correct_answer="暗い",
-                    source_text="」と云いながら暗い戸口を出ました"
+                    source_text="また被害が少なかった東京でも電力不足による節電対策で、今でも街全体が薄暗い日々が続いている"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="私は直治の好きだった焼き林檎と、それから、卵のお料理などこしらえて、食堂の電球も[akarui]のと取りかえ、ずいぶん待って、そのうちに、お咲さんが、お勝手口からひょいと顔を出し、",
+                    context="結局、女子たちが希望する初回デートは、[akarui]時間内に、自分にも相手にも負担がない程度の金額で、ゆっくりと話がしたいというのが理想",
                     reading="akarui",
                     correct_answer="明るい",
-                    source_text="私は直治の好きだった焼き林檎と、それから、卵のお料理などこしらえて、食堂の電球も明るいのと取りかえ、ずいぶん待って、そのうちに、お咲さんが、お勝手口からひょいと顔を出し、"
+                    source_text="結局、女子たちが希望する初回デートは、明るい時間内に、自分にも相手にも負担がない程度の金額で、ゆっくりと話がしたいというのが理想"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="憩える帆は、例外なく[kitanai]",
+                    context="靴が[kitanai]、がに股で歩く、ところどころマネキュアがはがれているなどを見ると、気持が萎える",
                     reading="kitanai",
                     correct_answer="汚い",
-                    source_text="憩える帆は、例外なく汚い"
+                    source_text="靴が汚い、がに股で歩く、ところどころマネキュアがはがれているなどを見ると、気持が萎える"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="私はその時にも、ただ[utukushii]蛇だ、という思いばかりが強く、やがて御堂に行って画集を持ち出し、かえりにさっきの蛇のいたところをそっと見たが、もういなかった",
+                    context="「10代や20代前半の若い女の子がすっぴんを載せているのは、“ああ、やっぱり可愛いな”と心から思えるんですけど、私と同年代の人が披露していると自分のすっぴんと比べてゲンナリします」と、[utukushii]芸能人すっぴんを見た後に独女達は人知れず傷ついているのである",
                     reading="utukushii",
                     correct_answer="美しい",
-                    source_text="私はその時にも、ただ美しい蛇だ、という思いばかりが強く、やがて御堂に行って画集を持ち出し、かえりにさっきの蛇のいたところをそっと見たが、もういなかった"
+                    source_text="「10代や20代前半の若い女の子がすっぴんを載せているのは、“ああ、やっぱり可愛いな”と心から思えるんですけど、私と同年代の人が披露していると自分のすっぴんと比べてゲンナリします」と、美しい芸能人すっぴんを見た後に独女達は人知れず傷ついているのである"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="灰色みたいな[samui]西風が吹いて、煙が低く地を這っていて、私は、ふとお母さまの顔を見上げ、お母さまのお顔色が、いままで見たこともなかったくらいに悪いのにびっくりして、",
+                    context="今年の冬は[samui]って聞いたので、グアムとかバリとか暖かいところがいいです",
                     reading="samui",
                     correct_answer="寒い",
-                    source_text="灰色みたいな寒い西風が吹いて、煙が低く地を這っていて、私は、ふとお母さまの顔を見上げ、お母さまのお顔色が、いままで見たこともなかったくらいに悪いのにびっくりして、"
+                    source_text="今年の冬は寒いって聞いたので、グアムとかバリとか暖かいところがいいです"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="霧でお耳が濡れて、お耳の裏が[tumetai]」",
+                    context="いつもの夏なら、冷房の効いた部屋では温かい飲物を飲むようにしているけど、今年はついつい[tumetai]飲物や食べ物に手が伸びてしまう",
                     reading="tumetai",
                     correct_answer="冷たい",
-                    source_text="霧でお耳が濡れて、お耳の裏が冷たい」"
+                    source_text="いつもの夏なら、冷房の効いた部屋では温かい飲物を飲むようにしているけど、今年はついつい冷たい飲物や食べ物に手が伸びてしまう"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="私は全くそのために先生と人間らしい[atatakai]交際ができたのだと思う",
+                    context="珍しくはありませんが、[atatakai]便座はありがたいです",
                     reading="atatakai",
                     correct_answer="温かい",
-                    source_text="私は全くそのために先生と人間らしい温かい交際ができたのだと思う"
+                    source_text="珍しくはありませんが、温かい便座はありがたいです"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="奥さんの不安も実はそこに漂う[usui]雲に似た疑惑から出て来ていた",
+                    context="○見えそうで見えない[usui]生地の下着",
                     reading="usui",
                     correct_answer="薄い",
-                    source_text="奥さんの不安も実はそこに漂う薄い雲に似た疑惑から出て来ていた"
+                    source_text="○見えそうで見えない薄い生地の下着"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="こっちやこっちの方はガラスが[atui]ので、光る粒即ち星がたくさん見えその遠いのはぼうっと白く見えるというこれがつまり今日の銀河の説なのです",
+                    context="「6年生になって、周りの子が[atui]小説を読んでいるのに、私は相変わらず『100万回生きた猫』を読んでいました",
                     reading="atui",
                     correct_answer="厚い",
-                    source_text="こっちやこっちの方はガラスが厚いので、光る粒即ち星がたくさん見えその遠いのはぼうっと白く見えるというこれがつまり今日の銀河の説なのです"
+                    source_text="「6年生になって、周りの子が厚い小説を読んでいるのに、私は相変わらず『100万回生きた猫』を読んでいました"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="先生のいった自然に死ぬとか、不自然の暴力で死ぬとかいう言葉も、その場限りの[asai]印象を与えただけで、後は何らのこだわりを私の頭に残さなかった",
+                    context="特に体の柔らかいところや、太い血管が体の[asai]部分を走っているところ",
                     reading="asai",
                     correct_answer="浅い",
-                    source_text="先生のいった自然に死ぬとか、不自然の暴力で死ぬとかいう言葉も、その場限りの浅い印象を与えただけで、後は何らのこだわりを私の頭に残さなかった"
+                    source_text="特に体の柔らかいところや、太い血管が体の浅い部分を走っているところ"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="ご[fukai]でも、しのんでいただきます",
+                    context="しかし喧嘩の度に相手が何で怒っているのか、どういう言動が夫を[fukai]にさせるのかがよく分かるようになったという",
                     reading="fukai",
                     correct_answer="不快",
-                    source_text="ご不快でも、しのんでいただきます"
+                    source_text="しかし喧嘩の度に相手が何で怒っているのか、どういう言動が夫を不快にさせるのかがよく分かるようになったという"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="私は先生の交際の範囲の極めて[semai]事を知っていた",
+                    context="彼は、都内の社宅を考えていたんですけど、築30年と古い上に[semai]んです",
                     reading="semai",
                     correct_answer="狭い",
-                    source_text="私は先生の交際の範囲の極めて狭い事を知っていた"
+                    source_text="彼は、都内の社宅を考えていたんですけど、築30年と古い上に狭いんです"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="そこから幅の[hiroi]みちが、まっすぐに銀河の青光の中へ通っていました",
+                    context="そして、パネルディスカッションでは、歩幅の[hiroi]歩き方を１年間続ける実験に参加した人が、背筋が伸び、脂肪が落ちたという結果などが紹介されていた",
                     reading="hiroi",
                     correct_answer="広い",
-                    source_text="そこから幅の広いみちが、まっすぐに銀河の青光の中へ通っていました"
+                    source_text="そして、パネルディスカッションでは、歩幅の広い歩き方を１年間続ける実験に参加した人が、背筋が伸び、脂肪が落ちたという結果などが紹介されていた"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="強い人に見えますか、[yowai]人に見えますか」",
+                    context="最近は男性のほうがお酒[yowai]のでしょうかね",
                     reading="yowai",
                     correct_answer="弱い",
-                    source_text="強い人に見えますか、弱い人に見えますか」"
+                    source_text="最近は男性のほうがお酒弱いのでしょうかね"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="きょうは一つ、[tuyoi]お注射をしてさし上げますから、お熱もさがる事でしょう」",
+                    context="」という疑問もあったが、この回答は、「運動を一生懸命しているというより日常生活を気をつけている印象が[tuyoi]",
                     reading="tuyoi",
                     correct_answer="強い",
-                    source_text="きょうは一つ、強いお注射をしてさし上げますから、お熱もさがる事でしょう」"
+                    source_text="」という疑問もあったが、この回答は、「運動を一生懸命しているというより日常生活を気をつけている印象が強い"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="「あの、お断りの手紙、いまごろ[karui]沢のほうに着いている事と存じます",
+                    context="『飲みに行くのはやめて』ではなく、『あんまり行って欲しくないかも』のように濁すほうがいいですよね」 女性の場合、彼から[karui]焼きもちを妬かれると嬉しいと感じることが多い",
                     reading="karui",
-                    correct_answer="軽井",
-                    source_text="「あの、お断りの手紙、いまごろ軽井沢のほうに着いている事と存じます"
+                    correct_answer="軽い",
+                    source_text="『飲みに行くのはやめて』ではなく、『あんまり行って欲しくないかも』のように濁すほうがいいですよね」 女性の場合、彼から軽い焼きもちを妬かれると嬉しいと感じることが多い"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="そうだといえば、父の病気の[omoi]のを裏書きするようなものであった",
+                    context="「焼きもちなんてとにかく[omoi]だけ",
                     reading="omoi",
                     correct_answer="重い",
-                    source_text="そうだといえば、父の病気の重いのを裏書きするようなものであった"
+                    source_text="「焼きもちなんてとにかく重いだけ"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="「もう[osoi]から早く帰りたまえ",
+                    context="こちらも釣られて、初デートでも夜[osoi]時間まで一緒にいられるんです",
                     reading="osoi",
                     correct_answer="遅い",
-                    source_text="「もう遅いから早く帰りたまえ"
+                    source_text="こちらも釣られて、初デートでも夜遅い時間まで一緒にいられるんです"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="私は、編物でもお針でも、人よりずっと[hayai]けれども、しかし、下手だった",
+                    context="うーん、公務員と結婚するには自分が公務員になるのが手っ取り[hayai]か（橋口まどか）",
                     reading="hayai",
                     correct_answer="早い",
-                    source_text="私は、編物でもお針でも、人よりずっと早いけれども、しかし、下手だった"
+                    source_text="うーん、公務員と結婚するには自分が公務員になるのが手っ取り早いか（橋口まどか）"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="これが私たち親子が神さまからいただいた[mijikai]休息の期間であったとしても、もうすでにこの平和には、何か不吉な、暗い影が忍び寄って来ているような気がしてならない",
+                    context="細かい決まりはないが、臭いが気になる「おつまみ系」や賞味期限が極端に[mijikai]生菓子などはリクエストがあっても購入しないとのこと",
                     reading="mijikai",
                     correct_answer="短い",
-                    source_text="これが私たち親子が神さまからいただいた短い休息の期間であったとしても、もうすでにこの平和には、何か不吉な、暗い影が忍び寄って来ているような気がしてならない"
+                    source_text="細かい決まりはないが、臭いが気になる「おつまみ系」や賞味期限が極端に短い生菓子などはリクエストがあっても購入しないとのこと"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="そこら中を見ても、駅[nagai]や赤帽らしい人の、影もなかったのです",
+                    context="[nagai]間一緒に働いている女性3人の結束が固いのが問題だ",
                     reading="nagai",
-                    correct_answer="長",
-                    source_text="そこら中を見ても、駅長や赤帽らしい人の、影もなかったのです"
+                    correct_answer="長い",
+                    source_text="長い間一緒に働いている女性3人の結束が固いのが問題だ"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="右手の[hikui]丘の上に小さな水晶ででもこさえたような二つのお宮がならんで立っていました",
+                    context="場面にあった方法という意味の和製英語だが、TPOをわきまえていない人はモラルが[hikui]とみなされる",
                     reading="hikui",
                     correct_answer="低い",
-                    source_text="右手の低い丘の上に小さな水晶ででもこさえたような二つのお宮がならんで立っていました"
+                    source_text="場面にあった方法という意味の和製英語だが、TPOをわきまえていない人はモラルが低いとみなされる"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="ジョバンニはすぐ入口から三番目の[takai]卓子に座った人の所へ行っておじぎをしました",
+                    context="主役はあくまで新郎新婦ながらも、いざとなると緊張し、内容もあれこれ考えて、こっそりリハーサル……そんな人知れず頑張るスピーチ担当独女たちにも幸あれ（[takai]山惠）",
                     reading="takai",
-                    correct_answer="高い",
-                    source_text="ジョバンニはすぐ入口から三番目の高い卓子に座った人の所へ行っておじぎをしました"
+                    correct_answer="高",
+                    source_text="主役はあくまで新郎新婦ながらも、いざとなると緊張し、内容もあれこれ考えて、こっそりリハーサル……そんな人知れず頑張るスピーチ担当独女たちにも幸あれ（高山惠）"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="ここは百二十万年前、第三紀のあとのころは海岸でね、この下からは貝がらも[deru]",
+                    context="お見合いもさせられたし、母がとにかくしこつくてうるさいから家を[deru]ことも考えたんですけど、職場の同僚にそれを相談しているうちに彼との間に恋愛感情が芽生えたんです",
                     reading="deru",
                     correct_answer="出る",
-                    source_text="ここは百二十万年前、第三紀のあとのころは海岸でね、この下からは貝がらも出る"
+                    source_text="お見合いもさせられたし、母がとにかくしこつくてうるさいから家を出ることも考えたんですけど、職場の同僚にそれを相談しているうちに彼との間に恋愛感情が芽生えたんです"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="お父さんが監獄へ[hairu]ようなそんな悪いことをした筈がないんだ",
+                    context="いつでも気軽に欲しいものが手に[hairu]コンビニは、独身者の生活には欠かせないものだ",
                     reading="hairu",
                     correct_answer="入る",
-                    source_text="お父さんが監獄へ入るようなそんな悪いことをした筈がないんだ"
+                    source_text="いつでも気軽に欲しいものが手に入るコンビニは、独身者の生活には欠かせないものだ"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="「なあに品物が[modoru]のよ",
+                    context="アラサー以上の女子なら一度は試したい化粧品として必ず名が[agaru]同商品のコンセプト然り、電話やインターネットなどを通して一人ひとりの顧客と向き合うことを一貫して行っている会社である",
+                    reading="agaru",
+                    correct_answer="挙がる",
+                    source_text="アラサー以上の女子なら一度は試したい化粧品として必ず名が挙がる同商品のコンセプト然り、電話やインターネットなどを通して一人ひとりの顧客と向き合うことを一貫して行っている会社である"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="心が癒されるまでの期間は連絡を断ちきり、それ以降はメールを送るなどして、友達関係に[modoru]ことが多いですね」 オール・オア・ナッシングだった以前に比べ、今は縁を切る、友人に戻る、メル友関係を続けるなど、別れた後の関係性を選択できるようになった",
                     reading="modoru",
                     correct_answer="戻る",
-                    source_text="「なあに品物が戻るのよ"
+                    source_text="心が癒されるまでの期間は連絡を断ちきり、それ以降はメールを送るなどして、友達関係に戻ることが多いですね」 オール・オア・ナッシングだった以前に比べ、今は縁を切る、友人に戻る、メル友関係を続けるなど、別れた後の関係性を選択できるようになった"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="ほんとうにどんなつらいことでもそれがただしいみちを[susumu]中でのできごとなら峠の上りも下りもみんなほんとうの幸福に近づく一あしずつですから",
+                    context="最後に、おおさわさんにお[susumu]め絵本を紹介していただいた",
                     reading="susumu",
-                    correct_answer="進む",
-                    source_text="ほんとうにどんなつらいことでもそれがただしいみちを進む中でのできごとなら峠の上りも下りもみんなほんとうの幸福に近づく一あしずつですから"
+                    correct_answer="勧",
+                    source_text="最後に、おおさわさんにお勧め絵本を紹介していただいた"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="また欺こうとしても、そう長く[tuduku]ものではないと見抜いたのかも知れません",
+                    context="「最近、嫌なことばっかり[tuduku]んです",
                     reading="tuduku",
                     correct_answer="続く",
-                    source_text="また欺こうとしても、そう長く続くものではないと見抜いたのかも知れません"
+                    source_text="「最近、嫌なことばっかり続くんです"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="お顔色が[owaru]いわ」",
+                    context="だけど価値観の違う独女にしてみれば「へえ〜」で[owaru]話",
                     reading="owaru",
-                    correct_answer="お悪",
-                    source_text="お顔色がお悪いわ」"
+                    correct_answer="終わる",
+                    source_text="だけど価値観の違う独女にしてみれば「へえ〜」で終わる話"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="そのくせ話し[hajimeru]時は、危篤の病人とは思われないほど、強い声を出した",
+                    context="30歳から[hajimeru]!? “踊る女子”が続々出現",
                     reading="hajimeru",
                     correct_answer="始める",
-                    source_text="そのくせ話し始める時は、危篤の病人とは思われないほど、強い声を出した"
+                    source_text="30歳から始める!? “踊る女子”が続々出現"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="弟の直治でさえ、ママにはかなわねえ、と言っているが、つくづく私も、お母さまの真似は困難で、絶望みたいなものをさえ[kanjiru]事がある",
+                    context="清潔なだけでなく、できるだけ「快適な空間」を[erabu]のが女ゴコロ",
+                    reading="erabu",
+                    correct_answer="選ぶ",
+                    source_text="清潔なだけでなく、できるだけ「快適な空間」を選ぶのが女ゴコロ"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="ただ、こればかりは長く住んでみないとわかりません」（セツコさん） 住む町を[kimeru]ときは、できれば、休日と平日、昼間と夜に足を運びたい",
+                    reading="kimeru",
+                    correct_answer="決める",
+                    source_text="ただ、こればかりは長く住んでみないとわかりません」（セツコさん） 住む町を決めるときは、できれば、休日と平日、昼間と夜に足を運びたい"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="今後、子供が生まれても、出産やお宮参りなどの行事のたびにお金で悩んだり、両家の援助格差を[kanjiru]のかと思うと憂鬱です」",
                     reading="kanjiru",
                     correct_answer="感じる",
-                    source_text="弟の直治でさえ、ママにはかなわねえ、と言っているが、つくづく私も、お母さまの真似は困難で、絶望みたいなものをさえ感じる事がある"
+                    source_text="今後、子供が生まれても、出産やお宮参りなどの行事のたびにお金で悩んだり、両家の援助格差を感じるのかと思うと憂鬱です」"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="またこれを巨きな乳の流れと[kangaeru]ならもっと天の川とよく似ています",
+                    context="雨の日の昼休みは、駅までの道のりを[kangaeru]と憂鬱になるらしい",
                     reading="kangaeru",
                     correct_answer="考える",
-                    source_text="またこれを巨きな乳の流れと考えるならもっと天の川とよく似ています"
+                    source_text="雨の日の昼休みは、駅までの道のりを考えると憂鬱になるらしい"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="それが[wakaru]くらいなら私だって、こんなに心配しやしません",
+                    context="まず特徴としては外見磨きや一般的なマナーの向上に力を入れていることが[wakaru]",
                     reading="wakaru",
-                    correct_answer="解る",
-                    source_text="それが解るくらいなら私だって、こんなに心配しやしません"
+                    correct_answer="分かる",
+                    source_text="まず特徴としては外見磨きや一般的なマナーの向上に力を入れていることが分かる"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="それは、この本の[shiru]者が、何の躊躇も無く、片端から旧来の思想を破壊して行くがむしゃらな勇気である",
+                    context="[shiru]ことも文句を言うことだって私たちの権利だと思う",
                     reading="shiru",
-                    correct_answer="著",
-                    source_text="それは、この本の著者が、何の躊躇も無く、片端から旧来の思想を破壊して行くがむしゃらな勇気である"
+                    correct_answer="知る",
+                    source_text="知ることも文句を言うことだって私たちの権利だと思う"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="小さい時から私は、よく人から、「あなたと一緒にいると苦労を[wasureru]」と言われて来ました",
+                    context="「元彼を[wasureru]には新しい恋をするといい」と言われるが、30代を過ぎると縁が少なくなるのも事実",
                     reading="wasureru",
                     correct_answer="忘れる",
-                    source_text="小さい時から私は、よく人から、「あなたと一緒にいると苦労を忘れる」と言われて来ました"
+                    source_text="「元彼を忘れるには新しい恋をするといい」と言われるが、30代を過ぎると縁が少なくなるのも事実"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="私だって、こうして、ローザルクセンブルグの本など読んで、自分がキザったらしく思われる事もないではないが、けれどもまた、やはり私は私なりに深い興味を[oboeru]のだ",
+                    context="彼の収入が少ないと思うのなら、やりくりという算段を[oboeru]ことをしてみてはどうだろうか",
                     reading="oboeru",
                     correct_answer="覚える",
-                    source_text="私だって、こうして、ローザルクセンブルグの本など読んで、自分がキザったらしく思われる事もないではないが、けれどもまた、やはり私は私なりに深い興味を覚えるのだ"
+                    source_text="彼の収入が少ないと思うのなら、やりくりという算段を覚えることをしてみてはどうだろうか"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="彼等人間が母から、乳母から、他人から実用上の言語を[narau]時には、ただ聞いた通りを繰り返すよりほかに毛頭の野心はないのである",
+                    context="ところで最近は、小学校でお茶の入れ方を[narau]授業があると聞く",
                     reading="narau",
                     correct_answer="習う",
-                    source_text="彼等人間が母から、乳母から、他人から実用上の言語を習う時には、ただ聞いた通りを繰り返すよりほかに毛頭の野心はないのである"
+                    source_text="ところで最近は、小学校でお茶の入れ方を習う授業があると聞く"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="青年は[oshieru]ようにそっと姉弟にまた云いました",
+                    context="教えないのも意地悪だから[oshieru]と、数日後には同じ服を着て出社するんです",
                     reading="oshieru",
                     correct_answer="教える",
-                    source_text="青年は教えるようにそっと姉弟にまた云いました"
+                    source_text="教えないのも意地悪だから教えると、数日後には同じ服を着て出社するんです"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="そう気づいて、泣き出したくなって立ちつくしていたら、前のお家の西山さんのお嫁さんが垣根の外で、お風呂場が丸焼けだよ、かまどの火の不始末だよ、と声高に[hanasu]のが聞えた",
+                    context="」と語るのは昨年だけで10万以上お祝いにかかったというお祝い貧乏独女の薫さん（35歳） 「私は基本的に人前で[hanasu]のが苦手なんですよ",
                     reading="hanasu",
                     correct_answer="話す",
-                    source_text="そう気づいて、泣き出したくなって立ちつくしていたら、前のお家の西山さんのお嫁さんが垣根の外で、お風呂場が丸焼けだよ、かまどの火の不始末だよ、と声高に話すのが聞えた"
+                    source_text="」と語るのは昨年だけで10万以上お祝いにかかったというお祝い貧乏独女の薫さん（35歳） 「私は基本的に人前で話すのが苦手なんですよ"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="どうもからだに恰度[au]ほど稼いでいるくらい、いいことはありませんな",
+                    context="気の[au]仲間と美味しいお弁当やランチサービスを食べ、楽しい会話ができたなら、午後の仕事も頑張れるだろう",
                     reading="au",
                     correct_answer="合う",
-                    source_text="どうもからだに恰度合うほど稼いでいるくらい、いいことはありませんな"
+                    source_text="気の合う仲間と美味しいお弁当やランチサービスを食べ、楽しい会話ができたなら、午後の仕事も頑張れるだろう"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="私は先生と[wakareru]時に、「これから折々お宅へ伺っても宜ござんすか」と聞いた",
+                    context="私もいい大人なんだし、みっともない態度はできない」 美香子さんと彼は、１年の交際の後、性格の不一致で[wakareru]ことに",
                     reading="wakareru",
                     correct_answer="別れる",
-                    source_text="私は先生と別れる時に、「これから折々お宅へ伺っても宜ござんすか」と聞いた"
+                    source_text="私もいい大人なんだし、みっともない態度はできない」 美香子さんと彼は、１年の交際の後、性格の不一致で別れることに"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="お母さまのように、天性の教養、という言葉もへんだが、そんなものをお持ちのお方は、案外なんでもなく、当然の事として革命を[mukaeru]事が出来るのかも知れない",
+                    context="有名アーティストなどをトレンド・アドバイザーとして[mukaeru]とともに、ファッション雑誌シュプールと提携することで、ハイセンスな商品展開を可能にしている",
                     reading="mukaeru",
                     correct_answer="迎える",
-                    source_text="お母さまのように、天性の教養、という言葉もへんだが、そんなものをお持ちのお方は、案外なんでもなく、当然の事として革命を迎える事が出来るのかも知れない"
+                    source_text="有名アーティストなどをトレンド・アドバイザーとして迎えるとともに、ファッション雑誌シュプールと提携することで、ハイセンスな商品展開を可能にしている"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="親を騙すような不埒なものに学資を[okuru]事はできないという厳しい返事をすぐ寄こしたのです",
+                    context="心が癒されるまでの期間は連絡を断ちきり、それ以降はメールを[okuru]などして、友達関係に戻ることが多いですね」 オール・オア・ナッシングだった以前に比べ、今は縁を切る、友人に戻る、メル友関係を続けるなど、別れた後の関係性を選択できるようになった",
                     reading="okuru",
                     correct_answer="送る",
-                    source_text="親を騙すような不埒なものに学資を送る事はできないという厳しい返事をすぐ寄こしたのです"
+                    source_text="心が癒されるまでの期間は連絡を断ちきり、それ以降はメールを送るなどして、友達関係に戻ることが多いですね」 オール・オア・ナッシングだった以前に比べ、今は縁を切る、友人に戻る、メル友関係を続けるなど、別れた後の関係性を選択できるようになった"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="私はちょうど主人の帰りを待ち[ukeru]客のような気がして済まなかった",
+                    context="専業主婦だと学んだことをすぐに活かす場がないのが悩みなのだが、彼女の場合、まずPTAや自治会などの書類作成を率先して引き[ukeru]ことで、習ったことを身につけていった",
                     reading="ukeru",
                     correct_answer="受ける",
-                    source_text="私はちょうど主人の帰りを待ち受ける客のような気がして済まなかった"
+                    source_text="専業主婦だと学んだことをすぐに活かす場がないのが悩みなのだが、彼女の場合、まずPTAや自治会などの書類作成を率先して引き受けることで、習ったことを身につけていった"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="そうして、それが、所謂民衆の友になり[eru]唯一の道だと思ったのです",
+                    context="働いて[eru]ものもあるが、節約して作った時間で得るものもある",
                     reading="eru",
                     correct_answer="得る",
-                    source_text="そうして、それが、所謂民衆の友になり得る唯一の道だと思ったのです"
+                    source_text="働いて得るものもあるが、節約して作った時間で得るものもある"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="お酒を飲んで、こんなに我を[ushinau]ほど酔ったのも、その時がはじめてでした",
+                    context="そう考えると、やはり不倫はさまざまな信頼を[ushinau]非常に危険な行為だということがよくわかる",
                     reading="ushinau",
                     correct_answer="失う",
-                    source_text="お酒を飲んで、こんなに我を失うほど酔ったのも、その時がはじめてでした"
+                    source_text="そう考えると、やはり不倫はさまざまな信頼を失う非常に危険な行為だということがよくわかる"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="それでね、直治が帰って来て、お母さまと、直治と、かず子と三人あそんで暮していては、叔父さまもその生活費を都合なさるのにたいへんな苦労をしなければならぬから、いまのうちに、かず子のお嫁入りさきを[sagasu]か、または、御奉公のお家を捜すか、どちらかになさい、という、まあ、お言いつけなの」",
+                    context="子供の頃、「たくさんの友達をつくりなさい」と教えた大人たちの真意は、たくさんの中からオンリーワンの友達を[mitukeru]ことを示唆していたのだろう",
+                    reading="mitukeru",
+                    correct_answer="見つける",
+                    source_text="子供の頃、「たくさんの友達をつくりなさい」と教えた大人たちの真意は、たくさんの中からオンリーワンの友達を見つけることを示唆していたのだろう"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="このままいけば、結婚をあきらめて今の彼氏と一緒に生きるか、それとも彼氏と別れて結婚相手を[sagasu]かという選択を迫られることになってしまう",
                     reading="sagasu",
-                    correct_answer="捜す",
-                    source_text="それでね、直治が帰って来て、お母さまと、直治と、かず子と三人あそんで暮していては、叔父さまもその生活費を都合なさるのにたいへんな苦労をしなければならぬから、いまのうちに、かず子のお嫁入りさきを捜すか、または、御奉公のお家を捜すか、どちらかになさい、という、まあ、お言いつけなの」"
+                    correct_answer="探す",
+                    source_text="このままいけば、結婚をあきらめて今の彼氏と一緒に生きるか、それとも彼氏と別れて結婚相手を探すかという選択を迫られることになってしまう"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="けれども自分はきっとこの病気で命を取られるとまで信じていたかどうか、そこになると[utagau]余地はまだいくらでもあるだろうと思われるのです",
+                    context="もちろん、そういった行為自体は一時的に相手を[utagau]ことになってしまう",
                     reading="utagau",
                     correct_answer="疑う",
-                    source_text="けれども自分はきっとこの病気で命を取られるとまで信じていたかどうか、そこになると疑う余地はまだいくらでもあるだろうと思われるのです"
+                    source_text="もちろん、そういった行為自体は一時的に相手を疑うことになってしまう"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="自分のような、いやらしくおどおどして、ひとの顔いろばかり伺い、人を[shinjiru]能力が、ひび割れてしまっているものにとって、ヨシ子の無垢の信頼心は、それこそ青葉の滝のようにすがすがしく思われていたのです",
+                    context="ヘアケアのひとつとして取り入れています」 [shinjiru]か信じないかはあなた次第",
                     reading="shinjiru",
                     correct_answer="信じる",
-                    source_text="自分のような、いやらしくおどおどして、ひとの顔いろばかり伺い、人を信じる能力が、ひび割れてしまっているものにとって、ヨシ子の無垢の信頼心は、それこそ青葉の滝のようにすがすがしく思われていたのです"
+                    source_text="ヘアケアのひとつとして取り入れています」 信じるか信じないかはあなた次第"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="これは病人自身のためでもありますし、また[aisuru]妻のためでもありましたが、もっと大きな意味からいうと、ついに人間のためでした",
+                    context="ユキさん（29歳・IT関連）は、「恋[aisuru]力だと思います」と答えてくれた",
                     reading="aisuru",
                     correct_answer="愛する",
-                    source_text="これは病人自身のためでもありますし、また愛する妻のためでもありましたが、もっと大きな意味からいうと、ついに人間のためでした"
+                    source_text="ユキさん（29歳・IT関連）は、「恋愛する力だと思います」と答えてくれた"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="実をいうと、父の病気は[osoreru]べき腸窒扶斯でした",
+                    context="なかでも、トルコの徴兵制度は、世界で有数のスパルタ指導だそうで、周辺国も[osoreru]ほどなのだとか",
                     reading="osoreru",
-                    correct_answer="恐る",
-                    source_text="実をいうと、父の病気は恐るべき腸窒扶斯でした"
+                    correct_answer="恐れる",
+                    source_text="なかでも、トルコの徴兵制度は、世界で有数のスパルタ指導だそうで、周辺国も恐れるほどなのだとか"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="ちっともしゃがんでいらっしゃらないのには[odoroku]いたが、けれども、私などにはとても真似られない、しんから可愛らしい感じがあった",
+                    context="「女性社員は休憩室で一緒にお昼ご飯を食べるのですが、そのときの話題が社内の噂話や悪口ばかりで[odoroku]いています",
                     reading="odoroku",
                     correct_answer="驚",
-                    source_text="ちっともしゃがんでいらっしゃらないのには驚いたが、けれども、私などにはとても真似られない、しんから可愛らしい感じがあった"
+                    source_text="「女性社員は休憩室で一緒にお昼ご飯を食べるのですが、そのときの話題が社内の噂話や悪口ばかりで驚いています"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="我儘もこのくらいなら我慢するが吾輩は人間の不徳についてこれよりも数倍[kanashimu]べき報道を耳にした事がある",
+                    context="これに対して喜ぶ人や[kanashimu]人も togetter：一部まとめブログが２ちゃんねるから著作物利用を拒否される ■パクリ疑惑を否定する井上マー氏のオフィシャルブログエントリー ■２ちゃんねる内の警告文 ■２ちゃんねる",
                     reading="kanashimu",
                     correct_answer="悲しむ",
-                    source_text="我儘もこのくらいなら我慢するが吾輩は人間の不徳についてこれよりも数倍悲しむべき報道を耳にした事がある"
+                    source_text="これに対して喜ぶ人や悲しむ人も togetter：一部まとめブログが２ちゃんねるから著作物利用を拒否される ■パクリ疑惑を否定する井上マー氏のオフィシャルブログエントリー ■２ちゃんねる内の警告文 ■２ちゃんねる"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="怒るも[yorokobu]も感情というものがさっぱり出ないんだ",
+                    context="あとは、夏のドライブなら、濡らしたタオルを保冷剤と一緒に保冷バックに入れて持って行くと眠気覚ましになるので、彼も[yorokobu]と思います」（サトミさん） 知人の男性たちに、お金の分担について聞いてみると、「高速代やガソリン代を出そうという気持ちで十分」とのこと",
                     reading="yorokobu",
                     correct_answer="喜ぶ",
-                    source_text="怒るも喜ぶも感情というものがさっぱり出ないんだ"
+                    source_text="あとは、夏のドライブなら、濡らしたタオルを保冷剤と一緒に保冷バックに入れて持って行くと眠気覚ましになるので、彼も喜ぶと思います」（サトミさん） 知人の男性たちに、お金の分担について聞いてみると、「高速代やガソリン代を出そうという気持ちで十分」とのこと"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="お火を粗末にすれば火事が[okoru]、というきわめて当然の事にも、気づかないほどの私はあの所謂「おひめさま」だったのだろうか",
+                    context="」 由梨さんのように母親に出産のことを言われて[okoru]独女は多い",
                     reading="okoru",
-                    correct_answer="起る",
-                    source_text="お火を粗末にすれば火事が起る、というきわめて当然の事にも、気づかないほどの私はあの所謂「おひめさま」だったのだろうか"
+                    correct_answer="怒る",
+                    source_text="」 由梨さんのように母親に出産のことを言われて怒る独女は多い"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="爵位が[naku]ても、天爵というものを持っている立派な貴族のひともあるし、おれたちのように爵位だけは持っていても、貴族どころか、賤民にちかいのもいる",
+                    context="知人の勤め先では、今春からビル内に喫煙できる場所が[naku]なったため、仕方なく最寄り駅の喫煙所まで煙草を吸いに行くという",
                     reading="naku",
                     correct_answer="無く",
-                    source_text="爵位が無くても、天爵というものを持っている立派な貴族のひともあるし、おれたちのように爵位だけは持っていても、貴族どころか、賤民にちかいのもいる"
+                    source_text="知人の勤め先では、今春からビル内に喫煙できる場所が無くなったため、仕方なく最寄り駅の喫煙所まで煙草を吸いに行くという"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="顔を見合せ、何か、すっかりわかり合ったものを感じて、うふふと私が[warau]と、お母さまも、にっこりお笑いになった",
+                    context="「よく[warau]明るい娘さんなんですけど、初めて家に来るのにミニスカートをはいてきたんです",
                     reading="warau",
                     correct_answer="笑う",
-                    source_text="顔を見合せ、何か、すっかりわかり合ったものを感じて、うふふと私が笑うと、お母さまも、にっこりお笑いになった"
+                    source_text="「よく笑う明るい娘さんなんですけど、初めて家に来るのにミニスカートをはいてきたんです"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="ところが先[ikiru]は早くもそれを見附けたのでした",
+                    context="ネットなどで友情関係を続けるのはよいが、同時に淡く切ない恋の思い出は[ikiru]活感、現実感にまみれてしまうことがあるので、繋ぎすぎには注意したいところ",
                     reading="ikiru",
                     correct_answer="生",
-                    source_text="ところが先生は早くもそれを見附けたのでした"
+                    source_text="ネットなどで友情関係を続けるのはよいが、同時に淡く切ない恋の思い出は生活感、現実感にまみれてしまうことがあるので、繋ぎすぎには注意したいところ"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="尾にこんなかぎがあってそれで螫されると[shinu]って先生が云ったよ",
+                    context="でも、私は[shinu]までひとりぽっちなの",
                     reading="shinu",
                     correct_answer="死ぬ",
-                    source_text="尾にこんなかぎがあってそれで螫されると死ぬって先生が云ったよ"
+                    source_text="でも、私は死ぬまでひとりぽっちなの"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="二人ならんでお母さまの枕もとに[suwaru]と、お母さまは、急にお蒲団の下から手をお出しになって、そうして、黙って直治のほうを指差し、それから私を指差し、それから叔父さまのほうへお顔をお向けになって、両方の掌をひたとお合せになった",
+                    context="うちは娘たちには、他所のお宅に伺う時は、脱いだ靴は揃えることと、畳に[suwaru]こともあるから、スカート丈は長めに",
                     reading="suwaru",
-                    correct_answer="坐る",
-                    source_text="二人ならんでお母さまの枕もとに坐ると、お母さまは、急にお蒲団の下から手をお出しになって、そうして、黙って直治のほうを指差し、それから私を指差し、それから叔父さまのほうへお顔をお向けになって、両方の掌をひたとお合せになった"
+                    correct_answer="座る",
+                    source_text="うちは娘たちには、他所のお宅に伺う時は、脱いだ靴は揃えることと、畳に座ることもあるから、スカート丈は長めに"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="身体を半分起してそれを受け取った先生は、[okiru]とも寝るとも片付かないその姿勢のままで、変な事を私に聞いた",
+                    context="独女の母親、弘子さん（53歳）だが、 「私も昔、結婚、結婚って、毎朝[okiru]たびに母親から結婚のことを言われたんです",
                     reading="okiru",
                     correct_answer="起きる",
-                    source_text="身体を半分起してそれを受け取った先生は、起きるとも寝るとも片付かないその姿勢のままで、変な事を私に聞いた"
+                    source_text="独女の母親、弘子さん（53歳）だが、 「私も昔、結婚、結婚って、毎朝起きるたびに母親から結婚のことを言われたんです"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="私はその言葉のために、帰ってから安心して[neru]事ができた",
+                    context="i-PONTは、8〜14ミクロンの波長の赤外線を放射することにより目元の血行を良くしてくれる効果があり、目の下のクマ対策に一番重要なケアが「貼って、[neru]だけで出来る」という優秀アイテムです",
                     reading="neru",
                     correct_answer="寝る",
-                    source_text="私はその言葉のために、帰ってから安心して寝る事ができた"
+                    source_text="i-PONTは、8〜14ミクロンの波長の赤外線を放射することにより目元の血行を良くしてくれる効果があり、目の下のクマ対策に一番重要なケアが「貼って、寝るだけで出来る」という優秀アイテムです"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="今夜は[nomu]ぜ」",
+                    context="それに、口にすることもできなかった苦手な食材「カキ」が、大人になりお酒を[nomu]ようになったら大好きな食材に変わった",
                     reading="nomu",
                     correct_answer="飲む",
-                    source_text="今夜は飲むぜ」"
+                    source_text="それに、口にすることもできなかった苦手な食材「カキ」が、大人になりお酒を飲むようになったら大好きな食材に変わった"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="第一おれがきさまらのもってきたものなど[kuu]か",
+                    context="[kuu]や食わずの生活でも発想の転換で楽しく暮らすこともできるのだ",
                     reading="kuu",
                     correct_answer="食う",
-                    source_text="第一おれがきさまらのもってきたものなど食うか"
+                    source_text="食うや食わずの生活でも発想の転換で楽しく暮らすこともできるのだ"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="小僧にいうと、いくらでも出してはくれるが、さてどれを選んでいいのか、[kau]段になっては、ただ迷うだけであった",
+                    context="それを聞いて以来、Ｙ子は下着を[kau]ときには試着はもちろん、計ってもらうようにしている",
                     reading="kau",
                     correct_answer="買う",
-                    source_text="小僧にいうと、いくらでも出してはくれるが、さてどれを選んでいいのか、買う段になっては、ただ迷うだけであった"
+                    source_text="それを聞いて以来、Ｙ子は下着を買うときには試着はもちろん、計ってもらうようにしている"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="「古本屋に[uru]さ」",
+                    context="この家には、どんな家族が住んでいいたのだろか、どうして[uru]ことになったのだろうかとか、妄想するのが好きなんです",
                     reading="uru",
                     correct_answer="売る",
-                    source_text="「古本屋に売るさ」"
+                    source_text="この家には、どんな家族が住んでいいたのだろか、どうして売ることになったのだろうかとか、妄想するのが好きなんです"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="二人の間にある生命の扉を[akeru]鍵にはならなかった",
+                    context="友達以上恋人未満の関係で、携帯メールはかなりのウエイトを[shimeru]",
+                    reading="shimeru",
+                    correct_answer="占める",
+                    source_text="友達以上恋人未満の関係で、携帯メールはかなりのウエイトを占める"
+                )
+                cases.append(test_case)
+
+                test_case = TestCase(
+                    context="○家に入るときも周りに不審者がいないことを確認してからドアを[akeru]",
                     reading="akeru",
                     correct_answer="開ける",
-                    source_text="二人の間にある生命の扉を開ける鍵にはならなかった"
+                    source_text="○家に入るときも周りに不審者がいないことを確認してからドアを開ける"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="「天の川の水あかりに、十日もつるして[oku]かね、そうでなけぁ、砂に三四日うずめなけぁいけないんだ",
+                    context="体重減と美脚の両方を、と欲張っていた恵美さんは、時間のかかる脚やせよりも、まずは見た目の「やせた印象」にポイントを[oku]ことにした",
                     reading="oku",
                     correct_answer="置く",
-                    source_text="「天の川の水あかりに、十日もつるして置くかね、そうでなけぁ、砂に三四日うずめなけぁいけないんだ"
+                    source_text="体重減と美脚の両方を、と欲張っていた恵美さんは、時間のかかる脚やせよりも、まずは見た目の「やせた印象」にポイントを置くことにした"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="あの様子じゃことによるとまだなかなか[motu]かも知れませんよ」",
+                    context="「かわいらしく、スタイリッシュな軽自動車」というブランドイメージを[motu]ダイハツが、さらに女性からの支持率を上がりそうなゆるキャラの躍進",
                     reading="motu",
                     correct_answer="持つ",
-                    source_text="あの様子じゃことによるとまだなかなか持つかも知れませんよ」"
+                    source_text="「かわいらしく、スタイリッシュな軽自動車」というブランドイメージを持つダイハツが、さらに女性からの支持率を上がりそうなゆるキャラの躍進"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="ゴーシュは町の活動写真館でセロを[hiku]係りでした",
+                    context="あと、趣味の陶芸とギターを[hiku]時間もある意味ではご褒美かも",
                     reading="hiku",
                     correct_answer="弾く",
-                    source_text="ゴーシュは町の活動写真館でセロを弾く係りでした"
+                    source_text="あと、趣味の陶芸とギターを弾く時間もある意味ではご褒美かも"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="そうして「よく考えたのですか」と念を[osu]のです",
+                    context="そのときは『あなたも早くね』と背中を軽く[osu]程度だったんですが、今回は山田花子さんでしょ」と苦笑するのは真奈美さん（32歳）",
                     reading="osu",
                     correct_answer="押す",
-                    source_text="そうして「よく考えたのですか」と念を押すのです"
+                    source_text="そのときは『あなたも早くね』と背中を軽く押す程度だったんですが、今回は山田花子さんでしょ」と苦笑するのは真奈美さん（32歳）"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="和田の叔父さまは、私に二千円お手渡しになって、もし万一、入院などしなければならぬようになったら、東京へ電報を[utu]ように、と言い残して、ひとまずその日に帰京なされた",
+                    context="仕事に忙殺されていたので、ちまちまとメールを[utu]のが面倒だったんですよね",
                     reading="utu",
                     correct_answer="打つ",
-                    source_text="和田の叔父さまは、私に二千円お手渡しになって、もし万一、入院などしなければならぬようになったら、東京へ電報を打つように、と言い残して、ひとまずその日に帰京なされた"
+                    source_text="仕事に忙殺されていたので、ちまちまとメールを打つのが面倒だったんですよね"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="そこで地方の若いものが、女といっしょに[oyogu]事も出来ず、さればと云って遠くから判然その姿を見る事も許されないのを残念に思って、ちょっといたずらをした……」",
+                    context="イミダペプチド（イミダゾールジペプチド）とは、数千キロも飛び続ける渡り鳥や、最高時速100キロで[oyogu]といわれるマグロやカツオといった、連続した長時間運動を行う生物の筋肉部分に含まれているアミノ酸結合体を指す",
                     reading="oyogu",
                     correct_answer="泳ぐ",
-                    source_text="そこで地方の若いものが、女といっしょに泳ぐ事も出来ず、さればと云って遠くから判然その姿を見る事も許されないのを残念に思って、ちょっといたずらをした……」"
+                    source_text="イミダペプチド（イミダゾールジペプチド）とは、数千キロも飛び続ける渡り鳥や、最高時速100キロで泳ぐといわれるマグロやカツオといった、連続した長時間運動を行う生物の筋肉部分に含まれているアミノ酸結合体を指す"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="川の遠くを[tobu]んでいたって、ぼくはきっと見える",
+                    context="一度火がつけばその人気は一気に全国区となり、関連商品は[tobu]ように売れまくる",
                     reading="tobu",
-                    correct_answer="飛",
-                    source_text="川の遠くを飛んでいたって、ぼくはきっと見える"
+                    correct_answer="飛ぶ",
+                    source_text="一度火がつけばその人気は一気に全国区となり、関連商品は飛ぶように売れまくる"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="カムパネルラのうちにはアルコールラムプで[hashiru]汽車があったんだ",
+                    context="以降、自分がシカであるくせに、干支の牛や虎になるために気ぐるみを着てみたり、ムーヴコンテに搭載されている新技術の「CVT」を「ちょっと ヴぃっくりな 低燃費」と解説するなど、ちょっとひねくれた辛口評論家という設定を無視するかのごとく、キャラが独[hashiru]を続けている",
                     reading="hashiru",
-                    correct_answer="走る",
-                    source_text="カムパネルラのうちにはアルコールラムプで走る汽車があったんだ"
+                    correct_answer="走",
+                    source_text="以降、自分がシカであるくせに、干支の牛や虎になるために気ぐるみを着てみたり、ムーヴコンテに搭載されている新技術の「CVT」を「ちょっと ヴぃっくりな 低燃費」と解説するなど、ちょっとひねくれた辛口評論家という設定を無視するかのごとく、キャラが独走を続けている"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="賑かな町の方へ一丁ほど[aruku]と、私も散歩がてら雑司ヶ谷へ行ってみる気になった",
+                    context="医師に筋力の低下を指摘されて、駅までの自転車を止めて、片道30分の道のりを毎日往復[aruku]ことに",
                     reading="aruku",
                     correct_answer="歩く",
-                    source_text="賑かな町の方へ一丁ほど歩くと、私も散歩がてら雑司ヶ谷へ行ってみる気になった"
+                    source_text="医師に筋力の低下を指摘されて、駅までの自転車を止めて、片道30分の道のりを毎日往復歩くことに"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="たしかにあれがみんな星だと、いつか雑誌で読んだのでしたが、このごろはジョバンニはまるで毎日教室でもねむく、本を[yomu]ひまも読む本もないので、なんだかどんなこともよくわからないという気持ちがするのでした",
+                    context="「バレエを習っていた私は、この絵本を[yomu]と励まされる気がして、小学校の図書室で何度も読みました",
                     reading="yomu",
                     correct_answer="読む",
-                    source_text="たしかにあれがみんな星だと、いつか雑誌で読んだのでしたが、このごろはジョバンニはまるで毎日教室でもねむく、本を読むひまも読む本もないので、なんだかどんなこともよくわからないという気持ちがするのでした"
+                    source_text="「バレエを習っていた私は、この絵本を読むと励まされる気がして、小学校の図書室で何度も読みました"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="結[kaku]",
+                    context="大阪で「大人のための絵本講座」を開いているイラストレーターのおおさわまきさん（星未来工房）に、絵本を[kaku]魅力について伺った",
                     reading="kaku",
-                    correct_answer="核",
-                    source_text="結核"
+                    correct_answer="描く",
+                    source_text="大阪で「大人のための絵本講座」を開いているイラストレーターのおおさわまきさん（星未来工房）に、絵本を描く魅力について伺った"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="あれはね、人間の指で握りしめて[tukuru]からですよ」",
+                    context="人脈は[tukuru]だけでなく維持しなければならないから、叔父は家では夕食はとらず、毎晩、外で人脈たちと食事をしているようです」 人脈を作るには時間とお金そしてマメな性格は不可欠",
                     reading="tukuru",
                     correct_answer="作る",
-                    source_text="あれはね、人間の指で握りしめて作るからですよ」"
+                    source_text="人脈は作るだけでなく維持しなければならないから、叔父は家では夕食はとらず、毎晩、外で人脈たちと食事をしているようです」 人脈を作るには時間とお金そしてマメな性格は不可欠"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="私は飛び[tatu]思いで、",
+                    context="ビジネスの世界で人脈の多い人ほど評価が高いのだが、大辞泉によると人脈とは、ある集団・組織の中などで主義・主張や利害などによる、人と人とのつながりと仕事に役に[tatu]人間関係とある",
                     reading="tatu",
                     correct_answer="立つ",
-                    source_text="私は飛び立つ思いで、"
+                    source_text="ビジネスの世界で人脈の多い人ほど評価が高いのだが、大辞泉によると人脈とは、ある集団・組織の中などで主義・主張や利害などによる、人と人とのつながりと仕事に役に立つ人間関係とある"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="私は、戦争の追憶は語るのも、[kiku]のも、いやだ",
+                    context="子ども手当の使い道について子どものいる主婦に[kiku]と、将来の教育費のために貯蓄に回すという人が多かった",
                     reading="kiku",
                     correct_answer="聞く",
-                    source_text="私は、戦争の追憶は語るのも、聞くのも、いやだ"
+                    source_text="子ども手当の使い道について子どものいる主婦に聞くと、将来の教育費のために貯蓄に回すという人が多かった"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="ジョバンニは勢よく立ちあがりましたが、立って[miru]ともうはっきりとそれを答えることができないのでした",
+                    context="アパレル企業に勤める雄介さん（仮名／34歳）は「個人的に女性のメイクした顔に魅力を感じないから、すっぴんを[miru]とすごく可愛いと思う」と賛成派",
                     reading="miru",
                     correct_answer="見る",
-                    source_text="ジョバンニは勢よく立ちあがりましたが、立って見るともうはっきりとそれを答えることができないのでした"
+                    source_text="アパレル企業に勤める雄介さん（仮名／34歳）は「個人的に女性のメイクした顔に魅力を感じないから、すっぴんを見るとすごく可愛いと思う」と賛成派"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="どうしても、思い[kiru]事が出来ないのですか",
+                    context="心が癒されるまでの期間は連絡を断ちきり、それ以降はメールを送るなどして、友達関係に戻ることが多いですね」 オール・オア・ナッシングだった以前に比べ、今は縁を[kiru]、友人に戻る、メル友関係を続けるなど、別れた後の関係性を選択できるようになった",
                     reading="kiru",
                     correct_answer="切る",
-                    source_text="どうしても、思い切る事が出来ないのですか"
+                    source_text="心が癒されるまでの期間は連絡を断ちきり、それ以降はメールを送るなどして、友達関係に戻ることが多いですね」 オール・オア・ナッシングだった以前に比べ、今は縁を切る、友人に戻る、メル友関係を続けるなど、別れた後の関係性を選択できるようになった"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="と[iu]と、子供たちはおどり上がって喜び、私のあとからついて来る",
+                    context="「私のひがみだと[iu]事は重々承知なんですけど、“随分自分に自信があるんだな”って、素直にその美しさを認める事が出来なくて…」と話す香さん",
                     reading="iu",
                     correct_answer="言う",
-                    source_text="と言うと、子供たちはおどり上がって喜び、私のあとからついて来る"
+                    source_text="「私のひがみだと言う事は重々承知なんですけど、“随分自分に自信があるんだな”って、素直にその美しさを認める事が出来なくて…」と話す香さん"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="ぼくは学校から[kaeru]途中たびたびカムパネルラのうちに寄った",
+                    context="もちろんその場で[kaeru]わけにも行かず、違和感を覚えながらもレストランで食事をすることに",
                     reading="kaeru",
                     correct_answer="帰る",
-                    source_text="ぼくは学校から帰る途中たびたびカムパネルラのうちに寄った"
+                    source_text="もちろんその場で帰るわけにも行かず、違和感を覚えながらもレストランで食事をすることに"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="気[toru]という事は、上品という事と、ぜんぜん無関係なあさましい虚勢だ",
+                    context="何冊も手に[toru]間に、自分の好みの絵やストーリーに出合えるはず",
                     reading="toru",
                     correct_answer="取る",
-                    source_text="気取るという事は、上品という事と、ぜんぜん無関係なあさましい虚勢だ"
+                    source_text="何冊も手に取る間に、自分の好みの絵やストーリーに出合えるはず"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="好意的に両家の便宜を[hakaru]というよりも、ずっと下卑た利害心に駆られて、結婚問題を私に向けたのです",
+                    context="「でも、忙しくて毎日バランスの良い食事がとれない…」と嘆く独女には、週末をヨーグルトと栄養補助ドリンクや野菜ジュースのみで過ごし、身体の“浄化”“解毒”“リセット”を[hakaru]という「週末プチ断食」がオススメとの事",
                     reading="hakaru",
-                    correct_answer="計る",
-                    source_text="好意的に両家の便宜を計るというよりも、ずっと下卑た利害心に駆られて、結婚問題を私に向けたのです"
+                    correct_answer="図る",
+                    source_text="「でも、忙しくて毎日バランスの良い食事がとれない…」と嘆く独女には、週末をヨーグルトと栄養補助ドリンクや野菜ジュースのみで過ごし、身体の“浄化”“解毒”“リセット”を図るという「週末プチ断食」がオススメとの事"
                 )
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="それが単なる自白に過ぎないのか、またはその自白についで、実際的の効果をも[osameru]気なのかと問うたのです",
+                    context="バツイチの綾さんは、「子どものいない夫婦も、独身も、働いて税金を[osameru]ことで次世代を担う子どもたちを育てることに貢献する",
                     reading="osameru",
-                    correct_answer="収める",
-                    source_text="それが単なる自白に過ぎないのか、またはその自白についで、実際的の効果をも収める気なのかと問うたのです"
+                    correct_answer="納める",
+                    source_text="バツイチの綾さんは、「子どものいない夫婦も、独身も、働いて税金を納めることで次世代を担う子どもたちを育てることに貢献する"
                 )
                 cases.append(test_case)
 

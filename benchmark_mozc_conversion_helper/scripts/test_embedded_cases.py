@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-埋め込まれたテストケースの検証スクリプト
+抽出済みテストケース（extracted_pattern_code.txt）の検証スクリプト
 """
 
 import sys
@@ -12,21 +12,20 @@ sys.path.append(str(Path(__file__).parent.parent))
 # llm_selection_benchmarkから必要なクラスをインポート
 from scripts.llm_selection_benchmark import LLMSelectionBenchmark, TestCase
 
-def test_embedded_cases():
-    """埋め込まれたテストケースを検証"""
+def test_extracted_cases():
+    """extracted_pattern_code.txt から読み込んだテストケースを検証"""
 
     # ダミーのAPI keyでインスタンス作成（実際にはAPIを呼ばない）
     benchmark = LLMSelectionBenchmark("dummy_key")
 
-    # 埋め込まれたテストケースを取得
-    test_cases = benchmark._extract_cases_from_sentence("")
-
-    print(f"埋め込まれたテストケース数: {len(test_cases)}")
-    print(f"期待値: 113件")
-
-    if len(test_cases) != 113:
-        print(f"ERROR: 期待される113件ではなく{len(test_cases)}件でした")
+    # 抽出済みテストケースを取得
+    test_cases = benchmark._load_cases_from_file()
+    if not test_cases:
+        print("ERROR: extracted_pattern_code.txt が見つからないか、テストケースが0件です。")
+        print("先に scripts/extract_patterns_from_corpus.py を実行して extracted_pattern_code.txt を生成してください。")
         return False
+
+    print(f"抽出されたテストケース数: {len(test_cases)}")
 
     # 最初の5件を表示
     print("\n最初の5件:")
@@ -57,7 +56,7 @@ def test_embedded_cases():
     return True
 
 if __name__ == "__main__":
-    success = test_embedded_cases()
+    success = test_extracted_cases()
     if success:
         print("\n✓ テストケースの検証が完了しました")
         sys.exit(0)

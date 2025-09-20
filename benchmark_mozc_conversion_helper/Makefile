@@ -1,12 +1,13 @@
 # Mozc Conversion Helper Benchmark Makefile
 
-.PHONY: setup download-data test-mozc run-benchmark clean help
+.PHONY: setup download-data download-wikipedia test-mozc run-benchmark clean help
 
 # デフォルトターゲット
 help:
 	@echo "Available targets:"
-	@echo "  setup          - 環境をセットアップ"
-	@echo "  download-data  - 青空文庫データをダウンロード"
+	@echo "  setup              - 環境をセットアップ"
+	@echo "  download-data      - Wikipedia 日本語ダンプ取得手順 (自動取得を試行)"
+	@echo "  download-wikipedia - download-data と同義"
 	@echo "  test-mozc      - Mozcクライアントをテスト"
 	@echo "  run-benchmark  - ベンチマークを実行"
 	@echo "  clean          - 生成ファイルをクリーンアップ"
@@ -21,8 +22,10 @@ setup:
 
 # 青空文庫データのダウンロード
 download-data:
-	@echo "Downloading Aozora Bunko data..."
-	python3 scripts/download_aozora.py
+	@echo "Preparing Wikipedia Japanese dump..."
+	python3 scripts/download_wikipedia_dump.py || true
+
+download-wikipedia: download-data
 
 # Mozcシミュレータのテスト
 test-mozc:
