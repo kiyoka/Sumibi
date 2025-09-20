@@ -393,9 +393,9 @@
                 cases.append(test_case)
 
                 test_case = TestCase(
-                    context="最後に、おおさわさんにお[susumu]め絵本を紹介していただいた",
+                    context="最後に、おおさわさんにお[susumu]絵本を紹介していただいた",
                     reading="susumu",
-                    correct_answer="勧",
+                    correct_answer="勧め",
                     source_text="最後に、おおさわさんにお勧め絵本を紹介していただいた"
                 )
                 cases.append(test_case)
