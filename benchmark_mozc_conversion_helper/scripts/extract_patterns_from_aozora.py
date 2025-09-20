@@ -220,14 +220,27 @@ def find_pattern_matches(texts: List[str], conversion_map: Dict[str, List[str]])
 
     return pattern_matches
 
+def clean_ruby_tags(text: str) -> str:
+    """テキストからrubyタグを除去"""
+    import re
+    # <ruby><rb>漢字</rb><rp>（</rp><rt>ひらがな</rt><rp>）</rp></ruby> → 漢字
+    text = re.sub(r'<ruby><rb>([^<]+)</rb><rp>[^<]*</rp><rt>[^<]*</rt><rp>[^<]*</rp></ruby>', r'\1', text)
+    # 他のHTMLタグも除去
+    text = re.sub(r'<[^>]+>', '', text)
+    return text
+
 def generate_embedded_code(pattern_matches: Dict[str, Tuple[str, str, str]]) -> str:
     """埋め込み用のコードを生成"""
 
     cases_code = ""
     for reading, (context, correct_answer, source_text) in pattern_matches.items():
+        # rubyタグを除去
+        context_clean = clean_ruby_tags(context)
+        source_clean = clean_ruby_tags(source_text)
+
         # 文字列をエスケープ
-        context_escaped = context.replace('"', '\\"').replace('\n', '\\n')
-        source_escaped = source_text.replace('"', '\\"').replace('\n', '\\n')
+        context_escaped = context_clean.replace('"', '\\"').replace('\n', '\\n')
+        source_escaped = source_clean.replace('"', '\\"').replace('\n', '\\n')
 
         cases_code += f'''
                 test_case = TestCase(

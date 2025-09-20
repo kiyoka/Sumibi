@@ -1,0 +1,793 @@
+[
+  {
+    "id": 1,
+    "reading": "tooru",
+    "correct_answer": "達",
+    "context": "「あの人はうちのお父さんとはちょうどおまえたちのように小さいときからのお友[tooru]だったそうだよ",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 2,
+    "reading": "tomeru",
+    "correct_answer": "止",
+    "context": "待て、と制[tomeru]して、結局また、本を山ほど番頭に背負わせて、金五円也を受け取る",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 3,
+    "reading": "omou",
+    "correct_answer": "思う",
+    "context": "ぼくお父さんはきっと間もなく帰ってくると[omou]よ",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 4,
+    "reading": "tukau",
+    "correct_answer": "使う",
+    "context": "よそよそしい頭文字などはとても[tukau]気にならない",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 5,
+    "reading": "kiiroi",
+    "correct_answer": "黄色い",
+    "context": "父が変な[kiiroi]ものも嘔いた時、私はかつて先生と奥さんから聞かされた危険を思い出した",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 6,
+    "reading": "aoi",
+    "correct_answer": "青い",
+    "context": "それはこんやの星祭に[aoi]あかりをこしらえて川へ流す烏瓜を取りに行く相談らしかったのです",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 7,
+    "reading": "akai",
+    "correct_answer": "赤い",
+    "context": "その人は、[akai]眼の下のとこを擦りながら、ジョバンニを見おろして云いました",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 8,
+    "reading": "shiroi",
+    "correct_answer": "白い",
+    "context": "「ではみなさんは、そういうふうに川だと云われたり、乳の流れたあとだと云われたりしていたこのぼんやりと[shiroi]ものがほんとうは何かご承知ですか",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 9,
+    "reading": "yasui",
+    "correct_answer": "安い",
+    "context": "お酒って、とても[yasui]ものじゃないの",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 10,
+    "reading": "suki",
+    "correct_answer": "数奇",
+    "context": "それに以前からあまり[suki]でない方だから」",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 11,
+    "reading": "yoi",
+    "correct_answer": "好い",
+    "context": "その方が淋しくなくって[yoi]から」",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 12,
+    "reading": "warui",
+    "correct_answer": "悪い",
+    "context": "お父さんが監獄へ入るようなそんな[warui]ことをした筈がないんだ",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 13,
+    "reading": "tadashii",
+    "correct_answer": "正しい",
+    "context": "「両方ともいわれる事はいわれますが、この場合は私の方が[tadashii]のです」",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 14,
+    "reading": "sukunai",
+    "correct_answer": "少い",
+    "context": "「アップはね、髪の毛の[sukunai]ひとがするといいのよ",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 15,
+    "reading": "ooi",
+    "correct_answer": "多い",
+    "context": "きたなくなった年数の[ooi]ものを先輩と呼ぶならば、私はたしかにあなたより先輩でしょう",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 16,
+    "reading": "wakai",
+    "correct_answer": "若い",
+    "context": "とお[wakai]二宮巡査も、",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 17,
+    "reading": "atarashii",
+    "correct_answer": "新しい",
+    "context": "ドレスの生地を間違って裁断した時みたいに、もうその生地は縫い合せる事も出来ず、全部捨てて、また別の[atarashii]生地の裁断にとりかからなければならぬ",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 18,
+    "reading": "chiisai",
+    "correct_answer": "小さい",
+    "context": "「あの人はうちのお父さんとはちょうどおまえたちのように[chiisai]ときからのお友達だったそうだよ",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 19,
+    "reading": "kanashii",
+    "correct_answer": "悲しい",
+    "context": "そうして、私は、ああ、お母さまのお顔は、さっきのあの[kanashii]蛇に、どこか似ていらっしゃる、と思った",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 20,
+    "reading": "ureshii",
+    "correct_answer": "嬉しい",
+    "context": "「いい音でしょう、あたし[ureshii]わ」とちゃらちゃらちゃらちゃら続け様に鳴らす",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 21,
+    "reading": "tanoshii",
+    "correct_answer": "楽しい",
+    "context": "汽車に乗った時には、半分死んでいるような気持で、ここに着いた時も、はじめちょっと[tanoshii]ような気分がしたけど、薄暗くなったら、もう東京がこいしくて、胸がこげるようで、気が遠くなってしまったの",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 22,
+    "reading": "isogashii",
+    "correct_answer": "忙しい",
+    "context": "「[isogashii]でしょう」",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 23,
+    "reading": "yasashii",
+    "correct_answer": "優しい",
+    "context": "お父上がお亡くなりになって十年間、お母さまは、お父上の在世中と少しも変らない、のんきな、[yasashii]お母さまだった",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 24,
+    "reading": "tooi",
+    "correct_answer": "遠い",
+    "context": "そしてその天の川の水のなかから四方を見ると、ちょうど水が深いほど青く見えるように、天の川の底の深く[tooi]ところほど星がたくさん集って見えしたがって白くぼんやり見えるのです",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 25,
+    "reading": "chikai",
+    "correct_answer": "誓",
+    "context": "ゲエテにだって[chikai]って言える",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 26,
+    "reading": "kurai",
+    "correct_answer": "暗い",
+    "context": "」と云いながら[kurai]戸口を出ました",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 27,
+    "reading": "akarui",
+    "correct_answer": "明るい",
+    "context": "私は直治の好きだった焼き林檎と、それから、卵のお料理などこしらえて、食堂の電球も[akarui]のと取りかえ、ずいぶん待って、そのうちに、お咲さんが、お勝手口からひょいと顔を出し、",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 28,
+    "reading": "kitanai",
+    "correct_answer": "汚い",
+    "context": "憩える帆は、例外なく[kitanai]",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 29,
+    "reading": "utukushii",
+    "correct_answer": "美しい",
+    "context": "私はその時にも、ただ[utukushii]蛇だ、という思いばかりが強く、やがて御堂に行って画集を持ち出し、かえりにさっきの蛇のいたところをそっと見たが、もういなかった",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 30,
+    "reading": "samui",
+    "correct_answer": "寒い",
+    "context": "灰色みたいな[samui]西風が吹いて、煙が低く地を這っていて、私は、ふとお母さまの顔を見上げ、お母さまのお顔色が、いままで見たこともなかったくらいに悪いのにびっくりして、",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 31,
+    "reading": "tumetai",
+    "correct_answer": "冷たい",
+    "context": "霧でお耳が濡れて、お耳の裏が[tumetai]」",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 32,
+    "reading": "atatakai",
+    "correct_answer": "温かい",
+    "context": "私は全くそのために先生と人間らしい[atatakai]交際ができたのだと思う",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 33,
+    "reading": "usui",
+    "correct_answer": "薄い",
+    "context": "奥さんの不安も実はそこに漂う[usui]雲に似た疑惑から出て来ていた",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 34,
+    "reading": "atui",
+    "correct_answer": "厚い",
+    "context": "こっちやこっちの方はガラスが[atui]ので、光る粒即ち星がたくさん見えその遠いのはぼうっと白く見えるというこれがつまり今日の銀河の説なのです",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 35,
+    "reading": "asai",
+    "correct_answer": "浅い",
+    "context": "先生のいった自然に死ぬとか、不自然の暴力で死ぬとかいう言葉も、その場限りの[asai]印象を与えただけで、後は何らのこだわりを私の頭に残さなかった",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 36,
+    "reading": "fukai",
+    "correct_answer": "不快",
+    "context": "ご[fukai]でも、しのんでいただきます",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 37,
+    "reading": "semai",
+    "correct_answer": "狭い",
+    "context": "私は先生の交際の範囲の極めて[semai]事を知っていた",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 38,
+    "reading": "hiroi",
+    "correct_answer": "広い",
+    "context": "そこから幅の[hiroi]みちが、まっすぐに銀河の青光の中へ通っていました",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 39,
+    "reading": "yowai",
+    "correct_answer": "弱い",
+    "context": "強い人に見えますか、[yowai]人に見えますか」",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 40,
+    "reading": "tuyoi",
+    "correct_answer": "強い",
+    "context": "きょうは一つ、[tuyoi]お注射をしてさし上げますから、お熱もさがる事でしょう」",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 41,
+    "reading": "karui",
+    "correct_answer": "軽井",
+    "context": "「あの、お断りの手紙、いまごろ[karui]沢のほうに着いている事と存じます",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 42,
+    "reading": "omoi",
+    "correct_answer": "重い",
+    "context": "そうだといえば、父の病気の[omoi]のを裏書きするようなものであった",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 43,
+    "reading": "osoi",
+    "correct_answer": "遅い",
+    "context": "「もう[osoi]から早く帰りたまえ",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 44,
+    "reading": "hayai",
+    "correct_answer": "早い",
+    "context": "私は、編物でもお針でも、人よりずっと[hayai]けれども、しかし、下手だった",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 45,
+    "reading": "mijikai",
+    "correct_answer": "短い",
+    "context": "これが私たち親子が神さまからいただいた[mijikai]休息の期間であったとしても、もうすでにこの平和には、何か不吉な、暗い影が忍び寄って来ているような気がしてならない",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 46,
+    "reading": "nagai",
+    "correct_answer": "長",
+    "context": "そこら中を見ても、駅[nagai]や赤帽らしい人の、影もなかったのです",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 47,
+    "reading": "hikui",
+    "correct_answer": "低い",
+    "context": "右手の[hikui]丘の上に小さな水晶ででもこさえたような二つのお宮がならんで立っていました",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 48,
+    "reading": "takai",
+    "correct_answer": "高い",
+    "context": "ジョバンニはすぐ入口から三番目の[takai]卓子に座った人の所へ行っておじぎをしました",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 49,
+    "reading": "deru",
+    "correct_answer": "出る",
+    "context": "ここは百二十万年前、第三紀のあとのころは海岸でね、この下からは貝がらも[deru]",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 50,
+    "reading": "hairu",
+    "correct_answer": "入る",
+    "context": "お父さんが監獄へ[hairu]ようなそんな悪いことをした筈がないんだ",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 51,
+    "reading": "modoru",
+    "correct_answer": "戻る",
+    "context": "「なあに品物が[modoru]のよ",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 52,
+    "reading": "susumu",
+    "correct_answer": "進む",
+    "context": "ほんとうにどんなつらいことでもそれがただしいみちを[susumu]中でのできごとなら峠の上りも下りもみんなほんとうの幸福に近づく一あしずつですから",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 53,
+    "reading": "tuduku",
+    "correct_answer": "続く",
+    "context": "また欺こうとしても、そう長く[tuduku]ものではないと見抜いたのかも知れません",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 54,
+    "reading": "owaru",
+    "correct_answer": "お悪",
+    "context": "お顔色が[owaru]いわ」",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 55,
+    "reading": "hajimeru",
+    "correct_answer": "始める",
+    "context": "そのくせ話し[hajimeru]時は、危篤の病人とは思われないほど、強い声を出した",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 56,
+    "reading": "kanjiru",
+    "correct_answer": "感じる",
+    "context": "弟の直治でさえ、ママにはかなわねえ、と言っているが、つくづく私も、お母さまの真似は困難で、絶望みたいなものをさえ[kanjiru]事がある",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 57,
+    "reading": "kangaeru",
+    "correct_answer": "考える",
+    "context": "またこれを巨きな乳の流れと[kangaeru]ならもっと天の川とよく似ています",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 58,
+    "reading": "wakaru",
+    "correct_answer": "解る",
+    "context": "それが[wakaru]くらいなら私だって、こんなに心配しやしません",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 59,
+    "reading": "shiru",
+    "correct_answer": "著",
+    "context": "それは、この本の[shiru]者が、何の躊躇も無く、片端から旧来の思想を破壊して行くがむしゃらな勇気である",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 60,
+    "reading": "wasureru",
+    "correct_answer": "忘れる",
+    "context": "小さい時から私は、よく人から、「あなたと一緒にいると苦労を[wasureru]」と言われて来ました",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 61,
+    "reading": "oboeru",
+    "correct_answer": "覚える",
+    "context": "私だって、こうして、ローザルクセンブルグの本など読んで、自分がキザったらしく思われる事もないではないが、けれどもまた、やはり私は私なりに深い興味を[oboeru]のだ",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 62,
+    "reading": "narau",
+    "correct_answer": "習う",
+    "context": "彼等人間が母から、乳母から、他人から実用上の言語を[narau]時には、ただ聞いた通りを繰り返すよりほかに毛頭の野心はないのである",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 63,
+    "reading": "oshieru",
+    "correct_answer": "教える",
+    "context": "青年は[oshieru]ようにそっと姉弟にまた云いました",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 64,
+    "reading": "hanasu",
+    "correct_answer": "話す",
+    "context": "そう気づいて、泣き出したくなって立ちつくしていたら、前のお家の西山さんのお嫁さんが垣根の外で、お風呂場が丸焼けだよ、かまどの火の不始末だよ、と声高に[hanasu]のが聞えた",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 65,
+    "reading": "au",
+    "correct_answer": "合う",
+    "context": "どうもからだに恰度[au]ほど稼いでいるくらい、いいことはありませんな",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 66,
+    "reading": "wakareru",
+    "correct_answer": "別れる",
+    "context": "私は先生と[wakareru]時に、「これから折々お宅へ伺っても宜ござんすか」と聞いた",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 67,
+    "reading": "mukaeru",
+    "correct_answer": "迎える",
+    "context": "お母さまのように、天性の教養、という言葉もへんだが、そんなものをお持ちのお方は、案外なんでもなく、当然の事として革命を[mukaeru]事が出来るのかも知れない",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 68,
+    "reading": "okuru",
+    "correct_answer": "送る",
+    "context": "親を騙すような不埒なものに学資を[okuru]事はできないという厳しい返事をすぐ寄こしたのです",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 69,
+    "reading": "ukeru",
+    "correct_answer": "受ける",
+    "context": "私はちょうど主人の帰りを待ち[ukeru]客のような気がして済まなかった",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 70,
+    "reading": "eru",
+    "correct_answer": "得る",
+    "context": "そうして、それが、所謂民衆の友になり[eru]唯一の道だと思ったのです",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 71,
+    "reading": "ushinau",
+    "correct_answer": "失う",
+    "context": "お酒を飲んで、こんなに我を[ushinau]ほど酔ったのも、その時がはじめてでした",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 72,
+    "reading": "sagasu",
+    "correct_answer": "捜す",
+    "context": "それでね、直治が帰って来て、お母さまと、直治と、かず子と三人あそんで暮していては、叔父さまもその生活費を都合なさるのにたいへんな苦労をしなければならぬから、いまのうちに、かず子のお嫁入りさきを[sagasu]か、または、御奉公のお家を捜すか、どちらかになさい、という、まあ、お言いつけなの」",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 73,
+    "reading": "utagau",
+    "correct_answer": "疑う",
+    "context": "けれども自分はきっとこの病気で命を取られるとまで信じていたかどうか、そこになると[utagau]余地はまだいくらでもあるだろうと思われるのです",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 74,
+    "reading": "shinjiru",
+    "correct_answer": "信じる",
+    "context": "自分のような、いやらしくおどおどして、ひとの顔いろばかり伺い、人を[shinjiru]能力が、ひび割れてしまっているものにとって、ヨシ子の無垢の信頼心は、それこそ青葉の滝のようにすがすがしく思われていたのです",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 75,
+    "reading": "aisuru",
+    "correct_answer": "愛する",
+    "context": "これは病人自身のためでもありますし、また[aisuru]妻のためでもありましたが、もっと大きな意味からいうと、ついに人間のためでした",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 76,
+    "reading": "osoreru",
+    "correct_answer": "恐る",
+    "context": "実をいうと、父の病気は[osoreru]べき腸窒扶斯でした",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 77,
+    "reading": "odoroku",
+    "correct_answer": "驚",
+    "context": "ちっともしゃがんでいらっしゃらないのには[odoroku]いたが、けれども、私などにはとても真似られない、しんから可愛らしい感じがあった",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 78,
+    "reading": "kanashimu",
+    "correct_answer": "悲しむ",
+    "context": "我儘もこのくらいなら我慢するが吾輩は人間の不徳についてこれよりも数倍[kanashimu]べき報道を耳にした事がある",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 79,
+    "reading": "yorokobu",
+    "correct_answer": "喜ぶ",
+    "context": "怒るも[yorokobu]も感情というものがさっぱり出ないんだ",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 80,
+    "reading": "okoru",
+    "correct_answer": "起る",
+    "context": "お火を粗末にすれば火事が[okoru]、というきわめて当然の事にも、気づかないほどの私はあの所謂「おひめさま」だったのだろうか",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 81,
+    "reading": "naku",
+    "correct_answer": "無く",
+    "context": "爵位が[naku]ても、天爵というものを持っている立派な貴族のひともあるし、おれたちのように爵位だけは持っていても、貴族どころか、賤民にちかいのもいる",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 82,
+    "reading": "warau",
+    "correct_answer": "笑う",
+    "context": "顔を見合せ、何か、すっかりわかり合ったものを感じて、うふふと私が[warau]と、お母さまも、にっこりお笑いになった",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 83,
+    "reading": "ikiru",
+    "correct_answer": "生",
+    "context": "ところが先[ikiru]は早くもそれを見附けたのでした",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 84,
+    "reading": "shinu",
+    "correct_answer": "死ぬ",
+    "context": "尾にこんなかぎがあってそれで螫されると[shinu]って先生が云ったよ",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 85,
+    "reading": "suwaru",
+    "correct_answer": "坐る",
+    "context": "二人ならんでお母さまの枕もとに[suwaru]と、お母さまは、急にお蒲団の下から手をお出しになって、そうして、黙って直治のほうを指差し、それから私を指差し、それから叔父さまのほうへお顔をお向けになって、両方の掌をひたとお合せになった",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 86,
+    "reading": "okiru",
+    "correct_answer": "起きる",
+    "context": "身体を半分起してそれを受け取った先生は、[okiru]とも寝るとも片付かないその姿勢のままで、変な事を私に聞いた",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 87,
+    "reading": "neru",
+    "correct_answer": "寝る",
+    "context": "私はその言葉のために、帰ってから安心して[neru]事ができた",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 88,
+    "reading": "nomu",
+    "correct_answer": "飲む",
+    "context": "今夜は[nomu]ぜ」",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 89,
+    "reading": "kuu",
+    "correct_answer": "食う",
+    "context": "第一おれがきさまらのもってきたものなど[kuu]か",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 90,
+    "reading": "kau",
+    "correct_answer": "買う",
+    "context": "小僧にいうと、いくらでも出してはくれるが、さてどれを選んでいいのか、[kau]段になっては、ただ迷うだけであった",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 91,
+    "reading": "uru",
+    "correct_answer": "売る",
+    "context": "「古本屋に[uru]さ」",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 92,
+    "reading": "akeru",
+    "correct_answer": "開ける",
+    "context": "二人の間にある生命の扉を[akeru]鍵にはならなかった",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 93,
+    "reading": "oku",
+    "correct_answer": "置く",
+    "context": "「天の川の水あかりに、十日もつるして[oku]かね、そうでなけぁ、砂に三四日うずめなけぁいけないんだ",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 94,
+    "reading": "motu",
+    "correct_answer": "持つ",
+    "context": "あの様子じゃことによるとまだなかなか[motu]かも知れませんよ」",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 95,
+    "reading": "hiku",
+    "correct_answer": "弾く",
+    "context": "ゴーシュは町の活動写真館でセロを[hiku]係りでした",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 96,
+    "reading": "osu",
+    "correct_answer": "押す",
+    "context": "そうして「よく考えたのですか」と念を[osu]のです",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 97,
+    "reading": "utu",
+    "correct_answer": "打つ",
+    "context": "和田の叔父さまは、私に二千円お手渡しになって、もし万一、入院などしなければならぬようになったら、東京へ電報を[utu]ように、と言い残して、ひとまずその日に帰京なされた",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 98,
+    "reading": "oyogu",
+    "correct_answer": "泳ぐ",
+    "context": "そこで地方の若いものが、女といっしょに[oyogu]事も出来ず、さればと云って遠くから判然その姿を見る事も許されないのを残念に思って、ちょっといたずらをした……」",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 99,
+    "reading": "tobu",
+    "correct_answer": "飛",
+    "context": "川の遠くを[tobu]んでいたって、ぼくはきっと見える",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 100,
+    "reading": "hashiru",
+    "correct_answer": "走る",
+    "context": "カムパネルラのうちにはアルコールラムプで[hashiru]汽車があったんだ",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 101,
+    "reading": "aruku",
+    "correct_answer": "歩く",
+    "context": "賑かな町の方へ一丁ほど[aruku]と、私も散歩がてら雑司ヶ谷へ行ってみる気になった",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 102,
+    "reading": "yomu",
+    "correct_answer": "読む",
+    "context": "たしかにあれがみんな星だと、いつか雑誌で読んだのでしたが、このごろはジョバンニはまるで毎日教室でもねむく、本を[yomu]ひまも読む本もないので、なんだかどんなこともよくわからないという気持ちがするのでした",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 103,
+    "reading": "kaku",
+    "correct_answer": "核",
+    "context": "結[kaku]",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 104,
+    "reading": "tukuru",
+    "correct_answer": "作る",
+    "context": "あれはね、人間の指で握りしめて[tukuru]からですよ」",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 105,
+    "reading": "tatu",
+    "correct_answer": "立つ",
+    "context": "私は飛び[tatu]思いで、",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 106,
+    "reading": "kiku",
+    "correct_answer": "聞く",
+    "context": "私は、戦争の追憶は語るのも、[kiku]のも、いやだ",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 107,
+    "reading": "miru",
+    "correct_answer": "見る",
+    "context": "ジョバンニは勢よく立ちあがりましたが、立って[miru]ともうはっきりとそれを答えることができないのでした",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 108,
+    "reading": "kiru",
+    "correct_answer": "切る",
+    "context": "どうしても、思い[kiru]事が出来ないのですか",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 109,
+    "reading": "iu",
+    "correct_answer": "言う",
+    "context": "と[iu]と、子供たちはおどり上がって喜び、私のあとからついて来る",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 110,
+    "reading": "kaeru",
+    "correct_answer": "帰る",
+    "context": "ぼくは学校から[kaeru]途中たびたびカムパネルラのうちに寄った",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 111,
+    "reading": "toru",
+    "correct_answer": "取る",
+    "context": "気[toru]という事は、上品という事と、ぜんぜん無関係なあさましい虚勢だ",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 112,
+    "reading": "hakaru",
+    "correct_answer": "計る",
+    "context": "好意的に両家の便宜を[hakaru]というよりも、ずっと下卑た利害心に駆られて、結婚問題を私に向けたのです",
+    "source": "aozora_bunko"
+  },
+  {
+    "id": 113,
+    "reading": "osameru",
+    "correct_answer": "収める",
+    "context": "それが単なる自白に過ぎないのか、またはその自白についで、実際的の効果をも[osameru]気なのかと問うたのです",
+    "source": "aozora_bunko"
+  }
+]

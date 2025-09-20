@@ -13,6 +13,24 @@ from typing import List, Dict, Tuple
 sys.path.append(str(Path(__file__).parent.parent))
 from mozc_helper import MozcClient
 
+def clean_ruby_tags(text: str) -> str:
+    """
+    テキストからrubyタグを削除
+
+    Args:
+        text: 処理対象のテキスト
+
+    Returns:
+        rubyタグが除去されたテキスト
+    """
+    # <ruby><rb>漢字</rb><rp>（</rp><rt>ひらがな</rt><rp>）</rp></ruby> → 漢字
+    text = re.sub(r'<ruby><rb>([^<]+)</rb><rp>[^<]*</rp><rt>[^<]*</rt><rp>[^<]*</rp></ruby>', r'\1', text)
+
+    # 他のHTMLタグも除去
+    text = re.sub(r'<[^>]+>', '', text)
+
+    return text
+
 def extract_reading_and_kanji(pattern_text: str) -> Tuple[str, str, str]:
     """
     パターンテキストから読み、漢字、文脈を抽出
@@ -34,6 +52,10 @@ def extract_reading_and_kanji(pattern_text: str) -> Tuple[str, str, str]:
     context = context_match.group(1)
     reading = reading_match.group(1)
     correct_answer = correct_match.group(1)
+
+    # rubyタグを除去
+    context = clean_ruby_tags(context)
+    correct_answer = clean_ruby_tags(correct_answer)
 
     return reading, correct_answer, context
 
