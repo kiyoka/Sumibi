@@ -34,10 +34,7 @@
 
 - Python 3.8+
 - OpenAI API（LLM 用）
-- Wikipedia 日本語ダンプ
-- 追加ライブラリ: `mwparserfromhell`
+- Livedoorニュース・コーパス
 
 ## 注意点
-
-- 旧仮名/旧字体など歴史的表記に引きずられないよう、現代表記を優先する評価へシフトしています。
-- 既存の `extracted_pattern_code.txt`（Aozora 由来）は互換のため残していますが、Wikipedia 版での再生成を推奨します。
+- 旧仮名/旧字体など歴史的表記に引きずられないよう、現代表記を使うコーパス(Livedoorニュース)を使っています。
