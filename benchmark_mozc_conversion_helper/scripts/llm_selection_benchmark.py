@@ -144,7 +144,7 @@ class LLMSelectionBenchmark:
                         pass
                     else:
                         # その他のモデル
-                        params["temperature"] = 0.1
+                        params["temperature"] = 0.8
                         params["max_tokens"] = 20
                 except Exception as param_error:
                     print(f"    Warning: Parameter setting failed: {param_error}")
