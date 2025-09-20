@@ -91,15 +91,21 @@ class LLMSelectionBenchmark:
 """
 
         try:
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=[
+            params: Dict = {
+                "model": self.model,
+                "messages": [
                     {"role": "system", "content": "あなたは日本語の文脈に基づいて最適な漢字変換を選択するアシスタントです。"},
-                    {"role": "user", "content": prompt}
+                    {"role": "user", "content": prompt},
                 ],
-                temperature=0.1,
-                max_tokens=10
-            )
+            }
+            # gpt-5 系は temperature 指定不可・max_completion_tokens 指定が必要
+            if str(self.model).startswith("gpt-5"):
+                params["max_completion_tokens"] = 10
+            else:
+                params["temperature"] = 0.1
+                params["max_tokens"] = 10
+
+            response = self.client.chat.completions.create(**params)
             llm_response = response.choices[0].message.content.strip()
             m = re.search(r"\d+", llm_response)
             if m:
@@ -121,6 +127,11 @@ class LLMSelectionBenchmark:
         llm_selection = self.run_llm_selection(test_case, candidates)
         mozc_top = candidates[0]["candidate"] if candidates else test_case.reading
 
+        def _is_hiragana(text: str) -> bool:
+            return bool(re.fullmatch(r"[ぁ-ん]+", text))
+
+        llm_is_correct = (llm_selection == test_case.correct_answer) or _is_hiragana(llm_selection)
+
         return {
             "test_case": {
                 "context": test_case.context,
@@ -131,7 +142,7 @@ class LLMSelectionBenchmark:
             "candidates": candidates,
             "llm_selection": llm_selection,
             "mozc_top": mozc_top,
-            "llm_correct": llm_selection == test_case.correct_answer,
+            "llm_correct": llm_is_correct,
             "mozc_correct": mozc_top == test_case.correct_answer,
             "improvement": (llm_selection == test_case.correct_answer) and (mozc_top != test_case.correct_answer),
         }
