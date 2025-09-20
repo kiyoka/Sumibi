@@ -12,9 +12,6 @@ __pycache__/
 venv/
 env/
 
-# 結果ファイル
-results/
-
 # ログファイル
 *.log
 
