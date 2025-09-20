@@ -36,7 +36,7 @@ class TestCase:
 
 
 class LLMSelectionBenchmark:
-    def __init__(self, api_key: str, model: str = "gpt-4o-mini"):
+    def __init__(self, api_key: str, model: str = "gpt-5"):
         self.client = openai.OpenAI(api_key=api_key)
         self.model = model
         self.mozc_client = MozcClient()
@@ -206,10 +206,9 @@ def main():
     if not api_key:
         print("Please set OPENAI_API_KEY environment variable")
         return
-    model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+    model = os.getenv("OPENAI_MODEL", "gpt-5")
     LLMSelectionBenchmark(api_key, model).run_benchmark()
 
 
 if __name__ == "__main__":
     main()
-

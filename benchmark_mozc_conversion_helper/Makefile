@@ -40,7 +40,7 @@ run-benchmark:
 		exit 1; \
 	fi
 	@echo "Running LLM selection benchmark..."
-	python3 scripts/llm_selection_benchmark.py
+	OPENAI_MODEL=gpt-5 python3 scripts/llm_selection_benchmark.py
 
 # クリーンアップ
 clean:
