@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """
-LLMによる変換候補選択のベンチマーク
+LLMによる変換候補選択のベンチマーク（外部ファイル必須）
+
+前提:
+- extracted_pattern_code.txt に TestCase を埋め込んだコード片が生成済み
+  （scripts/extract_patterns_from_corpus.py により作成）
 """
 
 import json
@@ -9,9 +13,10 @@ import re
 import os
 import sys
 from pathlib import Path
-from typing import List, Dict, Optional, Tuple
+from typing import List, Dict
 from dataclasses import dataclass
-# 親ディレクトリのmozc_helperをインポート
+
+# 親ディレクトリの mozc_helper をロード
 sys.path.append(str(Path(__file__).parent.parent))
 from mozc_helper import MozcClient
 
@@ -21,223 +26,53 @@ except ImportError:
     print("openai package not found. Please install: pip install openai")
     sys.exit(1)
 
+
 @dataclass
 class TestCase:
-    context: str  # 前後の文脈
-    reading: str  # 変換対象の読み
-    correct_answer: str  # 正解の変換結果
-    source_text: str  # 元のテキスト（参考）
+    context: str
+    reading: str
+    correct_answer: str
+    source_text: str
+
 
 class LLMSelectionBenchmark:
     def __init__(self, api_key: str, model: str = "gpt-4o-mini"):
-        """ベンチマーク初期化"""
         self.client = openai.OpenAI(api_key=api_key)
         self.model = model
         self.mozc_client = MozcClient()
-        self.results = []
 
     def _load_cases_from_file(self, pattern_file: str = "extracted_pattern_code.txt") -> List[TestCase]:
-        """extracted_pattern_code.txt から TestCase 群を読み込む（存在すれば優先）。"""
         path = Path(pattern_file)
         if not path.exists():
             return []
-
         try:
-            content = path.read_text(encoding='utf-8')
+            content = path.read_text(encoding="utf-8")
         except Exception as e:
             print(f"Failed to read {pattern_file}: {e}")
             return []
 
-        # TestCase(context="...", reading="...", correct_answer="...", source_text="...") を抽出
         patterns = re.findall(r'TestCase\([^)]+\)', content, re.DOTALL)
         cases: List[TestCase] = []
         for pat in patterns:
-            context_m = re.search(r'context="([^"]*)"', pat)
-            reading_m = re.search(r'reading="([^"]*)"', pat)
-            correct_m = re.search(r'correct_answer="([^"]*)"', pat)
-            source_m  = re.search(r'source_text="([^"]*)"', pat)
-            if not (context_m and reading_m and correct_m and source_m):
+            m_ctx = re.search(r'context="([^"]*)"', pat)
+            m_rd  = re.search(r'reading="([^"]*)"', pat)
+            m_ok  = re.search(r'correct_answer="([^"]*)"', pat)
+            m_src = re.search(r'source_text="([^"]*)"', pat)
+            if not (m_ctx and m_rd and m_ok and m_src):
                 continue
             cases.append(TestCase(
-                context=context_m.group(1),
-                reading=reading_m.group(1),
-                correct_answer=correct_m.group(1),
-                source_text=source_m.group(1)
+                context=m_ctx.group(1),
+                reading=m_rd.group(1),
+                correct_answer=m_ok.group(1),
+                source_text=m_src.group(1)
             ))
         return cases
 
-    def extract_test_cases_from_aozora(self, text_file: str, num_cases: int = 50) -> List[TestCase]:
-        """青空文庫テキストからテストケースを抽出"""
-        try:
-            with open(text_file, 'r', encoding='utf-8') as f:
-                text = f.read()
-        except FileNotFoundError:
-            print(f"File not found: {text_file}")
-            return []
-
-        test_cases = []
-        sentences = self._split_into_sentences(text)
-
-        for sentence in sentences[:num_cases * 2]:  # 余裕を持って抽出
-            cases = self._extract_cases_from_sentence(sentence)
-            test_cases.extend(cases)
-
-            if len(test_cases) >= num_cases:
-                break
-
-        return test_cases[:num_cases]
-
-    def _split_into_sentences(self, text: str) -> List[str]:
-        """テキストを文に分割"""
-        # 句読点で分割
-        sentences = re.split(r'[。！？\n]', text)
-        # 短すぎる文や長すぎる文を除外
-        return [s.strip() for s in sentences if 10 <= len(s.strip()) <= 100]
-
-    def _extract_cases_from_sentence(self, sentence: str) -> List[TestCase]:
-        """青空文庫から抽出した113パターンのテストケースを返す"""
-        # 青空文庫から抽出した113パターンのテストケース（rubyタグ除去済み）
-        # sentenceパラメータは使用しない（固定テストケースを返すため）
-        cases = []
-
-        # 以下のテストケースは青空文庫の実際のテキストから抽出された113パターン全て
-        test_cases_data = [
-            ("tooru", "達", "「あの人はうちのお父さんとはちょうどおまえたちのように小さいときからのお友[tooru]だったそうだよ", "「あの人はうちのお父さんとはちょうどおまえたちのように小さいときからのお友達だったそうだよ"),
-            ("tomeru", "止", "待て、と制[tomeru]して、結局また、本を山ほど番頭に背負わせて、金五円也を受け取る", "待て、と制止して、結局また、本を山ほど番頭に背負わせて、金五円也を受け取る"),
-            ("omou", "思う", "ぼくお父さんはきっと間もなく帰ってくると[omou]よ", "ぼくお父さんはきっと間もなく帰ってくると思うよ"),
-            ("tukau", "使う", "よそよそしい頭文字などはとても[tukau]気にならない", "よそよそしい頭文字などはとても使う気にならない"),
-            ("kiiroi", "黄色い", "父が変な[kiiroi]ものも嘔いた時、私はかつて先生と奥さんから聞かされた危険を思い出した", "父が変な黄色いものも嘔いた時、私はかつて先生と奥さんから聞かされた危険を思い出した"),
-            ("aoi", "青い", "それはこんやの星祭に[aoi]あかりをこしらえて川へ流す烏瓜を取りに行く相談らしかったのです", "それはこんやの星祭に青いあかりをこしらえて川へ流す烏瓜を取りに行く相談らしかったのです"),
-            ("akai", "赤い", "その人は、[akai]眼の下のとこを擦りながら、ジョバンニを見おろして云いました", "その人は、赤い眼の下のとこを擦りながら、ジョバンニを見おろして云いました"),
-            ("shiroi", "白い", "「ではみなさんは、そういうふうに川だと云われたり、乳の流れたあとだと云われたりしていたこのぼんやりと[shiroi]ものがほんとうは何かご承知ですか", "「ではみなさんは、そういうふうに川だと云われたり、乳の流れたあとだと云われたりしていたこのぼんやりと白いものがほんとうは何かご承知ですか"),
-            ("yasui", "安い", "お酒って、とても[yasui]ものじゃないの", "お酒って、とても安いものじゃないの"),
-            ("suki", "数奇", "それに以前からあまり[suki]でない方だから」", "それに以前からあまり数奇でない方だから」"),
-            ("yoi", "好い", "その方が淋しくなくって[yoi]から」", "その方が淋しくなくって好いから」"),
-            ("warui", "悪い", "お父さんが監獄へ入るようなそんな[warui]ことをした筈がないんだ", "お父さんが監獄へ入るようなそんな悪いことをした筈がないんだ"),
-            ("tadashii", "正しい", "「両方ともいわれる事はいわれますが、この場合は私の方が[tadashii]のです」", "「両方ともいわれる事はいわれますが、この場合は私の方が正しいのです」"),
-            ("sukunai", "少い", "「アップはね、髪の毛の[sukunai]ひとがするといいのよ", "「アップはね、髪の毛の少いひとがするといいのよ"),
-            ("ooi", "多い", "きたなくなった年数の[ooi]ものを先輩と呼ぶならば、私はたしかにあなたより先輩でしょう", "きたなくなった年数の多いものを先輩と呼ぶならば、私はたしかにあなたより先輩でしょう"),
-            ("wakai", "若い", "とお[wakai]二宮巡査も、", "とお若い二宮巡査も、"),
-            ("atarashii", "新しい", "ドレスの生地を間違って裁断した時みたいに、もうその生地は縫い合せる事も出来ず、全部捨てて、また別の[atarashii]生地の裁断にとりかからなければならぬ", "ドレスの生地を間違って裁断した時みたいに、もうその生地は縫い合せる事も出来ず、全部捨てて、また別の新しい生地の裁断にとりかからなければならぬ"),
-            ("chiisai", "小さい", "「あの人はうちのお父さんとはちょうどおまえたちのように[chiisai]ときからのお友達だったそうだよ", "「あの人はうちのお父さんとはちょうどおまえたちのように小さいときからのお友達だったそうだよ"),
-            ("kanashii", "悲しい", "そうして、私は、ああ、お母さまのお顔は、さっきのあの[kanashii]蛇に、どこか似ていらっしゃる、と思った", "そうして、私は、ああ、お母さまのお顔は、さっきのあの悲しい蛇に、どこか似ていらっしゃる、と思った"),
-            ("ureshii", "嬉しい", "「いい音でしょう、あたし[ureshii]わ」とちゃらちゃらちゃらちゃら続け様に鳴らす", "「いい音でしょう、あたし嬉しいわ」とちゃらちゃらちゃらちゃら続け様に鳴らす"),
-            ("tanoshii", "楽しい", "汽車に乗った時には、半分死んでいるような気持で、ここに着いた時も、はじめちょっと[tanoshii]ような気分がしたけど、薄暗くなったら、もう東京がこいしくて、胸がこげるようで、気が遠くなってしまったの", "汽車に乗った時には、半分死んでいるような気持で、ここに着いた時も、はじめちょっと楽しいような気分がしたけど、薄暗くなったら、もう東京がこいしくて、胸がこげるようで、気が遠くなってしまったの"),
-            ("isogashii", "忙しい", "「[isogashii]でしょう」", "「忙しいでしょう」"),
-            ("yasashii", "優しい", "お父上がお亡くなりになって十年間、お母さまは、お父上の在世中と少しも変らない、のんきな、[yasashii]お母さまだった", "お父上がお亡くなりになって十年間、お母さまは、お父上の在世中と少しも変らない、のんきな、優しいお母さまだった"),
-            ("tooi", "遠い", "そしてその天の川の水のなかから四方を見ると、ちょうど水が深いほど青く見えるように、天の川の底の深く[tooi]ところほど星がたくさん集って見えしたがって白くぼんやり見えるのです", "そしてその天の川の水のなかから四方を見ると、ちょうど水が深いほど青く見えるように、天の川の底の深く遠いところほど星がたくさん集って見えしたがって白くぼんやり見えるのです"),
-            ("chikai", "誓", "ゲエテにだって[chikai]って言える", "ゲエテにだって誓って言える"),
-            ("kurai", "暗い", "」と云いながら[kurai]戸口を出ました", "」と云いながら暗い戸口を出ました"),
-            ("akarui", "明るい", "私は直治の好きだった焼き林檎と、それから、卵のお料理などこしらえて、食堂の電球も[akarui]のと取りかえ、ずいぶん待って、そのうちに、お咲さんが、お勝手口からひょいと顔を出し、", "私は直治の好きだった焼き林檎と、それから、卵のお料理などこしらえて、食堂の電球も明るいのと取りかえ、ずいぶん待って、そのうちに、お咲さんが、お勝手口からひょいと顔を出し、"),
-            ("kitanai", "汚い", "憩える帆は、例外なく[kitanai]", "憩える帆は、例外なく汚い"),
-            ("utukushii", "美しい", "私はその時にも、ただ[utukushii]蛇だ、という思いばかりが強く、やがて御堂に行って画集を持ち出し、かえりにさっきの蛇のいたところをそっと見たが、もういなかった", "私はその時にも、ただ美しい蛇だ、という思いばかりが強く、やがて御堂に行って画集を持ち出し、かえりにさっきの蛇のいたところをそっと見たが、もういなかった"),
-            ("samui", "寒い", "灰色みたいな[samui]西風が吹いて、煙が低く地を這っていて、私は、ふとお母さまの顔を見上げ、お母さまのお顔色が、いままで見たこともなかったくらいに悪いのにびっくりして、", "灰色みたいな寒い西風が吹いて、煙が低く地を這っていて、私は、ふとお母さまの顔を見上げ、お母さまのお顔色が、いままで見たこともなかったくらいに悪いのにびっくりして、"),
-            ("tumetai", "冷たい", "霧でお耳が濡れて、お耳の裏が[tumetai]」", "霧でお耳が濡れて、お耳の裏が冷たい」"),
-            ("atatakai", "温かい", "私は全くそのために先生と人間らしい[atatakai]交際ができたのだと思う", "私は全くそのために先生と人間らしい温かい交際ができたのだと思う"),
-            ("usui", "薄い", "奥さんの不安も実はそこに漂う[usui]雲に似た疑惑から出て来ていた", "奥さんの不安も実はそこに漂う薄い雲に似た疑惑から出て来ていた"),
-            ("atui", "厚い", "こっちやこっちの方はガラスが[atui]ので、光る粒即ち星がたくさん見えその遠いのはぼうっと白く見えるというこれがつまり今日の銀河の説なのです", "こっちやこっちの方はガラスが厚いので、光る粒即ち星がたくさん見えその遠いのはぼうっと白く見えるというこれがつまり今日の銀河の説なのです"),
-            ("asai", "浅い", "先生のいった自然に死ぬとか、不自然の暴力で死ぬとかいう言葉も、その場限りの[asai]印象を与えただけで、後は何らのこだわりを私の頭に残さなかった", "先生のいった自然に死ぬとか、不自然の暴力で死ぬとかいう言葉も、その場限りの浅い印象を与えただけで、後は何らのこだわりを私の頭に残さなかった"),
-            ("fukai", "不快", "ご[fukai]でも、しのんでいただきます", "ご不快でも、しのんでいただきます"),
-            ("semai", "狭い", "私は先生の交際の範囲の極めて[semai]事を知っていた", "私は先生の交際の範囲の極めて狭い事を知っていた"),
-            ("hiroi", "広い", "そこから幅の[hiroi]みちが、まっすぐに銀河の青光の中へ通っていました", "そこから幅の広いみちが、まっすぐに銀河の青光の中へ通っていました"),
-            ("yowai", "弱い", "強い人に見えますか、[yowai]人に見えますか」", "強い人に見えますか、弱い人に見えますか」"),
-            ("tuyoi", "強い", "きょうは一つ、[tuyoi]お注射をしてさし上げますから、お熱もさがる事でしょう」", "きょうは一つ、強いお注射をしてさし上げますから、お熱もさがる事でしょう」"),
-            ("karui", "軽井", "「あの、お断りの手紙、いまごろ[karui]沢のほうに着いている事と存じます", "「あの、お断りの手紙、いまごろ軽井沢のほうに着いている事と存じます"),
-            ("omoi", "重い", "そうだといえば、父の病気の[omoi]のを裏書きするようなものであった", "そうだといえば、父の病気の重いのを裏書きするようなものであった"),
-            ("osoi", "遅い", "「もう[osoi]から早く帰りたまえ", "「もう遅いから早く帰りたまえ"),
-            ("hayai", "早い", "私は、編物でもお針でも、人よりずっと[hayai]けれども、しかし、下手だった", "私は、編物でもお針でも、人よりずっと早いけれども、しかし、下手だった"),
-            ("mijikai", "短い", "これが私たち親子が神さまからいただいた[mijikai]休息の期間であったとしても、もうすでにこの平和には、何か不吉な、暗い影が忍び寄って来ているような気がしてならない", "これが私たち親子が神さまからいただいた短い休息の期間であったとしても、もうすでにこの平和には、何か不吉な、暗い影が忍び寄って来ているような気がしてならない"),
-            ("nagai", "長", "そこら中を見ても、駅[nagai]や赤帽らしい人の、影もなかったのです", "そこら中を見ても、駅長や赤帽らしい人の、影もなかったのです"),
-            ("hikui", "低い", "右手の[hikui]丘の上に小さな水晶ででもこさえたような二つのお宮がならんで立っていました", "右手の低い丘の上に小さな水晶ででもこさえたような二つのお宮がならんで立っていました"),
-            ("takai", "高い", "ジョバンニはすぐ入口から三番目の[takai]卓子に座った人の所へ行っておじぎをしました", "ジョバンニはすぐ入口から三番目の高い卓子に座った人の所へ行っておじぎをしました"),
-            ("deru", "出る", "ここは百二十万年前、第三紀のあとのころは海岸でね、この下からは貝がらも[deru]", "ここは百二十万年前、第三紀のあとのころは海岸でね、この下からは貝がらも出る"),
-            ("hairu", "入る", "お父さんが監獄へ[hairu]ようなそんな悪いことをした筈がないんだ", "お父さんが監獄へ入るようなそんな悪いことをした筈がないんだ"),
-            ("modoru", "戻る", "「なあに品物が[modoru]のよ", "「なあに品物が戻るのよ"),
-            ("susumu", "進む", "ほんとうにどんなつらいことでもそれがただしいみちを[susumu]中でのできごとなら峠の上りも下りもみんなほんとうの幸福に近づく一あしずつですから", "ほんとうにどんなつらいことでもそれがただしいみちを進む中でのできごとなら峠の上りも下りもみんなほんとうの幸福に近づく一あしずつですから"),
-            ("tuduku", "続く", "また欺こうとしても、そう長く[tuduku]ものではないと見抜いたのかも知れません", "また欺こうとしても、そう長く続くものではないと見抜いたのかも知れません"),
-            ("owaru", "お悪", "お顔色が[owaru]いわ」", "お顔色がお悪いわ」"),
-            ("hajimeru", "始める", "そのくせ話し[hajimeru]時は、危篤の病人とは思われないほど、強い声を出した", "そのくせ話し始める時は、危篤の病人とは思われないほど、強い声を出した"),
-            ("kanjiru", "感じる", "弟の直治でさえ、ママにはかなわねえ、と言っているが、つくづく私も、お母さまの真似は困難で、絶望みたいなものをさえ[kanjiru]事がある", "弟の直治でさえ、ママにはかなわねえ、と言っているが、つくづく私も、お母さまの真似は困難で、絶望みたいなものをさえ感じる事がある"),
-            ("kangaeru", "考える", "またこれを巨きな乳の流れと[kangaeru]ならもっと天の川とよく似ています", "またこれを巨きな乳の流れと考えるならもっと天の川とよく似ています"),
-            ("wakaru", "解る", "それが[wakaru]くらいなら私だって、こんなに心配しやしません", "それが解るくらいなら私だって、こんなに心配しやしません"),
-            ("shiru", "著", "それは、この本の[shiru]者が、何の躊躇も無く、片端から旧来の思想を破壊して行くがむしゃらな勇気である", "それは、この本の著者が、何の躊躇も無く、片端から旧来の思想を破壊して行くがむしゃらな勇気である"),
-            ("wasureru", "忘れる", "小さい時から私は、よく人から、「あなたと一緒にいると苦労を[wasureru]」と言われて来ました", "小さい時から私は、よく人から、「あなたと一緒にいると苦労を忘れる」と言われて来ました"),
-            ("oboeru", "覚える", "私だって、こうして、ローザルクセンブルグの本など読んで、自分がキザったらしく思われる事もないではないが、けれどもまた、やはり私は私なりに深い興味を[oboeru]のだ", "私だって、こうして、ローザルクセンブルグの本など読んで、自分がキザったらしく思われる事もないではないが、けれどもまた、やはり私は私なりに深い興味を覚えるのだ"),
-            ("narau", "習う", "彼等人間が母から、乳母から、他人から実用上の言語を[narau]時には、ただ聞いた通りを繰り返すよりほかに毛頭の野心はないのである", "彼等人間が母から、乳母から、他人から実用上の言語を習う時には、ただ聞いた通りを繰り返すよりほかに毛頭の野心はないのである"),
-            ("oshieru", "教える", "青年は[oshieru]ようにそっと姉弟にまた云いました", "青年は教えるようにそっと姉弟にまた云いました"),
-            ("hanasu", "話す", "そう気づいて、泣き出したくなって立ちつくしていたら、前のお家の西山さんのお嫁さんが垣根の外で、お風呂場が丸焼けだよ、かまどの火の不始末だよ、と声高に[hanasu]のが聞えた", "そう気づいて、泣き出したくなって立ちつくしていたら、前のお家の西山さんのお嫁さんが垣根の外で、お風呂場が丸焼けだよ、かまどの火の不始末だよ、と声高に話すのが聞えた"),
-            ("au", "合う", "どうもからだに恰度[au]ほど稼いでいるくらい、いいことはありませんな", "どうもからだに恰度合うほど稼いでいるくらい、いいことはありませんな"),
-            ("wakareru", "別れる", "私は先生と[wakareru]時に、「これから折々お宅へ伺っても宜ござんすか」と聞いた", "私は先生と別れる時に、「これから折々お宅へ伺っても宜ござんすか」と聞いた"),
-            ("mukaeru", "迎える", "お母さまのように、天性の教養、という言葉もへんだが、そんなものをお持ちのお方は、案外なんでもなく、当然の事として革命を[mukaeru]事が出来るのかも知れない", "お母さまのように、天性の教養、という言葉もへんだが、そんなものをお持ちのお方は、案外なんでもなく、当然の事として革命を迎える事が出来るのかも知れない"),
-            ("okuru", "送る", "親を騙すような不埒なものに学資を[okuru]事はできないという厳しい返事をすぐ寄こしたのです", "親を騙すような不埒なものに学資を送る事はできないという厳しい返事をすぐ寄こしたのです"),
-            ("ukeru", "受ける", "私はちょうど主人の帰りを待ち[ukeru]客のような気がして済まなかった", "私はちょうど主人の帰りを待ち受ける客のような気がして済まなかった"),
-            ("eru", "得る", "そうして、それが、所謂民衆の友になり[eru]唯一の道だと思ったのです", "そうして、それが、所謂民衆の友になり得る唯一の道だと思ったのです"),
-            ("ushinau", "失う", "お酒を飲んで、こんなに我を[ushinau]ほど酔ったのも、その時がはじめてでした", "お酒を飲んで、こんなに我を失うほど酔ったのも、その時がはじめてでした"),
-            ("sagasu", "捜す", "それでね、直治が帰って来て、お母さまと、直治と、かず子と三人あそんで暮していては、叔父さまもその生活費を都合なさるのにたいへんな苦労をしなければならぬから、いまのうちに、かず子のお嫁入りさきを[sagasu]か、または、御奉公のお家を捜すか、どちらかになさい、という、まあ、お言いつけなの」", "それでね、直治が帰って来て、お母さまと、直治と、かず子と三人あそんで暮していては、叔父さまもその生活費を都合なさるのにたいへんな苦労をしなければならぬから、いまのうちに、かず子のお嫁入りさきを捜すか、または、御奉公のお家を捜すか、どちらかになさい、という、まあ、お言いつけなの」"),
-            ("utagau", "疑う", "けれども自分はきっとこの病気で命を取られるとまで信じていたかどうか、そこになると[utagau]余地はまだいくらでもあるだろうと思われるのです", "けれども自分はきっとこの病気で命を取られるとまで信じていたかどうか、そこになると疑う余地はまだいくらでもあるだろうと思われるのです"),
-            ("shinjiru", "信じる", "自分のような、いやらしくおどおどして、ひとの顔いろばかり伺い、人を[shinjiru]能力が、ひび割れてしまっているものにとって、ヨシ子の無垢の信頼心は、それこそ青葉の滝のようにすがすがしく思われていたのです", "自分のような、いやらしくおどおどして、ひとの顔いろばかり伺い、人を信じる能力が、ひび割れてしまっているものにとって、ヨシ子の無垢の信頼心は、それこそ青葉の滝のようにすがすがしく思われていたのです"),
-            ("aisuru", "愛する", "これは病人自身のためでもありますし、また[aisuru]妻のためでもありましたが、もっと大きな意味からいうと、ついに人間のためでした", "これは病人自身のためでもありますし、また愛する妻のためでもありましたが、もっと大きな意味からいうと、ついに人間のためでした"),
-            ("osoreru", "恐る", "実をいうと、父の病気は[osoreru]べき腸窒扶斯でした", "実をいうと、父の病気は恐るべき腸窒扶斯でした"),
-            ("odoroku", "驚", "ちっともしゃがんでいらっしゃらないのには[odoroku]いたが、けれども、私などにはとても真似られない、しんから可愛らしい感じがあった", "ちっともしゃがんでいらっしゃらないのには驚いたが、けれども、私などにはとても真似られない、しんから可愛らしい感じがあった"),
-            ("kanashimu", "悲しむ", "我儘もこのくらいなら我慢するが吾輩は人間の不徳についてこれよりも数倍[kanashimu]べき報道を耳にした事がある", "我儘もこのくらいなら我慢するが吾輩は人間の不徳についてこれよりも数倍悲しむべき報道を耳にした事がある"),
-            ("yorokobu", "喜ぶ", "怒るも[yorokobu]も感情というものがさっぱり出ないんだ", "怒るも喜ぶも感情というものがさっぱり出ないんだ"),
-            ("okoru", "起る", "お火を粗末にすれば火事が[okoru]、というきわめて当然の事にも、気づかないほどの私はあの所謂「おひめさま」だったのだろうか", "お火を粗末にすれば火事が起る、というきわめて当然の事にも、気づかないほどの私はあの所謂「おひめさま」だったのだろうか"),
-            ("naku", "無く", "爵位が[naku]ても、天爵というものを持っている立派な貴族のひともあるし、おれたちのように爵位だけは持っていても、貴族どころか、賤民にちかいのもいる", "爵位が無くても、天爵というものを持っている立派な貴族のひともあるし、おれたちのように爵位だけは持っていても、貴族どころか、賤民にちかいのもいる"),
-            ("warau", "笑う", "顔を見合せ、何か、すっかりわかり合ったものを感じて、うふふと私が[warau]と、お母さまも、にっこりお笑いになった", "顔を見合せ、何か、すっかりわかり合ったものを感じて、うふふと私が笑うと、お母さまも、にっこりお笑いになった"),
-            ("ikiru", "生", "ところが先[ikiru]は早くもそれを見附けたのでした", "ところが先生は早くもそれを見附けたのでした"),
-            ("shinu", "死ぬ", "尾にこんなかぎがあってそれで螫されると[shinu]って先生が云ったよ", "尾にこんなかぎがあってそれで螫されると死ぬって先生が云ったよ"),
-            ("suwaru", "坐る", "二人ならんでお母さまの枕もとに[suwaru]と、お母さまは、急にお蒲団の下から手をお出しになって、そうして、黙って直治のほうを指差し、それから私を指差し、それから叔父さまのほうへお顔をお向けになって、両方の掌をひたとお合せになった", "二人ならんでお母さまの枕もとに坐ると、お母さまは、急にお蒲団の下から手をお出しになって、そうして、黙って直治のほうを指差し、それから私を指差し、それから叔父さまのほうへお顔をお向けになって、両方の掌をひたとお合せになった"),
-            ("okiru", "起きる", "身体を半分起してそれを受け取った先生は、[okiru]とも寝るとも片付かないその姿勢のままで、変な事を私に聞いた", "身体を半分起してそれを受け取った先生は、起きるとも寝るとも片付かないその姿勢のままで、変な事を私に聞いた"),
-            ("neru", "寝る", "私はその言葉のために、帰ってから安心して[neru]事ができた", "私はその言葉のために、帰ってから安心して寝る事ができた"),
-            ("nomu", "飲む", "今夜は[nomu]ぜ」", "今夜は飲むぜ」"),
-            ("kuu", "食う", "第一おれがきさまらのもってきたものなど[kuu]か", "第一おれがきさまらのもってきたものなど食うか"),
-            ("kau", "買う", "小僧にいうと、いくらでも出してはくれるが、さてどれを選んでいいのか、[kau]段になっては、ただ迷うだけであった", "小僧にいうと、いくらでも出してはくれるが、さてどれを選んでいいのか、買う段になっては、ただ迷うだけであった"),
-            ("uru", "売る", "「古本屋に[uru]さ」", "「古本屋に売るさ」"),
-            ("akeru", "開ける", "二人の間にある生命の扉を[akeru]鍵にはならなかった", "二人の間にある生命の扉を開ける鍵にはならなかった"),
-            ("oku", "置く", "「天の川の水あかりに、十日もつるして[oku]かね、そうでなけぁ、砂に三四日うずめなけぁいけないんだ", "「天の川の水あかりに、十日もつるして置くかね、そうでなけぁ、砂に三四日うずめなけぁいけないんだ"),
-            ("motu", "持つ", "あの様子じゃことによるとまだなかなか[motu]かも知れませんよ」", "あの様子じゃことによるとまだなかなか持つかも知れませんよ」"),
-            ("hiku", "弾く", "ゴーシュは町の活動写真館でセロを[hiku]係りでした", "ゴーシュは町の活動写真館でセロを弾く係りでした"),
-            ("osu", "押す", "そうして「よく考えたのですか」と念を[osu]のです", "そうして「よく考えたのですか」と念を押すのです"),
-            ("utu", "打つ", "和田の叔父さまは、私に二千円お手渡しになって、もし万一、入院などしなければならぬようになったら、東京へ電報を[utu]ように、と言い残して、ひとまずその日に帰京なされた", "和田の叔父さまは、私に二千円お手渡しになって、もし万一、入院などしなければならぬようになったら、東京へ電報を打つように、と言い残して、ひとまずその日に帰京なされた"),
-            ("oyogu", "泳ぐ", "そこで地方の若いものが、女といっしょに[oyogu]事も出来ず、さればと云って遠くから判然その姿を見る事も許されないのを残念に思って、ちょっといたずらをした……」", "そこで地方の若いものが、女といっしょに泳ぐ事も出来ず、さればと云って遠くから判然その姿を見る事も許されないのを残念に思って、ちょっといたずらをした……」"),
-            ("tobu", "飛", "川の遠くを[tobu]んでいたって、ぼくはきっと見える", "川の遠くを飛んでいたって、ぼくはきっと見える"),
-            ("hashiru", "走る", "カムパネルラのうちにはアルコールラムプで[hashiru]汽車があったんだ", "カムパネルラのうちにはアルコールラムプで走る汽車があったんだ"),
-            ("aruku", "歩く", "賑かな町の方へ一丁ほど[aruku]と、私も散歩がてら雑司ヶ谷へ行ってみる気になった", "賑かな町の方へ一丁ほど歩くと、私も散歩がてら雑司ヶ谷へ行ってみる気になった"),
-            ("yomu", "読む", "たしかにあれがみんな星だと、いつか雑誌で読んだのでしたが、このごろはジョバンニはまるで毎日教室でもねむく、本を[yomu]ひまも読む本もないので、なんだかどんなこともよくわからないという気持ちがするのでした", "たしかにあれがみんな星だと、いつか雑誌で読んだのでしたが、このごろはジョバンニはまるで毎日教室でもねむく、本を読むひまも読む本もないので、なんだかどんなこともよくわからないという気持ちがするのでした"),
-            ("kaku", "核", "結[kaku]", "結核"),
-            ("tukuru", "作る", "あれはね、人間の指で握りしめて[tukuru]からですよ」", "あれはね、人間の指で握りしめて作るからですよ」"),
-            ("tatu", "立つ", "私は飛び[tatu]思いで、", "私は飛び立つ思いで、"),
-            ("kiku", "聞く", "私は、戦争の追憶は語るのも、[kiku]のも、いやだ", "私は、戦争の追憶は語るのも、聞くのも、いやだ"),
-            ("miru", "見る", "ジョバンニは勢よく立ちあがりましたが、立って[miru]ともうはっきりとそれを答えることができないのでした", "ジョバンニは勢よく立ちあがりましたが、立って見るともうはっきりとそれを答えることができないのでした"),
-            ("kiru", "切る", "どうしても、思い[kiru]事が出来ないのですか", "どうしても、思い切る事が出来ないのですか"),
-            ("iu", "言う", "と[iu]と、子供たちはおどり上がって喜び、私のあとからついて来る", "と言うと、子供たちはおどり上がって喜び、私のあとからついて来る"),
-            ("kaeru", "帰る", "ぼくは学校から[kaeru]途中たびたびカムパネルラのうちに寄った", "ぼくは学校から帰る途中たびたびカムパネルラのうちに寄った"),
-            ("toru", "取る", "気[toru]という事は、上品という事と、ぜんぜん無関係なあさましい虚勢だ", "気取るという事は、上品という事と、ぜんぜん無関係なあさましい虚勢だ"),
-            ("hakaru", "計る", "好意的に両家の便宜を[hakaru]というよりも、ずっと下卑た利害心に駆られて、結婚問題を私に向けたのです", "好意的に両家の便宜を計るというよりも、ずっと下卑た利害心に駆られて、結婚問題を私に向けたのです"),
-            ("osameru", "収める", "それが単なる自白に過ぎないのか、またはその自白についで、実際的の効果をも[osameru]気なのかと問うたのです", "それが単なる自白に過ぎないのか、またはその自白についで、実際的の効果をも収める気なのかと問うたのです"),
-        ]
-
-        for reading, correct_answer, context, source_text in test_cases_data:
-            test_case = TestCase(
-                context=context,
-                reading=reading,
-                correct_answer=correct_answer,
-                source_text=source_text
-            )
-            cases.append(test_case)
-
-        return cases
-
     def run_llm_selection(self, test_case: TestCase, candidates: List[Dict[str, str]]) -> str:
-        """LLMに候補選択を依頼"""
         if not candidates:
             return test_case.reading
 
-        # 候補リストを文字列として整形
-        candidates_text = "\n".join([
-            f"{i+1}. {c['candidate']}"
-            for i, c in enumerate(candidates)
-        ])
+        candidates_text = "\n".join([f"{i+1}. {c['candidate']}" for i, c in enumerate(candidates)])
 
         prompt = f"""
 以下の文脈で、「{test_case.reading}」を最も適切な漢字に変換してください。
@@ -265,151 +100,116 @@ class LLMSelectionBenchmark:
                 temperature=0.1,
                 max_tokens=10
             )
-
             llm_response = response.choices[0].message.content.strip()
-
-            # 番号を抽出
-            match = re.search(r'\d+', llm_response)
-            if match:
-                selected_idx = int(match.group()) - 1
-                if 0 <= selected_idx < len(candidates):
-                    return candidates[selected_idx]['candidate']
-
+            m = re.search(r"\d+", llm_response)
+            if m:
+                idx = int(m.group()) - 1
+                if 0 <= idx < len(candidates):
+                    return candidates[idx]["candidate"]
         except Exception as e:
             print(f"LLM selection error: {e}")
 
-        # デフォルトは最初の候補
-        return candidates[0]['candidate'] if candidates else test_case.reading
+        return candidates[0]["candidate"] if candidates else test_case.reading
 
     def evaluate_single_case(self, test_case: TestCase) -> Dict:
-        """単一テストケースの評価"""
-        # Mozcから候補を取得
         candidates = self.mozc_client.get_conversion_candidates(
             test_case.reading,
             test_case.context,
-            max_candidates=6
+            max_candidates=6,
         )
 
-        # LLMによる選択
         llm_selection = self.run_llm_selection(test_case, candidates)
+        mozc_top = candidates[0]["candidate"] if candidates else test_case.reading
 
-        # Mozcのトップ候補
-        mozc_top = candidates[0]['candidate'] if candidates else test_case.reading
-
-        # 評価結果
-        result = {
-            'test_case': {
-                'context': test_case.context,
-                'reading': test_case.reading,
-                'correct_answer': test_case.correct_answer,
-                'source_text': test_case.source_text
+        return {
+            "test_case": {
+                "context": test_case.context,
+                "reading": test_case.reading,
+                "correct_answer": test_case.correct_answer,
+                "source_text": test_case.source_text,
             },
-            'candidates': candidates,
-            'llm_selection': llm_selection,
-            'mozc_top': mozc_top,
-            'llm_correct': llm_selection == test_case.correct_answer,
-            'mozc_correct': mozc_top == test_case.correct_answer,
-            'improvement': (llm_selection == test_case.correct_answer) and (mozc_top != test_case.correct_answer)
+            "candidates": candidates,
+            "llm_selection": llm_selection,
+            "mozc_top": mozc_top,
+            "llm_correct": llm_selection == test_case.correct_answer,
+            "mozc_correct": mozc_top == test_case.correct_answer,
+            "improvement": (llm_selection == test_case.correct_answer) and (mozc_top != test_case.correct_answer),
         }
 
-        return result
-
     def run_benchmark(self, data_files: List[str] = None, output_file: str = "results/benchmark_results.json"):
-        """ベンチマーク実行"""
         print("=== LLM Selection Benchmark ===")
         print(f"Model: {self.model}")
 
-        # 抽出済みファイル必須（フォールバックは廃止）
-        all_test_cases = self._load_cases_from_file()
-        if not all_test_cases:
+        cases = self._load_cases_from_file()
+        if not cases:
             print("Error: extracted_pattern_code.txt が見つからないか、テストケースが0件です。")
             print("先に scripts/extract_patterns_from_corpus.py を実行して extracted_pattern_code.txt を生成してください。")
             return
-        print(f"Using extracted test cases from file: {len(all_test_cases)}")
+        print(f"Using extracted test cases from file: {len(cases)}")
+        print(f"\nTotal test cases: {len(cases)}")
 
-        print(f"\nTotal test cases: {len(all_test_cases)}")
-
-        # 評価実行
-        results = []
-        for i, test_case in enumerate(all_test_cases):
-            print(f"Evaluating case {i+1}/{len(all_test_cases)}: {test_case.reading}")
-
-            result = self.evaluate_single_case(test_case)
-            results.append(result)
-
-            # プログレス表示
-            if result['llm_correct']:
-                print(f"  ✓ LLM correct: {result['llm_selection']}")
+        results: List[Dict] = []
+        for i, tc in enumerate(cases):
+            print(f"Evaluating case {i+1}/{len(cases)}: {tc.reading}")
+            r = self.evaluate_single_case(tc)
+            results.append(r)
+            if r["llm_correct"]:
+                print(f"  ✓ LLM correct: {r['llm_selection']}")
             else:
-                print(f"  ✗ LLM incorrect: {result['llm_selection']} (correct: {test_case.correct_answer})")
+                print(f"  ✗ LLM incorrect: {r['llm_selection']} (correct: {tc.correct_answer})")
+            time.sleep(0.5)
 
-            time.sleep(0.5)  # API制限対策
-
-        # 結果の集計
         self._save_results(results, output_file)
         self._print_summary(results)
 
     def _save_results(self, results: List[Dict], output_file: str):
-        """結果をJSONファイルに保存"""
         Path(output_file).parent.mkdir(parents=True, exist_ok=True)
-
         summary = self._calculate_summary(results)
-
-        output_data = {
-            'metadata': {
-                'model': self.model,
-                'total_cases': len(results),
-                'timestamp': time.strftime('%Y-%m-%d %H:%M:%S')
+        data = {
+            "metadata": {
+                "model": self.model,
+                "total_cases": len(results),
+                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
             },
-            'summary': summary,
-            'details': results
+            "summary": summary,
+            "details": results,
         }
-
-        with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(output_data, f, ensure_ascii=False, indent=2)
-
+        Path(output_file).write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
         print(f"\nResults saved to: {output_file}")
 
     def _calculate_summary(self, results: List[Dict]) -> Dict:
-        """結果のサマリーを計算"""
         total = len(results)
-        llm_correct = sum(1 for r in results if r['llm_correct'])
-        mozc_correct = sum(1 for r in results if r['mozc_correct'])
-        improvements = sum(1 for r in results if r['improvement'])
-
+        llm_correct = sum(1 for r in results if r["llm_correct"]) 
+        mozc_correct = sum(1 for r in results if r["mozc_correct"]) 
+        improvements = sum(1 for r in results if r["improvement"]) 
         return {
-            'total_cases': total,
-            'llm_accuracy': llm_correct / total if total > 0 else 0,
-            'mozc_accuracy': mozc_correct / total if total > 0 else 0,
-            'llm_correct_count': llm_correct,
-            'mozc_correct_count': mozc_correct,
-            'improvements': improvements,
-            'improvement_rate': improvements / total if total > 0 else 0
+            "total_cases": total,
+            "llm_accuracy": llm_correct / total if total else 0,
+            "mozc_accuracy": mozc_correct / total if total else 0,
+            "llm_correct_count": llm_correct,
+            "mozc_correct_count": mozc_correct,
+            "improvements": improvements,
+            "improvement_rate": improvements / total if total else 0,
         }
 
     def _print_summary(self, results: List[Dict]):
-        """結果サマリーを表示"""
-        summary = self._calculate_summary(results)
-
+        s = self._calculate_summary(results)
         print("\n=== Benchmark Results ===")
-        print(f"Total test cases: {summary['total_cases']}")
-        print(f"LLM accuracy: {summary['llm_accuracy']:.1%} ({summary['llm_correct_count']}/{summary['total_cases']})")
-        print(f"Mozc accuracy: {summary['mozc_accuracy']:.1%} ({summary['mozc_correct_count']}/{summary['total_cases']})")
-        print(f"LLM improvements: {summary['improvements']} cases ({summary['improvement_rate']:.1%})")
+        print(f"Total test cases: {s['total_cases']}")
+        print(f"LLM accuracy: {s['llm_accuracy']:.1%} ({s['llm_correct_count']}/{s['total_cases']})")
+        print(f"Mozc accuracy: {s['mozc_accuracy']:.1%} ({s['mozc_correct_count']}/{s['total_cases']})")
+        print(f"LLM improvements: {s['improvements']} cases ({s['improvement_rate']:.1%})")
+
 
 def main():
-    """メイン関数"""
-    # 環境変数からAPI設定を取得
-    api_key = os.getenv('OPENAI_API_KEY')
+    api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
         print("Please set OPENAI_API_KEY environment variable")
         return
+    model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+    LLMSelectionBenchmark(api_key, model).run_benchmark()
 
-    model = os.getenv('OPENAI_MODEL', 'gpt-4o-mini')
-
-    # ベンチマーク実行（埋め込み済みテストケースを使用）
-    benchmark = LLMSelectionBenchmark(api_key, model)
-    benchmark.run_benchmark()
 
 if __name__ == "__main__":
     main()
+
