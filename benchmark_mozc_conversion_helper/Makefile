@@ -39,8 +39,9 @@ run-benchmark:
 		echo "Please set it like: export OPENAI_API_KEY='your-api-key'"; \
 		exit 1; \
 	fi
+	@mkdir -p results
 	@echo "Running LLM selection benchmark..."
-	OPENAI_MODEL=gpt-5 python3 scripts/llm_selection_benchmark.py
+	OPENAI_MODEL=$${OPENAI_MODEL:-gpt-5} python3 scripts/llm_selection_benchmark.py
 
 # クリーンアップ
 clean:

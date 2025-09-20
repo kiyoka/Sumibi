@@ -147,7 +147,7 @@ class LLMSelectionBenchmark:
             "improvement": (llm_selection == test_case.correct_answer) and (mozc_top != test_case.correct_answer),
         }
 
-    def run_benchmark(self, data_files: List[str] = None, output_file: str = "results/benchmark_results.json"):
+    def run_benchmark(self, data_files: List[str] = None, output_file: str = None):
         print("=== LLM Selection Benchmark ===")
         print(f"Model: {self.model}")
 
@@ -158,6 +158,11 @@ class LLMSelectionBenchmark:
             return
         print(f"Using extracted test cases from file: {len(cases)}")
         print(f"\nTotal test cases: {len(cases)}")
+
+        if output_file is None:
+            # モデル名をファイル名に反映
+            safe_model_name = self.model.replace("-", "_").replace("/", "_")
+            output_file = f"results/{safe_model_name}.json"
 
         results: List[Dict] = []
         for i, tc in enumerate(cases):
