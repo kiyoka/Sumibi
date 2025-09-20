@@ -30,6 +30,51 @@
 - `results/` - ベンチマーク結果
 - `mozc_helper/` - Mozc 変換候補シミュレーションモジュール
 
+## ベンチマーク実行手順
+
+### 1. 基本的な実行
+
+```bash
+# OpenAI APIキーを設定
+export OPENAI_API_KEY="your-api-key"
+
+# デフォルト（gpt-5）でベンチマーク実行
+make run-benchmark
+```
+
+### 2. モデルの切り替え
+
+```bash
+# gpt-4o-miniを使用
+export OPENAI_MODEL="gpt-4o-mini"
+make run-benchmark
+
+# gpt-4を使用
+export OPENAI_MODEL="gpt-4"
+make run-benchmark
+
+# ローカルLLM（LM Studio等）を使用
+export OPENAI_API_KEY="dummy"
+export OPENAI_BASEURL="http://192.168.56.1:1234/"
+export OPENAI_MODEL="openai/gpt-oss-20b"
+make run-benchmark
+```
+
+### 3. 結果の確認とグラフ化
+
+```bash
+# ベンチマーク結果をグラフで表示
+make plot-results
+
+# 個別の結果ファイルを確認
+ls results/
+# gpt_5.json, gpt_4o_mini.json, openai--gpt-oss-20b.json など
+```
+### 4. 結果ファイル
+
+- `results/{model}.json`: 各モデルの詳細結果
+- `benchmark_comparison.png`: モデル比較グラフ
+
 ## 環境要件
 
 - Python 3.8+

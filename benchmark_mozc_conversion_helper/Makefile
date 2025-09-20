@@ -1,6 +1,6 @@
 # Mozc Conversion Helper Benchmark Makefile
 
-.PHONY: setup download-data download-wikipedia test-mozc run-benchmark clean help
+.PHONY: setup download-data download-wikipedia test-mozc run-benchmark plot-results clean help
 
 # デフォルトターゲット
 help:
@@ -10,6 +10,7 @@ help:
 	@echo "  download-wikipedia - download-data と同義"
 	@echo "  test-mozc      - Mozcクライアントをテスト"
 	@echo "  run-benchmark  - ベンチマークを実行"
+	@echo "  plot-results   - ベンチマーク結果をグラフ化"
 	@echo "  clean          - 生成ファイルをクリーンアップ"
 
 # 環境セットアップ
@@ -37,11 +38,20 @@ run-benchmark:
 	@if [ -z "$$OPENAI_API_KEY" ]; then \
 		echo "Error: OPENAI_API_KEY environment variable is required"; \
 		echo "Please set it like: export OPENAI_API_KEY='your-api-key'"; \
+		echo "For local LLM: export OPENAI_API_KEY='dummy' OPENAI_BASEURL='http://localhost:1234/'"; \
 		exit 1; \
 	fi
 	@mkdir -p results
 	@echo "Running LLM selection benchmark..."
+	@if [ -n "$$OPENAI_BASEURL" ]; then \
+		echo "Using local LLM endpoint: $$OPENAI_BASEURL"; \
+	fi
 	OPENAI_MODEL=$${OPENAI_MODEL:-gpt-5} python3 scripts/llm_selection_benchmark.py
+
+# ベンチマーク結果をグラフ化
+plot-results:
+	@echo "Plotting benchmark results..."
+	python3 scripts/plot_benchmark_results.py
 
 # クリーンアップ
 clean:

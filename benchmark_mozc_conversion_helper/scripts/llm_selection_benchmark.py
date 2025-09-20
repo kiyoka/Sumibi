@@ -37,9 +37,24 @@ class TestCase:
 
 
 class LLMSelectionBenchmark:
-    def __init__(self, api_key: str, model: str = "gpt-5"):
-        self.client = openai.OpenAI(api_key=api_key)
+    def __init__(self, api_key: str, model: str = "gpt-5", base_url: str = None):
+        # ローカルLLM対応: base_urlが指定されていればそれを使用
+        if base_url:
+            # /v1の自動補完
+            if not base_url.endswith('/v1') and not base_url.endswith('/v1/'):
+                if base_url.endswith('/'):
+                    base_url = base_url + 'v1'
+                else:
+                    base_url = base_url + '/v1'
+
+            self.client = openai.OpenAI(api_key=api_key, base_url=base_url)
+            print(f"Using local LLM endpoint: {base_url}")
+        else:
+            self.client = openai.OpenAI(api_key=api_key)
+            print("Using OpenAI API")
+
         self.model = model
+        self.base_url = base_url
         self.mozc_client = MozcClient()
         # 再現可能性のためのランダムシード設定
         random.seed(42)
@@ -122,8 +137,11 @@ class LLMSelectionBenchmark:
                 current_prompt = prompt if attempt == 0 else simple_prompt
                 print(f"    Attempt {attempt + 1}: {'Original' if attempt == 0 else 'Simple'} prompt")
 
-                # gpt-5用にはより強い指示が必要
-                if "gpt-5" in str(self.model):
+                # モデルタイプに応じてシステムメッセージを調整
+                if self.base_url:
+                    # ローカルLLM用：英語と日本語の両方で明確に指示
+                    system_msg = "選択肢から最適な番号を1つ選んで答えてください。数字のみ回答してください。Choose the best option number and answer with only that number."
+                elif "gpt-5" in str(self.model):
                     system_msg = "You must answer with only a number from the given choices. Answer with just the number, nothing else."
                 else:
                     system_msg = "選択肢から番号を選んで答えてください。"
@@ -138,12 +156,18 @@ class LLMSelectionBenchmark:
 
                 # モデルに応じてパラメータを調整（安全な方法）
                 try:
-                    if "gpt-5" in str(self.model):
+                    if self.base_url:
+                        # ローカルLLM: より安全な設定
+                        params["temperature"] = 0.7
+                        params["max_tokens"] = 50
+                        params["top_p"] = 0.9
+                        print("    Using local LLM parameters")
+                    elif "gpt-5" in str(self.model):
                         # gpt-5系: temperatureは設定しない（デフォルト値使用）
                         # トークン制限も最小限にして安全性を確保
                         pass
                     else:
-                        # その他のモデル
+                        # その他のOpenAIモデル
                         params["temperature"] = 0.8
                         params["max_tokens"] = 20
                 except Exception as param_error:
@@ -214,6 +238,12 @@ class LLMSelectionBenchmark:
         print(f"    Results: LLM='{llm_selection}' Mozc='{mozc_top}' Correct='{test_case.correct_answer}'")
         print(f"    LLM correct: {llm_is_correct}, Mozc correct: {mozc_is_correct}")
 
+        # 改善ケースの定義を明確化
+        llm_better = llm_is_correct and not mozc_is_correct  # LLMが正解、Mozcが不正解
+        mozc_better = mozc_is_correct and not llm_is_correct  # Mozcが正解、LLMが不正解
+        both_correct = llm_is_correct and mozc_is_correct     # 両方正解
+        both_wrong = not llm_is_correct and not mozc_is_correct  # 両方不正解
+
         return {
             "test_case": {
                 "context": test_case.context,
@@ -226,7 +256,10 @@ class LLMSelectionBenchmark:
             "mozc_top": mozc_top,
             "llm_correct": llm_is_correct,
             "mozc_correct": mozc_is_correct,
-            "improvement": (llm_selection == test_case.correct_answer) and (mozc_top != test_case.correct_answer),
+            "llm_better": llm_better,
+            "mozc_better": mozc_better,
+            "both_correct": both_correct,
+            "both_wrong": both_wrong,
             "note": "候補はLLMにランダム順序で提示されました"
         }
 
@@ -243,8 +276,8 @@ class LLMSelectionBenchmark:
         print(f"\nTotal test cases: {len(cases)}")
 
         if output_file is None:
-            # モデル名をファイル名に反映
-            safe_model_name = self.model.replace("-", "_").replace("/", "_")
+            # モデル名をファイル名に反映（'/'を'--'に置換）
+            safe_model_name = self.model.replace("/", "--")
             output_file = f"results/{safe_model_name}.json"
 
         results: List[Dict] = []
@@ -278,17 +311,29 @@ class LLMSelectionBenchmark:
 
     def _calculate_summary(self, results: List[Dict]) -> Dict:
         total = len(results)
-        llm_correct = sum(1 for r in results if r["llm_correct"]) 
-        mozc_correct = sum(1 for r in results if r["mozc_correct"]) 
-        improvements = sum(1 for r in results if r["improvement"]) 
+        llm_correct = sum(1 for r in results if r["llm_correct"])
+        mozc_correct = sum(1 for r in results if r["mozc_correct"])
+
+        # 詳細な比較統計
+        llm_better = sum(1 for r in results if r.get("llm_better", False))
+        mozc_better = sum(1 for r in results if r.get("mozc_better", False))
+        both_correct = sum(1 for r in results if r.get("both_correct", False))
+        both_wrong = sum(1 for r in results if r.get("both_wrong", False))
+
         return {
             "total_cases": total,
             "llm_accuracy": llm_correct / total if total else 0,
             "mozc_accuracy": mozc_correct / total if total else 0,
             "llm_correct_count": llm_correct,
             "mozc_correct_count": mozc_correct,
-            "improvements": improvements,
-            "improvement_rate": improvements / total if total else 0,
+            "llm_better": llm_better,
+            "mozc_better": mozc_better,
+            "both_correct": both_correct,
+            "both_wrong": both_wrong,
+            "llm_better_rate": llm_better / total if total else 0,
+            "mozc_better_rate": mozc_better / total if total else 0,
+            "both_correct_rate": both_correct / total if total else 0,
+            "both_wrong_rate": both_wrong / total if total else 0,
         }
 
     def _print_summary(self, results: List[Dict]):
@@ -297,7 +342,11 @@ class LLMSelectionBenchmark:
         print(f"Total test cases: {s['total_cases']}")
         print(f"LLM accuracy: {s['llm_accuracy']:.1%} ({s['llm_correct_count']}/{s['total_cases']})")
         print(f"Mozc accuracy: {s['mozc_accuracy']:.1%} ({s['mozc_correct_count']}/{s['total_cases']})")
-        print(f"LLM improvements: {s['improvements']} cases ({s['improvement_rate']:.1%})")
+        print(f"\n=== Detailed Comparison ===")
+        print(f"LLM better than Mozc: {s['llm_better']} cases ({s['llm_better_rate']:.1%})")
+        print(f"Mozc better than LLM: {s['mozc_better']} cases ({s['mozc_better_rate']:.1%})")
+        print(f"Both correct: {s['both_correct']} cases ({s['both_correct_rate']:.1%})")
+        print(f"Both wrong: {s['both_wrong']} cases ({s['both_wrong_rate']:.1%})")
 
 
 def main():
@@ -305,8 +354,15 @@ def main():
     if not api_key:
         print("Please set OPENAI_API_KEY environment variable")
         return
+
     model = os.getenv("OPENAI_MODEL", "gpt-5")
-    LLMSelectionBenchmark(api_key, model).run_benchmark()
+    base_url = os.getenv("OPENAI_BASEURL")  # ローカルLLM用エンドポイント
+
+    # API_KEYが "dummy" の場合は、ローカルLLMを使用
+    if api_key == "dummy" and base_url:
+        print("Using local LLM (API key is dummy)")
+
+    LLMSelectionBenchmark(api_key, model, base_url).run_benchmark()
 
 
 if __name__ == "__main__":
