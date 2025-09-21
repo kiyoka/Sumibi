@@ -40,8 +40,12 @@ class LLMSelectionBenchmark:
     def __init__(self, api_key: str, model: str = "gpt-5", base_url: str = None):
         # ローカルLLM対応: base_urlが指定されていればそれを使用
         if base_url:
-            # /v1の自動補完
-            if not base_url.endswith('/v1') and not base_url.endswith('/v1/'):
+            # /v1の自動補完と正規化
+            if base_url.endswith('/v1/'):
+                # /v1/ で終わる場合は末尾のスラッシュを削除
+                base_url = base_url.rstrip('/')
+            elif not base_url.endswith('/v1'):
+                # /v1 で終わらない場合は追加
                 if base_url.endswith('/'):
                     base_url = base_url + 'v1'
                 else:
@@ -86,9 +90,9 @@ class LLMSelectionBenchmark:
             ))
         return cases
 
-    def run_llm_selection(self, test_case: TestCase, candidates: List[Dict[str, str]]) -> str:
+    def run_llm_selection(self, test_case: TestCase, candidates: List[Dict[str, str]]) -> Tuple[str, float]:
         if not candidates:
-            return test_case.reading
+            return test_case.reading, 0.0
 
         # モデル情報の表示
         print(f"    Using model: {self.model}")
@@ -129,6 +133,7 @@ class LLMSelectionBenchmark:
 
         print(f"    Sending prompt to LLM: {prompt[:100]}...")
 
+        total_api_time = 0.0
         try:
             # シンプルなフォールバック用のプロンプトも準備
             simple_prompt = f"次の選択肢から番号を選んでください:\n{candidates_text}\n文脈: {test_case.context[:50]}...\n答え:"
@@ -176,7 +181,21 @@ class LLMSelectionBenchmark:
 
                 print(f"    Using params: {[k for k in params.keys()]}")
 
-                response = self.client.chat.completions.create(**params)
+                # API呼び出し時間を測定
+                try:
+                    api_start_time = time.time()
+                    response = self.client.chat.completions.create(**params)
+                    api_end_time = time.time()
+                    api_response_time = api_end_time - api_start_time
+                    total_api_time += api_response_time
+                except Exception as api_error:
+                    if attempt == 0:
+                        print(f"    ERROR: API call failed on first attempt. Stopping benchmark.")
+                        raise RuntimeError(f"LLM API call failed on first attempt for test case '{test_case.reading}': {api_error}")
+                    else:
+                        raise api_error
+
+                print(f"    API response time: {api_response_time:.3f}s")
                 print(f"    API response finish_reason: {response.choices[0].finish_reason}")
                 print(f"    Full response object available: {hasattr(response.choices[0], 'message')}")
 
@@ -194,6 +213,11 @@ class LLMSelectionBenchmark:
                 if llm_response:
                     break
 
+                # 1回目で失敗した場合、ベンチマークを停止
+                if attempt == 0:
+                    print(f"    ERROR: Empty response on first attempt. Stopping benchmark.")
+                    raise RuntimeError(f"LLM returned empty response on first attempt for test case: {test_case.reading}")
+
                 print(f"    Empty response on attempt {attempt + 1}, trying {'simple prompt' if attempt == 0 else 'giving up'}")
 
             m = re.search(r"\d+", llm_response)
@@ -205,7 +229,8 @@ class LLMSelectionBenchmark:
                 if 0 <= shuffled_idx < len(shuffled_candidates):
                     selected_candidate = shuffled_candidates[shuffled_idx]["candidate"]
                     print(f"    Selected candidate: '{selected_candidate}'")
-                    return selected_candidate
+                    print(f"    Total API time for this case: {total_api_time:.3f}s")
+                    return selected_candidate, total_api_time
                 else:
                     print(f"    ERROR: Invalid index {shuffled_idx}, using first candidate")
             else:
@@ -216,7 +241,8 @@ class LLMSelectionBenchmark:
         # フォールバック: 最初の候補を返す
         fallback_candidate = shuffled_candidates[0]["candidate"] if shuffled_candidates else test_case.reading
         print(f"    Using fallback candidate: '{fallback_candidate}'")
-        return fallback_candidate
+        print(f"    Total API time for this case: {total_api_time:.3f}s")
+        return fallback_candidate, total_api_time
 
     def evaluate_single_case(self, test_case: TestCase) -> Dict:
         candidates = self.mozc_client.get_conversion_candidates(
@@ -225,7 +251,7 @@ class LLMSelectionBenchmark:
             max_candidates=6,
         )
 
-        llm_selection = self.run_llm_selection(test_case, candidates)
+        llm_selection, api_time = self.run_llm_selection(test_case, candidates)
         mozc_top = candidates[0]["candidate"] if candidates else test_case.reading
 
         def _is_hiragana(text: str) -> bool:
@@ -260,6 +286,7 @@ class LLMSelectionBenchmark:
             "mozc_better": mozc_better,
             "both_correct": both_correct,
             "both_wrong": both_wrong,
+            "api_response_time": api_time,  # API応答時間を追加
             "note": "候補はLLMにランダム順序で提示されました"
         }
 
@@ -283,13 +310,23 @@ class LLMSelectionBenchmark:
         results: List[Dict] = []
         for i, tc in enumerate(cases):
             print(f"Evaluating case {i+1}/{len(cases)}: {tc.reading}")
-            r = self.evaluate_single_case(tc)
-            results.append(r)
-            if r["llm_correct"]:
-                print(f"  ✓ LLM correct: {r['llm_selection']}")
-            else:
-                print(f"  ✗ LLM incorrect: {r['llm_selection']} (correct: {tc.correct_answer})")
-            time.sleep(0.5)
+            try:
+                r = self.evaluate_single_case(tc)
+                results.append(r)
+                if r["llm_correct"]:
+                    print(f"  ✓ LLM correct: {r['llm_selection']}")
+                else:
+                    print(f"  ✗ LLM incorrect: {r['llm_selection']} (correct: {tc.correct_answer})")
+                time.sleep(0.5)
+            except RuntimeError as e:
+                print(f"\n=== BENCHMARK STOPPED ===")
+                print(f"Reason: {e}")
+                print(f"Completed {i}/{len(cases)} test cases before stopping.")
+                if results:
+                    print(f"\nSaving partial results...")
+                    self._save_results(results, output_file)
+                    self._print_summary(results)
+                return
 
         self._save_results(results, output_file)
         self._print_summary(results)
@@ -320,6 +357,13 @@ class LLMSelectionBenchmark:
         both_correct = sum(1 for r in results if r.get("both_correct", False))
         both_wrong = sum(1 for r in results if r.get("both_wrong", False))
 
+        # API応答時間の統計
+        api_times = [r.get("api_response_time", 0) for r in results]
+        total_api_time = sum(api_times)
+        avg_api_time = total_api_time / total if total else 0
+        min_api_time = min(api_times) if api_times else 0
+        max_api_time = max(api_times) if api_times else 0
+
         return {
             "total_cases": total,
             "llm_accuracy": llm_correct / total if total else 0,
@@ -334,6 +378,12 @@ class LLMSelectionBenchmark:
             "mozc_better_rate": mozc_better / total if total else 0,
             "both_correct_rate": both_correct / total if total else 0,
             "both_wrong_rate": both_wrong / total if total else 0,
+            "api_response_time": {
+                "total": total_api_time,
+                "average": avg_api_time,
+                "min": min_api_time,
+                "max": max_api_time
+            }
         }
 
     def _print_summary(self, results: List[Dict]):
@@ -347,6 +397,11 @@ class LLMSelectionBenchmark:
         print(f"Mozc better than LLM: {s['mozc_better']} cases ({s['mozc_better_rate']:.1%})")
         print(f"Both correct: {s['both_correct']} cases ({s['both_correct_rate']:.1%})")
         print(f"Both wrong: {s['both_wrong']} cases ({s['both_wrong_rate']:.1%})")
+        print(f"\n=== API Response Time Statistics ===")
+        print(f"Total API time: {s['api_response_time']['total']:.3f}s")
+        print(f"Average per case: {s['api_response_time']['average']:.3f}s")
+        print(f"Min response time: {s['api_response_time']['min']:.3f}s")
+        print(f"Max response time: {s['api_response_time']['max']:.3f}s")
 
 
 def main():
