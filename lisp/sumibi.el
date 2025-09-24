@@ -1532,19 +1532,20 @@ Argument E: リージョンの終了位置
 Argument SEGMENTS: セグメントのリスト
 Argument INVERSE-FLAG：逆変換かどうか"
   (let ((current-pos b)
-        (original-text (buffer-substring-no-properties b e)))
-    (save-excursion
-      (goto-char b)
-      (delete-region b e)
-      (dolist (segment segments)
-        (when (> (length segment) 0)
-          (let ((segment-start (point))
-                (segment-end (+ (point) (length segment))))
-            (insert segment)
-            ;; 個別セグメントを変換
-            (sumibi-henkan-region-sync segment-start segment-end inverse-flag)
-            ;; セグメント間にスペースを挿入しない（元の仕様通り）
-            ))))))
+        (original-text (buffer-substring-no-properties b e))
+        (final-pos nil))
+    (goto-char b)
+    (delete-region b e)
+    (dolist (segment segments)
+      (when (> (length segment) 0)
+        (let ((segment-start (point))
+              (segment-end (+ (point) (length segment))))
+          (insert segment)
+          ;; 個別セグメントを変換
+          (sumibi-henkan-region-sync segment-start segment-end inverse-flag)
+          (setq final-pos (point)))))
+    ;; 最終位置にカーソルを設定（save-excursionを使わないため手動制御）
+    (when final-pos (goto-char final-pos))))
 
 
 (defun sumibi-char-charset (ch)
