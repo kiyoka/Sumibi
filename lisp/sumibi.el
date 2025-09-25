@@ -970,6 +970,19 @@ Argument DEFERRED-FUNC2 : 非同期呼び出し時のコールバック関数 (2
      '())))
 
 
+;; Helper: LLMの順位出力を頑健に分割（カンマ/改行/番号/箇条書き対応）
+(defun sumibi--parse-llm-ranked-list (content)
+  (let* ((s (replace-regexp-in-string "\r" "" content)))
+    (setq s (replace-regexp-in-string "[、，・]" "," s))
+    (setq s (replace-regexp-in-string "\n" "," s))
+    (setq s (replace-regexp-in-string "\([0-9０-９]+[\.)．、:]\)" ",\1" s))
+    (let ((items (split-string s "," t "[ \t\n]+")))
+      (mapcar (lambda (it)
+                (string-trim
+                 (replace-regexp-in-string
+                  "^\([0-9０-９]+[\.)．、:]\|[-•・]\)\\s-*" "" it)))
+              items))))
+
 (defun sumibi-local-llm-rank-candidates (roman candidates context)
   "Local LLM を使って Mozc の候補を文脈に応じてランク付けする.
 引数 ROMAN: 入力されたローマ字
@@ -981,8 +994,22 @@ Argument DEFERRED-FUNC2 : 非同期呼び出し時のコールバック関数 (2
   (if (and (> (length candidates) 1)
            (not (string-empty-p sumibi-local-llm-base-url)))
       (condition-case err
-          (let* ((prompt (format "文脈: %s\n\n「%s」の変換候補: %s\n\n上記の全ての候補を文脈に最も適した順番に並べ替えてください。全ての候補をカンマ区切りで答えてください。"
-                                 context roman (string-join candidates ", ")))
+          (let* ((cand-count (length candidates))
+                 (prompt (format
+                          (concat "文脈: %s\n\n"
+                                  "「%s」の変換候補(%d件): %s\n\n"
+                                  "出力ルール:\n"
+                                  "- 次の候補だけを順序付けし、内容は一切変更しない。\n"
+                                  "- 全ての候補(%d件)を重複なく必ず一度ずつ含める。\n"
+                                  "- 追加の説明や引用符・記号・見出しは書かない。\n"
+                                  "- 出力形式: 候補1, 候補2, ..., 候補%d\n\n"
+                                  "では、文脈に最も適した順に並べ替えてください。")
+                          context
+                          roman
+                          cand-count
+                          (string-join candidates ", ")
+                          cand-count
+                          cand-count))
                  (base (sumibi-normalize-local-llm-url sumibi-local-llm-base-url))
                  (url (concat base "/chat/completions")))
             (sumibi-debug-print (format "sumibi-local-llm-rank-candidates: LLM へのプロンプト:\n%s\n" prompt))
@@ -995,7 +1022,7 @@ Argument DEFERRED-FUNC2 : 非同期呼び出し時のコールバック関数 (2
                     ("Authorization" . "Bearer dummy")))
             (let ((request-json (json-encode
                                  `((model . ,sumibi-local-llm-model)
-                                   (temperature . 0.3)
+                                   (temperature . 0.1)
                                    (n . 1)
                                    (messages . (((role . "user") (content . ,prompt))))))))
               (setq url-request-data (encode-coding-string request-json 'utf-8))
@@ -1013,7 +1040,7 @@ Argument DEFERRED-FUNC2 : 非同期呼び出し時のコールバック関数 (2
 
               (if (and choices (> (length choices) 0))
                   (let* ((content (gethash "content" (gethash "message" (aref choices 0))))
-                         (ranked-candidates (split-string content "," t "[ \t\n]+")))
+                         (ranked-candidates (sumibi--parse-llm-ranked-list content)))
                     (sumibi-debug-print (format "sumibi-local-llm-rank-candidates: LLM レスポンス内容: %s\n" content))
 
                     ;; LLMの結果から実際の候補と一致するもののみを順序を保って抽出
