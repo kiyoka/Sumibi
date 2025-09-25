@@ -264,21 +264,25 @@ workflow."
 (defcustom sumibi-backend 'openai
   "Backend engine used for *ローマ字→漢字かな混じり文* 変換.
 
-openai : OpenAI だけでなく **OpenAI 互換** の ChatCompletions API
-         (例: OpenAI, Google Gemini、ローカル LLM など) を利用する。
-         利用するサービスは `SUMIBI_AI_BASEURL' で指定した URL に
-         よって切り替えられます。
-mozc   : ネットワークを使わずローカルの mozc.el で変換する。
+openai    : OpenAI だけでなく **OpenAI 互換** の ChatCompletions API
+            (例: OpenAI, Google Gemini、ローカル LLM など) を利用する。
+            利用するサービスは `SUMIBI_AI_BASEURL' で指定した URL に
+            よって切り替えられます。
+mozc      : ネットワークを使わずローカルの mozc.el で変換する。
+mozc-with-llm-assist : mozc.el で候補を生成し、ローカル LLM で文脈を考慮した
+                       最適な候補選択とランキングを行う。
 
 読み仮名生成や翻訳など、ローマ字変換以外のルーチンは常に
 OpenAI 互換 API を利用するため、この設定の影響を受けません。"
   :type '(choice (const :tag "OpenAI互換 API" openai)
-                 (const :tag "Mozc (local)" mozc))
+                 (const :tag "Mozc (local)" mozc)
+                 (const :tag "Mozc + Local LLM" mozc-with-llm-assist))
   :group 'sumibi)
 
 (defun sumibi-backend-mozc-p ()
-  "Return non-nil if `sumibi-backend' is `mozc'."
-  (eq sumibi-backend 'mozc))
+  "Return non-nil if `sumibi-backend' is `mozc' or `mozc-with-llm-assist'."
+  (or (eq sumibi-backend 'mozc)
+      (eq sumibi-backend 'mozc-with-llm-assist)))
 
 (defcustom sumibi-current-model "gpt-5"
   "使用する AI モデル名を指定する (デフォルトは gpt-5)。
@@ -304,6 +308,19 @@ OpenAI 互換 API を利用しない（ローマ字→漢字を mozc で処理�
   :type  'integer
   :group 'sumibi)
 
+(defcustom sumibi-local-llm-base-url ""
+  "Local LLM の OpenAI 互換 API エンドポイント URL。
+`sumibi-backend' が `mozc-with-llm-assist' の時のみ使用されます。
+例: \"http://localhost:1234\", \"http://192.168.56.1:1234\""
+  :type  'string
+  :group 'sumibi)
+
+(defcustom sumibi-local-llm-model "gpt-oss-20b"
+  "Local LLM のモデル名。
+`sumibi-backend' が `mozc-with-llm-assist' の時のみ使用されます。"
+  :type  'string
+  :group 'sumibi)
+
 (defcustom sumibi-threshold-letters-of-long-sentence 100
   "OpenAI 互換サーバーに送信する際、長文として判断する文字数。
 この文字数を超えると ChatCompletions API の引数 n を 1 に減らします。"
@@ -322,6 +339,24 @@ OpenAI 互換 API を利用しない（ローマ字→漢字を mozc で処理�
   (if (string-suffix-p "/" url)
       (substring url 0 -1)
     url))
+
+(defun sumibi-normalize-local-llm-url (base-url)
+  "Local LLM の base URL を正規化して /v1 を適切に付加する.
+引数 BASE-URL: 正規化するベースURL
+戻り値: /v1 で終わる正規化されたURL"
+  (cond
+   ;; /v1/ で終わる場合は末尾のスラッシュを削除
+   ((string-suffix-p "/v1/" base-url)
+    (substring base-url 0 -1))
+   ;; /v1 で終わる場合はそのまま
+   ((string-suffix-p "/v1" base-url)
+    base-url)
+   ;; / で終わる場合は v1 を追加
+   ((string-suffix-p "/" base-url)
+    (concat base-url "v1"))
+   ;; それ以外は /v1 を追加
+   (t
+    (concat base-url "/v1"))))
 
 (defun sumibi-ai-base-url ()
   "利用中のAIエンドポイントのベースURLを返す。末尾のスラッシュは含まない.
@@ -355,7 +390,13 @@ SUMIBI_AI_BASEURL環境変数が未設定の場合はデフォルトURL\"https:/
 
 (defun sumibi-modeline-string ()
   "利用するモデル名を表示する."
-  (format " Sumibi[%s|%s]" (sumibi-ai-base-url) (sumibi-ai-model)))
+  (cond
+   ((eq sumibi-backend 'mozc-with-llm-assist)
+    (format " Sumibi[mozc+%s]" sumibi-local-llm-model))
+   ((eq sumibi-backend 'mozc)
+    " Sumibi[mozc]")
+   (t
+    (format " Sumibi[%s|%s]" (sumibi-ai-base-url) (sumibi-ai-model)))))
 
 (defvar sumibi-select-mode nil      "候補選択モード変数.")
 (or (assq 'sumibi-mode minor-mode-alist)
@@ -929,6 +970,82 @@ Argument DEFERRED-FUNC2 : 非同期呼び出し時のコールバック関数 (2
      '())))
 
 
+(defun sumibi-local-llm-rank-candidates (roman candidates context)
+  "Local LLM を使って Mozc の候補を文脈に応じてランク付けする.
+引数 ROMAN: 入力されたローマ字
+引数 CANDIDATES: Mozc から得られた候補のリスト
+引数 CONTEXT: 文脈情報
+戻り値: ランク付けされた候補のリスト"
+  (sumibi-debug-print (format "sumibi-local-llm-rank-candidates: 並び替え前の候補: %s\n" candidates))
+  (sumibi-debug-print (format "sumibi-local-llm-rank-candidates: ローマ字: %s, 文脈: %s\n" roman context))
+  (if (and (> (length candidates) 1)
+           (not (string-empty-p sumibi-local-llm-base-url)))
+      (condition-case err
+          (let* ((prompt (format "文脈: %s\n\n「%s」の変換候補: %s\n\n上記の全ての候補を文脈に最も適した順番に並べ替えてください。全ての候補をカンマ区切りで答えてください。"
+                                 context roman (string-join candidates ", ")))
+                 (base (sumibi-normalize-local-llm-url sumibi-local-llm-base-url))
+                 (url (concat base "/chat/completions")))
+            (sumibi-debug-print (format "sumibi-local-llm-rank-candidates: LLM へのプロンプト:\n%s\n" prompt))
+            (sumibi-debug-print (format "sumibi-local-llm-rank-candidates: URL: %s\n" url))
+
+            (setq url-request-method "POST")
+            (setq url-http-version "1.1")
+            (setq url-request-extra-headers
+                  '(("Content-Type" . "application/json; charset=utf-8")
+                    ("Authorization" . "Bearer dummy")))
+            (let ((request-json (json-encode
+                                 `((model . ,sumibi-local-llm-model)
+                                   (temperature . 0.3)
+                                   (n . 1)
+                                   (messages . (((role . "user") (content . ,prompt))))))))
+              (setq url-request-data (encode-coding-string request-json 'utf-8))
+              (sumibi-debug-print (format "sumibi-local-llm-rank-candidates: リクエストデータ: %s\n" request-json)))
+
+            (let* ((buf (url-retrieve-synchronously url t t sumibi-api-timeout))
+                   (status-and-body (if buf
+                                        (sumibi-parse-http-body buf)
+                                      (cons "504" "{\"error\": { \"message\" : \"TIMEOUT ERROR\"}}\n")))
+                   (json-string (cdr status-and-body))
+                   (json-obj (json-parse-string json-string))
+                   (choices (gethash "choices" json-obj)))
+
+              (sumibi-debug-print (format "sumibi-local-llm-rank-candidates: レスポンス: %s\n" json-string))
+
+              (if (and choices (> (length choices) 0))
+                  (let* ((content (gethash "content" (gethash "message" (aref choices 0))))
+                         (ranked-candidates (split-string content "," t "[ \t\n]+")))
+                    (sumibi-debug-print (format "sumibi-local-llm-rank-candidates: LLM レスポンス内容: %s\n" content))
+
+                    ;; LLMの結果から実際の候補と一致するもののみを順序を保って抽出
+                    (let ((result '())
+                          (used-candidates '()))
+                      ;; LLMが返した順序で候補を追加（重複を避ける）
+                      (dolist (ranked ranked-candidates)
+                        (let ((matching-candidate (car (member ranked candidates))))
+                          (when (and matching-candidate
+                                     (not (member matching-candidate used-candidates)))
+                            (push matching-candidate result)
+                            (push matching-candidate used-candidates))))
+                      ;; LLMで処理されなかった候補を末尾に追加
+                      (dolist (candidate candidates)
+                        (unless (member candidate used-candidates)
+                          (push candidate result)))
+                      (setq result (reverse result))
+                      (sumibi-debug-print (format "sumibi-local-llm-rank-candidates: LLMが返した候補数: %d/%d\n"
+                                                  (length ranked-candidates) (length candidates)))
+                      (sumibi-debug-print (format "sumibi-local-llm-rank-candidates: 並び替え後の候補: %s\n" result))
+                      result))
+                (progn
+                  (sumibi-debug-print (format "sumibi-local-llm-rank-candidates: LLM レスポンスが無効、元の候補を返します\n"))
+                  candidates))))
+        (error
+         (sumibi-debug-print (format "sumibi-local-llm-rank-candidates: エラーが発生: %s\n" err))
+         candidates))
+    (progn
+      (sumibi-debug-print (format "sumibi-local-llm-rank-candidates: Local LLM を使用しない（候補数: %d, URL: %s）\n"
+                                  (length candidates) sumibi-local-llm-base-url))
+      candidates)))
+
 
 (defun sumibi-analyze-openai-json-obj (json-obj arg-n)
   "JSONから変換結果の文字列を取り出す.
@@ -975,6 +1092,9 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
     ;; `mozc' backend -------------------------------------------------
     (if (sumibi-backend-mozc-p)
         (let ((cands (sumibi-mozc--candidate-list core-roman arg-n)))
+          ;; mozc-with-llm-assist バックエンドの場合は Local LLM でランク付け
+          (when (eq sumibi-backend 'mozc-with-llm-assist)
+            (setq cands (sumibi-local-llm-rank-candidates core-roman cands surrounding)))
           (mapcar (lambda (s)
                     (let ((ret (concat prefix s)))
 		      (when (get-text-property 0 'sumibi-mozc-candidate s)
