@@ -41,11 +41,17 @@ MASTER_COST: Dict[str, float] = {
     "claude-opus-4-1-20250805": 0.0225,
     "claude-opus-4-20250514": 0.0225,
     "claude-sonnet-4-20250514": 0.0045,
+    "claude-sonnet-4-5-20250929": 0.0045,
     "gpt-5-mini(medium)": 0.000525,
     "gpt-5-mini(minimal)": 0.000525,
+    "gpt-5-mini(minimal+low)": 0.000525,
     "gpt-5-nano(minimal)": 0.000105,
     "gpt-5(minimal)": 0.002625,
+    "gpt-5(minimal+low)": 0.002625,
     "gpt-5(medium)": 0.002625,
+    "gpt-oss-120b(low)": 0.00196,
+    "llm-jp-3.1-13b-instruct4": 0.0001,
+    "llm-jp-3.1-8x13b-instruct4": 0.0002,
 }
 
 # モデルごとの基本色。matplotlib の named color もしくは hex
@@ -66,11 +72,17 @@ COLOR_MAP: Dict[str, str] = {
     "claude-opus-4-1-20250805": "mediumpurple",
     "claude-opus-4-20250514": "blueviolet",
     "claude-sonnet-4-20250514": "mediumorchid",
+    "claude-sonnet-4-5-20250929": "orchid",
     "gpt-5-mini(medium)": "limegreen",
     "gpt-5-mini(minimal)": "forestgreen",
+    "gpt-5-mini(minimal+low)": "darkseagreen",
     "gpt-5-nano(minimal)": "darkgreen",
     "gpt-5(minimal)": "seagreen",
+    "gpt-5(minimal+low)": "lightseagreen",
     "gpt-5(medium)": "green",
+    "gpt-oss-120b(low)": "olive",
+    "llm-jp-3.1-13b-instruct4": "coral",
+    "llm-jp-3.1-8x13b-instruct4": "salmon",
 }
 
 # ---------------------------------------------------------------------------
@@ -94,11 +106,17 @@ DATA_V24: Dict[str, Dict[str, float]] = {
     "claude-opus-4-1-20250805": {"cer": 0.119479, "elapsed": 2.616859},
     "claude-opus-4-20250514": {"cer": 0.110761, "elapsed": 2.476723},
     "claude-sonnet-4-20250514": {"cer": 0.125210, "elapsed": 2.790457},
+    "claude-sonnet-4-5-20250929": {"cer": 0.115957, "elapsed": 2.813227},
     "gpt-5-mini(medium)": {"cer": 0.250286, "elapsed": 15.645264},
     "gpt-5-mini(minimal)": {"cer": 0.359281, "elapsed": 1.278602},
+    "gpt-5-mini(minimal+low)": {"cer": 0.367744, "elapsed": 1.390877},
     "gpt-5-nano(minimal)": {"cer": 0.894475, "elapsed": 1.140173},
     "gpt-5(minimal)": {"cer": 0.127556, "elapsed": 1.858604},
+    "gpt-5(minimal+low)": {"cer": 0.139034, "elapsed": 1.674105},
     "gpt-5(medium)": {"cer": 0.046352, "elapsed": 34.859140},
+    "gpt-oss-120b(low)": {"cer": 0.591938, "elapsed": 5.251546},
+    "llm-jp-3.1-13b-instruct4": {"cer": 0.903498, "elapsed": 9.390150},
+    "llm-jp-3.1-8x13b-instruct4": {"cer": 0.735276, "elapsed": 12.738874},
 }
 
 # ---------------------------------------------------------------------------

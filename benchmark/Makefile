@@ -12,6 +12,7 @@ RESULTS := gpt-3.5-turbe.json gpt-4.1-mini.json gpt-4.1.json gpt-4o-mini.json gp
 	   llm-jp-3.1-8x13b-instruct4.json llm-jp-3.1-13b-instruct4.json \
 	   claude-3-7-sonnet-20250219.json \
 	   claude-sonnet-4-20250514.json \
+	   claude-sonnet-4-5-20250929.json \
 	   claude-opus-4-20250514.json \
 	   claude-opus-4-1-20250805.json \
 	   gpt-5-mini\(medium\).json \

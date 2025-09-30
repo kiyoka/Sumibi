@@ -46,11 +46,17 @@ MODELS: List[str] = [
     "claude-opus-4-1-20250805",
     "claude-opus-4-20250514",
     "claude-sonnet-4-20250514",
+    "claude-sonnet-4-5-20250929",
     "gpt-5-mini(medium)",
     "gpt-5-mini(minimal)",
+    "gpt-5-mini(minimal+low)",
     "gpt-5-nano(minimal)",
     "gpt-5(minimal)",
+    "gpt-5(minimal+low)",
     "gpt-5(medium)",
+    "gpt-oss-120b(low)",
+    "llm-jp-3.1-13b-instruct4",
+    "llm-jp-3.1-8x13b-instruct4",
 ]
 
 # 平均応答時間 (sec) v2.4.0
@@ -70,11 +76,17 @@ MEAN_ELAPSED_V24 = [
     2.616859,
     2.476723,
     2.790457,
+    2.813227,
     15.645264,
     1.278602,
+    1.390877,
     1.140173,
     1.858604,
+    1.674105,
     34.859140,
+    5.251546,
+    9.390150,
+    12.738874,
 ]
 
 MEAN_CER_V24 = [
@@ -93,11 +105,17 @@ MEAN_CER_V24 = [
     0.119479,
     0.110761,
     0.125210,
+    0.115957,
     0.250286,
     0.359281,
+    0.367744,
     0.894475,
     0.127556,
+    0.139034,
     0.046352,
+    0.591938,
+    0.903498,
+    0.735276,
 ]
 
 # カラー (plot_errorrate_vs_cost.py と合わせている)
@@ -117,11 +135,17 @@ BAR_COLORS = [
     "mediumpurple",
     "blueviolet",
     "mediumorchid",
+    "orchid",
     "limegreen",
     "forestgreen",
+    "darkseagreen",
     "darkgreen",
     "seagreen",
+    "lightseagreen",
     "green",
+    "olive",
+    "coral",
+    "salmon",
 ]
 
 # ---------------------------------------------------------------------------
