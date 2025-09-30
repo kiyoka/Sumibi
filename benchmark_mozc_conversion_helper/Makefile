@@ -1,6 +1,9 @@
 # Mozc Conversion Helper Benchmark Makefile
 
-.PHONY: setup download-data download-wikipedia test-mozc run-benchmark plot-results clean help
+.PHONY: setup download-data download-wikipedia test-mozc run-benchmark run-benchmark-hw1 run-benchmark-hw2 plot-results clean help
+
+# デフォルトのハードウェア設定
+HARDWARE ?= hardware1
 
 # デフォルトターゲット
 help:
@@ -8,10 +11,12 @@ help:
 	@echo "  setup              - 環境をセットアップ"
 	@echo "  download-data      - Wikipedia 日本語ダンプ取得手順 (自動取得を試行)"
 	@echo "  download-wikipedia - download-data と同義"
-	@echo "  test-mozc      - Mozcクライアントをテスト"
-	@echo "  run-benchmark  - ベンチマークを実行"
-	@echo "  plot-results   - ベンチマーク結果をグラフ化"
-	@echo "  clean          - 生成ファイルをクリーンアップ"
+	@echo "  test-mozc          - Mozcクライアントをテスト"
+	@echo "  run-benchmark      - ベンチマークを実行 (HARDWARE=hardware1 or hardware2)"
+	@echo "  run-benchmark-hw1  - hardware1でベンチマークを実行"
+	@echo "  run-benchmark-hw2  - hardware2でベンチマークを実行"
+	@echo "  plot-results       - ベンチマーク結果をグラフ化"
+	@echo "  clean              - 生成ファイルをクリーンアップ"
 
 # 環境セットアップ
 setup:
@@ -41,12 +46,20 @@ run-benchmark:
 		echo "For local LLM: export OPENAI_API_KEY='dummy' OPENAI_BASEURL='http://localhost:1234/'"; \
 		exit 1; \
 	fi
-	@mkdir -p results
-	@echo "Running LLM selection benchmark..."
+	@mkdir -p results/$(HARDWARE)
+	@echo "Running LLM selection benchmark on $(HARDWARE)..."
 	@if [ -n "$$OPENAI_BASEURL" ]; then \
 		echo "Using local LLM endpoint: $$OPENAI_BASEURL"; \
 	fi
-	OPENAI_MODEL=$${OPENAI_MODEL:-gpt-5} python3 scripts/llm_selection_benchmark.py
+	HARDWARE=$(HARDWARE) OPENAI_MODEL=$${OPENAI_MODEL:-gpt-5} python3 scripts/llm_selection_benchmark.py
+
+# hardware1でベンチマーク実行
+run-benchmark-hw1:
+	$(MAKE) run-benchmark HARDWARE=hardware1
+
+# hardware2でベンチマーク実行
+run-benchmark-hw2:
+	$(MAKE) run-benchmark HARDWARE=hardware2
 
 # ベンチマーク結果をグラフ化
 plot-results:

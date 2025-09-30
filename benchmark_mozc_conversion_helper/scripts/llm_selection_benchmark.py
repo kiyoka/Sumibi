@@ -295,9 +295,11 @@ class LLMSelectionBenchmark:
             "note": "候補はLLMにランダム順序で提示されました"
         }
 
-    def run_benchmark(self, data_files: List[str] = None, output_file: str = None):
+    def run_benchmark(self, data_files: List[str] = None, output_file: str = None, hardware: str = None):
         print("=== LLM Selection Benchmark ===")
         print(f"Model: {self.model}")
+        if hardware:
+            print(f"Hardware: {hardware}")
 
         cases = self._load_cases_from_file()
         if not cases:
@@ -310,7 +312,8 @@ class LLMSelectionBenchmark:
         if output_file is None:
             # モデル名をファイル名に反映（'/'を'--'に置換）
             safe_model_name = self.model.replace("/", "--")
-            output_file = f"results/{safe_model_name}.json"
+            results_dir = f"results/{hardware}" if hardware else "results"
+            output_file = f"{results_dir}/{safe_model_name}.json"
 
         results: List[Dict] = []
         for i, tc in enumerate(cases):
@@ -417,12 +420,13 @@ def main():
 
     model = os.getenv("OPENAI_MODEL", "gpt-5")
     base_url = os.getenv("OPENAI_BASEURL")  # ローカルLLM用エンドポイント
+    hardware = os.getenv("HARDWARE")  # hardware1 or hardware2
 
     # API_KEYが "dummy" の場合は、ローカルLLMを使用
     if api_key == "dummy" and base_url:
         print("Using local LLM (API key is dummy)")
 
-    LLMSelectionBenchmark(api_key, model, base_url).run_benchmark()
+    LLMSelectionBenchmark(api_key, model, base_url).run_benchmark(hardware=hardware)
 
 
 if __name__ == "__main__":
