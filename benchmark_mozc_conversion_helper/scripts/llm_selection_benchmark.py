@@ -35,7 +35,6 @@ class TestCase:
     correct_answer: str
     source_text: str
 
-
 class LLMSelectionBenchmark:
     def __init__(self, api_key: str, model: str = "gpt-5", base_url: str = None):
         # ローカルLLM対応: base_urlが指定されていればそれを使用
@@ -121,15 +120,21 @@ class LLMSelectionBenchmark:
             original_idx = candidates.index(candidate)
             shuffle_mapping[new_idx] = original_idx
 
-        candidates_text = "\n".join([f"{i+1}. {c['candidate']}" for i, c in enumerate(shuffled_candidates)])
+        candidates_list = [c['candidate'] for c in shuffled_candidates]
+        candidates_text = ", ".join(candidates_list)
+        cand_count = len(candidates_list)
 
-        prompt = f"""文: {test_case.context}
+        prompt = f"""文脈: {test_case.context}
 
-「{test_case.reading}」に最適な漢字を選択肢から選んでください。
+「{test_case.reading}」の変換候補({cand_count}件): {candidates_text}
 
-{candidates_text}
+出力ルール:
+- 次の候補だけを順序付けし、内容は一切変更しない。
+- 全ての候補({cand_count}件)を重複なく必ず一度ずつ含める。
+- 追加の説明や引用符・記号・見出しは書かない。
+- 出力形式: 候補1, 候補2, ..., 候補{cand_count}
 
-番号のみ回答してください:"""
+では、文脈に最も適した順に並べ替えてください。"""
 
         print(f"    Sending prompt to LLM: {prompt[:100]}...")
 
