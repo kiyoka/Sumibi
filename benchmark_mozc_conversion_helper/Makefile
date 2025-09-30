@@ -2,9 +2,6 @@
 
 .PHONY: setup download-data download-wikipedia test-mozc run-benchmark run-benchmark-hw1 run-benchmark-hw2 plot-results clean help
 
-# デフォルトのハードウェア設定
-HARDWARE ?= hardware1
-
 # デフォルトターゲット
 help:
 	@echo "Available targets:"
@@ -46,8 +43,13 @@ run-benchmark:
 		echo "For local LLM: export OPENAI_API_KEY='dummy' OPENAI_BASEURL='http://localhost:1234/'"; \
 		exit 1; \
 	fi
-	@mkdir -p results/$(HARDWARE)
-	@echo "Running LLM selection benchmark on $(HARDWARE)..."
+	@if [ -n "$(HARDWARE)" ]; then \
+		mkdir -p results/$(HARDWARE); \
+		echo "Running LLM selection benchmark on $(HARDWARE)..."; \
+	else \
+		mkdir -p results; \
+		echo "Running LLM selection benchmark..."; \
+	fi
 	@if [ -n "$$OPENAI_BASEURL" ]; then \
 		echo "Using local LLM endpoint: $$OPENAI_BASEURL"; \
 	fi
