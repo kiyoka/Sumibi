@@ -19,7 +19,7 @@ plt.rcParams['font.family'] = ['DejaVu Sans', 'Hiragino Sans', 'Yu Gothic', 'Mei
 
 
 def load_benchmark_results(results_dir: str = "results") -> Dict[str, Dict]:
-    """resultsディレクトリからJSONファイルを読み込んで結果を返す"""
+    """resultsディレクトリとそのサブディレクトリからJSONファイルを読み込んで結果を返す"""
     results = {}
     results_path = Path(results_dir)
 
@@ -27,9 +27,10 @@ def load_benchmark_results(results_dir: str = "results") -> Dict[str, Dict]:
         print(f"Results directory '{results_dir}' not found")
         return results
 
-    json_files = list(results_path.glob("*.json"))
+    # results/ 直下とサブディレクトリ（hardware1, hardware2など）からJSONファイルを取得
+    json_files = list(results_path.glob("*.json")) + list(results_path.glob("*/*.json"))
     if not json_files:
-        print(f"No JSON files found in '{results_dir}'")
+        print(f"No JSON files found in '{results_dir}' or its subdirectories")
         return results
 
     for json_file in json_files:
@@ -41,6 +42,10 @@ def load_benchmark_results(results_dir: str = "results") -> Dict[str, Dict]:
             model_name = json_file.stem
             # '--' を '/' に戻す
             display_name = model_name.replace('--', '/')
+
+            # サブディレクトリから読み込んだ場合は、ディレクトリ名をプレフィックスとして追加
+            if json_file.parent.name != results_path.name:
+                display_name = f"[{json_file.parent.name}] {display_name}"
 
             # サマリー情報を抽出
             if 'summary' in data:
