@@ -2,27 +2,27 @@
   "metadata": {
     "model": "openai/gpt-oss-20b",
     "total_cases": 112,
-    "timestamp": "2025-09-21 21:34:28"
+    "timestamp": "2025-10-01 22:42:45"
   },
   "summary": {
     "total_cases": 112,
-    "llm_accuracy": 0.5267857142857143,
+    "llm_accuracy": 0.4017857142857143,
     "mozc_accuracy": 0.8214285714285714,
-    "llm_correct_count": 59,
+    "llm_correct_count": 45,
     "mozc_correct_count": 92,
-    "llm_better": 9,
-    "mozc_better": 42,
-    "both_correct": 50,
-    "both_wrong": 11,
-    "llm_better_rate": 0.08035714285714286,
-    "mozc_better_rate": 0.375,
-    "both_correct_rate": 0.44642857142857145,
-    "both_wrong_rate": 0.09821428571428571,
+    "llm_better": 5,
+    "mozc_better": 52,
+    "both_correct": 40,
+    "both_wrong": 15,
+    "llm_better_rate": 0.044642857142857144,
+    "mozc_better_rate": 0.4642857142857143,
+    "both_correct_rate": 0.35714285714285715,
+    "both_wrong_rate": 0.13392857142857142,
     "api_response_time": {
-      "total": 863.5452318191528,
-      "average": 7.710225284099579,
-      "min": 5.250728130340576,
-      "max": 10.136916637420654
+      "total": 979.4991495609283,
+      "average": 8.745528121079717,
+      "min": 7.085527658462524,
+      "max": 35.930426597595215
     }
   },
   "details": [
@@ -61,7 +61,7 @@
       "mozc_better": false,
       "both_correct": false,
       "both_wrong": true,
-      "api_response_time": 10.136916637420654,
+      "api_response_time": 35.930426597595215,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -99,7 +99,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.6788763999938965,
+      "api_response_time": 8.808060884475708,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -129,15 +129,15 @@
           "candidate": "点かう"
         }
       ],
-      "llm_selection": "使う",
+      "llm_selection": "付かう",
       "mozc_top": "使う",
-      "llm_correct": true,
+      "llm_correct": false,
       "mozc_correct": true,
       "llm_better": false,
-      "mozc_better": false,
-      "both_correct": true,
+      "mozc_better": true,
+      "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 6.595705986022949,
+      "api_response_time": 8.624557495117188,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -161,7 +161,7 @@
           "candidate": "kiiroi"
         }
       ],
-      "llm_selection": "黄色い",
+      "llm_selection": "きいろい",
       "mozc_top": "黄色い",
       "llm_correct": true,
       "mozc_correct": true,
@@ -169,7 +169,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 6.00770378112793,
+      "api_response_time": 8.295061588287354,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -207,7 +207,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 8.92825722694397,
+      "api_response_time": 8.789976119995117,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -237,7 +237,7 @@
           "candidate": "紅井"
         }
       ],
-      "llm_selection": "赤い",
+      "llm_selection": "あかい",
       "mozc_top": "赤い",
       "llm_correct": true,
       "mozc_correct": true,
@@ -245,7 +245,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 7.034095287322998,
+      "api_response_time": 8.630619049072266,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -275,15 +275,15 @@
           "candidate": "私ロイ"
         }
       ],
-      "llm_selection": "白い",
+      "llm_selection": "私ロイ",
       "mozc_top": "白い",
-      "llm_correct": true,
+      "llm_correct": false,
       "mozc_correct": true,
       "llm_better": false,
-      "mozc_better": false,
-      "both_correct": true,
+      "mozc_better": true,
+      "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 6.387759447097778,
+      "api_response_time": 8.115651369094849,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -321,7 +321,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 8.383370876312256,
+      "api_response_time": 8.20024847984314,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -359,7 +359,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.888827800750732,
+      "api_response_time": 9.249780178070068,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -388,7 +388,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 5.250728130340576,
+      "api_response_time": 8.129898309707642,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -426,7 +426,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 8.100358724594116,
+      "api_response_time": 8.598061323165894,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -456,7 +456,7 @@
           "candidate": "話界"
         }
       ],
-      "llm_selection": "若い",
+      "llm_selection": "わかい",
       "mozc_top": "若い",
       "llm_correct": true,
       "mozc_correct": true,
@@ -464,7 +464,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 6.983857870101929,
+      "api_response_time": 8.625051975250244,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -502,7 +502,7 @@
       "mozc_better": false,
       "both_correct": false,
       "both_wrong": true,
-      "api_response_time": 7.8643341064453125,
+      "api_response_time": 8.243345260620117,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -534,7 +534,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 7.154642105102539,
+      "api_response_time": 8.209619522094727,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -563,7 +563,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.888163805007935,
+      "api_response_time": 8.190900087356567,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -595,7 +595,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 7.463598251342773,
+      "api_response_time": 7.784263849258423,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -624,7 +624,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.752294301986694,
+      "api_response_time": 8.374868392944336,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -651,7 +651,7 @@
           "candidate": "tanoshii"
         }
       ],
-      "llm_selection": "楽しい",
+      "llm_selection": "たのしい",
       "mozc_top": "楽しい",
       "llm_correct": true,
       "mozc_correct": true,
@@ -659,7 +659,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 6.138386011123657,
+      "api_response_time": 8.71470856666565,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -686,15 +686,15 @@
           "candidate": "isogashii"
         }
       ],
-      "llm_selection": "いそがし意",
+      "llm_selection": "忙しい",
       "mozc_top": "忙しい",
-      "llm_correct": false,
+      "llm_correct": true,
       "mozc_correct": true,
       "llm_better": false,
-      "mozc_better": true,
-      "both_correct": false,
+      "mozc_better": false,
+      "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 8.737529277801514,
+      "api_response_time": 8.640120029449463,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -726,7 +726,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 6.738484859466553,
+      "api_response_time": 8.436898469924927,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -758,7 +758,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 6.728625535964966,
+      "api_response_time": 8.341131210327148,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -788,7 +788,7 @@
           "candidate": "tooi"
         }
       ],
-      "llm_selection": "遠い",
+      "llm_selection": "とおい",
       "mozc_top": "遠い",
       "llm_correct": true,
       "mozc_correct": true,
@@ -796,7 +796,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 6.911288022994995,
+      "api_response_time": 9.271990776062012,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -834,7 +834,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 8.184838056564331,
+      "api_response_time": 8.151015043258667,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -864,7 +864,7 @@
           "candidate": "儚い"
         }
       ],
-      "llm_selection": "暗い",
+      "llm_selection": "くらい",
       "mozc_top": "くらい",
       "llm_correct": true,
       "mozc_correct": false,
@@ -872,7 +872,7 @@
       "mozc_better": false,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.901022434234619,
+      "api_response_time": 8.243627786636353,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -901,7 +901,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 7.528921127319336,
+      "api_response_time": 8.154050827026367,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -933,7 +933,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.751810312271118,
+      "api_response_time": 8.193603754043579,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -965,7 +965,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 7.1467061042785645,
+      "api_response_time": 8.642400741577148,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -986,15 +986,15 @@
           "candidate": "samui"
         }
       ],
-      "llm_selection": "寒い",
+      "llm_selection": "samui",
       "mozc_top": "寒い",
-      "llm_correct": true,
+      "llm_correct": false,
       "mozc_correct": true,
       "llm_better": false,
-      "mozc_better": false,
-      "both_correct": true,
+      "mozc_better": true,
+      "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.387011528015137,
+      "api_response_time": 8.223873615264893,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1032,7 +1032,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 8.750768661499023,
+      "api_response_time": 9.028111934661865,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1056,15 +1056,15 @@
           "candidate": "atatakai"
         }
       ],
-      "llm_selection": "暖かい",
+      "llm_selection": "あたたかい",
       "mozc_top": "温かい",
-      "llm_correct": false,
+      "llm_correct": true,
       "mozc_correct": true,
       "llm_better": false,
-      "mozc_better": true,
-      "both_correct": false,
+      "mozc_better": false,
+      "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 8.222126007080078,
+      "api_response_time": 8.060163021087646,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1102,7 +1102,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.7250237464904785,
+      "api_response_time": 8.816927194595337,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1132,15 +1132,15 @@
           "candidate": "atui"
         }
       ],
-      "llm_selection": "厚い",
+      "llm_selection": "atui",
       "mozc_top": "暑い",
-      "llm_correct": true,
+      "llm_correct": false,
       "mozc_correct": false,
-      "llm_better": true,
+      "llm_better": false,
       "mozc_better": false,
       "both_correct": false,
-      "both_wrong": false,
-      "api_response_time": 7.519504547119141,
+      "both_wrong": true,
+      "api_response_time": 8.689666986465454,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1178,7 +1178,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 8.759329319000244,
+      "api_response_time": 8.150341987609863,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1208,7 +1208,7 @@
           "candidate": "府会"
         }
       ],
-      "llm_selection": "不快",
+      "llm_selection": "ふかい",
       "mozc_top": "ふかい",
       "llm_correct": true,
       "mozc_correct": false,
@@ -1216,7 +1216,7 @@
       "mozc_better": false,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 8.07227110862732,
+      "api_response_time": 8.694864749908447,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1251,7 +1251,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 8.61250376701355,
+      "api_response_time": 8.246901512145996,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1289,7 +1289,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 9.179306507110596,
+      "api_response_time": 8.930291891098022,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1324,7 +1324,7 @@
       "mozc_better": false,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.779337167739868,
+      "api_response_time": 8.444624185562134,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1362,7 +1362,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 8.560462236404419,
+      "api_response_time": 8.17134165763855,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1392,15 +1392,15 @@
           "candidate": "過塁"
         }
       ],
-      "llm_selection": "軽い",
+      "llm_selection": "過類",
       "mozc_top": "軽い",
-      "llm_correct": true,
+      "llm_correct": false,
       "mozc_correct": true,
       "llm_better": false,
-      "mozc_better": false,
-      "both_correct": true,
+      "mozc_better": true,
+      "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.361830949783325,
+      "api_response_time": 8.797505855560303,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1438,7 +1438,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 6.392263650894165,
+      "api_response_time": 8.195434331893921,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1468,15 +1468,15 @@
           "candidate": "お添い"
         }
       ],
-      "llm_selection": "遅い",
+      "llm_selection": "お沿い",
       "mozc_top": "遅い",
-      "llm_correct": true,
+      "llm_correct": false,
       "mozc_correct": true,
       "llm_better": false,
-      "mozc_better": false,
-      "both_correct": true,
+      "mozc_better": true,
+      "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 8.695572853088379,
+      "api_response_time": 8.103696346282959,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1514,7 +1514,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 9.20888376235962,
+      "api_response_time": 8.28902292251587,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1552,7 +1552,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 9.097476720809937,
+      "api_response_time": 8.744734048843384,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1590,7 +1590,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 8.503764152526855,
+      "api_response_time": 8.329785108566284,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1628,7 +1628,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 8.463968753814697,
+      "api_response_time": 8.468748331069946,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1649,7 +1649,7 @@
           "candidate": "deru"
         }
       ],
-      "llm_selection": "出る",
+      "llm_selection": "でる",
       "mozc_top": "出る",
       "llm_correct": true,
       "mozc_correct": true,
@@ -1657,7 +1657,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 6.296557664871216,
+      "api_response_time": 7.464041709899902,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1684,15 +1684,15 @@
           "candidate": "hairu"
         }
       ],
-      "llm_selection": "入る",
+      "llm_selection": "這入る",
       "mozc_top": "入る",
-      "llm_correct": true,
+      "llm_correct": false,
       "mozc_correct": true,
       "llm_better": false,
-      "mozc_better": false,
-      "both_correct": true,
+      "mozc_better": true,
+      "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 5.869703769683838,
+      "api_response_time": 8.185654878616333,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1730,7 +1730,7 @@
       "mozc_better": false,
       "both_correct": false,
       "both_wrong": true,
-      "api_response_time": 7.91636061668396,
+      "api_response_time": 9.341365814208984,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1759,7 +1759,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 7.9223175048828125,
+      "api_response_time": 9.344393730163574,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1789,7 +1789,7 @@
           "candidate": "前"
         }
       ],
-      "llm_selection": "進む",
+      "llm_selection": "勧",
       "mozc_top": "進む",
       "llm_correct": false,
       "mozc_correct": false,
@@ -1797,7 +1797,7 @@
       "mozc_better": false,
       "both_correct": false,
       "both_wrong": true,
-      "api_response_time": 6.152699708938599,
+      "api_response_time": 8.626845359802246,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1824,15 +1824,15 @@
           "candidate": "tuduku"
         }
       ],
-      "llm_selection": "続く",
+      "llm_selection": "都竹",
       "mozc_top": "つづく",
-      "llm_correct": true,
+      "llm_correct": false,
       "mozc_correct": false,
-      "llm_better": true,
+      "llm_better": false,
       "mozc_better": false,
       "both_correct": false,
-      "both_wrong": false,
-      "api_response_time": 5.546002626419067,
+      "both_wrong": true,
+      "api_response_time": 8.158982038497925,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1862,15 +1862,15 @@
           "candidate": "お割る"
         }
       ],
-      "llm_selection": "終わる",
+      "llm_selection": "畢る",
       "mozc_top": "終わる",
-      "llm_correct": true,
+      "llm_correct": false,
       "mozc_correct": true,
       "llm_better": false,
-      "mozc_better": false,
-      "both_correct": true,
+      "mozc_better": true,
+      "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 6.624849081039429,
+      "api_response_time": 8.331669092178345,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1905,7 +1905,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.81838846206665,
+      "api_response_time": 8.21991491317749,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1943,7 +1943,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.752357721328735,
+      "api_response_time": 8.192072629928589,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -1981,7 +1981,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 8.840394973754883,
+      "api_response_time": 8.761045932769775,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2008,15 +2008,15 @@
           "candidate": "kanjiru"
         }
       ],
-      "llm_selection": "缶汁",
+      "llm_selection": "かんじる",
       "mozc_top": "感じる",
-      "llm_correct": false,
+      "llm_correct": true,
       "mozc_correct": true,
       "llm_better": false,
-      "mozc_better": true,
-      "both_correct": false,
+      "mozc_better": false,
+      "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 8.949348211288452,
+      "api_response_time": 8.821605682373047,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2045,7 +2045,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 7.4026947021484375,
+      "api_response_time": 8.200259923934937,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2083,7 +2083,7 @@
       "mozc_better": false,
       "both_correct": false,
       "both_wrong": true,
-      "api_response_time": 7.884615182876587,
+      "api_response_time": 8.291162967681885,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2121,7 +2121,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.774555206298828,
+      "api_response_time": 8.232953548431396,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2142,15 +2142,15 @@
           "candidate": "wasureru"
         }
       ],
-      "llm_selection": "wasureru",
+      "llm_selection": "忘れる",
       "mozc_top": "忘れる",
-      "llm_correct": false,
+      "llm_correct": true,
       "mozc_correct": true,
       "llm_better": false,
-      "mozc_better": true,
-      "both_correct": false,
+      "mozc_better": false,
+      "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 7.883341550827026,
+      "api_response_time": 7.085527658462524,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2182,7 +2182,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 8.020900964736938,
+      "api_response_time": 8.238330125808716,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2220,7 +2220,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.7120678424835205,
+      "api_response_time": 8.169902086257935,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2250,15 +2250,15 @@
           "candidate": "おし得る"
         }
       ],
-      "llm_selection": "教える",
+      "llm_selection": "推し得る",
       "mozc_top": "教える",
-      "llm_correct": true,
+      "llm_correct": false,
       "mozc_correct": true,
       "llm_better": false,
-      "mozc_better": false,
-      "both_correct": true,
+      "mozc_better": true,
+      "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 6.774586200714111,
+      "api_response_time": 8.294700622558594,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2285,15 +2285,15 @@
           "candidate": "hanasu"
         }
       ],
-      "llm_selection": "話す",
+      "llm_selection": "hanasu",
       "mozc_top": "話す",
-      "llm_correct": true,
+      "llm_correct": false,
       "mozc_correct": true,
       "llm_better": false,
-      "mozc_better": false,
-      "both_correct": true,
+      "mozc_better": true,
+      "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 6.867743253707886,
+      "api_response_time": 8.785549640655518,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2331,7 +2331,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 8.263590574264526,
+      "api_response_time": 8.231664419174194,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2369,7 +2369,7 @@
       "mozc_better": false,
       "both_correct": false,
       "both_wrong": true,
-      "api_response_time": 8.714990377426147,
+      "api_response_time": 8.722750425338745,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2407,7 +2407,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 8.918026685714722,
+      "api_response_time": 8.767972707748413,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2445,7 +2445,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 8.424359321594238,
+      "api_response_time": 9.295938968658447,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2483,7 +2483,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 7.74424409866333,
+      "api_response_time": 8.846736907958984,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2507,7 +2507,7 @@
           "candidate": "eru"
         }
       ],
-      "llm_selection": "得る",
+      "llm_selection": "える",
       "mozc_top": "得る",
       "llm_correct": true,
       "mozc_correct": true,
@@ -2515,7 +2515,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 5.758832216262817,
+      "api_response_time": 8.146867275238037,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2545,15 +2545,15 @@
           "candidate": "ushinau"
         }
       ],
-      "llm_selection": "失う",
+      "llm_selection": "ushinau",
       "mozc_top": "失う",
-      "llm_correct": true,
+      "llm_correct": false,
       "mozc_correct": true,
       "llm_better": false,
-      "mozc_better": false,
-      "both_correct": true,
+      "mozc_better": true,
+      "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.225024223327637,
+      "api_response_time": 9.079432249069214,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2585,7 +2585,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 9.291862726211548,
+      "api_response_time": 8.942846059799194,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2617,7 +2617,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 8.06356930732727,
+      "api_response_time": 8.697979211807251,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2638,15 +2638,15 @@
           "candidate": "utagau"
         }
       ],
-      "llm_selection": "疑う",
+      "llm_selection": "utagau",
       "mozc_top": "疑う",
-      "llm_correct": true,
+      "llm_correct": false,
       "mozc_correct": true,
       "llm_better": false,
-      "mozc_better": false,
-      "both_correct": true,
+      "mozc_better": true,
+      "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 5.7776877880096436,
+      "api_response_time": 8.550034046173096,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2675,7 +2675,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.371680021286011,
+      "api_response_time": 8.242858648300171,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2705,15 +2705,15 @@
           "candidate": "遭いする"
         }
       ],
-      "llm_selection": "愛する",
+      "llm_selection": "逢いする",
       "mozc_top": "愛する",
-      "llm_correct": true,
+      "llm_correct": false,
       "mozc_correct": true,
       "llm_better": false,
-      "mozc_better": false,
-      "both_correct": true,
+      "mozc_better": true,
+      "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 6.1734938621521,
+      "api_response_time": 8.215049266815186,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2751,7 +2751,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 8.267647504806519,
+      "api_response_time": 8.319741010665894,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2783,7 +2783,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.8305017948150635,
+      "api_response_time": 8.772477626800537,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2821,7 +2821,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 8.493718147277832,
+      "api_response_time": 9.213876962661743,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2859,7 +2859,7 @@
       "mozc_better": false,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.818246841430664,
+      "api_response_time": 8.229630708694458,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2897,7 +2897,7 @@
       "mozc_better": false,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.325588226318359,
+      "api_response_time": 8.85023045539856,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2935,7 +2935,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 8.184341430664062,
+      "api_response_time": 8.271923542022705,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -2959,15 +2959,15 @@
           "candidate": "shinu"
         }
       ],
-      "llm_selection": "shinu",
+      "llm_selection": "しぬ",
       "mozc_top": "死ぬ",
-      "llm_correct": false,
+      "llm_correct": true,
       "mozc_correct": true,
       "llm_better": false,
-      "mozc_better": true,
-      "both_correct": false,
+      "mozc_better": false,
+      "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 7.344003677368164,
+      "api_response_time": 7.887958765029907,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3005,7 +3005,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 8.781508684158325,
+      "api_response_time": 8.8026442527771,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3035,7 +3035,7 @@
           "candidate": "お斬る"
         }
       ],
-      "llm_selection": "起きる",
+      "llm_selection": "おきる",
       "mozc_top": "起きる",
       "llm_correct": true,
       "mozc_correct": true,
@@ -3043,7 +3043,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 7.395068407058716,
+      "api_response_time": 8.730920314788818,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3081,7 +3081,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 7.7285356521606445,
+      "api_response_time": 9.25143027305603,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3105,15 +3105,15 @@
           "candidate": "nomu"
         }
       ],
-      "llm_selection": "nomu",
+      "llm_selection": "のむ",
       "mozc_top": "飲む",
-      "llm_correct": false,
+      "llm_correct": true,
       "mozc_correct": true,
       "llm_better": false,
-      "mozc_better": true,
-      "both_correct": false,
+      "mozc_better": false,
+      "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 7.902065753936768,
+      "api_response_time": 8.117828607559204,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3151,7 +3151,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.845547676086426,
+      "api_response_time": 8.619355201721191,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3181,15 +3181,15 @@
           "candidate": "過兎"
         }
       ],
-      "llm_selection": "買う",
+      "llm_selection": "交う",
       "mozc_top": "買う",
-      "llm_correct": true,
+      "llm_correct": false,
       "mozc_correct": true,
       "llm_better": false,
-      "mozc_better": false,
-      "both_correct": true,
+      "mozc_better": true,
+      "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 6.576938152313232,
+      "api_response_time": 8.212922096252441,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3227,7 +3227,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 8.174266815185547,
+      "api_response_time": 8.281977415084839,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3265,7 +3265,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 8.404236555099487,
+      "api_response_time": 8.201555728912354,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3295,15 +3295,15 @@
           "candidate": "akeru"
         }
       ],
-      "llm_selection": "開ける",
+      "llm_selection": "明ける",
       "mozc_top": "開ける",
-      "llm_correct": true,
+      "llm_correct": false,
       "mozc_correct": true,
       "llm_better": false,
-      "mozc_better": false,
-      "both_correct": true,
+      "mozc_better": true,
+      "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 6.751787185668945,
+      "api_response_time": 8.266932725906372,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3341,7 +3341,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 8.751142740249634,
+      "api_response_time": 8.715306758880615,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3379,7 +3379,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 8.339298009872437,
+      "api_response_time": 8.747770071029663,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3417,7 +3417,7 @@
       "mozc_better": false,
       "both_correct": false,
       "both_wrong": true,
-      "api_response_time": 7.828556537628174,
+      "api_response_time": 8.273017168045044,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3455,7 +3455,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 8.283496379852295,
+      "api_response_time": 8.541996955871582,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3493,7 +3493,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 7.727731466293335,
+      "api_response_time": 8.19275164604187,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3523,15 +3523,15 @@
           "candidate": "oyogu"
         }
       ],
-      "llm_selection": "泳ぐ",
+      "llm_selection": "oyogu",
       "mozc_top": "泳ぐ",
-      "llm_correct": true,
+      "llm_correct": false,
       "mozc_correct": true,
       "llm_better": false,
-      "mozc_better": false,
-      "both_correct": true,
+      "mozc_better": true,
+      "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 5.882441997528076,
+      "api_response_time": 9.362396001815796,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3569,7 +3569,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.883542060852051,
+      "api_response_time": 8.267857551574707,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3604,7 +3604,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 8.141885995864868,
+      "api_response_time": 8.716226577758789,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3634,15 +3634,15 @@
           "candidate": "yomu"
         }
       ],
-      "llm_selection": "読む",
+      "llm_selection": "讀む",
       "mozc_top": "読む",
-      "llm_correct": true,
+      "llm_correct": false,
       "mozc_correct": true,
       "llm_better": false,
-      "mozc_better": false,
-      "both_correct": true,
+      "mozc_better": true,
+      "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 6.73382043838501,
+      "api_response_time": 8.156798839569092,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3680,7 +3680,7 @@
       "mozc_better": false,
       "both_correct": false,
       "both_wrong": true,
-      "api_response_time": 8.195728778839111,
+      "api_response_time": 8.655182600021362,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3718,7 +3718,7 @@
       "mozc_better": false,
       "both_correct": false,
       "both_wrong": true,
-      "api_response_time": 7.781130075454712,
+      "api_response_time": 8.811433792114258,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3756,7 +3756,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.788848876953125,
+      "api_response_time": 9.065486669540405,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3794,7 +3794,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 8.206325054168701,
+      "api_response_time": 8.229857444763184,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3832,7 +3832,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 8.753061532974243,
+      "api_response_time": 8.70134449005127,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3862,15 +3862,15 @@
           "candidate": "剪る"
         }
       ],
-      "llm_selection": "切る",
+      "llm_selection": "着る",
       "mozc_top": "着る",
-      "llm_correct": true,
+      "llm_correct": false,
       "mozc_correct": false,
-      "llm_better": true,
+      "llm_better": false,
       "mozc_better": false,
       "both_correct": false,
-      "both_wrong": false,
-      "api_response_time": 7.159426212310791,
+      "both_wrong": true,
+      "api_response_time": 9.26655101776123,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3908,7 +3908,7 @@
       "mozc_better": false,
       "both_correct": false,
       "both_wrong": true,
-      "api_response_time": 8.669090986251831,
+      "api_response_time": 8.727105140686035,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3946,7 +3946,7 @@
       "mozc_better": false,
       "both_correct": false,
       "both_wrong": true,
-      "api_response_time": 8.239069700241089,
+      "api_response_time": 8.370630741119385,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -3984,7 +3984,7 @@
       "mozc_better": true,
       "both_correct": false,
       "both_wrong": false,
-      "api_response_time": 7.762715101242065,
+      "api_response_time": 8.168702840805054,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -4022,7 +4022,7 @@
       "mozc_better": false,
       "both_correct": true,
       "both_wrong": false,
-      "api_response_time": 7.9424216747283936,
+      "api_response_time": 9.24175214767456,
       "note": "候補はLLMにランダム順序で提示されました"
     },
     {
@@ -4052,15 +4052,15 @@
           "candidate": "お覚める"
         }
       ],
-      "llm_selection": "納める",
+      "llm_selection": "修める",
       "mozc_top": "治める",
-      "llm_correct": true,
+      "llm_correct": false,
       "mozc_correct": false,
-      "llm_better": true,
+      "llm_better": false,
       "mozc_better": false,
       "both_correct": false,
-      "both_wrong": false,
-      "api_response_time": 7.3561413288116455,
+      "both_wrong": true,
+      "api_response_time": 8.793493509292603,
       "note": "候補はLLMにランダム順序で提示されました"
     }
   ]
