@@ -54,6 +54,10 @@ run-benchmark:
 		echo "Using local LLM endpoint: $$OPENAI_BASEURL"; \
 	fi
 	HARDWARE=$(HARDWARE) OPENAI_MODEL=$${OPENAI_MODEL:-gpt-5} python3 scripts/llm_selection_benchmark.py
+	@if [ -n "$$NOTIFY_SCRIPT" ]; then \
+		echo "Running notification script: $$NOTIFY_SCRIPT"; \
+		$$NOTIFY_SCRIPT; \
+	fi
 
 # hardware1でベンチマーク実行
 run-benchmark-hw1:
