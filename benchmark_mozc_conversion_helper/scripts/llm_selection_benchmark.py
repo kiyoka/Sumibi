@@ -27,6 +27,10 @@ except ImportError:
     print("openai package not found. Please install: pip install openai")
     sys.exit(1)
 
+# OpenAIライブラリのバージョンを確認
+OPENAI_VERSION = tuple(map(int, openai.__version__.split('.')[:2]))
+SUPPORTS_REASONING_EFFORT = OPENAI_VERSION >= (1, 50)  # reasoning_effortは1.50.0以降でサポート
+
 
 @dataclass
 class TestCase:
@@ -62,6 +66,16 @@ class LLMSelectionBenchmark:
         # 再現可能性のためのランダムシード設定
         random.seed(42)
 
+        # gpt-5の場合はreasoning_effortをminimalに設定（ただしライブラリがサポートしている場合のみ）
+        if "gpt-5" in str(model) and SUPPORTS_REASONING_EFFORT:
+            self.reasoning_effort = "minimal"
+        elif "gpt-5" in str(model) and not SUPPORTS_REASONING_EFFORT:
+            self.reasoning_effort = None
+            print(f"Warning: openai library version {openai.__version__} does not support reasoning_effort")
+            print(f"         Please upgrade to 1.50.0 or later: pip install --upgrade openai")
+        else:
+            self.reasoning_effort = None
+
     def _load_cases_from_file(self, pattern_file: str = "extracted_pattern_code.txt") -> List[TestCase]:
         path = Path(pattern_file)
         if not path.exists():
@@ -88,6 +102,42 @@ class LLMSelectionBenchmark:
                 source_text=m_src.group(1)
             ))
         return cases
+
+    def _parse_llm_ranked_list(self, content: str) -> List[str]:
+        """
+        LLMの順位出力を頑健に分割（sumibi.elのsumibi--parse-llm-ranked-listと同じロジック）
+        カンマ/改行/番号/箇条書きに対応
+        """
+        # \rを削除
+        s = content.replace('\r', '')
+
+        # 箇条書き記号の前にカンマを追加（・を残すため、先に処理）
+        s = re.sub(r'([-•])', r',\1', s)
+
+        # 日本語の句読点をカンマに変換（ただし箇条書きの・は除く）
+        s = re.sub(r'[、，]', ',', s)
+        # 改行をカンマに変換
+        s = s.replace('\n', ',')
+        # 番号付き記号の前にカンマを追加
+        s = re.sub(r'([0-9]+[.)．、:])', r',\1', s)
+
+        # カンマで分割
+        items = [item.strip() for item in s.split(',') if item.strip()]
+
+        # 各アイテムから番号や箇条書き記号を削除
+        result = []
+        for item in items:
+            # 先頭の番号や箇条書き記号を削除
+            cleaned = re.sub(r'^([0-9]+[.)．、:]|[-•])\s*', '', item)
+            # 括弧内の説明を削除（例: "安い (most appropriate)" -> "安い"）
+            cleaned = re.sub(r'\s*[\(（].*?[\)）]\s*', '', cleaned)
+            # 引用符や鉤括弧を削除
+            cleaned = re.sub(r'["\'"「」『』]', '', cleaned)
+            cleaned = cleaned.strip()
+            if cleaned:
+                result.append(cleaned)
+
+        return result
 
     def run_llm_selection(self, test_case: TestCase, candidates: List[Dict[str, str]]) -> Tuple[str, float]:
         if not candidates:
@@ -140,21 +190,22 @@ class LLMSelectionBenchmark:
 
         total_api_time = 0.0
         try:
-            # シンプルなフォールバック用のプロンプトも準備
-            simple_prompt = f"次の選択肢から番号を選んでください:\n{candidates_text}\n文脈: {test_case.context[:50]}...\n答え:"
+            # シンプルなフォールバック用のプロンプトも準備（sumibi.elのプロンプトと同じ形式）
+            simple_prompt = prompt
 
             for attempt in range(2):
                 current_prompt = prompt if attempt == 0 else simple_prompt
                 print(f"    Attempt {attempt + 1}: {'Original' if attempt == 0 else 'Simple'} prompt")
 
                 # モデルタイプに応じてシステムメッセージを調整
+                # プロンプトは「候補を並べ替えてください」なので、システムメッセージもそれに合わせる
                 if self.base_url:
                     # ローカルLLM用：英語と日本語の両方で明確に指示
-                    system_msg = "選択肢から最適な番号を1つ選んで答えてください。数字のみ回答してください。Choose the best option number and answer with only that number."
+                    system_msg = "あなたは日本語の変換候補を文脈に応じて並び替える専門家です。与えられた候補を最適な順序に並び替えてください。"
                 elif "gpt-5" in str(self.model):
-                    system_msg = "You must answer with only a number from the given choices. Answer with just the number, nothing else."
+                    system_msg = "You are a Japanese text conversion expert. Reorder the given candidates according to the context."
                 else:
-                    system_msg = "選択肢から番号を選んで答えてください。"
+                    system_msg = "あなたは日本語の変換候補を文脈に応じて並び替える専門家です。"
 
                 params: Dict = {
                     "model": self.model,
@@ -164,25 +215,23 @@ class LLMSelectionBenchmark:
                     ],
                 }
 
-                # モデルに応じてパラメータを調整（安全な方法）
-                try:
-                    if self.base_url:
-                        # ローカルLLM: より安全な設定
-                        params["temperature"] = 0.7
-                        params["max_tokens"] = 50
-                        params["top_p"] = 0.9
-                        print("    Using local LLM parameters")
-                    elif "gpt-5" in str(self.model):
-                        # gpt-5系: temperatureは設定しない（デフォルト値使用）
-                        # トークン制限も最小限にして安全性を確保
-                        pass
-                    else:
-                        # その他のOpenAIモデル
+                # モデルに応じてパラメータを調整（sumibi_typical_convert_client.pyと同じ方法）
+                if self.base_url:
+                    # ローカルLLM: より安全な設定
+                    params["temperature"] = 0.7
+                    params["max_tokens"] = 50
+                    params["top_p"] = 0.9
+                    print("    Using local LLM parameters")
+                else:
+                    # OpenAI API: その他のモデル用の設定
+                    if "gpt-5" not in str(self.model):
                         params["temperature"] = 0.8
                         params["max_tokens"] = 20
-                except Exception as param_error:
-                    print(f"    Warning: Parameter setting failed: {param_error}")
-                    # パラメータ設定に失敗した場合はデフォルト設定で続行
+
+                # reasoning_effortが設定されている場合のみ追加（gpt-5の場合）
+                if self.reasoning_effort is not None:
+                    params["reasoning_effort"] = self.reasoning_effort
+                    print(f"    Using reasoning_effort={self.reasoning_effort}")
 
                 print(f"    Using params: {[k for k in params.keys()]}")
 
@@ -205,14 +254,16 @@ class LLMSelectionBenchmark:
                 print(f"    Full response object available: {hasattr(response.choices[0], 'message')}")
 
                 llm_response = response.choices[0].message.content
-                print(f"    LLM raw response: '{llm_response}' (type: {type(llm_response)})")
+                print(f"    LLM raw response: '{llm_response[:200]}...' (type: {type(llm_response)})")
 
                 if llm_response is None:
                     llm_response = ""
                     print("    Warning: LLM returned None response")
                 else:
+                    # gpt-5の<reasoning>タグを削除（sumibi_typical_convert_client.pyと同じ処理）
+                    llm_response = re.sub(r'<reasoning>.*?</reasoning>', '', llm_response, flags=re.DOTALL).strip()
                     llm_response = llm_response.strip()
-                    print(f"    After strip: '{llm_response}'")
+                    print(f"    After strip and removing reasoning tags: '{llm_response[:200]}...'")
 
                 # 空でない応答が得られたら処理続行
                 if llm_response:
@@ -225,21 +276,45 @@ class LLMSelectionBenchmark:
 
                 print(f"    Empty response on attempt {attempt + 1}, trying {'simple prompt' if attempt == 0 else 'giving up'}")
 
-            m = re.search(r"\d+", llm_response)
-            if m:
-                selected_number = int(m.group())
-                shuffled_idx = selected_number - 1
-                print(f"    LLM selected number: {selected_number} (0-based index: {shuffled_idx})")
+            # sumibi.elの sumibi--parse-llm-ranked-list と同じパースロジック
+            ranked_list = self._parse_llm_ranked_list(llm_response)
+            print(f"    Parsed ranked list: {ranked_list}")
 
-                if 0 <= shuffled_idx < len(shuffled_candidates):
-                    selected_candidate = shuffled_candidates[shuffled_idx]["candidate"]
-                    print(f"    Selected candidate: '{selected_candidate}'")
+            if ranked_list and len(ranked_list) > 0:
+                # LLMの結果から実際の候補と一致するもののみを順序を保って抽出
+                # (sumibi.elの sumibi-local-llm-rank-candidates と同じロジック)
+                reordered_candidates = []
+                used_candidates = set()
+
+                # LLMが返した順序で候補を追加（重複を避ける）
+                for ranked in ranked_list:
+                    # 元の候補リストから一致する候補を探す
+                    for cand_dict in shuffled_candidates:
+                        candidate = cand_dict['candidate']
+                        if candidate == ranked and candidate not in used_candidates:
+                            reordered_candidates.append(candidate)
+                            used_candidates.add(candidate)
+                            break
+
+                # LLMで処理されなかった候補を末尾に追加
+                for cand_dict in shuffled_candidates:
+                    candidate = cand_dict['candidate']
+                    if candidate not in used_candidates:
+                        reordered_candidates.append(candidate)
+
+                print(f"    LLMが返した候補数: {len(ranked_list)}/{len(shuffled_candidates)}")
+                print(f"    Reordered candidates: {reordered_candidates}")
+
+                # 並び替えられた候補の最初を選択
+                if reordered_candidates:
+                    selected_candidate = reordered_candidates[0]
+                    print(f"    Selected candidate (first in reordered list): '{selected_candidate}'")
                     print(f"    Total API time for this case: {total_api_time:.3f}s")
                     return selected_candidate, total_api_time
                 else:
-                    print(f"    ERROR: Invalid index {shuffled_idx}, using first candidate")
+                    print(f"    ERROR: Reordered list is empty")
             else:
-                print(f"    ERROR: No number found in LLM response, using first candidate")
+                print(f"    ERROR: Failed to parse ranked list from LLM response")
         except Exception as e:
             print(f"    ERROR: LLM API error: {e}")
 

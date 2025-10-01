@@ -85,9 +85,15 @@ ML Studioを使用した。スペックは以下の通り。
 
 ## ベンチマーク実行手順
 
+**注意:** ベンチマークを実行する前に、必ず`../benchmark/venv`の仮想環境を有効化してください。
+詳細は「[環境要件](#環境要件)」セクションを参照してください。
+
 ### 1. 基本的な実行
 
 ```bash
+# 仮想環境を有効化
+source ../benchmark/venv/bin/activate
+
 # OpenAI APIキーを設定
 export OPENAI_API_KEY="your-api-key"
 
@@ -133,6 +139,33 @@ ls results/
 - Python 3.8+
 - OpenAI API（LLM 用）
 - Livedoorニュース・コーパス
+
+### Python仮想環境の設定
+
+このベンチマークを実行する際は、`../benchmark/venv`配下の仮想環境を使用する必要があります。
+この仮想環境には、必要なOpenAIライブラリ（バージョン1.50.0以降推奨）が含まれています。
+
+```bash
+# 仮想環境を有効化（Linux/macOS）
+source ../benchmark/venv/bin/activate
+
+# 仮想環境を有効化（Windows）
+..\benchmark\venv\Scripts\activate
+
+# 仮想環境が有効化されているか確認
+which python3  # または where python3 (Windows)
+python3 --version
+python3 -c "import openai; print(f'openai version: {openai.__version__}')"
+
+# ベンチマーク実行
+make run-benchmark
+
+# 作業完了後、仮想環境を無効化
+deactivate
+```
+
+**重要:** OpenAI 1.50.0以降を使用すると、gpt-5の`reasoning_effort`パラメータがサポートされます。
+古いバージョン（1.12.0など）でも動作しますが、警告が表示されます。
 
 ## 注意点
 - 旧仮名/旧字体など歴史的表記に引きずられないよう、現代表記を使うコーパス(Livedoorニュース)を使っています。
