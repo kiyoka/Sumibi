@@ -35,6 +35,7 @@
 | llm-jp-3-3.7b-instruct | 1.590s | 0.240s | 6.61x |
 | llm-jp-3.1-13b-instruct4 | 10.137s | 3.178s | 3.19x |
 | meta-llama-3.1-8b-instruct | 5.442s | 0.640s | 8.50x |
+| openai/gpt-oss-20b | 8.746s | 3.824s | 2.29x |
 | sarashina2.2-3b-instruct-v0.1 | 1.226s | 0.283s | 4.33x |
 
 Hardware2では、全モデルで大幅なレスポンス時間の改善が見られました。特に**meta-llama-3.1-8b-instruct**は約8.5倍、**llm-jp-3-3.7b-instruct**は約6.6倍の高速化を実現しています。
