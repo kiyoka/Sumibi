@@ -43,9 +43,11 @@ def load_benchmark_results(results_dir: str = "results") -> Dict[str, Dict]:
             # '--' を '/' に戻す
             display_name = model_name.replace('--', '/')
 
-            # サブディレクトリから読み込んだ場合は、ディレクトリ名をプレフィックスとして追加
+            # サブディレクトリ名を取得
+            hardware_tag = None
             if json_file.parent.name != results_path.name:
-                display_name = f"[{json_file.parent.name}] {display_name}"
+                hardware_tag = json_file.parent.name
+                display_name = f"[{hardware_tag}] {display_name}"
 
             # サマリー情報を抽出
             if 'summary' in data:
@@ -63,7 +65,9 @@ def load_benchmark_results(results_dir: str = "results") -> Dict[str, Dict]:
                     'total_cases': data['summary'].get('total_cases', 0),
                     'model': data['metadata'].get('model', model_name),
                     'timestamp': data['metadata'].get('timestamp', 'unknown'),
-                    'avg_response_time': avg_response_time
+                    'avg_response_time': avg_response_time,
+                    'hardware_tag': hardware_tag,
+                    'base_model': model_name
                 }
                 print(f"Loaded: {display_name} ({data['summary']['total_cases']} cases)")
             else:
@@ -81,75 +85,131 @@ def plot_benchmark_comparison(results: Dict[str, Dict], output_file: str = "benc
         print("No data to plot")
         return
 
-    # データの準備（精度の高い順にソート）
-    sorted_items = sorted(results.items(), key=lambda x: x[1]['llm_accuracy'], reverse=True)
-    models = [item[0] for item in sorted_items]
-    llm_accuracies = [item[1]['llm_accuracy'] * 100 for item in sorted_items]
-    response_times = [item[1]['avg_response_time'] for item in sorted_items]
+    # hardware1のデータを基準にソート（hardware1がない場合は全データでソート）
+    hw1_results = {k: v for k, v in results.items() if v.get('hardware_tag') == 'hardware1' or v.get('hardware_tag') is None}
+    if not hw1_results:
+        hw1_results = results
+
+    sorted_hw1 = sorted(hw1_results.items(), key=lambda x: x[1]['llm_accuracy'], reverse=True)
+
+    # hardware1のモデル順序を基準に全データを整理
+    model_order = [item[1]['base_model'] for item in sorted_hw1]
+
+    # 各モデルについて、hardware1とhardware2のデータを収集
+    model_data = {}
+    for base_model in model_order:
+        model_data[base_model] = {'hw1': None, 'hw2': None}
+        for key, value in results.items():
+            if value['base_model'] == base_model:
+                hw_tag = value.get('hardware_tag')
+                if hw_tag == 'hardware1':
+                    model_data[base_model]['hw1'] = value
+                elif hw_tag == 'hardware2':
+                    model_data[base_model]['hw2'] = value
+                elif hw_tag is None:  # results/直下のファイル
+                    model_data[base_model]['hw1'] = value
+
+    # 表示用データの準備
+    models = []
+    hw1_accuracies = []
+    hw2_accuracies = []
+    hw1_times = []
+    hw2_times = []
+
+    for base_model in model_order:
+        data = model_data[base_model]
+        if data['hw1'] or data['hw2']:
+            # モデル名は[hardware1]タグなしで表示
+            models.append(base_model.replace('--', '/'))
+
+            # 精度
+            hw1_accuracies.append(data['hw1']['llm_accuracy'] * 100 if data['hw1'] else None)
+            hw2_accuracies.append(data['hw2']['llm_accuracy'] * 100 if data['hw2'] else None)
+
+            # レスポンスタイム
+            hw1_times.append(data['hw1']['avg_response_time'] if data['hw1'] else None)
+            hw2_times.append(data['hw2']['avg_response_time'] if data['hw2'] else None)
 
     # 2つのサブプロットを作成
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 8))
     fig.suptitle('LLM変換候補選択ベンチマーク結果', fontsize=16, fontweight='bold')
 
-    # LLM精度グラフ（精度順にソート済み）
-    x = range(len(models))
-    width = 0.6
+    # LLM精度グラフ（hardware1とhardware2を重ねて表示）
+    bar_width_acc = 0.35
+    x_pos_acc = range(len(models))
 
-    ax1.bar(x, llm_accuracies, width,
-            label='LLM精度', color='#2E8B57', alpha=0.8)
+    # 各バーの位置を計算
+    hw1_acc_positions = [i - bar_width_acc/2 for i in x_pos_acc]
+    hw2_acc_positions = [i + bar_width_acc/2 for i in x_pos_acc]
+
+    # hardware1のバー（緑色）
+    hw1_display_acc = [a if a is not None else 0 for a in hw1_accuracies]
+    bars_hw1_acc = ax1.bar(hw1_acc_positions, hw1_display_acc, bar_width_acc,
+                           label='Hardware1', color='#2E8B57', alpha=0.8)
+
+    # hardware2のバー（紫色）
+    hw2_display_acc = [a if a is not None else 0 for a in hw2_accuracies]
+    bars_hw2_acc = ax1.bar(hw2_acc_positions, hw2_display_acc, bar_width_acc,
+                           label='Hardware2', color='#9B59B6', alpha=0.8)
 
     ax1.set_ylabel('精度 (%)')
     ax1.set_title('LLM変換精度（精度順）')
-    ax1.set_xticks(x)
+    ax1.set_xticks(x_pos_acc)
     ax1.set_xticklabels(models, rotation=45, ha='right')
     ax1.legend()
     ax1.grid(axis='y', alpha=0.3)
-    ax1.set_ylim(0, 100)
+    ax1.set_ylim(0, 105)
 
     # 精度値をバーの上に表示
-    for i, llm_acc in enumerate(llm_accuracies):
-        ax1.text(i, llm_acc + 1, f'{llm_acc:.1f}%',
-                ha='center', va='bottom', fontsize=10)
+    for i, (hw1_acc, hw2_acc) in enumerate(zip(hw1_accuracies, hw2_accuracies)):
+        if hw1_acc is not None:
+            ax1.text(hw1_acc_positions[i], hw1_acc + 1, f'{hw1_acc:.1f}%',
+                    ha='center', va='bottom', fontsize=8)
+        if hw2_acc is not None:
+            ax1.text(hw2_acc_positions[i], hw2_acc + 1, f'{hw2_acc:.1f}%',
+                    ha='center', va='bottom', fontsize=8)
 
-    # 平均レスポンスタイムグラフ
-    colors = []
-    display_times = []
-    bar_labels = []
+    # 平均レスポンスタイムグラフ（hardware1とhardware2を重ねて表示）
+    bar_width = 0.35
+    x_pos = range(len(models))
 
-    for i, rt in enumerate(response_times):
-        if rt is None:
-            colors.append('#CCCCCC')  # グレー色でデータなしを表現
-            display_times.append(0)
-            bar_labels.append('データなし')
-        else:
-            colors.append('#4472C4')  # 青色
-            display_times.append(rt)
-            bar_labels.append(f'{rt:.3f}s')
+    # 各バーの位置を計算
+    hw1_positions = [i - bar_width/2 for i in x_pos]
+    hw2_positions = [i + bar_width/2 for i in x_pos]
 
-    bars2 = ax2.bar(x, display_times, width, color=colors, alpha=0.8)
+    # hardware1のバー（青色）
+    hw1_display_times = [t if t is not None else 0 for t in hw1_times]
+    hw1_colors = ['#4472C4' if t is not None else '#CCCCCC' for t in hw1_times]
+    bars_hw1 = ax2.bar(hw1_positions, hw1_display_times, bar_width,
+                       label='Hardware1', color='#4472C4', alpha=0.8)
+
+    # hardware2のバー（オレンジ色）
+    hw2_display_times = [t if t is not None else 0 for t in hw2_times]
+    hw2_colors = ['#ED7D31' if t is not None else '#CCCCCC' for t in hw2_times]
+    bars_hw2 = ax2.bar(hw2_positions, hw2_display_times, bar_width,
+                       label='Hardware2', color='#ED7D31', alpha=0.8)
 
     ax2.set_ylabel('平均レスポンスタイム (秒)')
     ax2.set_title('API平均レスポンスタイム')
-    ax2.set_xticks(x)
+    ax2.set_xticks(x_pos)
     ax2.set_xticklabels(models, rotation=45, ha='right')
+    ax2.legend()
     ax2.grid(axis='y', alpha=0.3)
 
-    # Y軸の最大値を設定（データなしバーを除外）
-    valid_times = [rt for rt in response_times if rt is not None]
-    if valid_times:
-        max_time = max(valid_times)
-        ax2.set_ylim(0, max_time * 1.1)
+    # Y軸の最大値を設定
+    all_valid_times = [t for t in hw1_times + hw2_times if t is not None]
+    if all_valid_times:
+        max_time = max(all_valid_times)
+        ax2.set_ylim(0, max_time * 1.15)
 
-    # レスポンスタイム値をバーの上に表示
-    for i, (bar, label, rt) in enumerate(zip(bars2, bar_labels, response_times)):
-        if rt is None:
-            # データなしの場合は中央に表示
-            ax2.text(i, ax2.get_ylim()[1] * 0.5, label,
-                    ha='center', va='center', fontsize=9, fontweight='bold')
-        else:
-            # 正常データの場合はバーの上に表示
-            ax2.text(i, rt + max_time * 0.02, label,
-                    ha='center', va='bottom', fontsize=9)
+        # レスポンスタイム値をバーの上に表示
+        for i, (hw1_t, hw2_t) in enumerate(zip(hw1_times, hw2_times)):
+            if hw1_t is not None:
+                ax2.text(hw1_positions[i], hw1_t + max_time * 0.02, f'{hw1_t:.2f}s',
+                        ha='center', va='bottom', fontsize=8)
+            if hw2_t is not None:
+                ax2.text(hw2_positions[i], hw2_t + max_time * 0.02, f'{hw2_t:.2f}s',
+                        ha='center', va='bottom', fontsize=8)
 
     # レイアウト調整
     plt.tight_layout()
