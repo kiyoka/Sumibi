@@ -72,8 +72,13 @@ Hardware2では、全モデルで大幅なレスポンス時間の改善が見�
 
 ML Studioを使用した。スペックは以下の通り。
 
-![ML Studio ハードウェア性能](lmstudio_hardware.png)
-
+| 項目 | hardware1 | hardware2 |
+|------|-----------|-----------|
+| CPU | 11th Gen Intel Core i5-11400F @ 2.60GHz | AMD Ryzen 7 5700X 8-Core Processor |
+| RAM | 15.9 GB | 31.9 GB |
+| GPU | NVIDIA GeForce GTX 1650 | NVIDIA GeForce RTX 4060 Ti |
+| VRAM | 4.0 GB | 8.0 GB |
+| Compute Capability | 7.5 | 8.9 |
 
 ## ベンチマーク作成手順（Livedoor ニュース）
 
