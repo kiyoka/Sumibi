@@ -105,7 +105,7 @@ ROMAN itself is returned so that callers can safely fall back."
                     ;; 候補 + ひらがな読み + カタカナ読み
                     (let* ((lst (append values (delq nil (list hira kata))))
                            ;; 履歴を考慮して候補順序を調整
-                           (reordered (sumibi-mozc--find-preferred-candidate roman lst)))
+                           (reordered (sumibi-kkc-reorder-candidates roman (sumibi-mozc--find-preferred-candidate roman lst))))
                       ;; 各候補に origin プロパティを付与して返す - type check debug
                       (mapcar (lambda (s) 
                                 (if (stringp s)
@@ -151,6 +151,21 @@ ROMAN itself is returned so that callers can safely fall back."
         ;; 見つからない場合は元の順序のまま
         (progn
           candidates)))))
+
+;; ------------------------------------------------------------------
+;; KKC integration (Issue #92)
+;; ------------------------------------------------------------------
+(defcustom sumibi-kkc-enabled nil
+  "Enable KKC-based candidate reordering."
+  :type 'boolean
+  :group 'sumibi)
+
+(defun sumibi-kkc-reorder-candidates (roman candidates)
+  "Reorder CANDIDATES using KKC if enabled. Otherwise return CANDIDATES as-is."
+  (if (not sumibi-kkc-enabled)
+      candidates
+    ;; TODO: Implement KKC integration
+    candidates))
 
 ;;; 
 ;;;
