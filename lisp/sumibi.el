@@ -61,6 +61,7 @@
 
 If mozc.el is unavailable, or Mozc raises any error, a list containing
 ROMAN itself is returned so that callers can safely fall back."
+  (sumibi-debug-print (format ">>> sumibi-mozc--candidate-list called: roman=%s, backend=%s\n" roman sumibi-backend))
   (if (not sumibi--mozc-available-p)
       (list roman)
     (setq roman (downcase roman))
@@ -103,26 +104,43 @@ ROMAN itself is returned so that callers can safely fall back."
                          (kata      anno-desc)
                          ;; ひらがなに変換
                          (hira      (and kata (sumibi-katakana-to-hiragana kata))))
+                    (sumibi-debug-print (format "Mozc values: %s\n" values))
+                    (sumibi-debug-print (format "Mozc annotation: raw-anno=%s, anno-desc=%s\n" raw-anno anno-desc))
+                    (sumibi-debug-print (format "Before KKC: values count=%d, hira=%s, kata=%s, roman=%s\n" (length values) hira kata roman))
                     ;; 候補 + ひらがな読み + カタカナ読み
-                    (let* ((lst (append values (delq nil (list hira kata))))
-                           ;; KKCによる並び替えを最初に実施
-                           (kkc-reordered (sumibi-kkc-reorder-candidates roman lst))
-                           ;; 履歴を考慮して候補順序を調整
-                           (reordered (sumibi-mozc--find-preferred-candidate roman kkc-reordered)))
-                      ;; 各候補に origin プロパティを付与して返す - type check debug
-                      (mapcar (lambda (s) 
-                                (if (stringp s)
-                                    (propertize s 'sumibi-mozc-candidate t)
-                                  (progn
-                                    (propertize (format "%s" s) 'sumibi-mozc-candidate t))))
-                              reordered))))))))
+                    (let* ((lst (append values (delq nil (list hira kata)))))
+                      (sumibi-debug-print (format "lst after append: %s\n" lst))
+                      (sumibi-debug-print (format "Function sumibi-kkc-reorder-candidates defined? %s\n" (fboundp 'sumibi-kkc-reorder-candidates)))
+                      (sumibi-debug-print (format "About to call sumibi-kkc-reorder-candidates with roman=%s\n" roman))
+                      (let* (;; KKCによる並び替えを最初に実施
+                             (kkc-reordered (condition-case err
+                                                (progn
+                                                  (sumibi-debug-print "Calling sumibi-kkc-reorder-candidates now...\n")
+                                                  (let ((result (sumibi-kkc-reorder-candidates roman lst)))
+                                                    (sumibi-debug-print (format "KKC reorder returned: %s\n" result))
+                                                    result))
+                                              (error
+                                               (progn
+                                                 (sumibi-debug-print (format "ERROR in kkc-reorder: %s\n" err))
+                                                 lst))))
+                             ;; 履歴を考慮して候補順序を調整
+                             (reordered (sumibi-mozc--find-preferred-candidate roman kkc-reordered)))
+                        ;; 各候補に origin プロパティを付与して返す - type check debug
+                        (mapcar (lambda (s)
+                                  (if (stringp s)
+                                      (propertize s 'sumibi-mozc-candidate t)
+                                    (progn
+                                      (propertize (format "%s" s) 'sumibi-mozc-candidate t))))
+                                reordered)))))))))
       ;; error path ----------------------------------------------------
       (error
        (list roman)))))
 
 (defun sumibi-mozc--find-preferred-candidate (roman candidates)
-  "履歴からROMANに対応する過去の選択候補を探し、その候補を先頭に並び替える（genbunキーで検索）."
-  (if (not sumibi-history-stack)
+  "履歴からROMANに対応する過去の選択候補を探し、その候補を先頭に並び替える（genbunキーで検索）.
+mozc-kkcモードの時は履歴による並び替えをスキップする."
+  (if (or (not sumibi-history-stack)
+          (eq sumibi-backend 'mozc-kkc))
       (progn
         candidates)
     (let ((preferred-candidate nil))
@@ -154,21 +172,6 @@ ROMAN itself is returned so that callers can safely fall back."
         ;; 見つからない場合は元の順序のまま
         (progn
           candidates)))))
-
-;; ------------------------------------------------------------------
-;; KKC integration (Issue #92)
-;; ------------------------------------------------------------------
-(defcustom sumibi-kkc-enabled nil
-  "Enable KKC-based candidate reordering."
-  :type 'boolean
-  :group 'sumibi)
-
-(defun sumibi-kkc-reorder-candidates (roman candidates)
-  "Reorder CANDIDATES using KKC if enabled. Otherwise return CANDIDATES as-is."
-  (if (not sumibi-kkc-enabled)
-      candidates
-    ;; TODO: Implement KKC integration
-    candidates))
 
 ;;; 
 ;;;
