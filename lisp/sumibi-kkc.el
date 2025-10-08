@@ -6,6 +6,7 @@
 (require 'cl-lib)
 
 (defvar sumibi-backend)  ; Defined in sumibi.el
+(declare-function sumibi-debug-print "sumibi")
 
 (defcustom sumibi-kkc-command "kkc"
   "Path to KKC command."
@@ -25,6 +26,8 @@
                          (call-process-region input nil sumibi-kkc-command
                                               nil t nil "decoder")
                          (buffer-string))))
+          (sumibi-debug-print (format "KKC request: %s\n" input))
+          (sumibi-debug-print (format "KKC response: %s\n" output))
           (when (string-match "^0: \\(.+\\)" output)
             (let ((segments (match-string 1 output))
                   (result ""))
@@ -33,6 +36,7 @@
                 (goto-char (point-min))
                 (while (re-search-forward "<\\([^/>]+\\)/[^>]+>" nil t)
                   (setq result (concat result (match-string 1)))))
+              (sumibi-debug-print (format "KKC converted result: %s\n" result))
               result)))
       (error nil))))
 
@@ -59,16 +63,25 @@
                (input (concat context hiragana))
                (kkc-result (when (> (length input) 0)
                              (sumibi-kkc--call input))))
+          (sumibi-debug-print (format "KKC reorder: roman=%s, context=%s, hiragana=%s\n" roman context hiragana))
+          (sumibi-debug-print (format "KKC reorder: original candidates=%s\n" candidates))
           (if (and kkc-result (> (length kkc-result) 0))
               (let* ((context-len (length context))
                      (converted (if (> (length kkc-result) context-len)
                                     (substring kkc-result context-len)
                                   kkc-result))
                      (match (cl-find converted candidates :test #'string=)))
+                (sumibi-debug-print (format "KKC reorder: converted=%s, match=%s\n" converted match))
                 (if match
-                    (cons match (remove match candidates))
-                  candidates))
-            candidates))
+                    (let ((reordered (cons match (remove match candidates))))
+                      (sumibi-debug-print (format "KKC reorder: reordered candidates=%s\n" reordered))
+                      reordered)
+                  (progn
+                    (sumibi-debug-print "KKC reorder: no match found, keeping original order\n")
+                    candidates)))
+            (progn
+              (sumibi-debug-print "KKC reorder: no KKC result, keeping original order\n")
+              candidates)))
       (error candidates))))
 
 (provide 'sumibi-kkc)

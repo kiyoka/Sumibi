@@ -105,8 +105,10 @@ ROMAN itself is returned so that callers can safely fall back."
                          (hira      (and kata (sumibi-katakana-to-hiragana kata))))
                     ;; 候補 + ひらがな読み + カタカナ読み
                     (let* ((lst (append values (delq nil (list hira kata))))
+                           ;; KKCによる並び替えを最初に実施
+                           (kkc-reordered (sumibi-kkc-reorder-candidates roman lst))
                            ;; 履歴を考慮して候補順序を調整
-                           (reordered (sumibi-kkc-reorder-candidates roman (sumibi-mozc--find-preferred-candidate roman lst))))
+                           (reordered (sumibi-mozc--find-preferred-candidate roman kkc-reordered)))
                       ;; 各候補に origin プロパティを付与して返す - type check debug
                       (mapcar (lambda (s) 
                                 (if (stringp s)
@@ -295,8 +297,9 @@ OpenAI 互換 API を利用するため、この設定の影響を受けませ�
   :group 'sumibi)
 
 (defun sumibi-backend-mozc-p ()
-  "Return non-nil if `sumibi-backend' is `mozc'."
-  (eq sumibi-backend 'mozc))
+  "Return non-nil if `sumibi-backend' is `mozc' or `mozc-kkc'."
+  (or (eq sumibi-backend 'mozc)
+      (eq sumibi-backend 'mozc-kkc)))
 
 (defcustom sumibi-current-model "gpt-5"
   "使用する AI モデル名を指定する (デフォルトは gpt-5)。
@@ -361,9 +364,13 @@ SUMIBI_AI_BASEURL環境変数が未設定の場合はデフォルトURL\"https:/
 
 (defun sumibi-ai-model ()
   "利用中のAIモデル名を返す."
-  (if (sumibi-backend-mozc-p)
-      "mozc"
-    (or (getenv "SUMIBI_AI_MODEL") sumibi-current-model)))
+  (cond
+   ((eq sumibi-backend 'mozc-kkc)
+    "mozc+kkc")
+   ((sumibi-backend-mozc-p)
+    "mozc")
+   (t
+    (or (getenv "SUMIBI_AI_MODEL") sumibi-current-model))))
 
 (defun sumibi-gpt5-series-p ()
   "現在のモデルがGPT-5シリーズかどうかを判定する."
