@@ -124,67 +124,7 @@ $ echo "税金をおさめる 5" | kkc decoder
 4: <税金/税金><を/を><おさめ/おさめ><る/る>
 ```
 
-### Issue #92の実装方針
-
-1. カーソル位置前方の文脈（漢字を含む）を取得
-2. Mozcで得た変換候補のひらがな部分を文脈に追加
-3. `echo "文脈+ひらがな N" | kkc decoder` でKKC変換を実行
-4. KKCの最上位候補をMozc候補リストの先頭に昇格させる
-
-github issue 92を読んで内容を理解してください。
-https://github.com/kiyoka/Sumibi/issues/92
+### Issue #92を実装してみたが、kkcの変換性能が悪いため使えるものではなかった。
 
 
-それでは実装してください。既存実装には、kkc利用した部分はありません。
-kkcをコマンドラインツールとして呼び出し、mozcの変換候補の並び替えに利用する実装を行ってください。
-そのためには、変換対象の周辺文脈をkkcに入れると同時に、mozcが返す変換候補から何が適切かを並び替えする実装となります。
 
-
-再度、シンプルな実装を試みてください。
-
-続きを実装してください。
-
-一旦括弧のバランスは無視して、実装したい意味だけを実装してみてください。
-  * 
-
-
------ memo ----
-
-● Issue #92の実装完了
-
-  実装内容
-
-  1. 新しいファイル lisp/sumibi-kkc.elを作成:
-    - KKC統合のための専用モジュール
-    - 3つのカスタム変数:
-        - sumibi-kkc-enabled: KKC機能の有効/無効
-      - sumibi-kkc-command: KKCコマンドのパス
-      - sumibi-kkc-context-chars: 文脈として使用する文字数
-    - 3つの関数:
-        - sumibi-kkc--call: KKCコマンドを呼び出し
-      - sumibi-kkc--get-context: カーソル前の文脈を取得
-      - sumibi-kkc-reorder-candidates: Mozc候補をKKCで並び替え
-  2. lisp/sumibi.elへの統合:
-    - (require 'sumibi-kkc)を追加
-    - 既に108行目でsumibi-kkc-reorder-candidatesを呼び出す実装済み
-
-  動作
-
-  - デフォルトではsumibi-kkc-enabledがnilなので、KKCは使用されません
-  - ユーザーが(setq sumibi-kkc-enabled t)を設定すると、KKCによる候補並び替えが有効になります
-  - KKCは:
-    a. カーソル前の日本語文脈を取得
-    b. 変換対象のひらがなと組み合わせてKKCに渡す
-    c. KKCの最上位候補がMozc候補リストに含まれていれば、それを先頭に移動
-
-  テスト結果
-
-  - ✅ 括弧バランスチェック: OK (sumibi.el, sumibi-kkc.el両方)
-  - ✅ 全テスト (23件): PASS
-
-
------
-
-sumibi-kkc-enabledは廃止し、
-カスタマイズ変数 sumibi-backend に3つ目の選択肢を追加してください。
-"Mozc+kkc (local)"という選択肢を追加してください。
