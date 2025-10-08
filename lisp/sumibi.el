@@ -44,6 +44,7 @@
 (require 'unicode-escape)
 (require 'deferred)
 (require 'sumibi-localdic)
+(require 'sumibi-kkc)
 
 ;; --------------------------------------------------------------
 ;; Optional: use mozc.el as a local backend when the model name
@@ -279,16 +280,18 @@ workflow."
 (defcustom sumibi-backend 'openai
   "Backend engine used for *ローマ字→漢字かな混じり文* 変換.
 
-openai : OpenAI だけでなく **OpenAI 互換** の ChatCompletions API
-         (例: OpenAI, Google Gemini、ローカル LLM など) を利用する。
-         利用するサービスは `SUMIBI_AI_BASEURL' で指定した URL に
-         よって切り替えられます。
-mozc   : ネットワークを使わずローカルの mozc.el で変換する。
+openai    : OpenAI だけでなく **OpenAI 互換** の ChatCompletions API
+            (例: OpenAI, Google Gemini、ローカル LLM など) を利用する。
+            利用するサービスは `SUMIBI_AI_BASEURL' で指定した URL に
+            よって切り替えられます。
+mozc      : ネットワークを使わずローカルの mozc.el で変換する。
+mozc-kkc  : mozc.el で変換し、KKC による文脈を考慮した候補並び替えを行う。
 
 読み仮名生成や翻訳など、ローマ字変換以外のルーチンは常に
 OpenAI 互換 API を利用するため、この設定の影響を受けません。"
   :type '(choice (const :tag "OpenAI互換 API" openai)
-                 (const :tag "Mozc (local)" mozc))
+                 (const :tag "Mozc (local)" mozc)
+                 (const :tag "Mozc+kkc (local)" mozc-kkc))
   :group 'sumibi)
 
 (defun sumibi-backend-mozc-p ()
