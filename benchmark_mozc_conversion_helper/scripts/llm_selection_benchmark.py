@@ -40,7 +40,11 @@ class TestCase:
     source_text: str
 
 class LLMSelectionBenchmark:
-    def __init__(self, api_key: str, model: str = "gpt-5", base_url: str = None):
+    def __init__(self, api_key: str, model: str = "gpt-5", base_url: str = None, prompt_mode: str = "rerank-all"):
+        """
+        prompt_mode: "rerank-all" (全候補並び替え) or "optimize" (最適化モード: 1つだけ選択+短縮文脈)
+        """
+        self.prompt_mode = prompt_mode
         # ローカルLLM対応: base_urlが指定されていればそれを使用
         if base_url:
             # /v1の自動補完と正規化
@@ -146,6 +150,22 @@ class LLMSelectionBenchmark:
         # モデル情報の表示
         print(f"    Using model: {self.model}")
 
+        # 文脈を変換対象の前方10文字に短縮
+        context = test_case.context
+        # [reading]のマーカーを探して、その前の10文字を抽出
+        marker = f"[{test_case.reading}]"
+        if marker in context:
+            marker_pos = context.find(marker)
+            # マーカーの前方10文字を取得（先頭からの場合は利用可能な範囲で）
+            start_pos = max(0, marker_pos - 10)
+            shortened_context = context[start_pos:marker_pos + len(marker)]
+        else:
+            # マーカーが見つからない場合は元の文脈を使用
+            shortened_context = context
+
+        print(f"    Original context: {context}")
+        print(f"    Shortened context: {shortened_context}")
+
         # 候補をランダムにシャッフルして、LLMが順序に依存しないかテスト
         shuffled_candidates = candidates.copy()
         random.shuffle(shuffled_candidates)
@@ -174,7 +194,22 @@ class LLMSelectionBenchmark:
         candidates_text = ", ".join(candidates_list)
         cand_count = len(candidates_list)
 
-        prompt = f"""文脈: {test_case.context}
+        if self.prompt_mode == "optimize":
+            # 最適化モード: 最適な1つだけを選択（短縮した文脈を使用）
+            prompt = f"""文脈: {shortened_context}
+
+「{test_case.reading}」の変換候補({cand_count}件): {candidates_text}
+
+出力ルール:
+- 文脈に最も適した候補を1つだけ選んで出力する。
+- 候補リストの中から選び、内容は一切変更しない。
+- 追加の説明や引用符・記号・見出しは書かない。
+- 出力形式: 候補1つのみ
+
+では、文脈に最も適した候補を1つ選んでください。"""
+        else:
+            # モード2 (デフォルト): 全候補を並び替え（短縮した文脈を使用）
+            prompt = f"""文脈: {shortened_context}
 
 「{test_case.reading}」の変換候補({cand_count}件): {candidates_text}
 
@@ -197,15 +232,23 @@ class LLMSelectionBenchmark:
                 current_prompt = prompt if attempt == 0 else simple_prompt
                 print(f"    Attempt {attempt + 1}: {'Original' if attempt == 0 else 'Simple'} prompt")
 
-                # モデルタイプに応じてシステムメッセージを調整
-                # プロンプトは「候補を並べ替えてください」なので、システムメッセージもそれに合わせる
-                if self.base_url:
-                    # ローカルLLM用：英語と日本語の両方で明確に指示
-                    system_msg = "あなたは日本語の変換候補を文脈に応じて並び替える専門家です。与えられた候補を最適な順序に並び替えてください。"
-                elif "gpt-5" in str(self.model):
-                    system_msg = "You are a Japanese text conversion expert. Reorder the given candidates according to the context."
+                # モデルタイプとプロンプトモードに応じてシステムメッセージを調整
+                if self.prompt_mode == "optimize":
+                    # optimizeモード用システムメッセージ
+                    if self.base_url:
+                        system_msg = "あなたは日本語の変換候補を文脈に応じて選択する専門家です。与えられた候補から最適なものを1つ選んでください。"
+                    elif "gpt-5" in str(self.model):
+                        system_msg = "You are a Japanese text conversion expert. Select the most appropriate candidate according to the context."
+                    else:
+                        system_msg = "あなたは日本語の変換候補を文脈に応じて選択する専門家です。"
                 else:
-                    system_msg = "あなたは日本語の変換候補を文脈に応じて並び替える専門家です。"
+                    # rerank-allモード用システムメッセージ
+                    if self.base_url:
+                        system_msg = "あなたは日本語の変換候補を文脈に応じて並び替える専門家です。与えられた候補を最適な順序に並び替えてください。"
+                    elif "gpt-5" in str(self.model):
+                        system_msg = "You are a Japanese text conversion expert. Reorder the given candidates according to the context."
+                    else:
+                        system_msg = "あなたは日本語の変換候補を文脈に応じて並び替える専門家です。"
 
                 params: Dict = {
                     "model": self.model,
@@ -219,14 +262,16 @@ class LLMSelectionBenchmark:
                 if self.base_url:
                     # ローカルLLM: より安全な設定
                     params["temperature"] = 0.7
-                    params["max_tokens"] = 50
+                    # optimizeモードではmax_tokensを削減
+                    params["max_tokens"] = 20 if self.prompt_mode == "optimize" else 50
                     params["top_p"] = 0.9
                     print("    Using local LLM parameters")
                 else:
                     # OpenAI API: その他のモデル用の設定
                     if "gpt-5" not in str(self.model):
                         params["temperature"] = 0.8
-                        params["max_tokens"] = 20
+                        # optimizeモードではmax_tokensを削減
+                        params["max_tokens"] = 10 if self.prompt_mode == "optimize" else 20
 
                 # reasoning_effortが設定されている場合のみ追加（gpt-5の場合）
                 if self.reasoning_effort is not None:
@@ -373,6 +418,7 @@ class LLMSelectionBenchmark:
     def run_benchmark(self, data_files: List[str] = None, output_file: str = None, hardware: str = None):
         print("=== LLM Selection Benchmark ===")
         print(f"Model: {self.model}")
+        print(f"Prompt Mode: {self.prompt_mode}")
         if hardware:
             print(f"Hardware: {hardware}")
 
@@ -388,7 +434,9 @@ class LLMSelectionBenchmark:
             # モデル名をファイル名に反映（'/'を'--'に置換）
             safe_model_name = self.model.replace("/", "--")
             results_dir = f"results/{hardware}" if hardware else "results"
-            output_file = f"{results_dir}/{safe_model_name}.json"
+            # prompt_modeが optimize の場合はファイル名に反映
+            mode_suffix = f"-{self.prompt_mode}" if self.prompt_mode == "optimize" else ""
+            output_file = f"{results_dir}/{safe_model_name}{mode_suffix}.json"
 
         results: List[Dict] = []
         for i, tc in enumerate(cases):
@@ -420,6 +468,7 @@ class LLMSelectionBenchmark:
         data = {
             "metadata": {
                 "model": self.model,
+                "prompt_mode": self.prompt_mode,
                 "total_cases": len(results),
                 "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
             },
@@ -496,12 +545,13 @@ def main():
     model = os.getenv("OPENAI_MODEL", "gpt-5")
     base_url = os.getenv("OPENAI_BASEURL")  # ローカルLLM用エンドポイント
     hardware = os.getenv("HARDWARE")  # hardware1 or hardware2
+    prompt_mode = os.getenv("PROMPT_MODE", "rerank-all")  # rerank-all or optimize
 
     # API_KEYが "dummy" の場合は、ローカルLLMを使用
     if api_key == "dummy" and base_url:
         print("Using local LLM (API key is dummy)")
 
-    LLMSelectionBenchmark(api_key, model, base_url).run_benchmark(hardware=hardware)
+    LLMSelectionBenchmark(api_key, model, base_url, prompt_mode).run_benchmark(hardware=hardware)
 
 
 if __name__ == "__main__":

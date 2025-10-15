@@ -43,6 +43,9 @@ def load_benchmark_results(results_dir: str = "results") -> Dict[str, Dict]:
             # '--' を '/' に戻す
             display_name = model_name.replace('--', '/')
 
+            # base_modelを取得（-optimizeサフィックスを除去）
+            base_model_name = model_name.replace('-optimize', '')
+
             # サブディレクトリ名を取得
             hardware_tag = None
             if json_file.parent.name != results_path.name:
@@ -58,6 +61,9 @@ def load_benchmark_results(results_dir: str = "results") -> Dict[str, Dict]:
                 api_time_data = data['summary'].get('api_response_time', {})
                 avg_response_time = api_time_data.get('average', None) if api_time_data else None
 
+                # prompt_modeを取得（デフォルトは "rerank-all"）
+                prompt_mode = data['metadata'].get('prompt_mode', 'rerank-all')
+
                 results[display_name] = {
                     'llm_accuracy': data['summary'].get('llm_accuracy', 0),
                     'mozc_accuracy': data['summary'].get('mozc_accuracy', 0),
@@ -70,9 +76,10 @@ def load_benchmark_results(results_dir: str = "results") -> Dict[str, Dict]:
                     'timestamp': data['metadata'].get('timestamp', 'unknown'),
                     'avg_response_time': avg_response_time,
                     'hardware_tag': hardware_tag,
-                    'base_model': model_name
+                    'base_model': base_model_name,
+                    'prompt_mode': prompt_mode
                 }
-                print(f"Loaded: {display_name} ({data['summary']['total_cases']} cases)")
+                print(f"Loaded: {display_name} ({data['summary']['total_cases']} cases, {prompt_mode})")
             else:
                 print(f"Warning: No summary found in {json_file}")
 
@@ -106,141 +113,190 @@ def plot_benchmark_comparison(results: Dict[str, Dict], output_file: str = "benc
     sorted_models = sorted(all_models.items(), key=lambda x: x[1]['llm_accuracy'], reverse=True)
     model_order = [item[1]['base_model'] for item in sorted_models]
 
-    # 各モデルについて、hardware1, hardware2, cloudのデータを収集
+    # 各モデルについて、hardware1, hardware2, cloud、およびprompt_modeのデータを収集
     model_data = {}
     for base_model in model_order:
-        model_data[base_model] = {'hw1': None, 'hw2': None, 'cloud': None}
+        model_data[base_model] = {
+            'hw1_rerank': None, 'hw1_optimize': None,
+            'hw2_rerank': None, 'hw2_optimize': None,
+            'cloud_rerank': None, 'cloud_optimize': None
+        }
         for key, value in results.items():
             if value['base_model'] == base_model:
                 hw_tag = value.get('hardware_tag')
+                prompt_mode = value.get('prompt_mode', 'rerank-all')
+                mode_suffix = '_optimize' if prompt_mode == 'optimize' else '_rerank'
+
                 if hw_tag == 'hardware1':
-                    model_data[base_model]['hw1'] = value
+                    model_data[base_model][f'hw1{mode_suffix}'] = value
                 elif hw_tag == 'hardware2':
-                    model_data[base_model]['hw2'] = value
+                    model_data[base_model][f'hw2{mode_suffix}'] = value
                 elif hw_tag == 'cloud':
-                    model_data[base_model]['cloud'] = value
+                    model_data[base_model][f'cloud{mode_suffix}'] = value
 
     # 表示用データの準備
     models = []
-    hw1_accuracies = []
-    hw2_accuracies = []
-    cloud_accuracies = []
-    hw1_times = []
-    hw2_times = []
-    cloud_times = []
+    hw1_rerank_accuracies = []
+    hw1_optimize_accuracies = []
+    hw2_rerank_accuracies = []
+    hw2_optimize_accuracies = []
+    cloud_rerank_accuracies = []
+    cloud_optimize_accuracies = []
+
+    hw1_rerank_times = []
+    hw1_optimize_times = []
+    hw2_rerank_times = []
+    hw2_optimize_times = []
+    cloud_rerank_times = []
+    cloud_optimize_times = []
 
     for base_model in model_order:
         data = model_data[base_model]
-        if data['hw1'] or data['hw2'] or data['cloud']:
+        # いずれかのデータが存在する場合のみ追加
+        if any(data.values()):
             # モデル名は[hardware1]タグなしで表示
             models.append(base_model.replace('--', '/'))
 
-            # 精度
-            hw1_accuracies.append(data['hw1']['llm_accuracy'] * 100 if data['hw1'] else None)
-            hw2_accuracies.append(data['hw2']['llm_accuracy'] * 100 if data['hw2'] else None)
-            cloud_accuracies.append(data['cloud']['llm_accuracy'] * 100 if data['cloud'] else None)
+            # 精度データ
+            hw1_rerank_accuracies.append(data['hw1_rerank']['llm_accuracy'] * 100 if data['hw1_rerank'] else None)
+            hw1_optimize_accuracies.append(data['hw1_optimize']['llm_accuracy'] * 100 if data['hw1_optimize'] else None)
+            hw2_rerank_accuracies.append(data['hw2_rerank']['llm_accuracy'] * 100 if data['hw2_rerank'] else None)
+            hw2_optimize_accuracies.append(data['hw2_optimize']['llm_accuracy'] * 100 if data['hw2_optimize'] else None)
+            cloud_rerank_accuracies.append(data['cloud_rerank']['llm_accuracy'] * 100 if data['cloud_rerank'] else None)
+            cloud_optimize_accuracies.append(data['cloud_optimize']['llm_accuracy'] * 100 if data['cloud_optimize'] else None)
 
-            # レスポンスタイム
-            hw1_times.append(data['hw1']['avg_response_time'] if data['hw1'] else None)
-            hw2_times.append(data['hw2']['avg_response_time'] if data['hw2'] else None)
-            cloud_times.append(data['cloud']['avg_response_time'] if data['cloud'] else None)
+            # レスポンスタイムデータ
+            hw1_rerank_times.append(data['hw1_rerank']['avg_response_time'] if data['hw1_rerank'] else None)
+            hw1_optimize_times.append(data['hw1_optimize']['avg_response_time'] if data['hw1_optimize'] else None)
+            hw2_rerank_times.append(data['hw2_rerank']['avg_response_time'] if data['hw2_rerank'] else None)
+            hw2_optimize_times.append(data['hw2_optimize']['avg_response_time'] if data['hw2_optimize'] else None)
+            cloud_rerank_times.append(data['cloud_rerank']['avg_response_time'] if data['cloud_rerank'] else None)
+            cloud_optimize_times.append(data['cloud_optimize']['avg_response_time'] if data['cloud_optimize'] else None)
 
     # 2つのサブプロットを作成
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 8))
     fig.suptitle('LLM変換候補選択ベンチマーク結果', fontsize=16, fontweight='bold')
 
-    # LLM精度グラフ（hardware1, hardware2, cloudを重ねて表示）
-    bar_width_acc = 0.25
+    # LLM精度グラフ（hardware1, hardware2, cloud、rerank-all, optimizeを分けて表示）
+    # 各ハードウェアのrerank-allとoptimizeを隣接して配置
+    bar_width_acc = 0.13
     x_pos_acc = range(len(models))
 
-    # 各バーの位置を計算
-    hw1_acc_positions = [i - bar_width_acc for i in x_pos_acc]
-    hw2_acc_positions = [i for i in x_pos_acc]
-    cloud_acc_positions = [i + bar_width_acc for i in x_pos_acc]
+    # 各バーの位置を計算（6本のバーを並べる：HW1-rerank, HW1-opt, HW2-rerank, HW2-opt, Cloud-rerank, Cloud-opt）
+    hw1_rerank_pos = [i - 2.5*bar_width_acc for i in x_pos_acc]
+    hw1_optimize_pos = [i - 2.5*bar_width_acc + bar_width_acc for i in x_pos_acc]
+    hw2_rerank_pos = [i - 0.5*bar_width_acc for i in x_pos_acc]
+    hw2_optimize_pos = [i - 0.5*bar_width_acc + bar_width_acc for i in x_pos_acc]
+    cloud_rerank_pos = [i + 1.5*bar_width_acc for i in x_pos_acc]
+    cloud_optimize_pos = [i + 1.5*bar_width_acc + bar_width_acc for i in x_pos_acc]
 
-    # hardware1のバー（緑色）
-    hw1_display_acc = [a if a is not None else 0 for a in hw1_accuracies]
-    bars_hw1_acc = ax1.bar(hw1_acc_positions, hw1_display_acc, bar_width_acc,
-                           label='Hardware1', color='#2E8B57', alpha=0.8)
+    # hardware1のバー（緑系: rerank-all=濃い緑、optimize=明るい緑）
+    hw1_rerank_display = [a if a is not None else 0 for a in hw1_rerank_accuracies]
+    hw1_optimize_display = [a if a is not None else 0 for a in hw1_optimize_accuracies]
+    ax1.bar(hw1_rerank_pos, hw1_rerank_display, bar_width_acc,
+            label='HW1-rerank-all', color='#2E8B57', alpha=0.9)
+    ax1.bar(hw1_optimize_pos, hw1_optimize_display, bar_width_acc,
+            label='HW1-optimize', color='#90EE90', alpha=0.9)
 
-    # hardware2のバー（紫色）
-    hw2_display_acc = [a if a is not None else 0 for a in hw2_accuracies]
-    bars_hw2_acc = ax1.bar(hw2_acc_positions, hw2_display_acc, bar_width_acc,
-                           label='Hardware2', color='#9B59B6', alpha=0.8)
+    # hardware2のバー（紫系: rerank-all=濃い紫、optimize=明るい紫）
+    hw2_rerank_display = [a if a is not None else 0 for a in hw2_rerank_accuracies]
+    hw2_optimize_display = [a if a is not None else 0 for a in hw2_optimize_accuracies]
+    ax1.bar(hw2_rerank_pos, hw2_rerank_display, bar_width_acc,
+            label='HW2-rerank-all', color='#9B59B6', alpha=0.9)
+    ax1.bar(hw2_optimize_pos, hw2_optimize_display, bar_width_acc,
+            label='HW2-optimize', color='#DDA0DD', alpha=0.9)
 
-    # cloudのバー（灰色）
-    cloud_display_acc = [a if a is not None else 0 for a in cloud_accuracies]
-    bars_cloud_acc = ax1.bar(cloud_acc_positions, cloud_display_acc, bar_width_acc,
-                             label='Cloud API', color='#7F8C8D', alpha=0.8)
+    # cloudのバー（青系: rerank-all=濃い青、optimize=明るい青）
+    cloud_rerank_display = [a if a is not None else 0 for a in cloud_rerank_accuracies]
+    cloud_optimize_display = [a if a is not None else 0 for a in cloud_optimize_accuracies]
+    ax1.bar(cloud_rerank_pos, cloud_rerank_display, bar_width_acc,
+            label='Cloud-rerank-all', color='#4169E1', alpha=0.9)
+    ax1.bar(cloud_optimize_pos, cloud_optimize_display, bar_width_acc,
+            label='Cloud-optimize', color='#87CEEB', alpha=0.9)
 
     ax1.set_ylabel('精度 (%)')
     ax1.set_title('LLM変換精度（精度順）')
     ax1.set_xticks(x_pos_acc)
-    ax1.set_xticklabels(models, rotation=45, ha='right')
-    ax1.legend()
+    ax1.set_xticklabels(models, rotation=45, ha='right', fontsize=8)
+    ax1.legend(fontsize=7, loc='lower left')
     ax1.grid(axis='y', alpha=0.3)
     ax1.set_ylim(0, 105)
 
-    # 精度値をバーの上に表示
-    for i, (hw1_acc, hw2_acc, cloud_acc) in enumerate(zip(hw1_accuracies, hw2_accuracies, cloud_accuracies)):
-        if hw1_acc is not None:
-            ax1.text(hw1_acc_positions[i], hw1_acc + 1, f'{hw1_acc:.1f}%',
-                    ha='center', va='bottom', fontsize=7)
-        if hw2_acc is not None:
-            ax1.text(hw2_acc_positions[i], hw2_acc + 1, f'{hw2_acc:.1f}%',
-                    ha='center', va='bottom', fontsize=7)
-        if cloud_acc is not None:
-            ax1.text(cloud_acc_positions[i], cloud_acc + 1, f'{cloud_acc:.1f}%',
-                    ha='center', va='bottom', fontsize=7)
+    # 精度値をバーの上に表示（optimizeのみ表示してグラフを見やすくする）
+    all_acc_data = [
+        (hw1_optimize_pos, hw1_optimize_accuracies),
+        (hw2_optimize_pos, hw2_optimize_accuracies),
+        (cloud_optimize_pos, cloud_optimize_accuracies)
+    ]
+    for positions, accuracies in all_acc_data:
+        for i, acc in enumerate(accuracies):
+            if acc is not None and acc > 0:
+                ax1.text(positions[i], acc + 1, f'{acc:.0f}',
+                        ha='center', va='bottom', fontsize=5)
 
-    # 平均レスポンスタイムグラフ（hardware1, hardware2, cloudを重ねて表示）
-    bar_width = 0.25
+    # 平均レスポンスタイムグラフ（hardware1, hardware2, cloud、rerank-all, optimizeを分けて表示）
+    # 各ハードウェアのrerank-allとoptimizeを隣接して配置
+    bar_width = 0.13
     x_pos = range(len(models))
 
-    # 各バーの位置を計算
-    hw1_positions = [i - bar_width for i in x_pos]
-    hw2_positions = [i for i in x_pos]
-    cloud_positions = [i + bar_width for i in x_pos]
+    # 各バーの位置を計算（6本のバーを並べる：HW1-rerank, HW1-opt, HW2-rerank, HW2-opt, Cloud-rerank, Cloud-opt）
+    hw1_rerank_time_pos = [i - 2.5*bar_width for i in x_pos]
+    hw1_optimize_time_pos = [i - 2.5*bar_width + bar_width for i in x_pos]
+    hw2_rerank_time_pos = [i - 0.5*bar_width for i in x_pos]
+    hw2_optimize_time_pos = [i - 0.5*bar_width + bar_width for i in x_pos]
+    cloud_rerank_time_pos = [i + 1.5*bar_width for i in x_pos]
+    cloud_optimize_time_pos = [i + 1.5*bar_width + bar_width for i in x_pos]
 
-    # hardware1のバー（青色）
-    hw1_display_times = [t if t is not None else 0 for t in hw1_times]
-    bars_hw1 = ax2.bar(hw1_positions, hw1_display_times, bar_width,
-                       label='Hardware1', color='#4472C4', alpha=0.8)
+    # hardware1のバー（緑系: rerank-all=濃い緑、optimize=明るい緑）
+    hw1_rerank_time_display = [t if t is not None else 0 for t in hw1_rerank_times]
+    hw1_optimize_time_display = [t if t is not None else 0 for t in hw1_optimize_times]
+    ax2.bar(hw1_rerank_time_pos, hw1_rerank_time_display, bar_width,
+            label='HW1-rerank-all', color='#2E8B57', alpha=0.9)
+    ax2.bar(hw1_optimize_time_pos, hw1_optimize_time_display, bar_width,
+            label='HW1-optimize', color='#90EE90', alpha=0.9)
 
-    # hardware2のバー（オレンジ色）
-    hw2_display_times = [t if t is not None else 0 for t in hw2_times]
-    bars_hw2 = ax2.bar(hw2_positions, hw2_display_times, bar_width,
-                       label='Hardware2', color='#ED7D31', alpha=0.8)
+    # hardware2のバー（紫系: rerank-all=濃い紫、optimize=明るい紫）
+    hw2_rerank_time_display = [t if t is not None else 0 for t in hw2_rerank_times]
+    hw2_optimize_time_display = [t if t is not None else 0 for t in hw2_optimize_times]
+    ax2.bar(hw2_rerank_time_pos, hw2_rerank_time_display, bar_width,
+            label='HW2-rerank-all', color='#9B59B6', alpha=0.9)
+    ax2.bar(hw2_optimize_time_pos, hw2_optimize_time_display, bar_width,
+            label='HW2-optimize', color='#DDA0DD', alpha=0.9)
 
-    # cloudのバー（灰色）
-    cloud_display_times = [t if t is not None else 0 for t in cloud_times]
-    bars_cloud = ax2.bar(cloud_positions, cloud_display_times, bar_width,
-                         label='Cloud API', color='#7F8C8D', alpha=0.8)
+    # cloudのバー（青系: rerank-all=濃い青、optimize=明るい青）
+    cloud_rerank_time_display = [t if t is not None else 0 for t in cloud_rerank_times]
+    cloud_optimize_time_display = [t if t is not None else 0 for t in cloud_optimize_times]
+    ax2.bar(cloud_rerank_time_pos, cloud_rerank_time_display, bar_width,
+            label='Cloud-rerank-all', color='#4169E1', alpha=0.9)
+    ax2.bar(cloud_optimize_time_pos, cloud_optimize_time_display, bar_width,
+            label='Cloud-optimize', color='#87CEEB', alpha=0.9)
 
     ax2.set_ylabel('平均レスポンスタイム (秒)')
     ax2.set_title('API平均レスポンスタイム')
     ax2.set_xticks(x_pos)
-    ax2.set_xticklabels(models, rotation=45, ha='right')
-    ax2.legend()
+    ax2.set_xticklabels(models, rotation=45, ha='right', fontsize=8)
+    ax2.legend(fontsize=7, loc='upper left')
     ax2.grid(axis='y', alpha=0.3)
 
     # Y軸の最大値を設定
-    all_valid_times = [t for t in hw1_times + hw2_times + cloud_times if t is not None]
+    all_valid_times = [t for t in (hw1_rerank_times + hw1_optimize_times +
+                                    hw2_rerank_times + hw2_optimize_times +
+                                    cloud_rerank_times + cloud_optimize_times) if t is not None]
     if all_valid_times:
         max_time = max(all_valid_times)
         ax2.set_ylim(0, max_time * 1.15)
 
-        # レスポンスタイム値をバーの上に表示
-        for i, (hw1_t, hw2_t, cloud_t) in enumerate(zip(hw1_times, hw2_times, cloud_times)):
-            if hw1_t is not None:
-                ax2.text(hw1_positions[i], hw1_t + max_time * 0.02, f'{hw1_t:.2f}s',
-                        ha='center', va='bottom', fontsize=7)
-            if hw2_t is not None:
-                ax2.text(hw2_positions[i], hw2_t + max_time * 0.02, f'{hw2_t:.2f}s',
-                        ha='center', va='bottom', fontsize=7)
-            if cloud_t is not None:
-                ax2.text(cloud_positions[i], cloud_t + max_time * 0.02, f'{cloud_t:.2f}s',
-                        ha='center', va='bottom', fontsize=7)
+        # レスポンスタイム値をバーの上に表示（optimizeのみ表示してグラフを見やすくする）
+        all_time_data = [
+            (hw1_optimize_time_pos, hw1_optimize_times),
+            (hw2_optimize_time_pos, hw2_optimize_times),
+            (cloud_optimize_time_pos, cloud_optimize_times)
+        ]
+        for positions, times in all_time_data:
+            for i, t in enumerate(times):
+                if t is not None and t > 0:
+                    ax2.text(positions[i], t + max_time * 0.02, f'{t:.1f}',
+                            ha='center', va='bottom', fontsize=5)
 
     # レイアウト調整
     plt.tight_layout()
