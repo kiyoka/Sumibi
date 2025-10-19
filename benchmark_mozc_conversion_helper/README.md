@@ -70,15 +70,16 @@ Hardware2では、全モデルで大幅なレスポンス時間の改善が見�
 
 ## 計測に使用したハードウェア
 
-ML Studioを使用した。スペックは以下の通り。
+すべてのハードウェアでLM Studioを使用した。スペックは以下の通り。
 
-| 項目 | hardware1 | hardware2 |
-|------|-----------|-----------|
-| CPU | 11th Gen Intel Core i5-11400F @ 2.60GHz | AMD Ryzen 7 5700X 8-Core Processor |
-| RAM | 15.9 GB | 31.9 GB |
-| GPU | NVIDIA GeForce GTX 1650 | NVIDIA GeForce RTX 4060 Ti |
-| VRAM | 4.0 GB | 8.0 GB |
-| Compute Capability | 7.5 | 8.9 |
+| 項目 | hardware1 | hardware2 | hardware3 |
+|------|-----------|-----------|-----------|
+| CPU | 11th Gen Intel Core i5-11400F @ 2.60GHz | AMD Ryzen 7 5700X 8-Core Processor | Apple M4 |
+| Architecture | x86_64 | x86_64 | ARM64 |
+| RAM | 15.9 GB | 31.9 GB | 24.0 GB |
+| GPU | NVIDIA GeForce GTX 1650 | NVIDIA GeForce RTX 4060 Ti | Apple Silicon |
+| VRAM | 4.0 GB | 8.0 GB | 16.0 GB |
+| Compute Capability | 7.5 (CUDA) | 8.9 (CUDA) | Metal |
 
 ## ベンチマーク作成手順（Livedoor ニュース）
 
@@ -239,6 +240,9 @@ make run-benchmark-hw1-optimize
 
 # hardware2でoptimizeモード実行
 make run-benchmark-hw2-optimize
+
+# hardware3でoptimizeモード実行 (MacBook Air)
+make run-benchmark-hw3-optimize
 ```
 
 ### 期待される効果
@@ -257,7 +261,10 @@ make run-benchmark-hw2-optimize
 optimizeモードで実行した結果は、ファイル名に`-optimize`サフィックスが付きます：
 - `results/gpt-4o-mini-optimize.json`
 - `results/hardware1/meta-llama-3.1-8b-instruct-optimize.json`
+- `results/hardware3/meta-llama-3.1-8b-instruct-optimize.json`
 
-グラフでは、同じモデルのrerank-allとoptimizeが隣り合って表示され、色分けされます：
-- **rerank-all**: 濃い色（緑/紫/青）
-- **optimize**: 明るい色（ライトグリーン/ライトパープル/ライトブルー）
+グラフでは、同じモデルのrerank-allとoptimizeが隣り合って表示され、ハードウェア別に色分けされます：
+- **Hardware1**: 緑系（rerank-all=濃い緑、optimize=明るい緑）
+- **Hardware2**: 紫系（rerank-all=濃い紫、optimize=明るい紫）
+- **Hardware3**: オレンジ系（rerank-all=濃いオレンジ、optimize=明るいオレンジ）
+- **Cloud**: 青系（rerank-all=濃い青、optimize=明るい青）
