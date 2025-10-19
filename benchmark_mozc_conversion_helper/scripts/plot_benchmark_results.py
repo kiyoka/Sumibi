@@ -95,30 +95,30 @@ def plot_benchmark_comparison(results: Dict[str, Dict], output_file: str = "benc
         print("No data to plot")
         return
 
-    # すべてのモデルを精度順にソート（hardware1優先、なければcloud、なければhardware2）
+    # すべてのモデルを精度順にソート（hardware1優先、なければcloud、なければhardware2、なければhardware3）
     all_models = {}
     for key, value in results.items():
         base_model = value['base_model']
         if base_model not in all_models:
             all_models[base_model] = value
         else:
-            # hardware1を優先、次にcloud、最後にhardware2
+            # hardware1を優先、次にcloud、次にhardware2、最後にhardware3
             current_tag = all_models[base_model].get('hardware_tag')
             new_tag = value.get('hardware_tag')
-            if current_tag == 'hardware2' and new_tag in ['hardware1', 'cloud']:
-                all_models[base_model] = value
-            elif current_tag == 'cloud' and new_tag == 'hardware1':
+            priority = {'hardware1': 0, 'cloud': 1, 'hardware2': 2, 'hardware3': 3}
+            if priority.get(new_tag, 99) < priority.get(current_tag, 99):
                 all_models[base_model] = value
 
     sorted_models = sorted(all_models.items(), key=lambda x: x[1]['llm_accuracy'], reverse=True)
     model_order = [item[1]['base_model'] for item in sorted_models]
 
-    # 各モデルについて、hardware1, hardware2, cloud、およびprompt_modeのデータを収集
+    # 各モデルについて、hardware1, hardware2, hardware3, cloud、およびprompt_modeのデータを収集
     model_data = {}
     for base_model in model_order:
         model_data[base_model] = {
             'hw1_rerank': None, 'hw1_optimize': None,
             'hw2_rerank': None, 'hw2_optimize': None,
+            'hw3_rerank': None, 'hw3_optimize': None,
             'cloud_rerank': None, 'cloud_optimize': None
         }
         for key, value in results.items():
@@ -131,6 +131,8 @@ def plot_benchmark_comparison(results: Dict[str, Dict], output_file: str = "benc
                     model_data[base_model][f'hw1{mode_suffix}'] = value
                 elif hw_tag == 'hardware2':
                     model_data[base_model][f'hw2{mode_suffix}'] = value
+                elif hw_tag == 'hardware3':
+                    model_data[base_model][f'hw3{mode_suffix}'] = value
                 elif hw_tag == 'cloud':
                     model_data[base_model][f'cloud{mode_suffix}'] = value
 
@@ -140,6 +142,8 @@ def plot_benchmark_comparison(results: Dict[str, Dict], output_file: str = "benc
     hw1_optimize_accuracies = []
     hw2_rerank_accuracies = []
     hw2_optimize_accuracies = []
+    hw3_rerank_accuracies = []
+    hw3_optimize_accuracies = []
     cloud_rerank_accuracies = []
     cloud_optimize_accuracies = []
 
@@ -147,6 +151,8 @@ def plot_benchmark_comparison(results: Dict[str, Dict], output_file: str = "benc
     hw1_optimize_times = []
     hw2_rerank_times = []
     hw2_optimize_times = []
+    hw3_rerank_times = []
+    hw3_optimize_times = []
     cloud_rerank_times = []
     cloud_optimize_times = []
 
@@ -162,6 +168,8 @@ def plot_benchmark_comparison(results: Dict[str, Dict], output_file: str = "benc
             hw1_optimize_accuracies.append(data['hw1_optimize']['llm_accuracy'] * 100 if data['hw1_optimize'] else None)
             hw2_rerank_accuracies.append(data['hw2_rerank']['llm_accuracy'] * 100 if data['hw2_rerank'] else None)
             hw2_optimize_accuracies.append(data['hw2_optimize']['llm_accuracy'] * 100 if data['hw2_optimize'] else None)
+            hw3_rerank_accuracies.append(data['hw3_rerank']['llm_accuracy'] * 100 if data['hw3_rerank'] else None)
+            hw3_optimize_accuracies.append(data['hw3_optimize']['llm_accuracy'] * 100 if data['hw3_optimize'] else None)
             cloud_rerank_accuracies.append(data['cloud_rerank']['llm_accuracy'] * 100 if data['cloud_rerank'] else None)
             cloud_optimize_accuracies.append(data['cloud_optimize']['llm_accuracy'] * 100 if data['cloud_optimize'] else None)
 
@@ -170,6 +178,8 @@ def plot_benchmark_comparison(results: Dict[str, Dict], output_file: str = "benc
             hw1_optimize_times.append(data['hw1_optimize']['avg_response_time'] if data['hw1_optimize'] else None)
             hw2_rerank_times.append(data['hw2_rerank']['avg_response_time'] if data['hw2_rerank'] else None)
             hw2_optimize_times.append(data['hw2_optimize']['avg_response_time'] if data['hw2_optimize'] else None)
+            hw3_rerank_times.append(data['hw3_rerank']['avg_response_time'] if data['hw3_rerank'] else None)
+            hw3_optimize_times.append(data['hw3_optimize']['avg_response_time'] if data['hw3_optimize'] else None)
             cloud_rerank_times.append(data['cloud_rerank']['avg_response_time'] if data['cloud_rerank'] else None)
             cloud_optimize_times.append(data['cloud_optimize']['avg_response_time'] if data['cloud_optimize'] else None)
 
@@ -177,18 +187,20 @@ def plot_benchmark_comparison(results: Dict[str, Dict], output_file: str = "benc
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 8))
     fig.suptitle('LLM変換候補選択ベンチマーク結果', fontsize=16, fontweight='bold')
 
-    # LLM精度グラフ（hardware1, hardware2, cloud、rerank-all, optimizeを分けて表示）
+    # LLM精度グラフ（hardware1, hardware2, hardware3, cloud、rerank-all, optimizeを分けて表示）
     # 各ハードウェアのrerank-allとoptimizeを隣接して配置
-    bar_width_acc = 0.13
+    bar_width_acc = 0.10
     x_pos_acc = range(len(models))
 
-    # 各バーの位置を計算（6本のバーを並べる：HW1-rerank, HW1-opt, HW2-rerank, HW2-opt, Cloud-rerank, Cloud-opt）
-    hw1_rerank_pos = [i - 2.5*bar_width_acc for i in x_pos_acc]
-    hw1_optimize_pos = [i - 2.5*bar_width_acc + bar_width_acc for i in x_pos_acc]
-    hw2_rerank_pos = [i - 0.5*bar_width_acc for i in x_pos_acc]
-    hw2_optimize_pos = [i - 0.5*bar_width_acc + bar_width_acc for i in x_pos_acc]
-    cloud_rerank_pos = [i + 1.5*bar_width_acc for i in x_pos_acc]
-    cloud_optimize_pos = [i + 1.5*bar_width_acc + bar_width_acc for i in x_pos_acc]
+    # 各バーの位置を計算（8本のバーを並べる：HW1-rerank, HW1-opt, HW2-rerank, HW2-opt, HW3-rerank, HW3-opt, Cloud-rerank, Cloud-opt）
+    hw1_rerank_pos = [i - 3.5*bar_width_acc for i in x_pos_acc]
+    hw1_optimize_pos = [i - 3.5*bar_width_acc + bar_width_acc for i in x_pos_acc]
+    hw2_rerank_pos = [i - 1.5*bar_width_acc for i in x_pos_acc]
+    hw2_optimize_pos = [i - 1.5*bar_width_acc + bar_width_acc for i in x_pos_acc]
+    hw3_rerank_pos = [i + 0.5*bar_width_acc for i in x_pos_acc]
+    hw3_optimize_pos = [i + 0.5*bar_width_acc + bar_width_acc for i in x_pos_acc]
+    cloud_rerank_pos = [i + 2.5*bar_width_acc for i in x_pos_acc]
+    cloud_optimize_pos = [i + 2.5*bar_width_acc + bar_width_acc for i in x_pos_acc]
 
     # hardware1のバー（緑系: rerank-all=濃い緑、optimize=明るい緑）
     hw1_rerank_display = [a if a is not None else 0 for a in hw1_rerank_accuracies]
@@ -205,6 +217,14 @@ def plot_benchmark_comparison(results: Dict[str, Dict], output_file: str = "benc
             label='HW2-rerank-all', color='#9B59B6', alpha=0.9)
     ax1.bar(hw2_optimize_pos, hw2_optimize_display, bar_width_acc,
             label='HW2-optimize', color='#DDA0DD', alpha=0.9)
+
+    # hardware3のバー（オレンジ系: rerank-all=濃いオレンジ、optimize=明るいオレンジ）
+    hw3_rerank_display = [a if a is not None else 0 for a in hw3_rerank_accuracies]
+    hw3_optimize_display = [a if a is not None else 0 for a in hw3_optimize_accuracies]
+    ax1.bar(hw3_rerank_pos, hw3_rerank_display, bar_width_acc,
+            label='HW3-rerank-all', color='#FF8C00', alpha=0.9)
+    ax1.bar(hw3_optimize_pos, hw3_optimize_display, bar_width_acc,
+            label='HW3-optimize', color='#FFD700', alpha=0.9)
 
     # cloudのバー（青系: rerank-all=濃い青、optimize=明るい青）
     cloud_rerank_display = [a if a is not None else 0 for a in cloud_rerank_accuracies]
@@ -226,6 +246,7 @@ def plot_benchmark_comparison(results: Dict[str, Dict], output_file: str = "benc
     all_acc_data = [
         (hw1_optimize_pos, hw1_optimize_accuracies),
         (hw2_optimize_pos, hw2_optimize_accuracies),
+        (hw3_optimize_pos, hw3_optimize_accuracies),
         (cloud_optimize_pos, cloud_optimize_accuracies)
     ]
     for positions, accuracies in all_acc_data:
@@ -234,18 +255,20 @@ def plot_benchmark_comparison(results: Dict[str, Dict], output_file: str = "benc
                 ax1.text(positions[i], acc + 1, f'{acc:.0f}',
                         ha='center', va='bottom', fontsize=5)
 
-    # 平均レスポンスタイムグラフ（hardware1, hardware2, cloud、rerank-all, optimizeを分けて表示）
+    # 平均レスポンスタイムグラフ（hardware1, hardware2, hardware3, cloud、rerank-all, optimizeを分けて表示）
     # 各ハードウェアのrerank-allとoptimizeを隣接して配置
-    bar_width = 0.13
+    bar_width = 0.10
     x_pos = range(len(models))
 
-    # 各バーの位置を計算（6本のバーを並べる：HW1-rerank, HW1-opt, HW2-rerank, HW2-opt, Cloud-rerank, Cloud-opt）
-    hw1_rerank_time_pos = [i - 2.5*bar_width for i in x_pos]
-    hw1_optimize_time_pos = [i - 2.5*bar_width + bar_width for i in x_pos]
-    hw2_rerank_time_pos = [i - 0.5*bar_width for i in x_pos]
-    hw2_optimize_time_pos = [i - 0.5*bar_width + bar_width for i in x_pos]
-    cloud_rerank_time_pos = [i + 1.5*bar_width for i in x_pos]
-    cloud_optimize_time_pos = [i + 1.5*bar_width + bar_width for i in x_pos]
+    # 各バーの位置を計算（8本のバーを並べる：HW1-rerank, HW1-opt, HW2-rerank, HW2-opt, HW3-rerank, HW3-opt, Cloud-rerank, Cloud-opt）
+    hw1_rerank_time_pos = [i - 3.5*bar_width for i in x_pos]
+    hw1_optimize_time_pos = [i - 3.5*bar_width + bar_width for i in x_pos]
+    hw2_rerank_time_pos = [i - 1.5*bar_width for i in x_pos]
+    hw2_optimize_time_pos = [i - 1.5*bar_width + bar_width for i in x_pos]
+    hw3_rerank_time_pos = [i + 0.5*bar_width for i in x_pos]
+    hw3_optimize_time_pos = [i + 0.5*bar_width + bar_width for i in x_pos]
+    cloud_rerank_time_pos = [i + 2.5*bar_width for i in x_pos]
+    cloud_optimize_time_pos = [i + 2.5*bar_width + bar_width for i in x_pos]
 
     # hardware1のバー（緑系: rerank-all=濃い緑、optimize=明るい緑）
     hw1_rerank_time_display = [t if t is not None else 0 for t in hw1_rerank_times]
@@ -262,6 +285,14 @@ def plot_benchmark_comparison(results: Dict[str, Dict], output_file: str = "benc
             label='HW2-rerank-all', color='#9B59B6', alpha=0.9)
     ax2.bar(hw2_optimize_time_pos, hw2_optimize_time_display, bar_width,
             label='HW2-optimize', color='#DDA0DD', alpha=0.9)
+
+    # hardware3のバー（オレンジ系: rerank-all=濃いオレンジ、optimize=明るいオレンジ）
+    hw3_rerank_time_display = [t if t is not None else 0 for t in hw3_rerank_times]
+    hw3_optimize_time_display = [t if t is not None else 0 for t in hw3_optimize_times]
+    ax2.bar(hw3_rerank_time_pos, hw3_rerank_time_display, bar_width,
+            label='HW3-rerank-all', color='#FF8C00', alpha=0.9)
+    ax2.bar(hw3_optimize_time_pos, hw3_optimize_time_display, bar_width,
+            label='HW3-optimize', color='#FFD700', alpha=0.9)
 
     # cloudのバー（青系: rerank-all=濃い青、optimize=明るい青）
     cloud_rerank_time_display = [t if t is not None else 0 for t in cloud_rerank_times]
@@ -281,6 +312,7 @@ def plot_benchmark_comparison(results: Dict[str, Dict], output_file: str = "benc
     # Y軸の最大値を設定
     all_valid_times = [t for t in (hw1_rerank_times + hw1_optimize_times +
                                     hw2_rerank_times + hw2_optimize_times +
+                                    hw3_rerank_times + hw3_optimize_times +
                                     cloud_rerank_times + cloud_optimize_times) if t is not None]
     if all_valid_times:
         max_time = max(all_valid_times)
@@ -290,6 +322,7 @@ def plot_benchmark_comparison(results: Dict[str, Dict], output_file: str = "benc
         all_time_data = [
             (hw1_optimize_time_pos, hw1_optimize_times),
             (hw2_optimize_time_pos, hw2_optimize_times),
+            (hw3_optimize_time_pos, hw3_optimize_times),
             (cloud_optimize_time_pos, cloud_optimize_times)
         ]
         for positions, times in all_time_data:

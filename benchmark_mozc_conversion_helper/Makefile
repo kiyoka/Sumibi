@@ -1,6 +1,6 @@
 # Mozc Conversion Helper Benchmark Makefile
 
-.PHONY: setup download-data download-wikipedia test-mozc run-benchmark run-benchmark-hw1 run-benchmark-hw2 plot-results clean help
+.PHONY: setup download-data download-wikipedia test-mozc run-benchmark run-benchmark-hw1 run-benchmark-hw2 run-benchmark-hw3 plot-results clean help
 
 # デフォルトターゲット
 help:
@@ -9,7 +9,7 @@ help:
 	@echo "  download-data                - Wikipedia 日本語ダンプ取得手順 (自動取得を試行)"
 	@echo "  download-wikipedia           - download-data と同義"
 	@echo "  test-mozc                    - Mozcクライアントをテスト"
-	@echo "  run-benchmark                - ベンチマークを実行 (HARDWARE=hardware1 or hardware2, PROMPT_MODE=rerank-all or optimize)"
+	@echo "  run-benchmark                - ベンチマークを実行 (HARDWARE=hardware1 or hardware2 or hardware3, PROMPT_MODE=rerank-all or optimize)"
 	@echo "  run-benchmark-optimize       - 最適化モード（1つ選択+短縮文脈）でベンチマーク実行"
 	@echo "  run-benchmark-rerank-all     - 全候補並び替えモードでベンチマーク実行"
 	@echo "  run-benchmark-hw1            - hardware1でベンチマークを実行"
@@ -18,6 +18,9 @@ help:
 	@echo "  run-benchmark-hw2            - hardware2でベンチマークを実行"
 	@echo "  run-benchmark-hw2-optimize   - hardware2で最適化モードを実行"
 	@echo "  run-benchmark-hw2-rerank-all - hardware2で全候補並び替えモードを実行"
+	@echo "  run-benchmark-hw3            - hardware3 (MacBook Air)でベンチマークを実行"
+	@echo "  run-benchmark-hw3-optimize   - hardware3で最適化モードを実行"
+	@echo "  run-benchmark-hw3-rerank-all - hardware3で全候補並び替えモードを実行"
 	@echo "  plot-results                 - ベンチマーク結果をグラフ化"
 	@echo "  clean                        - 生成ファイルをクリーンアップ"
 
@@ -96,6 +99,18 @@ run-benchmark-hw2-optimize:
 # hardware2でベンチマーク実行 (rerank-allモード)
 run-benchmark-hw2-rerank-all:
 	$(MAKE) run-benchmark HARDWARE=hardware2 PROMPT_MODE=rerank-all
+
+# hardware3でベンチマーク実行 (MacBook Air)
+run-benchmark-hw3:
+	$(MAKE) run-benchmark HARDWARE=hardware3
+
+# hardware3でベンチマーク実行 (optimizeモード)
+run-benchmark-hw3-optimize:
+	$(MAKE) run-benchmark HARDWARE=hardware3 PROMPT_MODE=optimize
+
+# hardware3でベンチマーク実行 (rerank-allモード)
+run-benchmark-hw3-rerank-all:
+	$(MAKE) run-benchmark HARDWARE=hardware3 PROMPT_MODE=rerank-all
 
 # ベンチマーク結果をグラフ化
 plot-results:
