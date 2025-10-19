@@ -13,6 +13,19 @@
 
 ![ベンチマーク結果グラフ](benchmark_comparison.png)
 
+### 計測に使用したハードウェア
+
+すべてのハードウェアでLM Studioを使用した。スペックは以下の通り。
+
+| 項目 | hardware1 | hardware2 | hardware3 |
+|------|-----------|-----------|-----------|
+| CPU | 11th Gen Intel Core i5-11400F @ 2.60GHz | AMD Ryzen 7 5700X 8-Core Processor | Apple M4 |
+| Architecture | x86_64 | x86_64 | ARM64 |
+| RAM | 15.9 GB | 31.9 GB | 24.0 GB |
+| GPU | NVIDIA GeForce GTX 1650 | NVIDIA GeForce RTX 4060 Ti | Apple Silicon |
+| VRAM | 4.0 GB | 8.0 GB | 16.0 GB |
+| Compute Capability | 7.5 (CUDA) | 8.9 (CUDA) | Metal |
+
 ### ベンチマーク結果サマリー(hardware1のデータのみ掲載しています)
 
 | モデル | LLM精度 | 平均レスポンス時間 |
@@ -67,19 +80,6 @@ Hardware2では、全モデルで大幅なレスポンス時間の改善が見�
 **結論:**
 レスポンス時間を重視する場合、ローカルLLMでSumibiの変換候補選択に最も適しているのは **sarashina2.2-3b-instruct-v0.1** です。
 1.226sの応答速度により、リアルタイムな日本語入力でストレスを感じることなく使用できます。
-
-## 計測に使用したハードウェア
-
-すべてのハードウェアでLM Studioを使用した。スペックは以下の通り。
-
-| 項目 | hardware1 | hardware2 | hardware3 |
-|------|-----------|-----------|-----------|
-| CPU | 11th Gen Intel Core i5-11400F @ 2.60GHz | AMD Ryzen 7 5700X 8-Core Processor | Apple M4 |
-| Architecture | x86_64 | x86_64 | ARM64 |
-| RAM | 15.9 GB | 31.9 GB | 24.0 GB |
-| GPU | NVIDIA GeForce GTX 1650 | NVIDIA GeForce RTX 4060 Ti | Apple Silicon |
-| VRAM | 4.0 GB | 8.0 GB | 16.0 GB |
-| Compute Capability | 7.5 (CUDA) | 8.9 (CUDA) | Metal |
 
 ## ベンチマーク作成手順（Livedoor ニュース）
 
