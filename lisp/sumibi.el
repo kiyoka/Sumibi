@@ -55,6 +55,12 @@
 (defvar sumibi--mozc-available-p (require 'mozc nil 'noerror)
   "Non-nil if `mozc.el' could be loaded successfully.")
 
+;; --------------------------------------------------------------
+;; auth-source for secure API key management
+;; --------------------------------------------------------------
+
+(require 'auth-source)
+
 (defun sumibi-mozc--candidate-list (roman arg-n)
   "Return up to ARG-N candidate strings for ROMAN using mozc.
 
@@ -315,6 +321,19 @@ OpenAI 互換 API を利用しない（ローマ字→漢字を mozc で処理�
   :type  'integer
   :group 'sumibi)
 
+(defcustom sumibi-api-key-source 'environment
+  "API Keyの取得元を指定します。
+
+- 'environment: 環境変数から取得（従来の動作）
+- 'auth-source-gpg: auth-sourceを使用してGPG暗号化ファイル (~/.authinfo.gpg) から取得
+  ※ gpgコマンドが必要です。gpgが利用できない場合はエラーになります。
+- 'auth-source-keychain: auth-sourceを使用してmacOS Keychainから取得
+  ※ macOSでのみ利用可能です。macOS以外の環境ではエラーになります。"
+  :type '(choice (const :tag "環境変数" environment)
+                 (const :tag "auth-source (GPG)" auth-source-gpg)
+                 (const :tag "auth-source (macOS Keychain)" auth-source-keychain))
+  :group 'sumibi)
+
 (defvar sumibi-mode nil             "漢字変換トグル変数.")
 
 
@@ -346,6 +365,65 @@ SUMIBI_AI_BASEURL環境変数が未設定の場合はデフォルトURL\"https:/
   (if (sumibi-backend-mozc-p)
       "mozc"
     (or (getenv "SUMIBI_AI_MODEL") sumibi-current-model)))
+
+;; --------------------------------------------------------------
+;; API Key retrieval functions
+;; --------------------------------------------------------------
+
+(defun sumibi-gpg-available-p ()
+  "gpgコマンドが利用可能かチェックする."
+  (executable-find "gpg"))
+
+(defun sumibi-macos-keychain-available-p ()
+  "macOS Keychainが利用可能かチェックする（macOSかどうか）."
+  (eq system-type 'darwin))
+
+(defun sumibi-setup-auth-source-for-gpg ()
+  "GPG用にauth-sourceを設定する."
+  (unless (sumibi-gpg-available-p)
+    (error "gpgコマンドが見つかりません。auth-source-gpgを使用するにはGPGをインストールしてください"))
+  ;; GPGファイルのみをターゲットに
+  (setq auth-sources '("~/.authinfo.gpg")))
+
+(defun sumibi-setup-auth-source-for-keychain ()
+  "Keychain用にauth-sourceを設定する."
+  (unless (sumibi-macos-keychain-available-p)
+    (error "macOS KeychainはmacOSでのみ利用可能です。現在のシステム: %s" system-type))
+  ;; Keychainのみをターゲットに
+  (setq auth-sources '(macos-keychain-internet macos-keychain-generic)))
+
+
+(defun sumibi-get-api-key-from-auth-source ()
+  "auth-sourceからAPI Keyを取得する.
+hostとして 'api.openai.com' を使用し、loginは 'apikey' を想定."
+  (let* ((found (auth-source-search :host "api.openai.com"
+                                     :user "apikey"
+                                     :require '(:secret)
+                                     :max 1))
+         (secret (when found
+                   (plist-get (car found) :secret))))
+    (if (functionp secret)
+        (funcall secret)
+      secret)))
+
+(defun sumibi-get-api-key ()
+  "設定に基づいてAPI Keyを取得する.
+各ソースタイプで厳密なチェックを行う."
+  (cond
+   ;; 環境変数から取得（従来の方法）
+   ((eq sumibi-api-key-source 'environment)
+    (or (getenv "SUMIBI_AI_API_KEY")
+        (getenv "OPENAI_API_KEY")))
+
+   ;; GPG経由でauth-sourceから取得
+   ((eq sumibi-api-key-source 'auth-source-gpg)
+    (sumibi-setup-auth-source-for-gpg)  ; GPGチェック + auth-sources設定
+    (sumibi-get-api-key-from-auth-source))
+
+   ;; macOS Keychain経由でauth-sourceから取得
+   ((eq sumibi-api-key-source 'auth-source-keychain)
+    (sumibi-setup-auth-source-for-keychain)  ; macOSチェック + auth-sources設定
+    (sumibi-get-api-key-from-auth-source))))
 
 (defun sumibi-gpt5-series-p ()
   "現在のモデルがGPT-5シリーズかどうかを判定する."
@@ -803,9 +881,8 @@ space between the marker and the text.  This prevents constructs like
       t
     (cond
      ((and (not (sumibi-backend-mozc-p))
-	   (not (getenv "SUMIBI_AI_API_KEY"))
-           (not (getenv "OPENAI_API_KEY")))
-      (message "%s" "Please set SUMIBI_AI_API_KEY or OPENAI_API_KEY environment variable."))
+	   (not (sumibi-get-api-key)))
+      (message "%s" "API Keyが見つかりません。環境変数 SUMIBI_AI_API_KEY または OPENAI_API_KEY を設定するか、sumibi-api-key-source を適切に設定してください。"))
      ((and (>= emacs-major-version 28) (>= emacs-minor-version 1))
       ;; 履歴ファイルから履歴を読み込む
       (sumibi-load-history-from-file)
@@ -876,7 +953,7 @@ Argument DEFERRED-FUNC2 : 非同期呼び出し時のコールバック関数 (2
     (setq url-http-version "1.1")
     (setq url-request-extra-headers
           `(("Content-Type" . "application/json; charset=utf-8")
-            ("Authorization" . ,(concat "Bearer " (or (getenv "SUMIBI_AI_API_KEY") (getenv "OPENAI_API_KEY"))))))
+            ("Authorization" . ,(concat "Bearer " (sumibi-get-api-key)))))
     (setq url-request-data
           (concat
            "{"

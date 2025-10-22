@@ -92,54 +92,145 @@ LLMはLisp括弧を数えるのが苦手なため、自分で数えたり考え�
 (require 'deferred)
 (require 'sumibi-localdic)
 
-github issue 87を読んで理解してください。
+## GitHub Issue 95 実装計画: API Keyのセキュア管理
 
+### 概要
+LLMのAPI Keyをgpgやkeychainに保存し、セキュリティーを確保できるようにする機能を追加します。
 
-sumibi.elに対して、以下の修正を加えようと思います。
+### 実装する機能
 
-sumibi-backendに3つ目の選択肢を用意します。
-それは、"Mozc + Local LLM" です。
-これを洗濯した場合は、まずは、mozcで変換候補を洗い出し、その変換候補から相応しい変換候補に並べ替えるのを
-local LLM を使って実行します。
-それは、"Mozc + Local LLM"を選択した時にだけ使うsumibi用カスタマイズ変数を設けてください。
-local LLMのエンドポイントURLとモデル名を指定するためのカスタマイズ変数です。
-それでは、この対応について検討を開始してください。
+#### 1. カスタマイズ変数の追加
+```elisp
+(defcustom sumibi-api-key-source 'environment
+  "API Keyの取得元を指定します。
+- 'environment: 環境変数から取得（従来の動作）
+- 'auth-source-gpg: auth-sourceを使用してGPG暗号化ファイル (~/.authinfo.gpg) から取得
+  ※ gpgコマンドが必要です。gpgが利用できない場合はエラーになります。
+- 'auth-source-keychain: auth-sourceを使用してmacOS Keychainから取得
+  ※ macOSでのみ利用可能です。macOS以外の環境ではエラーになります。"
+  :type '(choice (const :tag "環境変数" environment)
+                 (const :tag "auth-source (GPG)" auth-source-gpg)
+                 (const :tag "auth-source (macOS Keychain)" auth-source-keychain))
+  :group 'sumibi)
+```
 
+#### 2. auth-sourceのロードと可用性チェック関数
+```elisp
+;; auth-sourceは無条件でロード（Emacs 29.x以上で利用可能）
+(require 'auth-source)
 
-  実装完了
+(defun sumibi-gpg-available-p ()
+  "gpgコマンドが利用可能かチェックする。"
+  (executable-find "gpg"))
 
-  GitHub issue 87の要求に対応して、以下の機能を実装しました：
+(defun sumibi-macos-keychain-available-p ()
+  "macOS Keychainが利用可能かチェックする（macOSかどうか）。"
+  (eq system-type 'darwin))
+```
 
-  実装した機能
+#### 3. auth-source設定関数
+```elisp
+(defun sumibi-setup-auth-source-for-gpg ()
+  "GPG用にauth-sourceを設定する。"
+  (unless (sumibi-gpg-available-p)
+    (error "gpgコマンドが見つかりません。auth-source-gpgを使用するにはGPGをインストールしてください"))
+  ;; GPGファイルのみをターゲットに
+  (setq auth-sources '("~/.authinfo.gpg")))
 
-  1. 新しいバックエンド選択肢: sumibi-backend に mozc-llm を追加
-  2. カスタマイズ変数:
-    - sumibi-local-llm-base-url: Local LLM のエンドポイント URL
-    - sumibi-local-llm-model: Local LLM のモデル名（デフォルト: "gpt-oss-20b"）
-  3. 基盤となる関数: sumibi-local-llm-rank-candidates 関数（現在はスケルトン実装）
-  4. 統合: mozc-llm バックエンド選択時に Local LLM でランク付けを行うロジック
+(defun sumibi-setup-auth-source-for-keychain ()
+  "Keychain用にauth-sourceを設定する。"
+  (unless (sumibi-macos-keychain-available-p)
+    (error "macOS KeychainはmacOSでのみ利用可能です。現在のシステム: %s" system-type))
+  ;; Keychainのみをターゲットに
+  (setq auth-sources '(macos-keychain-internet macos-keychain-generic)))
+```
 
-  変更されたファイル
+#### 4. auth-sourceからAPI Keyを取得する関数
+```elisp
+(defun sumibi-get-api-key-from-auth-source ()
+  "auth-sourceからAPI Keyを取得する。
+hostとして 'api.openai.com' を使用し、loginは 'apikey' を想定。"
+  (let* ((found (auth-source-search :host "api.openai.com"
+                                     :user "apikey"
+                                     :require '(:secret)
+                                     :max 1))
+         (secret (when found
+                   (plist-get (car found) :secret))))
+    (if (functionp secret)
+        (funcall secret)
+      secret)))
+```
 
-  - lisp/sumibi.el: メイン実装ファイル
-    - 行267-273: バックエンドの説明を更新
-    - 行277-279: :type の選択肢を追加
-    - 行282-285: sumibi-backend-mozc-p 関数を更新
-    - 行311-322: Local LLM 用カスタマイズ変数を追加
-    - 行949-957: sumibi-local-llm-rank-candidates 関数を追加
-    - 行1060-1061: mozc-llm 使用時のランク付け呼び出しを追加
+#### 5. 統合されたAPI Key取得関数
+```elisp
+(defun sumibi-get-api-key ()
+  "設定に基づいてAPI Keyを取得する。
+各ソースタイプで厳密なチェックを行う。"
+  (cond
+   ;; 環境変数から取得（従来の方法）
+   ((eq sumibi-api-key-source 'environment)
+    (or (getenv "SUMIBI_AI_API_KEY")
+        (getenv "OPENAI_API_KEY")))
 
-  今後の拡張予定
+   ;; GPG経由でauth-sourceから取得
+   ((eq sumibi-api-key-source 'auth-source-gpg)
+    (sumibi-setup-auth-source-for-gpg)  ; GPGチェック + auth-sources設定
+    (sumibi-get-api-key-from-auth-source))
 
-  現在の sumibi-local-llm-rank-candidates 関数は基本的なスケルトンのみですが、将来的に以下の機能を実装できます：
+   ;; macOS Keychain経由でauth-sourceから取得
+   ((eq sumibi-api-key-source 'auth-source-keychain)
+    (sumibi-setup-auth-source-for-keychain)  ; macOSチェック + auth-sources設定
+    (sumibi-get-api-key-from-auth-source))))
+```
 
-  1. Local LLM との HTTP 通信
-  2. 文脈を考慮した候補のランク付け
-  3. エラーハンドリング
-  4. パフォーマンス最適化
+### エラーメッセージ（日本語）
 
-  この基盤により、ユーザーは mozc-llm バックエンドを選択し、適切なLocal LLMの設定を行うことで、文脈に応じた高精度な日本語変換を利用できるようになります。
+| 状況 | エラーメッセージ |
+|------|------------------|
+| GPGコマンドが存在しない | "gpgコマンドが見つかりません。auth-source-gpgを使用するにはGPGをインストールしてください" |
+| macOS以外でkeychainを使用 | "macOS KeychainはmacOSでのみ利用可能です。現在のシステム: linux" |
+| 環境変数が設定されていない | "API Keyが見つかりません。環境変数 SUMIBI_AI_API_KEY または OPENAI_API_KEY を設定するか、sumibi-api-key-source を適切に設定してください。" |
+| auth-sourceでAPI Keyが見つからない | "API Keyが見つかりません。設定ファイルを確認してください" |
 
+**注記**: auth-sourceはEmacs 29.x以上に標準で含まれているため、auth-source自体の可用性チェックは行いません。
 
-sumibi-openai-http-postという関数とsumibi-local-llm-rank-candidatesという関数の共通項を括り出して、
-HTTP POSTする関数をまとめてください
+### ユーザー向け設定例
+
+#### 環境変数（デフォルト）
+```elisp
+(setq sumibi-api-key-source 'environment)
+;; 環境変数 SUMIBI_AI_API_KEY または OPENAI_API_KEY を設定
+```
+
+#### GPG暗号化ファイル
+```elisp
+(setq sumibi-api-key-source 'auth-source-gpg)
+;; ~/.authinfo.gpg に以下の形式で記述:
+;; machine api.openai.com login apikey password sk-...
+```
+
+#### macOS Keychain
+```elisp
+(setq sumibi-api-key-source 'auth-source-keychain)
+;; macOSのキーチェーンアクセスでAPI Keyを登録
+;; サーバー: api.openai.com
+;; アカウント: apikey
+;; パスワード: sk-...
+```
+
+### 実装のポイント
+
+1. **厳密なターゲット指定**:
+   - GPGモードでは `auth-sources` を `'("~/.authinfo.gpg")` のみに設定
+   - Keychainモードでは `auth-sources` を `'(macos-keychain-internet macos-keychain-generic)` のみに設定
+
+2. **事前チェックの徹底**:
+   - GPGモード選択時は必ず `gpg` コマンドの存在を確認
+   - Keychainモード選択時は必ず `system-type` が `darwin` であることを確認
+   - auth-sourceはEmacs 29.x以上に標準で含まれているため、無条件で `(require 'auth-source)` を実行
+
+3. **既存コードの更新箇所**:
+   - lisp/sumibi.el:806-808 の起動時チェック
+   - lisp/sumibi.el:879 の HTTP リクエスト時の Authorization ヘッダー
+   - 上記2箇所で `(getenv ...)` の代わりに `(sumibi-get-api-key)` を使用
+
