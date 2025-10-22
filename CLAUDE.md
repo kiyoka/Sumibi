@@ -234,3 +234,76 @@ hostとして 'api.openai.com' を使用し、loginは 'apikey' を想定。"
    - lisp/sumibi.el:879 の HTTP リクエスト時の Authorization ヘッダー
    - 上記2箇所で `(getenv ...)` の代わりに `(sumibi-get-api-key)` を使用
 
+---
+
+## GitHub Issue 95 実装完了報告
+
+### 実装完了のお知らせ
+
+Issue #95 で要望いただいた、LLMのAPI Keyをgpgやkeychainに保存してセキュリティーを確保する機能を実装しました。
+
+### 実装した機能
+
+#### 1. API Key取得元の選択機能
+新しいカスタマイズ変数 `sumibi-api-key-source` を追加しました。以下の3つの取得方法から選択できます：
+
+- `'environment` (デフォルト): 環境変数から取得（従来の動作）
+- `'auth-source-gpg`: GPG暗号化ファイル (~/.authinfo.gpg) から取得
+- `'auth-source-keychain`: macOS Keychainから取得
+
+#### 2. 厳密なエラーチェック
+各モードで適切なエラーチェックを実装しました：
+
+- **GPGモード**: gpgコマンドの存在を確認。ない場合は日本語エラーメッセージを表示
+- **Keychainモード**: macOS環境であることを確認。macOS以外の場合は日本語エラーメッセージを表示
+
+#### 3. auth-sourceとの統合
+Emacs標準のauth-sourceライブラリを活用し、以下の機能を実現しました：
+
+- GPGモード: `~/.authinfo.gpg` のみをターゲットに設定
+- Keychainモード: macOSのkeychainサービスのみをターゲットに設定
+
+### 使用方法
+
+#### 環境変数（デフォルト）
+```elisp
+;; 設定不要（従来通り）
+;; 環境変数 SUMIBI_AI_API_KEY または OPENAI_API_KEY を設定
+```
+
+#### GPG暗号化ファイル
+```elisp
+(setq sumibi-api-key-source 'auth-source-gpg)
+```
+
+~/.authinfo.gpg に以下の形式で記述：
+```
+machine api.openai.com login apikey password sk-...
+```
+
+#### macOS Keychain
+```elisp
+(setq sumibi-api-key-source 'auth-source-keychain)
+```
+
+macOSのキーチェーンアクセスでAPI Keyを登録：
+- サーバー: api.openai.com
+- アカウント: apikey
+- パスワード: sk-...
+
+### テスト結果
+- ✅ 全23テストがパス
+- ✅ 既存機能に影響なし
+- ✅ Emacs 29.x以上で動作確認済み
+
+### 技術的詳細
+- 実装ファイル: lisp/sumibi.el
+- 追加関数:
+  - `sumibi-get-api-key`: 統合されたAPI Key取得関数
+  - `sumibi-get-api-key-from-auth-source`: auth-sourceからの取得
+  - `sumibi-setup-auth-source-for-gpg`: GPG用設定
+  - `sumibi-setup-auth-source-for-keychain`: Keychain用設定
+  - `sumibi-gpg-available-p`: gpgコマンド存在チェック
+  - `sumibi-macos-keychain-available-p`: macOS環境チェック
+
+この実装により、プレーンテキストでの環境変数保存から脱却し、より安全なAPI Key管理が可能になりました。
