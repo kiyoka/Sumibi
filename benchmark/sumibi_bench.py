@@ -9,6 +9,7 @@ import os
 import json
 import time
 from katakana_to_romaji_converter import KatakanaToRomajiConverter
+from katakana_to_hiragana_converter import KatakanaToHiraganaConverter
 from sumibi_typical_convert_client import SumibiTypicalConvertClient
 from importlib.machinery import SourceFileLoader
 # Dynamically load AJIMEE-Bench/utils.py without modifying it
@@ -20,9 +21,16 @@ class SumibiBench:
     """
     Benchmarks sumibi romaji->kana->kanji conversion using
     KatakanaToRomajiConverter and SumibiTypicalConvertClient.
+    Supports two modes: romaji_direct and katakana_to_hiragana.
     """
-    def __init__(self):
-        self.converter = KatakanaToRomajiConverter()
+    def __init__(self, mode='romaji_direct'):
+        """
+        Args:
+            mode: 'romaji_direct' or 'katakana_to_hiragana'
+        """
+        self.mode = mode
+        self.romaji_converter = KatakanaToRomajiConverter()
+        self.hiragana_converter = KatakanaToHiraganaConverter() if mode == 'katakana_to_hiragana' else None
         # Set temperature=1.0 and reasoning_effort='minimal' for gpt-5- models
         model = os.getenv("SUMIBI_AI_MODEL", "gpt-4.1")
         temperature = 1.0 if model.startswith("gpt-5-") else None
@@ -39,18 +47,38 @@ class SumibiBench:
         # collect conversion results
         self.result_arr = []
 
-    def henkan(self, expected_output, surrounding_text, henkan_text):
+    def henkan(self, expected_output, surrounding_text, henkan_text, katakana_text, context_text):
         """
         Perform conversion and print inputs and result.
+        If mode is 'katakana_to_hiragana', convert katakana to hiragana directly.
+        Otherwise, convert katakana to romaji (default behavior).
         """
+        # Determine LLM input based on mode
+        if self.mode == 'katakana_to_hiragana':
+            # Mode 2: katakana -> hiragana -> LLM
+            henkan_text_llm = self.hiragana_converter.convert(katakana_text)
+            surrounding_text_llm = context_text + henkan_text_llm
+        else:
+            # Mode 1: katakana -> romaji -> LLM (default)
+            surrounding_text_llm = surrounding_text
+            henkan_text_llm = henkan_text
+
         # measure conversion time
         start = time.perf_counter()
-        result = self.client.convert(surrounding_text, henkan_text)
+        result = self.client.convert(surrounding_text_llm, henkan_text_llm)
         end = time.perf_counter()
         elapsed = end - start
         print(f"  => elapsed: {elapsed:.2f} sec")
-        print(f"surrounding_text: '{surrounding_text}'")
-        print(f"henkan_text:     '{henkan_text}'")
+        print(f"mode:            '{self.mode}'")
+        if self.mode == 'katakana_to_hiragana':
+            print(f"katakana_text:                '{katakana_text}'")
+            print(f"surrounding_text (romaji):    '{surrounding_text + henkan_text}'")
+            print(f"surrounding_text (hiragana):  '{surrounding_text_llm}'")
+            print(f"henkan_text (hiragana):       '{henkan_text_llm}'")
+        else:
+            print(f"katakana_text:   '{katakana_text}'")
+            print(f"surrounding_text: '{surrounding_text}'")
+            print(f"henkan_text:     '{henkan_text}'")
         print(f"expect:          '{expected_output}'")
         print(f"result:          '{result}'\n")
         cer = ajimee_utils.calculate_MinCER(expected_output, result)
@@ -68,23 +96,26 @@ class SumibiBench:
 
     def benchmark(self, evaluation_data):
         """
-        Iterate over evaluation_data entries, convert katakana to romaji,
+        Iterate over evaluation_data entries, convert katakana based on mode,
         then perform henkan on combined context and print results.
         """
         for entry in evaluation_data:
             expected_output = entry.get('expected_output', [])
             context_text = entry.get('context_text', '')
             katakana_text = entry.get('input', '')
-            romaji_text = self.converter.convert(katakana_text)
-            self.henkan(expected_output, context_text + romaji_text, romaji_text)
+            romaji_text = self.romaji_converter.convert(katakana_text)
+            self.henkan(expected_output, context_text + romaji_text, romaji_text, katakana_text, context_text)
 
 def main():
-    # 第一引数で指定されたJSONファイルを読み込み、第二引数で指定されたファイルに結果を保存
+    # Arguments: <evaluation_json_file> <output_json_file> [mode]
+    # mode: 'romaji_direct' (default) or 'katakana_to_hiragana'
     if len(sys.argv) < 3:
-        print(f"Usage: {sys.argv[0]} <evaluation_json_file> <output_json_file>")
+        print(f"Usage: {sys.argv[0]} <evaluation_json_file> <output_json_file> [mode]")
+        print(f"  mode: 'romaji_direct' (default) or 'katakana_to_hiragana'")
         sys.exit(1)
     input_path = sys.argv[1]
     output_path = sys.argv[2]
+    mode = sys.argv[3] if len(sys.argv) > 3 else 'romaji_direct'
     with open(input_path, 'r', encoding='utf-8') as f:
         evaluation_data = json.load(f)
     # evaluation_data に dict 型で読み込まれたデータを保持
@@ -93,7 +124,7 @@ def main():
         print("Loaded evaluation_data:")  
         print(json.dumps(evaluation_data, ensure_ascii=False, indent=2))
     # ベンチマーク用データの取得開始
-    bench = SumibiBench()
+    bench = SumibiBench(mode=mode)
     bench.benchmark(evaluation_data)
     # benchmark 完了後、結果を output_path に JSON 形式で保存
     with open(output_path, 'w', encoding='utf-8') as fo:

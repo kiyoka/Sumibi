@@ -38,6 +38,7 @@ MASTER_COST: Dict[str, float] = {
     "gemini-2.0-flash-lite": 0.0000975,
     "gemini-2.5-flash": 0.00065,
     "gemini-2.5-pro": 0.001625,
+    "gemma-3-12b-it-qat": 0.0001,
     "claude-opus-4-1-20250805": 0.0225,
     "claude-opus-4-20250514": 0.0225,
     "claude-sonnet-4-20250514": 0.0045,
@@ -69,6 +70,7 @@ COLOR_MAP: Dict[str, str] = {
     "gemini-2.0-flash-lite": "silver",
     "gemini-2.5-flash": "darkgray",
     "gemini-2.5-pro": "gray",
+    "gemma-3-12b-it-qat": "wheat",
     "claude-opus-4-1-20250805": "mediumpurple",
     "claude-opus-4-20250514": "blueviolet",
     "claude-sonnet-4-20250514": "mediumorchid",
@@ -95,6 +97,7 @@ DATA_V24: Dict[str, Dict[str, float]] = {
     "gemini-2.0-flash": {"cer": 0.212067, "elapsed": 0.739066},
     "gemini-2.5-flash": {"cer": 0.109744, "elapsed": 4.197881},
     "gemini-2.5-pro": {"cer": 0.048225, "elapsed": 18.825541},
+    "gemma-3-12b-it-qat": {"cer": 0.730364, "elapsed": 2.018562},
     "gpt-4.1-mini": {"cer": 0.308427, "elapsed": 0.979534},
     "gpt-4.1": {"cer": 0.117064, "elapsed": 1.276582},
     "gpt-4o-mini": {"cer": 0.514936, "elapsed": 1.059017},
@@ -115,7 +118,7 @@ DATA_V24: Dict[str, Dict[str, float]] = {
     "gpt-5(minimal+low)": {"cer": 0.139034, "elapsed": 1.674105},
     "gpt-5(medium)": {"cer": 0.046352, "elapsed": 34.859140},
     "gpt-oss-120b(low)": {"cer": 0.591938, "elapsed": 5.251546},
-    "llm-jp-3.1-13b-instruct4": {"cer": 0.903498, "elapsed": 9.390150},
+    "llm-jp-3.1-13b-instruct4": {"cer": 0.914891, "elapsed": 2.577443},
     "llm-jp-3.1-8x13b-instruct4": {"cer": 0.735276, "elapsed": 12.738874},
 }
 
