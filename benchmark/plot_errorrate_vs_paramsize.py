@@ -29,6 +29,7 @@ MODEL_PARAM_SIZES = {
     'llm-jp-3.1-13b-instruct4': 13,
     'gpt-oss-120b(low)': 120,
     'sarashina2.2-3b-instruct-v0.1': 3,
+    'openai/gpt-oss-20b': 20,
 }
 
 # モデルタイプごとのマーカー設定
@@ -41,6 +42,8 @@ MODEL_MARKERS = {
     'stockmark': 's',
     'gpt-oss': 'o',
     'sarashina': 'o',
+    'openai': 'o',
+    'rakutenai': 'o',
 }
 
 def get_marker(model_name):
@@ -73,73 +76,88 @@ def load_results(json_path):
         return None
 
 def collect_data(result_dirs):
-    """結果ディレクトリからデータを収集"""
-    data_romaji = []
-    data_hiragana = []
+    """結果ディレクトリからデータを収集（サブディレクトリも含む）"""
+    data_romaji_direct_input = []
+    data_hiragana_input = []
 
     for result_dir in result_dirs:
         if not os.path.exists(result_dir):
             continue
 
-        # romaji_direct データ（通常の.jsonファイル）
-        for json_file in glob.glob(os.path.join(result_dir, '*.json')):
-            basename = os.path.basename(json_file)
+        # romaji_direct_input データ（通常の.jsonファイル、サブディレクトリも含む）
+        for json_file in glob.glob(os.path.join(result_dir, '**', '*.json'), recursive=True):
+            # 相対パスを取得してモデル名を決定
+            rel_path = os.path.relpath(json_file, result_dir)
 
             # _hiragana.json は除外
-            if basename.endswith('_hiragana.json'):
+            if rel_path.endswith('_hiragana.json'):
                 continue
 
-            model_name = basename.replace('.json', '')
+            # モデル名を構築（サブディレクトリを含む）
+            model_name = rel_path.replace('.json', '')
 
             # パラメータ数が定義されているモデルのみ
             if model_name in MODEL_PARAM_SIZES:
                 mean_cer = load_results(json_file)
                 if mean_cer is not None:
-                    data_romaji.append({
+                    data_romaji_direct_input.append({
                         'name': model_name,
                         'cer': mean_cer,
                         'param_size': MODEL_PARAM_SIZES[model_name],
                         'marker': get_marker(model_name)
                     })
 
-        # katakana_to_hiragana データ（_hiragana.jsonファイル）
-        for json_file in glob.glob(os.path.join(result_dir, '*_hiragana.json')):
-            basename = os.path.basename(json_file)
-            model_name = basename.replace('_hiragana.json', '')
+        # hiragana_input データ（_hiragana.jsonファイル、サブディレクトリも含む）
+        for json_file in glob.glob(os.path.join(result_dir, '**', '*_hiragana.json'), recursive=True):
+            # 相対パスを取得してモデル名を決定
+            rel_path = os.path.relpath(json_file, result_dir)
+            model_name = rel_path.replace('_hiragana.json', '')
 
             # パラメータ数が定義されているモデルのみ
             if model_name in MODEL_PARAM_SIZES:
                 mean_cer = load_results(json_file)
                 if mean_cer is not None:
-                    data_hiragana.append({
+                    data_hiragana_input.append({
                         'name': model_name,
                         'cer': mean_cer,
                         'param_size': MODEL_PARAM_SIZES[model_name],
                         'marker': get_marker(model_name)
                     })
 
-    return data_romaji, data_hiragana
+    return data_romaji_direct_input, data_hiragana_input
 
-def plot_data(data_romaji, data_hiragana, output_path=None):
+def plot_data(data_romaji_direct_input, data_hiragana_input, output_path=None, figsize=(10, 6), dpi=100):
     """データをプロット"""
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=figsize)
 
-    # romaji_direct データをプロット（青系）
-    for item in data_romaji:
+    # romaji_direct_input データを辞書に変換（名前でアクセスしやすくする）
+    romaji_direct_input_dict = {item['name']: item for item in data_romaji_direct_input}
+
+    # 対応するモデル間に点線を引く
+    for item_hiragana_input in data_hiragana_input:
+        if item_hiragana_input['name'] in romaji_direct_input_dict:
+            item_romaji_direct_input = romaji_direct_input_dict[item_hiragana_input['name']]
+            # 点線を引く
+            plt.plot([item_romaji_direct_input['param_size'], item_hiragana_input['param_size']],
+                    [item_romaji_direct_input['cer'] * 100, item_hiragana_input['cer'] * 100],
+                    linestyle='--', color='gray', alpha=0.5, linewidth=1, zorder=1)
+
+    # romaji_direct_input データをプロット（青系）
+    for item in data_romaji_direct_input:
         pct = item['cer'] * 100
         plt.scatter(item['param_size'], pct, s=150, color='tab:blue',
-                   marker=item['marker'], alpha=0.7, label='romaji_direct' if item == data_romaji[0] else '')
+                   marker=item['marker'], alpha=0.7, label='romaji_direct_input' if item == data_romaji_direct_input[0] else '', zorder=3)
         plt.annotate(item['name'],
                     xy=(item['param_size'], pct),
                     xytext=(5, 5),
                     textcoords='offset points',
                     ha='left', va='bottom', clip_on=False, fontsize=8)
 
-    # katakana_to_hiragana データをプロット（赤系）
-    for item in data_hiragana:
+    # hiragana_input データをプロット（赤系）
+    for item in data_hiragana_input:
         pct = item['cer'] * 100
         plt.scatter(item['param_size'], pct, s=150, color='tab:red',
-                   marker=item['marker'], alpha=0.7, label='katakana_to_hiragana' if item == data_hiragana[0] else '')
+                   marker=item['marker'], alpha=0.7, label='hiragana_input' if item == data_hiragana_input[0] else '', zorder=3)
         plt.annotate(item['name'] + ' (hiragana)',
                     xy=(item['param_size'], pct),
                     xytext=(5, -15),
@@ -148,19 +166,19 @@ def plot_data(data_romaji, data_hiragana, output_path=None):
 
     plt.xlabel('Parameter Size (Billion)')
     plt.ylabel('Error Rate (%)')
-    plt.title('Error Rate vs Parameter Size for Local LLMs\n(Blue: romaji_direct, Red: katakana_to_hiragana)')
+    plt.title('Error Rate vs Parameter Size for Local LLMs\n(Blue: romaji_direct_input, Red: hiragana_input)')
     plt.grid(True, alpha=0.3)
-    plt.ylim(30, 110)
+    plt.ylim(0, 110)
     plt.margins(x=0.05)
 
     # 凡例を追加
-    if data_romaji or data_hiragana:
+    if data_romaji_direct_input or data_hiragana_input:
         plt.legend(loc='upper right')
 
     plt.tight_layout()
 
     if output_path:
-        plt.savefig(output_path, dpi=300, bbox_inches='tight')
+        plt.savefig(output_path, dpi=dpi, bbox_inches='tight')
         print(f"Plot saved to {output_path}")
     else:
         plt.show()
@@ -170,20 +188,26 @@ def main():
     parser.add_argument('-o', '--output', help='Output image file path')
     parser.add_argument('-d', '--dirs', nargs='+', default=['result_ver2.3.0', 'result_ver2.4.0'],
                        help='Result directories to scan (default: result_ver2.3.0 result_ver2.4.0)')
+    parser.add_argument('--width', type=int, default=1000, help='Image width in pixels (default: 1000)')
+    parser.add_argument('--height', type=int, default=600, help='Image height in pixels (default: 600)')
+    parser.add_argument('--dpi', type=int, default=100, help='DPI for output image (default: 100)')
     args = parser.parse_args()
 
     # データ収集
-    data_romaji, data_hiragana = collect_data(args.dirs)
+    data_romaji_direct_input, data_hiragana_input = collect_data(args.dirs)
 
-    print(f"Found {len(data_romaji)} romaji_direct results")
-    print(f"Found {len(data_hiragana)} katakana_to_hiragana results")
+    print(f"Found {len(data_romaji_direct_input)} romaji_direct_input results")
+    print(f"Found {len(data_hiragana_input)} hiragana_input results")
 
-    if not data_romaji and not data_hiragana:
+    if not data_romaji_direct_input and not data_hiragana_input:
         print("No data found to plot")
         return
 
+    # Calculate figsize from pixel dimensions and DPI
+    figsize = (args.width / args.dpi, args.height / args.dpi)
+
     # プロット
-    plot_data(data_romaji, data_hiragana, args.output)
+    plot_data(data_romaji_direct_input, data_hiragana_input, args.output, figsize=figsize, dpi=args.dpi)
 
 if __name__ == '__main__':
     main()

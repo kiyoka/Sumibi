@@ -50,20 +50,20 @@ aggregate:
 	python3 aggregate_results.py result_ver2.4.0/*.json
 
 result_ver2.3.0/%.json: $(EVAL) $(SCRIPT)
-	python3 $(SCRIPT) $(EVAL) "$@" romaji_direct
+	python3 $(SCRIPT) $(EVAL) "$@" romaji_direct_input
 	$(run_notify)
 
 result_ver2.4.0/%.json: $(EVAL) $(SCRIPT)
-	python3 $(SCRIPT) $(EVAL) "$@" romaji_direct
+	python3 $(SCRIPT) $(EVAL) "$@" romaji_direct_input
 	$(run_notify)
 
-# Katakana to hiragana mode targets
+# Hiragana input mode targets
 result_ver2.3.0/%_hiragana.json: $(EVAL) $(SCRIPT)
-	python3 $(SCRIPT) $(EVAL) "$@" katakana_to_hiragana
+	python3 $(SCRIPT) $(EVAL) "$@" hiragana_input
 	$(run_notify)
 
 result_ver2.4.0/%_hiragana.json: $(EVAL) $(SCRIPT)
-	python3 $(SCRIPT) $(EVAL) "$@" katakana_to_hiragana
+	python3 $(SCRIPT) $(EVAL) "$@" hiragana_input
 	$(run_notify)
 
 # Generate plot images in the project's images directory

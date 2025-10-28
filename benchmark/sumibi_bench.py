@@ -21,16 +21,16 @@ class SumibiBench:
     """
     Benchmarks sumibi romaji->kana->kanji conversion using
     KatakanaToRomajiConverter and SumibiTypicalConvertClient.
-    Supports two modes: romaji_direct and katakana_to_hiragana.
+    Supports two modes: romaji_direct_input and hiragana_input.
     """
-    def __init__(self, mode='romaji_direct'):
+    def __init__(self, mode='romaji_direct_input'):
         """
         Args:
-            mode: 'romaji_direct' or 'katakana_to_hiragana'
+            mode: 'romaji_direct_input' or 'hiragana_input'
         """
         self.mode = mode
         self.romaji_converter = KatakanaToRomajiConverter()
-        self.hiragana_converter = KatakanaToHiraganaConverter() if mode == 'katakana_to_hiragana' else None
+        self.hiragana_converter = KatakanaToHiraganaConverter() if mode == 'hiragana_input' else None
         # Set temperature=1.0 and reasoning_effort='minimal' for gpt-5- models
         model = os.getenv("SUMIBI_AI_MODEL", "gpt-4.1")
         temperature = 1.0 if model.startswith("gpt-5-") else None
@@ -50,14 +50,14 @@ class SumibiBench:
     def henkan(self, expected_output, surrounding_text, henkan_text, katakana_text, context_text, skip_save=False):
         """
         Perform conversion and print inputs and result.
-        If mode is 'katakana_to_hiragana', convert katakana to hiragana directly.
+        If mode is 'hiragana_input', convert katakana to hiragana directly.
         Otherwise, convert katakana to romaji (default behavior).
 
         Args:
             skip_save: If True, do not save the result to result_arr (for warmup runs)
         """
         # Determine LLM input based on mode
-        if self.mode == 'katakana_to_hiragana':
+        if self.mode == 'hiragana_input':
             # Mode 2: katakana -> hiragana -> LLM
             henkan_text_llm = self.hiragana_converter.convert(katakana_text)
             surrounding_text_llm = context_text + henkan_text_llm
@@ -75,7 +75,7 @@ class SumibiBench:
         warmup_label = " [WARMUP - not saved]" if skip_save else ""
         print(f"  => elapsed: {elapsed:.2f} sec{warmup_label}")
         print(f"mode:            '{self.mode}'")
-        if self.mode == 'katakana_to_hiragana':
+        if self.mode == 'hiragana_input':
             print(f"katakana_text:                '{katakana_text}'")
             print(f"surrounding_text (romaji):    '{surrounding_text + henkan_text}'")
             print(f"surrounding_text (hiragana):  '{surrounding_text_llm}'")
@@ -145,14 +145,14 @@ class SumibiBench:
 
 def main():
     # Arguments: <evaluation_json_file> <output_json_file> [mode]
-    # mode: 'romaji_direct' (default) or 'katakana_to_hiragana'
+    # mode: 'romaji_direct_input' (default) or 'hiragana_input'
     if len(sys.argv) < 3:
         print(f"Usage: {sys.argv[0]} <evaluation_json_file> <output_json_file> [mode]")
-        print(f"  mode: 'romaji_direct' (default) or 'katakana_to_hiragana'")
+        print(f"  mode: 'romaji_direct_input' (default) or 'hiragana_input'")
         sys.exit(1)
     input_path = sys.argv[1]
     output_path = sys.argv[2]
-    mode = sys.argv[3] if len(sys.argv) > 3 else 'romaji_direct'
+    mode = sys.argv[3] if len(sys.argv) > 3 else 'romaji_direct_input'
     with open(input_path, 'r', encoding='utf-8') as f:
         evaluation_data = json.load(f)
     # evaluation_data に dict 型で読み込まれたデータを保持

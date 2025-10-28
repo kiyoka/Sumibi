@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Test script to demonstrate the difference between romaji_direct and katakana_to_hiragana modes.
+Test script to demonstrate the difference between romaji_direct_input and hiragana_input modes.
 This doesn't require API keys - just shows the conversion logic.
 """
 
@@ -20,9 +20,9 @@ def main():
     print("Issue 96: Comparison of two modes")
     print("=" * 70)
 
-    # Mode 1: romaji_direct (current approach)
+    # Mode 1: romaji_direct_input (current approach)
     romaji_text = romaji_converter.convert(test_katakana)
-    print("\n[Mode 1: romaji_direct]")
+    print("\n[Mode 1: romaji_direct_input]")
     print(f"  Context text: {context_text}")
     print(f"  Katakana input: {test_katakana}")
     print(f"  Step 1 - Katakana to Romaji: {romaji_text}")
@@ -30,9 +30,9 @@ def main():
     print(f"  LLM henkan_text: {romaji_text}")
     print(f"  Expected LLM Output: 私の名前は西山です。")
 
-    # Mode 2: katakana_to_hiragana (new approach)
+    # Mode 2: hiragana_input (new approach)
     hiragana_text = hiragana_converter.convert(test_katakana)
-    print("\n[Mode 2: katakana_to_hiragana]")
+    print("\n[Mode 2: hiragana_input]")
     print(f"  Context text: {context_text}")
     print(f"  Katakana input: {test_katakana}")
     print(f"  Step 1 - Katakana to Hiragana: {hiragana_text}")
