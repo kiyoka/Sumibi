@@ -8,6 +8,7 @@ aggregate_results.py
   - cer の平均値 (1.0 を超える場合は 1.0 に丸め)
   - at1 の平均値を計算
   - elapsed_sec の最小値、最大値、平均値を計算
+  - elapsed_sec の95パーセンタイル以下のデータで平均を計算（外れ値除外）
 
 Usage example:
   python3 aggregate_results.py benchmark/result/gpt-4.1.json
@@ -15,6 +16,7 @@ Usage example:
 import argparse
 import json
 import sys
+import statistics
 
 def load_results(path):
     """
@@ -28,12 +30,16 @@ def summarize(results):
     results: List[Dict]  各要素に 'cer' (float)、'at1' (int)、'elapsed_sec' (float) を含む
     cer が 1.0 を超える場合は 1.0 に丸めて平均を計算
     at1 の平均値を計算
-    elapsed_sec の最小値、最大値、平均値を計算
-    戻り値: (mean_cer, mean_at1, min_elapsed_sec, max_elapsed_sec, mean_elapsed_sec)
+    elapsed_sec の統計値を計算（最小値、最大値、中央値、95パーセンタイル、95パーセンタイル以下の平均値）
+    戻り値: (mean_cer, mean_at1, min_elapsed_sec, max_elapsed_sec, median_elapsed_sec,
+             p95_elapsed_sec, mean_elapsed_sec_p95)
     """
     n = len(results)
     if n == 0:
-        return float('nan'), float('nan'), float('nan'), float('nan'), float('nan')
+        return (float('nan'), float('nan'), float('nan'), float('nan'),
+                float('nan'), float('nan'), float('nan'))
+
+    # CER と AT1 の計算
     cer_sum = 0.0
     at1_sum = 0.0
     for rec in results:
@@ -45,12 +51,31 @@ def summarize(results):
         at1_sum += rec.get('at1', 0)
     mean_cer = cer_sum / n
     mean_at1 = at1_sum / n
-    # elapsed_sec の最小値、最大値、平均値
-    elapsed_vals = [rec.get('elapsed_sec', 0.0) for rec in results]
+
+    # elapsed_sec の統計値を計算
+    elapsed_vals = sorted([rec.get('elapsed_sec', 0.0) for rec in results])
     min_elapsed_sec = min(elapsed_vals)
     max_elapsed_sec = max(elapsed_vals)
-    mean_elapsed_sec = sum(elapsed_vals) / n
-    return mean_cer, mean_at1, min_elapsed_sec, max_elapsed_sec, mean_elapsed_sec
+
+    # 中央値
+    median_elapsed_sec = statistics.median(elapsed_vals)
+
+    # 95パーセンタイル値を計算
+    if n >= 2:
+        # quantiles(data, n=20) は 5% 刻みのパーセンタイル値を返す
+        # index 18 が 95パーセンタイル
+        quantiles = statistics.quantiles(elapsed_vals, n=20)
+        p95_elapsed_sec = quantiles[18]  # 95th percentile
+    else:
+        # データが1つしかない場合は、その値を使用
+        p95_elapsed_sec = elapsed_vals[0]
+
+    # 95パーセンタイル以下のデータのみで平均を計算（外れ値除外）
+    elapsed_vals_p95 = [v for v in elapsed_vals if v <= p95_elapsed_sec]
+    mean_elapsed_sec_p95 = sum(elapsed_vals_p95) / len(elapsed_vals_p95) if elapsed_vals_p95 else float('nan')
+
+    return (mean_cer, mean_at1, min_elapsed_sec, max_elapsed_sec,
+            median_elapsed_sec, p95_elapsed_sec, mean_elapsed_sec_p95)
 
 def main():
     parser = argparse.ArgumentParser(
@@ -63,12 +88,15 @@ def main():
         except Exception as e:
             print(f"Error loading '{path}': {e}", file=sys.stderr)
             continue
-        mean_cer, mean_at1, min_elapsed_sec, max_elapsed_sec, mean_elapsed_sec = summarize(results)
-        print(
-            f"{path}: mean_cer = {mean_cer:.6f}, mean_at1 = {mean_at1:.6f}, "
-            f"min_elapsed_sec = {min_elapsed_sec:.6f}, max_elapsed_sec = {max_elapsed_sec:.6f}, "
-            f"mean_elapsed_sec = {mean_elapsed_sec:.6f}"
-        )
+        (mean_cer, mean_at1, min_elapsed_sec, max_elapsed_sec,
+         median_elapsed_sec, p95_elapsed_sec, mean_elapsed_sec_p95) = summarize(results)
+        print(f"{path}:")
+        print(f"  mean_cer = {mean_cer:.6f}, mean_at1 = {mean_at1:.6f}")
+        print(f"  min_elapsed_sec = {min_elapsed_sec:.6f}, max_elapsed_sec = {max_elapsed_sec:.6f}")
+        print(f"  median_elapsed_sec = {median_elapsed_sec:.6f}")
+        print(f"  p95_elapsed_sec = {p95_elapsed_sec:.6f}")
+        print(f"  mean_elapsed_sec_p95 = {mean_elapsed_sec_p95:.6f} (average excluding outliers above 95th percentile)")
+        print()
 
 if __name__ == '__main__':
     main()

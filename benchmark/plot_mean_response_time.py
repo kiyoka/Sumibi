@@ -5,8 +5,8 @@
 グラフ構成
 ============
 1. X 軸 (主軸, ax1)
-   • 各モデルの平均応答時間 mean_elapsed_sec (v2.4.0)
-     -> 横向きバーで表示
+   • 各モデルの平均応答時間 mean_elapsed_sec_p95 (v2.4.0)
+     -> 横向きバーで表示（95パーセンタイル以下の平均、外れ値除外）
 
 2. X 軸 (副軸, ax2 – 上側)
    • 各モデルの誤り率 mean_cer (v2.4.0)
@@ -22,213 +22,189 @@
 from __future__ import annotations
 
 import argparse
-from typing import List
+import json
+import glob
+from typing import List, Dict, Tuple
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 
-# ---------------------------------------------------------------------------
-# 元データ（aggregate_results.py の出力を転記）
-# ---------------------------------------------------------------------------
-
-MODELS: List[str] = [
-    "gpt-3.5-turbo",
-    "gpt-4.1-mini",
-    "gpt-4.1",
-    "gpt-4o-mini",
-    "gpt-4o",
-    "o4-mini",
-    "deepseek-v3",
-    "gemini-2.0-flash",
-    "gemini-2.0-flash-lite",
-    "gemini-2.5-flash",
-    "gemini-2.5-pro",
-    "gemma-3-12b-it-qat",
-    "o3",
-    "claude-opus-4-1-20250805",
-    "claude-opus-4-20250514",
-    "claude-sonnet-4-20250514",
-    "claude-sonnet-4-5-20250929",
-    "gpt-5-mini(medium)",
-    "gpt-5-mini(minimal)",
-    "gpt-5-mini(minimal+low)",
-    "gpt-5-nano(minimal)",
-    "gpt-5(minimal)",
-    "gpt-5(minimal+low)",
-    "gpt-5(medium)",
-    "gpt-oss-120b(low)",
-    "llm-jp-3.1-13b-instruct4",
-    "llm-jp-3.1-8x13b-instruct4",
-]
-
-# 平均応答時間 (sec) v2.4.0
-MEAN_ELAPSED_V24 = [
-    0.827224,
-    0.979534,
-    1.276582,
-    1.059017,
-    0.983554,
-    14.309153,
-    5.139222,
-    0.739066,
-    0.658537,
-    4.197881,
-    18.825541,
-    2.018562,
-    12.771444,
-    2.616859,
-    2.476723,
-    2.790457,
-    2.813227,
-    15.645264,
-    1.278602,
-    1.390877,
-    1.140173,
-    1.858604,
-    1.674105,
-    34.859140,
-    5.251546,
-    2.577443,
-    12.738874,
-]
-
-MEAN_CER_V24 = [
-    0.645358,
-    0.308427,
-    0.117064,
-    0.514936,
-    0.130022,
-    0.196260,
-    0.296198,
-    0.212067,
-    0.330811,
-    0.109744,
-    0.048225,
-    0.730364,
-    0.077915,
-    0.119479,
-    0.110761,
-    0.125210,
-    0.115957,
-    0.250286,
-    0.359281,
-    0.367744,
-    0.894475,
-    0.127556,
-    0.139034,
-    0.046352,
-    0.591938,
-    0.914891,
-    0.735276,
-]
-
-# カラー (plot_errorrate_vs_cost.py と合わせている)
-BAR_COLORS = [
-    "palegreen",
-    "lightgreen",
-    "mediumspringgreen",
-    "springgreen",
-    "mediumseagreen",
-    "springgreen",
-    "pink",
-    "lightgray",
-    "silver",
-    "darkgray",
-    "gray",
-    "wheat",
-    "cyan",
-    "mediumpurple",
-    "blueviolet",
-    "mediumorchid",
-    "orchid",
-    "limegreen",
-    "forestgreen",
-    "darkseagreen",
-    "darkgreen",
-    "seagreen",
-    "lightseagreen",
-    "green",
-    "olive",
-    "coral",
-    "salmon",
-]
+# aggregate_results.pyからsummarize関数をインポート
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from aggregate_results import summarize
 
 # ---------------------------------------------------------------------------
-# 並び替え : v2.4.0 の mean_elapsed_sec が長い順
-sorted_idx = sorted(range(len(MODELS)), key=lambda i: MEAN_ELAPSED_V24[i], reverse=True)
-
-models_sorted = [MODELS[i] for i in sorted_idx]
-elapsed_v24_sorted = [MEAN_ELAPSED_V24[i] for i in sorted_idx]
-cer_v24_sorted = [MEAN_CER_V24[i] for i in sorted_idx]
-bar_colors_sorted = [BAR_COLORS[i] for i in sorted_idx]
-
-# バー中心の y 座標を後で使うために計算する
-
-# ---------------------------------------------------------------------------
-# 描画
+# データ読み込み
 # ---------------------------------------------------------------------------
 
-fig, ax1 = plt.subplots(figsize=(10, 6))
+def load_all_results(result_dir: str = "result_ver2.4.0") -> Dict[str, Tuple[float, float, float]]:
+    """
+    JSONファイルからすべてのモデルの統計情報を読み込む
+    戻り値: {model_name: (mean_cer, mean_elapsed_sec_p95)}
+    """
+    results = {}
+    json_files = glob.glob(f"{result_dir}/*.json")
 
-# -- v2.4.0: 横棒バー
-bars = ax1.barh(models_sorted, elapsed_v24_sorted, color=bar_colors_sorted)
+    for json_file in json_files:
+        model_name = Path(json_file).stem
+        try:
+            with open(json_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            (mean_cer, mean_at1, min_elapsed_sec, max_elapsed_sec,
+             median_elapsed_sec, p95_elapsed_sec, mean_elapsed_sec_p95) = summarize(data)
+            results[model_name] = (mean_cer, mean_elapsed_sec_p95)
+        except Exception as e:
+            print(f"Warning: Failed to load {json_file}: {e}")
 
-ax1.set_xlabel("Mean Response Time (sec)")
-ax1.set_ylabel("Model")
-ax1.grid(axis="x", linestyle="--", alpha=0.7)
+    return results
 
-# バーの中心 y 座標
-y_centers = [bar.get_y() + bar.get_height() / 2 for bar in bars]
-
-
-# -------- 副軸 (上): CER --------
-ax2 = ax1.twiny()
-
-# Error Rate v2.4.0: Filled circle
-cer_pct_v24 = [c * 100 for c in cer_v24_sorted]
-ax2.plot(
-    cer_pct_v24,
-    y_centers,
-    linestyle="--",
-    marker="o",
-    markerfacecolor="teal",
-    markeredgecolor="teal",
-    color="teal",
-    label="Error Rate (v2.4.0)",
-)
-
-ax2.set_xlabel("Error Rate (%)")
-ax2.set_xlim(0, 100)
-ax2.set_xticks(range(0, 101, 10))
-ax2.xaxis.set_label_position("top")
-ax2.xaxis.set_ticks_position("top")
-
-# -- 凡例（Error Rate のみ表示）
-ax2.legend(loc="upper right")
-
-# -- バーに数値を注釈（v2.3.0）
-# -- バーに数値を注釈（v2.4.0）
-for bar, val in zip(bars, elapsed_v24_sorted):
-    x = bar.get_width()
-    y = bar.get_y() + bar.get_height() / 2
-    ax1.annotate(
-        f"{val:.2f}s",
-        xy=(x, y),
-        xytext=(5, 0),
-        textcoords="offset points",
-        ha="left",
-        va="center",
-    )
-
-plt.tight_layout()
+def get_color_for_model(model_name: str) -> str:
+    """モデル名に基づいて色を割り当てる"""
+    if model_name.startswith("gpt-3"):
+        return "palegreen"
+    elif model_name.startswith("gpt-4.1-mini"):
+        return "lightgreen"
+    elif model_name.startswith("gpt-4.1"):
+        return "mediumspringgreen"
+    elif model_name.startswith("gpt-4o-mini"):
+        return "springgreen"
+    elif model_name.startswith("gpt-4o"):
+        return "mediumseagreen"
+    elif model_name.startswith("o4"):
+        return "springgreen"
+    elif model_name.startswith("o3"):
+        return "cyan"
+    elif model_name.startswith("deepseek"):
+        return "pink"
+    elif model_name.startswith("gemini-2.0-flash-lite"):
+        return "silver"
+    elif model_name.startswith("gemini-2.0-flash"):
+        return "lightgray"
+    elif model_name.startswith("gemini-2.5-flash"):
+        return "darkgray"
+    elif model_name.startswith("gemini-2.5-pro"):
+        return "gray"
+    elif model_name.startswith("gemma"):
+        return "wheat"
+    elif model_name.startswith("claude-opus-4-1"):
+        return "mediumpurple"
+    elif model_name.startswith("claude-opus-4"):
+        return "blueviolet"
+    elif model_name.startswith("claude-sonnet-4-5"):
+        return "orchid"
+    elif model_name.startswith("claude-sonnet-4"):
+        return "mediumorchid"
+    elif model_name.startswith("gpt-5-mini"):
+        if "medium" in model_name:
+            return "limegreen"
+        elif "minimal+low" in model_name:
+            return "darkseagreen"
+        else:
+            return "forestgreen"
+    elif model_name.startswith("gpt-5-nano"):
+        return "darkgreen"
+    elif model_name.startswith("gpt-5"):
+        if "medium" in model_name:
+            return "green"
+        elif "minimal+low" in model_name:
+            return "lightseagreen"
+        else:
+            return "seagreen"
+    elif model_name.startswith("gpt-oss"):
+        return "olive"
+    elif model_name.startswith("llm-jp-3.1-13b"):
+        return "coral" if "_hiragana" not in model_name else "lightsalmon"
+    elif model_name.startswith("llm-jp"):
+        return "salmon"
+    else:
+        return "steelblue"
 
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Plot mean response time & error rate (v2.3.0 / v2.4.0)")
+    parser = argparse.ArgumentParser(description="Plot mean response time (95th percentile) & error rate (v2.4.0)")
     parser.add_argument("-o", "--output", help="Output image file path")
     args = parser.parse_args()
+
+    # ---------------------------------------------------------------------------
+    # データ準備
+    # ---------------------------------------------------------------------------
+
+    # JSONファイルから動的に読み込み
+    results = load_all_results()
+
+    models = list(results.keys())
+    mean_cer_list = [results[m][0] for m in models]
+    mean_elapsed_p95_list = [results[m][1] for m in models]
+    bar_colors = [get_color_for_model(m) for m in models]
+
+    # 平均応答時間が長い順にソート
+    sorted_idx = sorted(range(len(models)), key=lambda i: mean_elapsed_p95_list[i], reverse=True)
+
+    models_sorted = [models[i] for i in sorted_idx]
+    elapsed_v24_sorted = [mean_elapsed_p95_list[i] for i in sorted_idx]
+    cer_v24_sorted = [mean_cer_list[i] for i in sorted_idx]
+    bar_colors_sorted = [bar_colors[i] for i in sorted_idx]
+
+    # ---------------------------------------------------------------------------
+    # 描画
+    # ---------------------------------------------------------------------------
+
+    fig, ax1 = plt.subplots(figsize=(10, 6))
+
+    # -- v2.4.0: 横棒バー (95パーセンタイル)
+    bars = ax1.barh(models_sorted, elapsed_v24_sorted, color=bar_colors_sorted)
+
+    ax1.set_xlabel("Mean Response Time (sec, 95th percentile)")
+    ax1.set_ylabel("Model")
+    ax1.grid(axis="x", linestyle="--", alpha=0.7)
+
+    # バーの中心 y 座標
+    y_centers = [bar.get_y() + bar.get_height() / 2 for bar in bars]
+
+    # -------- 副軸 (上): CER --------
+    ax2 = ax1.twiny()
+
+    # Error Rate v2.4.0: Filled circle
+    cer_pct_v24 = [c * 100 for c in cer_v24_sorted]
+    ax2.plot(
+        cer_pct_v24,
+        y_centers,
+        linestyle="--",
+        marker="o",
+        markerfacecolor="teal",
+        markeredgecolor="teal",
+        color="teal",
+        label="Error Rate (v2.4.0)",
+    )
+
+    ax2.set_xlabel("Error Rate (%)")
+    ax2.set_xlim(0, 100)
+    ax2.set_xticks(range(0, 101, 10))
+    ax2.xaxis.set_label_position("top")
+    ax2.xaxis.set_ticks_position("top")
+
+    # -- 凡例（Error Rate のみ表示）
+    ax2.legend(loc="upper right")
+
+    # -- バーに数値を注釈（v2.4.0, 95パーセンタイル）
+    for bar, val in zip(bars, elapsed_v24_sorted):
+        x = bar.get_width()
+        y = bar.get_y() + bar.get_height() / 2
+        ax1.annotate(
+            f"{val:.2f}s",
+            xy=(x, y),
+            xytext=(5, 0),
+            textcoords="offset points",
+            ha="left",
+            va="center",
+        )
+
+    plt.tight_layout()
 
     if args.output:
         plt.savefig(args.output, dpi=300, bbox_inches="tight")

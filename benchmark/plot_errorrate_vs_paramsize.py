@@ -28,6 +28,7 @@ MODEL_PARAM_SIZES = {
     'llm-jp-3.1-8x13b-instruct4': 104,
     'llm-jp-3.1-13b-instruct4': 13,
     'gpt-oss-120b(low)': 120,
+    'sarashina2.2-3b-instruct-v0.1': 3,
 }
 
 # モデルタイプごとのマーカー設定
@@ -39,6 +40,7 @@ MODEL_MARKERS = {
     'llama': 's',
     'stockmark': 's',
     'gpt-oss': 'o',
+    'sarashina': 'o',
 }
 
 def get_marker(model_name):

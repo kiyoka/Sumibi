@@ -47,11 +47,14 @@ class SumibiBench:
         # collect conversion results
         self.result_arr = []
 
-    def henkan(self, expected_output, surrounding_text, henkan_text, katakana_text, context_text):
+    def henkan(self, expected_output, surrounding_text, henkan_text, katakana_text, context_text, skip_save=False):
         """
         Perform conversion and print inputs and result.
         If mode is 'katakana_to_hiragana', convert katakana to hiragana directly.
         Otherwise, convert katakana to romaji (default behavior).
+
+        Args:
+            skip_save: If True, do not save the result to result_arr (for warmup runs)
         """
         # Determine LLM input based on mode
         if self.mode == 'katakana_to_hiragana':
@@ -68,7 +71,9 @@ class SumibiBench:
         result = self.client.convert(surrounding_text_llm, henkan_text_llm)
         end = time.perf_counter()
         elapsed = end - start
-        print(f"  => elapsed: {elapsed:.2f} sec")
+
+        warmup_label = " [WARMUP - not saved]" if skip_save else ""
+        print(f"  => elapsed: {elapsed:.2f} sec{warmup_label}")
         print(f"mode:            '{self.mode}'")
         if self.mode == 'katakana_to_hiragana':
             print(f"katakana_text:                '{katakana_text}'")
@@ -81,30 +86,62 @@ class SumibiBench:
             print(f"henkan_text:     '{henkan_text}'")
         print(f"expect:          '{expected_output}'")
         print(f"result:          '{result}'\n")
-        cer = ajimee_utils.calculate_MinCER(expected_output, result)
-        at1 = ajimee_utils.calculate_accuracy_at1(expected_output, result)
-        # append to results
-        self.result_arr.append({
-            'surrounding_text': surrounding_text,
-            'henkan_text': henkan_text,
-            'expect': expected_output,
-            'result': result,
-            'cer': cer,
-            'at1': at1,
-            'elapsed_sec': elapsed
-        })
+
+        # Only save results if not a warmup run
+        if not skip_save:
+            cer = ajimee_utils.calculate_MinCER(expected_output, result)
+            at1 = ajimee_utils.calculate_accuracy_at1(expected_output, result)
+            # append to results
+            self.result_arr.append({
+                'surrounding_text': surrounding_text,
+                'henkan_text': henkan_text,
+                'expect': expected_output,
+                'result': result,
+                'cer': cer,
+                'at1': at1,
+                'elapsed_sec': elapsed
+            })
 
     def benchmark(self, evaluation_data):
         """
         Iterate over evaluation_data entries, convert katakana based on mode,
         then perform henkan on combined context and print results.
+
+        The first entry is executed twice as warmup (results not saved) to load
+        the LM Studio model, then all entries are executed normally.
         """
-        for entry in evaluation_data:
+        if len(evaluation_data) == 0:
+            print("Warning: evaluation_data is empty")
+            return
+
+        # Warmup: execute first entry twice without saving results
+        print("=" * 80)
+        print("WARMUP PHASE: Executing first entry twice to load LM Studio model")
+        print("=" * 80)
+        first_entry = evaluation_data[0]
+        expected_output = first_entry.get('expected_output', [])
+        context_text = first_entry.get('context_text', '')
+        katakana_text = first_entry.get('input', '')
+        romaji_text = self.romaji_converter.convert(katakana_text)
+
+        print("\nWarmup run 1/2:")
+        self.henkan(expected_output, context_text + romaji_text, romaji_text, katakana_text, context_text, skip_save=True)
+
+        print("\nWarmup run 2/2:")
+        self.henkan(expected_output, context_text + romaji_text, romaji_text, katakana_text, context_text, skip_save=True)
+
+        print("=" * 80)
+        print("BENCHMARK PHASE: Executing all entries with result saving")
+        print("=" * 80)
+
+        # Normal execution: process all entries and save results
+        for idx, entry in enumerate(evaluation_data, 1):
+            print(f"\nBenchmark entry {idx}/{len(evaluation_data)}:")
             expected_output = entry.get('expected_output', [])
             context_text = entry.get('context_text', '')
             katakana_text = entry.get('input', '')
             romaji_text = self.romaji_converter.convert(katakana_text)
-            self.henkan(expected_output, context_text + romaji_text, romaji_text, katakana_text, context_text)
+            self.henkan(expected_output, context_text + romaji_text, romaji_text, katakana_text, context_text, skip_save=False)
 
 def main():
     # Arguments: <evaluation_json_file> <output_json_file> [mode]
