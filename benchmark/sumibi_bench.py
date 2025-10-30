@@ -21,12 +21,12 @@ class SumibiBench:
     """
     Benchmarks sumibi romaji->kana->kanji conversion using
     KatakanaToRomajiConverter and SumibiTypicalConvertClient.
-    Supports two modes: romaji_direct_input and hiragana_input.
+    Supports three modes: romaji_direct_input, hiragana_input, and katakana_input.
     """
     def __init__(self, mode='romaji_direct_input'):
         """
         Args:
-            mode: 'romaji_direct_input' or 'hiragana_input'
+            mode: 'romaji_direct_input', 'hiragana_input', or 'katakana_input'
         """
         self.mode = mode
         self.romaji_converter = KatakanaToRomajiConverter()
@@ -50,8 +50,10 @@ class SumibiBench:
     def henkan(self, expected_output, surrounding_text, henkan_text, katakana_text, context_text, skip_save=False):
         """
         Perform conversion and print inputs and result.
-        If mode is 'hiragana_input', convert katakana to hiragana directly.
-        Otherwise, convert katakana to romaji (default behavior).
+        Supports three modes:
+        - 'hiragana_input': convert katakana to hiragana
+        - 'katakana_input': use katakana directly
+        - 'romaji_direct_input': convert katakana to romaji (default)
 
         Args:
             skip_save: If True, do not save the result to result_arr (for warmup runs)
@@ -61,6 +63,10 @@ class SumibiBench:
             # Mode 2: katakana -> hiragana -> LLM
             henkan_text_llm = self.hiragana_converter.convert(katakana_text)
             surrounding_text_llm = context_text + henkan_text_llm
+        elif self.mode == 'katakana_input':
+            # Mode 3: katakana -> katakana (direct) -> LLM
+            henkan_text_llm = katakana_text
+            surrounding_text_llm = context_text + katakana_text
         else:
             # Mode 1: katakana -> romaji -> LLM (default)
             surrounding_text_llm = surrounding_text
@@ -80,6 +86,11 @@ class SumibiBench:
             print(f"surrounding_text (romaji):    '{surrounding_text + henkan_text}'")
             print(f"surrounding_text (hiragana):  '{surrounding_text_llm}'")
             print(f"henkan_text (hiragana):       '{henkan_text_llm}'")
+        elif self.mode == 'katakana_input':
+            print(f"katakana_text:                '{katakana_text}'")
+            print(f"surrounding_text (romaji):    '{surrounding_text + henkan_text}'")
+            print(f"surrounding_text (katakana):  '{surrounding_text_llm}'")
+            print(f"henkan_text (katakana):       '{henkan_text_llm}'")
         else:
             print(f"katakana_text:   '{katakana_text}'")
             print(f"surrounding_text: '{surrounding_text}'")
@@ -145,10 +156,10 @@ class SumibiBench:
 
 def main():
     # Arguments: <evaluation_json_file> <output_json_file> [mode]
-    # mode: 'romaji_direct_input' (default) or 'hiragana_input'
+    # mode: 'romaji_direct_input' (default), 'hiragana_input', or 'katakana_input'
     if len(sys.argv) < 3:
         print(f"Usage: {sys.argv[0]} <evaluation_json_file> <output_json_file> [mode]")
-        print(f"  mode: 'romaji_direct_input' (default) or 'hiragana_input'")
+        print(f"  mode: 'romaji_direct_input' (default), 'hiragana_input', or 'katakana_input'")
         sys.exit(1)
     input_path = sys.argv[1]
     output_path = sys.argv[2]

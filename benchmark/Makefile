@@ -66,6 +66,15 @@ result_ver2.4.0/%_hiragana.json: $(EVAL) $(SCRIPT)
 	python3 $(SCRIPT) $(EVAL) "$@" hiragana_input
 	$(run_notify)
 
+# Katakana input mode targets
+result_ver2.3.0/%_katakana.json: $(EVAL) $(SCRIPT)
+	python3 $(SCRIPT) $(EVAL) "$@" katakana_input
+	$(run_notify)
+
+result_ver2.4.0/%_katakana.json: $(EVAL) $(SCRIPT)
+	python3 $(SCRIPT) $(EVAL) "$@" katakana_input
+	$(run_notify)
+
 # Generate plot images in the project's images directory
 plots: ../images/plot_errorrate_vs_cost.png ../images/plot_errorrate_vs_cost_zoomed.png ../images/plot_errorrate_vs_paramsize.png ../images/plot_mean_response_time.png ../images/plot_errorrate_vs_cost_1000x600.png ../images/plot_errorrate_vs_cost_zoomed_1000x600.png ../images/plot_errorrate_vs_paramsize_1000x600.png ../images/plot_mean_response_time_1000x600.png
 
