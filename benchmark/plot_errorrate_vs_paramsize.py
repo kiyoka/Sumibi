@@ -20,6 +20,7 @@ MODEL_PARAM_SIZES = {
     'gemma-3-12b-it-qat': 12,
     'gemma-3-27b-it-qat': 27,
     'gemma-3-27b-it-Q8_0': 27,
+    'gemma-3n-e4b-it-mlx': 4,
     'japanese-stablelm-instruct-gamma-7b': 7,
     'hermes-3-llama-3.2-3b': 3,
     'llama-3-elyza-jp-8b': 8,
@@ -256,14 +257,14 @@ def plot_data(data_romaji_direct_input, data_hiragana_input, data_katakana_input
         legend_elements.append(plt.Line2D([0], [0], marker='o', color='w',
                                          markerfacecolor='tab:blue', markersize=10,
                                          label='romaji_direct_input', alpha=0.7))
-    if data_hiragana_input:
-        legend_elements.append(plt.Line2D([0], [0], marker='o', color='w',
-                                         markerfacecolor='tab:red', markersize=10,
-                                         label='hiragana_input', alpha=0.7))
     if data_katakana_input:
         legend_elements.append(plt.Line2D([0], [0], marker='o', color='w',
                                          markerfacecolor='tab:green', markersize=10,
                                          label='katakana_input', alpha=0.7))
+    if data_hiragana_input:
+        legend_elements.append(plt.Line2D([0], [0], marker='o', color='w',
+                                         markerfacecolor='tab:red', markersize=10,
+                                         label='hiragana_input', alpha=0.7))
 
     # 平均応答時間の凡例を追加
     if response_times:
