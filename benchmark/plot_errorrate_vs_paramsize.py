@@ -22,6 +22,7 @@ MODEL_PARAM_SIZES = {
     'gemma-3-27b-it-Q8_0': 27,
     'japanese-stablelm-instruct-gamma-7b': 7,
     'hermes-3-llama-3.2-3b': 3,
+    'llama-3-elyza-jp-8b': 8,
     'llama-4-scout-17b-16e-instruct': 17,
     'llama-3.3-70b-instruct': 70,
     'stockmark-2-100b-instruct-beta@q3_k_m': 100,
@@ -39,6 +40,7 @@ MODEL_MARKERS = {
     'llm-jp': 'o',
     'japanese-stablelm': 'o',
     'hermes': 'o',
+    'llama-3-elyza': 'o',  # 日本語特化型モデル
     'llama': 's',
     'stockmark': 's',
     'gpt-oss': 'o',
@@ -55,26 +57,41 @@ def get_marker(model_name):
     return 'o'
 
 def load_results(json_path):
-    """JSONファイルからCERの平均値を計算"""
+    """JSONファイルからCERの平均値と平均レスポンス時間を計算"""
     try:
         with open(json_path, 'r', encoding='utf-8') as f:
             results = json.load(f)
 
         if not results:
-            return None
+            return None, None
 
         # CERの平均を計算（1.0を超える場合は1.0に丸める）
         cer_sum = 0.0
+        elapsed_times = []
         for rec in results:
             cer = rec.get('cer', 0.0)
             if cer > 1.0:
                 cer = 1.0
             cer_sum += cer
+
+            # elapsed_secを収集
+            elapsed = rec.get('elapsed_sec', 0.0)
+            elapsed_times.append(elapsed)
+
         mean_cer = cer_sum / len(results)
-        return mean_cer
+
+        # 平均レスポンス時間を計算（95パーセンタイル）
+        if elapsed_times:
+            elapsed_times_sorted = sorted(elapsed_times)
+            p95_index = int(len(elapsed_times_sorted) * 0.95)
+            mean_response_time = sum(elapsed_times_sorted[:p95_index]) / p95_index if p95_index > 0 else sum(elapsed_times_sorted) / len(elapsed_times_sorted)
+        else:
+            mean_response_time = 0.0
+
+        return mean_cer, mean_response_time
     except Exception as e:
         print(f"Warning: Could not load {json_path}: {e}")
-        return None
+        return None, None
 
 def collect_data(result_dirs):
     """結果ディレクトリからデータを収集（サブディレクトリも含む）"""
@@ -100,13 +117,14 @@ def collect_data(result_dirs):
 
             # パラメータ数が定義されているモデルのみ
             if model_name in MODEL_PARAM_SIZES:
-                mean_cer = load_results(json_file)
+                mean_cer, mean_response_time = load_results(json_file)
                 if mean_cer is not None:
                     data_romaji_direct_input.append({
                         'name': model_name,
                         'cer': mean_cer,
                         'param_size': MODEL_PARAM_SIZES[model_name],
-                        'marker': get_marker(model_name)
+                        'marker': get_marker(model_name),
+                        'response_time': mean_response_time
                     })
 
         # hiragana_input データ（_hiragana.jsonファイル、サブディレクトリも含む）
@@ -117,13 +135,14 @@ def collect_data(result_dirs):
 
             # パラメータ数が定義されているモデルのみ
             if model_name in MODEL_PARAM_SIZES:
-                mean_cer = load_results(json_file)
+                mean_cer, mean_response_time = load_results(json_file)
                 if mean_cer is not None:
                     data_hiragana_input.append({
                         'name': model_name,
                         'cer': mean_cer,
                         'param_size': MODEL_PARAM_SIZES[model_name],
-                        'marker': get_marker(model_name)
+                        'marker': get_marker(model_name),
+                        'response_time': mean_response_time
                     })
 
         # katakana_input データ（_katakana.jsonファイル、サブディレクトリも含む）
@@ -134,13 +153,14 @@ def collect_data(result_dirs):
 
             # パラメータ数が定義されているモデルのみ
             if model_name in MODEL_PARAM_SIZES:
-                mean_cer = load_results(json_file)
+                mean_cer, mean_response_time = load_results(json_file)
                 if mean_cer is not None:
                     data_katakana_input.append({
                         'name': model_name,
                         'cer': mean_cer,
                         'param_size': MODEL_PARAM_SIZES[model_name],
-                        'marker': get_marker(model_name)
+                        'marker': get_marker(model_name),
+                        'response_time': mean_response_time
                     })
 
     return data_romaji_direct_input, data_hiragana_input, data_katakana_input
@@ -148,6 +168,24 @@ def collect_data(result_dirs):
 def plot_data(data_romaji_direct_input, data_hiragana_input, data_katakana_input, output_path=None, figsize=(10, 6), dpi=100, ylim=None, xlim=None):
     """データをプロット"""
     plt.figure(figsize=figsize)
+
+    # 全データからresponse_timeの範囲を取得
+    all_data = data_romaji_direct_input + data_hiragana_input + data_katakana_input
+    response_times = [item['response_time'] for item in all_data if item.get('response_time', 0) > 0]
+
+    if response_times:
+        min_time = min(response_times)
+        max_time = max(response_times)
+    else:
+        min_time = 1.0
+        max_time = 5.0
+
+    def get_point_size(response_time):
+        """レスポンス時間からポイントサイズを計算（秒数に厳密に比例）"""
+        if response_time <= 0:
+            return 300  # デフォルトサイズ
+        # 秒数に厳密に比例（1秒=200ポイント）
+        return response_time * 200
 
     # romaji_direct_input データを辞書に変換（名前でアクセスしやすくする）
     romaji_direct_input_dict = {item['name']: item for item in data_romaji_direct_input}
@@ -173,7 +211,8 @@ def plot_data(data_romaji_direct_input, data_hiragana_input, data_katakana_input
     # romaji_direct_input データをプロット（青系）
     for item in data_romaji_direct_input:
         pct = item['cer'] * 100
-        plt.scatter(item['param_size'], pct, s=150, color='tab:blue',
+        point_size = get_point_size(item.get('response_time', 0))
+        plt.scatter(item['param_size'], pct, s=point_size, color='tab:blue',
                    marker=item['marker'], alpha=0.7, label='romaji_direct_input' if item == data_romaji_direct_input[0] else '', zorder=3)
         plt.annotate(item['name'],
                     xy=(item['param_size'], pct),
@@ -184,13 +223,15 @@ def plot_data(data_romaji_direct_input, data_hiragana_input, data_katakana_input
     # hiragana_input データをプロット（赤系）
     for item in data_hiragana_input:
         pct = item['cer'] * 100
-        plt.scatter(item['param_size'], pct, s=150, color='tab:red',
+        point_size = get_point_size(item.get('response_time', 0))
+        plt.scatter(item['param_size'], pct, s=point_size, color='tab:red',
                    marker=item['marker'], alpha=0.7, label='hiragana_input' if item == data_hiragana_input[0] else '', zorder=3)
 
     # katakana_input データをプロット（緑系）
     for item in data_katakana_input:
         pct = item['cer'] * 100
-        plt.scatter(item['param_size'], pct, s=150, color='tab:green',
+        point_size = get_point_size(item.get('response_time', 0))
+        plt.scatter(item['param_size'], pct, s=point_size, color='tab:green',
                    marker=item['marker'], alpha=0.7, label='katakana_input' if item == data_katakana_input[0] else '', zorder=3)
 
     plt.xlabel('Parameter Size (Billion)')
@@ -210,8 +251,38 @@ def plot_data(data_romaji_direct_input, data_hiragana_input, data_katakana_input
         plt.margins(x=0.05)
 
     # 凡例を追加
-    if data_romaji_direct_input or data_hiragana_input or data_katakana_input:
-        plt.legend(loc='upper right')
+    legend_elements = []
+    if data_romaji_direct_input:
+        legend_elements.append(plt.Line2D([0], [0], marker='o', color='w',
+                                         markerfacecolor='tab:blue', markersize=10,
+                                         label='romaji_direct_input', alpha=0.7))
+    if data_hiragana_input:
+        legend_elements.append(plt.Line2D([0], [0], marker='o', color='w',
+                                         markerfacecolor='tab:red', markersize=10,
+                                         label='hiragana_input', alpha=0.7))
+    if data_katakana_input:
+        legend_elements.append(plt.Line2D([0], [0], marker='o', color='w',
+                                         markerfacecolor='tab:green', markersize=10,
+                                         label='katakana_input', alpha=0.7))
+
+    # 平均応答時間の凡例を追加
+    if response_times:
+        legend_elements.append(plt.Line2D([0], [0], color='none', label=''))  # 空行
+        legend_elements.append(plt.Line2D([0], [0], color='none', label='Response Time:'))
+
+        # 1秒、2秒、3秒、4秒のサンプルポイント
+        sample_times = [1.0, 2.0, 3.0, 4.0]
+        for time in sample_times:
+            size = get_point_size(time)
+            # scatterのsパラメータ（面積）をマーカーサイズ（直径相当）に変換
+            # markersize = sqrt(s) / 調整係数
+            marker_size = (size ** 0.5) / 2.5
+            legend_elements.append(plt.Line2D([0], [0], marker='o', color='w',
+                                             markerfacecolor='gray', markersize=marker_size,
+                                             label=f'{time:.1f}s', alpha=0.7))
+
+    if legend_elements:
+        plt.legend(handles=legend_elements, loc='lower right', framealpha=0.9)
 
     plt.tight_layout()
 
@@ -255,9 +326,9 @@ def main():
         base, ext = os.path.splitext(args.output)
         zoomed_output = base.replace('_1000x600', '_zoomed_1000x600') + ext
 
-        # ズーム版をプロット（error rate: 35-110%, parameter size: 0-40）
+        # ズーム版をプロット（error rate: 35-110%, parameter size: 0-25）
         plot_data(data_romaji_direct_input, data_hiragana_input, data_katakana_input,
-                 zoomed_output, figsize=figsize, dpi=args.dpi, ylim=(35, 110), xlim=(0, 40))
+                 zoomed_output, figsize=figsize, dpi=args.dpi, ylim=(35, 110), xlim=(0, 25))
 
 if __name__ == '__main__':
     main()
