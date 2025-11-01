@@ -113,10 +113,10 @@
 
 (ert-deftest test-romaji-to-hiragana-invalid-sequence ()
   "Test handling of invalid romaji sequences."
-  ;; Invalid sequences should be preserved as-is
-  (should (string= "しましt" (sumibi-romaji-to-hiragana "shimasit")))
-  (should (string= "あxyz" (sumibi-romaji-to-hiragana "axyz")))
-  (should (string= "てすとq" (sumibi-romaji-to-hiragana "tesutoq"))))
+  ;; Invalid sequences: if any part is unconvertible, preserve entire string
+  (should (string= "shimasit" (sumibi-romaji-to-hiragana "shimasit")))
+  (should (string= "axyz" (sumibi-romaji-to-hiragana "axyz")))
+  (should (string= "tesutoq" (sumibi-romaji-to-hiragana "tesutoq"))))
 
 (ert-deftest test-romaji-to-hiragana-case-insensitive ()
   "Test case-insensitive conversion."
@@ -180,8 +180,8 @@
   ;; Invalid sequences are preserved
   (should (string= "xyz" (sumibi-romaji-to-hiragana "xyz")))
 
-  ;; Mixed valid and invalid
-  (should (string= "あxyz" (sumibi-romaji-to-hiragana "axyz"))))
+  ;; Mixed valid and invalid - entire string is preserved
+  (should (string= "axyz" (sumibi-romaji-to-hiragana "axyz"))))
 
 (ert-deftest test-romaji-to-hiragana-benchmark-examples ()
   "Test examples from Issue #96 benchmark."
@@ -190,7 +190,8 @@
                    (sumibi-romaji-to-hiragana "watashinonamaehanishiyamadesu")))
   (should (string= "きょうはいいてんきですね"
                    (sumibi-romaji-to-hiragana "kyouhaiitenkidesune")))
-  (should (string= "こんにちは,げんきですか"
+  ;; Comma is unconvertible, so entire string is preserved
+  (should (string= "konnitiha,genkidesuka"
                    (sumibi-romaji-to-hiragana "konnitiha,genkidesuka"))))
 
 ;;; Edge cases
@@ -207,7 +208,8 @@
   "Test that numbers and symbols are preserved."
   (should (string= "123" (sumibi-romaji-to-hiragana "123")))
   (should (string= "!@#" (sumibi-romaji-to-hiragana "!@#")))
-  (should (string= "わたし123" (sumibi-romaji-to-hiragana "watashi123"))))
+  ;; Numbers mixed with romaji: entire string is preserved
+  (should (string= "watashi123" (sumibi-romaji-to-hiragana "watashi123"))))
 
 (provide 'sumibi-romaji-to-hiragana-test)
 ;;; sumibi-romaji-to-hiragana-test.el ends here

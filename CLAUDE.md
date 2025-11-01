@@ -288,3 +288,136 @@ GitHub Issue #97「ローマ字→ひらがな事前変換によるLocal LLM精�
 - `test/sumibi-romaji-to-hiragana-test.el`: ユニットテスト
 - `Makefile`: テスト統合
 - `CLAUDE.md`: 実装ドキュメント
+
+sumibi-romaji-to-hiragana 関数の実装に不備があるため、修正してください。
+test/sumibi-romaji-to-hiragana-test.el
+の期待結果が間違っています。
+文節に1箇所でもローマ字に変換できない箇所があれば、その文節は元のまま変更しないでください。期待結果は以下の様にしてください。
+  (should (string= "shimasit" (sumibi-romaji-to-hiragana "shimasit")))
+  (should (string= "axyz" (sumibi-romaji-to-hiragana "axyz")))
+  (should (string= "tesutoq" (sumibi-romaji-to-hiragana "tesutoq"))))
+同様に以下の2箇所も誤りです。
+  (should (string= "あxyz" (sumibi-romaji-to-hiragana "axyz"))))
+  (should (string= "わたし123" (sumibi-romaji-to-hiragana "watashi123"))))
+
+続きをお願いします。
+
+### 仕様変更: 変換不可能文字の全文節保護
+
+**修正日**: 2025年11月1日
+
+#### 変更内容
+
+`sumibi-romaji-to-hiragana` 関数の仕様を変更しました。
+
+**旧仕様**: 部分的に変換
+- 変換できない文字があっても、変換可能な部分だけ変換
+- 例: "shimasit" → "しましt"、"axyz" → "あxyz"
+
+**新仕様**: 全文節保護
+- **文節に1箇所でも変換できない文字があれば、文節全体を元のまま返す**
+- 例: "shimasit" → "shimasit"、"axyz" → "axyz"
+
+#### 変換可能な文字の定義
+
+- **許容される文字**:
+  - ローマ字（a-z, A-Z）
+  - ハイフン（-）: 長音（ー）として変換
+
+- **変換不可能な文字**（これらが1つでも含まれると文節全体を保持）:
+  - 数字（0-9）
+  - 記号（!@#$,. など、ハイフン以外）
+  - 変換テーブルにない不正なローマ字パターン（xyz、単独のq、単独のtなど）
+
+#### 修正箇所
+
+**1. lisp/sumibi.el (399-482行目)**
+
+関数のロジックを全面的に書き直し：
+
+```elisp
+(defun sumibi-romaji-to-hiragana (romaji-str &optional preserve-english)
+  "ローマ字文字列をひらがなに変換する。
+
+重要: 文字列に1箇所でも変換できない文字が含まれている場合、
+      文字列全体を変換せずに元のまま返す。"
+  (let ((result '())
+        (pos 0)
+        (len (length romaji-str))
+        (romaji-lower (downcase romaji-str))
+        (all-convertible t))  ; 全て変換可能かを追跡
+    (if (= len 0)
+        romaji-str
+      (progn
+        (while (and (< pos len) all-convertible)
+          (let ((matched nil)
+                (current-char (aref romaji-lower pos)))
+            ;; ハイフン、促音、変換テーブルのチェック
+            ...
+            ;; マッチしなかった場合は変換不可
+            (unless matched
+              (setq all-convertible nil))))
+        ;; 全て変換できた場合のみ変換結果を返す
+        (if all-convertible
+            (apply 'concat (nreverse result))
+          romaji-str)))))
+```
+
+**主な変更点**:
+- `all-convertible` フラグを追加して変換可能性を追跡
+- 変換不可能な文字に遭遇したら即座にフラグを false に設定
+- 最後に `all-convertible` をチェックし、true の場合のみ変換結果を返す
+- false の場合は元の文字列をそのまま返す
+
+**2. test/sumibi-romaji-to-hiragana-test.el**
+
+テストケースの期待値を修正：
+
+- **test-romaji-to-hiragana-invalid-sequence** (117-119行目):
+  ```elisp
+  ;; 旧: "しましt", "あxyz", "てすとq"
+  ;; 新: "shimasit", "axyz", "tesutoq"
+  (should (string= "shimasit" (sumibi-romaji-to-hiragana "shimasit")))
+  (should (string= "axyz" (sumibi-romaji-to-hiragana "axyz")))
+  (should (string= "tesutoq" (sumibi-romaji-to-hiragana "tesutoq")))
+  ```
+
+- **test-romaji-to-hiragana-preserve-unconvertible** (184行目):
+  ```elisp
+  ;; 旧: "あxyz"
+  ;; 新: "axyz"
+  (should (string= "axyz" (sumibi-romaji-to-hiragana "axyz")))
+  ```
+
+- **test-romaji-to-hiragana-numbers-and-symbols** (211行目):
+  ```elisp
+  ;; 旧: "わたし123"
+  ;; 新: "watashi123"
+  (should (string= "watashi123" (sumibi-romaji-to-hiragana "watashi123")))
+  ```
+
+- **test-romaji-to-hiragana-benchmark-examples** (194-195行目):
+  ```elisp
+  ;; 旧: "こんにちは,げんきですか"
+  ;; 新: "konnitiha,genkidesuka" (カンマが含まれるため全体を保持)
+  (should (string= "konnitiha,genkidesuka"
+                   (sumibi-romaji-to-hiragana "konnitiha,genkidesuka")))
+  ```
+
+#### 変更の理由
+
+この仕様変更により、以下の利点があります：
+
+1. **予測可能な動作**: ユーザーは変換結果が完全か未変換かを明確に判断できる
+2. **データ保護**: 変換できない文字が含まれる場合、部分的な変換で意味が変わることを防ぐ
+3. **エラー検出**: 変換されなかった文節を見ることで、タイプミスや不正な入力を発見しやすい
+
+#### テスト結果
+
+✅ **全43テスト合格 (43/43)**
+
+```
+Ran 43 tests, 43 results as expected, 0 unexpected
+```
+
+全てのテストが正常に動作し、新仕様が正しく実装されていることを確認しました。

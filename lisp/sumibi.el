@@ -402,56 +402,84 @@ OpenAI 互換 API を利用しない（ローマ字→漢字を mozc で処理�
 ROMAJI-STR: 変換対象のローマ字文字列
 PRESERVE-ENGLISH: non-nil の場合、英単語を検出して保持する（TODO: 未実装）
 
-最長一致アルゴリズムで変換し、変換できない部分はそのまま保持。
+重要: 文字列に1箇所でも変換できない文字が含まれている場合、
+      文字列全体を変換せずに元のまま返す。
+
+許容される文字:
+  - ローマ字 (a-z, A-Z)
+  - ハイフン (-) は長音として扱う
+
+変換できない文字の例:
+  - 数字 (0-9)
+  - 記号 (!@#$ など、ハイフン以外)
+  - 変換テーブルにない不正なローマ字パターン (xyz, q など)
 
 例:
-  \"watashi\" -> \"わたし\"
-  \"kyou\" -> \"きょう\"
-  \"kitte\" -> \"きって\"
-  \"shimasit\" -> \"しましt\" (不正な't'を保持)
+  \"watashi\" -> \"わたし\" (全て変換可能)
+  \"kyou\" -> \"きょう\" (全て変換可能)
+  \"kitte\" -> \"きって\" (全て変換可能)
+  \"shimasit\" -> \"shimasit\" (末尾の't'が単独で変換不可のため全体を保持)
+  \"axyz\" -> \"axyz\" (xyzが変換不可のため全体を保持)
+  \"watashi123\" -> \"watashi123\" (数字が含まれるため全体を保持)
+  \"o-saka\" -> \"おーさか\" (ハイフンは長音として変換可能)
 
 変換テーブル:
   - 基本: a->あ, ka->か, shi->し, nn->ん, etc.
   - 拗音: kya->きゃ, sha->しゃ, etc.
   - 促音: 子音重複 (tt, kk, etc.) -> っ
+  - 長音: ハイフン (-) -> ー
   - 最長一致: 長い文字列から優先的にマッチ"
   (let ((result '())
         (pos 0)
         (len (length romaji-str))
-        (romaji-lower (downcase romaji-str)))
-    (while (< pos len)
-      (let ((matched nil)
-            (current-char (aref romaji-lower pos)))
-        ;; 促音チェック: 子音の重複 (tt, kk, pp, etc.)
-        (when (and (< (1+ pos) len)
-                   (eq current-char (aref romaji-lower (1+ pos)))
-                   (not (memq current-char '(?a ?i ?u ?e ?o ?n))))
-          ;; 子音が重複している場合、促音「っ」を追加
-          (push "っ" result)
-          (setq pos (1+ pos))
-          (setq matched t))
+        (romaji-lower (downcase romaji-str))
+        (all-convertible t))  ; 全て変換可能かを追跡
+    ;; 空文字列の場合はそのまま返す
+    (if (= len 0)
+        romaji-str
+      (progn
+        (while (and (< pos len) all-convertible)
+          (let ((matched nil)
+                (current-char (aref romaji-lower pos)))
+            ;; ハイフンは長音として扱う
+            (when (eq current-char ?-)
+              (push "ー" result)
+              (setq pos (1+ pos))
+              (setq matched t))
 
-        ;; 最長一致で変換テーブルを検索
-        (unless matched
-          (catch 'found
-            (dolist (entry sumibi--romaji-to-hiragana-table)
-              (let* ((key (car entry))
-                     (value (cdr entry))
-                     (key-len (length key)))
-                (when (and (<= (+ pos key-len) len)
-                           (string= key (substring romaji-lower pos (+ pos key-len))))
-                  (push value result)
-                  (setq pos (+ pos key-len))
-                  (setq matched t)
-                  (throw 'found t))))))
+            ;; 促音チェック: 子音の重複 (tt, kk, pp, etc.)
+            (unless matched
+              (when (and (< (1+ pos) len)
+                         (eq current-char (aref romaji-lower (1+ pos)))
+                         (not (memq current-char '(?a ?i ?u ?e ?o ?n))))
+                ;; 子音が重複している場合、促音「っ」を追加
+                (push "っ" result)
+                (setq pos (1+ pos))
+                (setq matched t)))
 
-        ;; マッチしなかった場合は、元の文字をそのまま保持
-        (unless matched
-          (push (char-to-string current-char) result)
-          (setq pos (1+ pos)))))
+            ;; 最長一致で変換テーブルを検索
+            (unless matched
+              (catch 'found
+                (dolist (entry sumibi--romaji-to-hiragana-table)
+                  (let* ((key (car entry))
+                         (value (cdr entry))
+                         (key-len (length key)))
+                    (when (and (<= (+ pos key-len) len)
+                               (string= key (substring romaji-lower pos (+ pos key-len))))
+                      (push value result)
+                      (setq pos (+ pos key-len))
+                      (setq matched t)
+                      (throw 'found t))))))
 
-    ;; 結果を連結して返す
-    (apply 'concat (nreverse result))))
+            ;; マッチしなかった場合は変換不可 → 元の文字列を返す
+            (unless matched
+              (setq all-convertible nil))))
+
+        ;; 全て変換できた場合のみ変換結果を返す
+        ;; そうでない場合は元の文字列を返す
+        (if all-convertible
+            (apply 'concat (nreverse result))
+          romaji-str)))))
 
 
 (defun sumibi-drop-right-slash (url)
