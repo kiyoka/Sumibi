@@ -211,5 +211,43 @@
   ;; Numbers mixed with romaji: entire string is preserved
   (should (string= "watashi123" (sumibi-romaji-to-hiragana "watashi123"))))
 
+;;; Tests for English word detection (preserve-english feature)
+
+(ert-deftest test-romaji-to-hiragana-english-word-preservation ()
+  "Test that English words are preserved when preserve-english is non-nil."
+  ;; Common English words that should be in the dictionary (3-6 letters)
+  (should (string= "test" (sumibi-romaji-to-hiragana "test" t)))
+  (should (string= "hello" (sumibi-romaji-to-hiragana "hello" t)))
+  (should (string= "world" (sumibi-romaji-to-hiragana "world" t)))
+  (should (string= "about" (sumibi-romaji-to-hiragana "about" t)))
+  (should (string= "think" (sumibi-romaji-to-hiragana "think" t)))
+  ;; Case insensitive - should still be preserved
+  (should (string= "Test" (sumibi-romaji-to-hiragana "Test" t)))
+  (should (string= "HELLO" (sumibi-romaji-to-hiragana "HELLO" t))))
+
+(ert-deftest test-romaji-to-hiragana-english-without-preserve ()
+  "Test that English words are converted when preserve-english is nil."
+  ;; Without preserve-english, should try to convert
+  ;; "test" -> "てst" but 's' cannot convert, so entire string preserved
+  (should (string= "test" (sumibi-romaji-to-hiragana "test" nil)))
+  ;; "hello" -> "へっlo" but 'l' cannot convert, so entire string preserved
+  (should (string= "hello" (sumibi-romaji-to-hiragana "hello" nil))))
+
+(ert-deftest test-romaji-to-hiragana-non-dictionary-words ()
+  "Test words not in dictionary are handled correctly."
+  ;; Words not in dictionary but convertible as romaji
+  ;; "wikipedia" is not in dictionary, but all characters are convertible
+  (should (string= "うぃきぺぢあ" (sumibi-romaji-to-hiragana "wikipedia" t)))
+  ;; Short words not in basic dictionary and not convertible
+  (should (string= "xyz" (sumibi-romaji-to-hiragana "xyz" t))))
+
+(ert-deftest test-romaji-to-hiragana-japanese-not-affected ()
+  "Test that Japanese romaji conversion is not affected by preserve-english."
+  ;; Japanese words should convert regardless of preserve-english flag
+  (should (string= "わたし" (sumibi-romaji-to-hiragana "watashi" t)))
+  (should (string= "わたし" (sumibi-romaji-to-hiragana "watashi" nil)))
+  (should (string= "きょう" (sumibi-romaji-to-hiragana "kyou" t)))
+  (should (string= "きょう" (sumibi-romaji-to-hiragana "kyou" nil))))
+
 (provide 'sumibi-romaji-to-hiragana-test)
 ;;; sumibi-romaji-to-hiragana-test.el ends here

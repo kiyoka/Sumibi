@@ -44,6 +44,7 @@
 (require 'unicode-escape)
 (require 'deferred)
 (require 'sumibi-localdic)
+(require 'sumibi-english-words)
 
 ;; --------------------------------------------------------------
 ;; Optional: use mozc.el as a local backend when the model name
@@ -396,14 +397,26 @@ OpenAI 互換 API を利用しない（ローマ字→漢字を mozc で処理�
   "ローマ字からひらがなへの変換テーブル。
 最長一致のため、長いキーから順に配置されています。")
 
+(defun sumibi--is-english-word (word)
+  "WORD が英単語辞書に含まれているかチェックする。
+
+辞書が利用可能な場合はハッシュテーブルで高速検索を行う。
+辞書が利用できない場合は nil を返す。"
+  (and (boundp 'sumibi--english-words-hash)
+       sumibi--english-words-hash
+       (gethash (downcase word) sumibi--english-words-hash)))
+
 (defun sumibi-romaji-to-hiragana (romaji-str &optional preserve-english)
   "ローマ字文字列をひらがなに変換する。
 
 ROMAJI-STR: 変換対象のローマ字文字列
-PRESERVE-ENGLISH: non-nil の場合、英単語を検出して保持する（TODO: 未実装）
+PRESERVE-ENGLISH: non-nil の場合、英単語を検出して保持する
 
-重要: 文字列に1箇所でも変換できない文字が含まれている場合、
-      文字列全体を変換せずに元のまま返す。
+重要:
+  1. PRESERVE-ENGLISH が non-nil で、入力が英単語辞書に含まれる場合、
+     元の文字列をそのまま返す（英単語として保持）
+  2. それ以外の場合、文字列に1箇所でも変換できない文字が含まれていれば、
+     文字列全体を変換せずに元のまま返す
 
 許容される文字:
   - ローマ字 (a-z, A-Z)
@@ -437,50 +450,52 @@ PRESERVE-ENGLISH: non-nil の場合、英単語を検出して保持する（TOD
     ;; 空文字列の場合はそのまま返す
     (if (= len 0)
         romaji-str
-      (progn
-        (while (and (< pos len) all-convertible)
-          (let ((matched nil)
-                (current-char (aref romaji-lower pos)))
-            ;; ハイフンは長音として扱う
-            (when (eq current-char ?-)
-              (push "ー" result)
-              (setq pos (1+ pos))
-              (setq matched t))
+      ;; 英単語検出: preserve-english が non-nil で、辞書に含まれる場合は保持
+      (if (and preserve-english (sumibi--is-english-word romaji-str))
+          romaji-str
+        (progn
+          (while (and (< pos len) all-convertible)
+            (let ((matched nil)
+                  (current-char (aref romaji-lower pos)))
+              ;; ハイフンは長音として扱う
+              (when (eq current-char ?-)
+		(push "ー" result)
+		(setq pos (1+ pos))
+		(setq matched t))
+	      
+              ;; 促音チェック: 子音の重複 (tt, kk, pp, etc.)
+              (unless matched
+		(when (and (< (1+ pos) len)
+                           (eq current-char (aref romaji-lower (1+ pos)))
+                           (not (memq current-char '(?a ?i ?u ?e ?o ?n))))
+                  ;; 子音が重複している場合、促音「っ」を追加
+                  (push "っ" result)
+                  (setq pos (1+ pos))
+                  (setq matched t)))
+	      
+              ;; 最長一致で変換テーブルを検索
+              (unless matched
+		(catch 'found
+                  (dolist (entry sumibi--romaji-to-hiragana-table)
+                    (let* ((key (car entry))
+                           (value (cdr entry))
+                           (key-len (length key)))
+                      (when (and (<= (+ pos key-len) len)
+				 (string= key (substring romaji-lower pos (+ pos key-len))))
+			(push value result)
+			(setq pos (+ pos key-len))
+			(setq matched t)
+			(throw 'found t))))))
 
-            ;; 促音チェック: 子音の重複 (tt, kk, pp, etc.)
-            (unless matched
-              (when (and (< (1+ pos) len)
-                         (eq current-char (aref romaji-lower (1+ pos)))
-                         (not (memq current-char '(?a ?i ?u ?e ?o ?n))))
-                ;; 子音が重複している場合、促音「っ」を追加
-                (push "っ" result)
-                (setq pos (1+ pos))
-                (setq matched t)))
+              ;; マッチしなかった場合は変換不可 → 元の文字列を返す
+              (unless matched
+		(setq all-convertible nil))))
 
-            ;; 最長一致で変換テーブルを検索
-            (unless matched
-              (catch 'found
-                (dolist (entry sumibi--romaji-to-hiragana-table)
-                  (let* ((key (car entry))
-                         (value (cdr entry))
-                         (key-len (length key)))
-                    (when (and (<= (+ pos key-len) len)
-                               (string= key (substring romaji-lower pos (+ pos key-len))))
-                      (push value result)
-                      (setq pos (+ pos key-len))
-                      (setq matched t)
-                      (throw 'found t))))))
-
-            ;; マッチしなかった場合は変換不可 → 元の文字列を返す
-            (unless matched
-              (setq all-convertible nil))))
-
-        ;; 全て変換できた場合のみ変換結果を返す
-        ;; そうでない場合は元の文字列を返す
-        (if all-convertible
-            (apply 'concat (nreverse result))
-          romaji-str)))))
-
+	  ;; 全て変換できた場合のみ変換結果を返す
+	  ;; そうでない場合は元の文字列を返す
+	  (if all-convertible
+              (apply 'concat (nreverse result))
+	    romaji-str))))))
 
 (defun sumibi-drop-right-slash (url)
   (if (string-suffix-p "/" url)

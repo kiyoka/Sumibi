@@ -122,3 +122,36 @@ APIの費用が気になる方は小さい数字に、変換精度を上げた�
 
 mozcを変換処理のバックエンドとして利用できます。
 [Mozcを利用する設定](MOZC.md)
+
+## タイプミス補正機能の設定
+
+変数 `sumibi-typo-correction` で、LLM に送る入力形式を制御できます。
+
+### ON (デフォルト): タイプミス吸収モード
+
+```elisp
+(setq sumibi-typo-correction t)  ;; デフォルト値
+```
+
+- ローマ字のまま LLM に送信します
+- LLM がタイプミスを吸収してくれるため、入力エラーに強くなります
+- 例: "shimasit" → LLM が "しました" と正しく解釈
+
+### OFF: 精度重視モード（Local LLM 推奨）
+
+```elisp
+(setq sumibi-typo-correction nil)
+```
+
+- ローマ字を事前にひらがなに変換してから LLM に送信します
+- **Local LLM の変換精度が大幅に向上**（[Issue #96](https://github.com/kiyoka/Sumibi/issues/96) のベンチマーク結果により実証）
+  - エラー率が 29-42% 削減
+  - 約 10B パラメータの小型モデルでも実用的な変換精度を実現
+- ただし、タイプミス吸収機能は失われます
+
+**注意事項:**
+- 英単語は変換されず、ローマ字のまま保持されます
+  - 英単語の検出には [SCOWL (Spell Checker Oriented Word Lists)](http://wordlist.aspell.net/) を使用しています
+  - SCOWL 2020.12.07 版から 3-6 文字の基本単語 1,880 語を収録
+  - Public Domain のため GPL との互換性があり、ソースコードに直接埋め込み可能であるため利用した
+- 変換できない不正なローマ字もそのまま保持されます
