@@ -21,6 +21,7 @@ MODEL_PARAM_SIZES = {
     'gemma-3-27b-it-qat': 27,
     'gemma-3-27b-it-Q8_0': 27,
     'gemma-3n-e4b-it-mlx': 4,
+    'gemma-3n-e2b-it-mlx': 2,
     'japanese-stablelm-instruct-gamma-7b': 7,
     'hermes-3-llama-3.2-3b': 3,
     'llama-3-elyza-jp-8b': 8,
@@ -325,7 +326,11 @@ def main():
         # 出力パスからズーム版のパスを生成
         import os
         base, ext = os.path.splitext(args.output)
-        zoomed_output = base.replace('_1000x600', '_zoomed_1000x600') + ext
+        # _1000x600 が含まれている場合は置き換え、そうでない場合は _zoomed を追加
+        if '_1000x600' in base:
+            zoomed_output = base.replace('_1000x600', '_zoomed_1000x600') + ext
+        else:
+            zoomed_output = base + '_zoomed' + ext
 
         # ズーム版をプロット（error rate: 35-110%, parameter size: 0-25）
         plot_data(data_romaji_direct_input, data_hiragana_input, data_katakana_input,

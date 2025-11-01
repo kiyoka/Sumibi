@@ -8,6 +8,7 @@ import sys
 import os
 import json
 import time
+from openai import APITimeoutError
 from katakana_to_romaji_converter import KatakanaToRomajiConverter
 from katakana_to_hiragana_converter import KatakanaToHiraganaConverter
 from sumibi_typical_convert_client import SumibiTypicalConvertClient
@@ -74,12 +75,21 @@ class SumibiBench:
 
         # measure conversion time
         start = time.perf_counter()
-        result = self.client.convert(surrounding_text_llm, henkan_text_llm)
-        end = time.perf_counter()
-        elapsed = end - start
+        try:
+            result = self.client.convert(surrounding_text_llm, henkan_text_llm)
+            end = time.perf_counter()
+            elapsed = end - start
+            timeout_occurred = False
+        except APITimeoutError as e:
+            end = time.perf_counter()
+            elapsed = end - start
+            result = "[TIMEOUT]"
+            timeout_occurred = True
+            print(f"  => TIMEOUT ERROR after {elapsed:.2f} sec: {e}")
 
         warmup_label = " [WARMUP - not saved]" if skip_save else ""
-        print(f"  => elapsed: {elapsed:.2f} sec{warmup_label}")
+        if not timeout_occurred:
+            print(f"  => elapsed: {elapsed:.2f} sec{warmup_label}")
         print(f"mode:            '{self.mode}'")
         if self.mode == 'hiragana_input':
             print(f"katakana_text:                '{katakana_text}'")

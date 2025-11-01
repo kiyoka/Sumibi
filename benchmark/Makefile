@@ -76,7 +76,7 @@ result_ver2.4.0/%_katakana.json: $(EVAL) $(SCRIPT)
 	$(run_notify)
 
 # Generate plot images in the project's images directory
-plots: ../images/plot_errorrate_vs_cost.png ../images/plot_errorrate_vs_cost_zoomed.png ../images/plot_errorrate_vs_paramsize.png ../images/plot_mean_response_time.png ../images/plot_errorrate_vs_cost_1000x600.png ../images/plot_errorrate_vs_cost_zoomed_1000x600.png ../images/plot_errorrate_vs_paramsize_1000x600.png ../images/plot_mean_response_time_1000x600.png
+plots: ../images/plot_errorrate_vs_cost.png ../images/plot_errorrate_vs_cost_zoomed.png ../images/plot_errorrate_vs_paramsize.png ../images/plot_errorrate_vs_paramsize_zoomed.png ../images/plot_mean_response_time.png ../images/plot_errorrate_vs_cost_1000x600.png ../images/plot_errorrate_vs_cost_zoomed_1000x600.png ../images/plot_errorrate_vs_paramsize_1000x600.png ../images/plot_errorrate_vs_paramsize_zoomed_1000x600.png ../images/plot_mean_response_time_1000x600.png
 
 ../images/plot_errorrate_vs_cost.png: plot_errorrate_vs_cost.py
 	python3 $< --range 0 -o $@
@@ -86,6 +86,8 @@ plots: ../images/plot_errorrate_vs_cost.png ../images/plot_errorrate_vs_cost_zoo
 
 ../images/plot_errorrate_vs_paramsize.png: plot_errorrate_vs_paramsize.py
 	python3 $< -o $@
+
+../images/plot_errorrate_vs_paramsize_zoomed.png: ../images/plot_errorrate_vs_paramsize.png
 
 ../images/plot_mean_response_time.png: plot_mean_response_time.py
 	python3 $< -o $@
@@ -97,6 +99,9 @@ plots: ../images/plot_errorrate_vs_cost.png ../images/plot_errorrate_vs_cost_zoo
 	convert $< -resize 1000x600 $@
 
 ../images/plot_errorrate_vs_paramsize_1000x600.png: ../images/plot_errorrate_vs_paramsize.png
+	convert $< -resize 1000x600 $@
+
+../images/plot_errorrate_vs_paramsize_zoomed_1000x600.png: ../images/plot_errorrate_vs_paramsize_zoomed.png
 	convert $< -resize 1000x600 $@
 
 ../images/plot_mean_response_time_1000x600.png: ../images/plot_mean_response_time.png
