@@ -32,19 +32,28 @@ class SumibiBench:
         self.mode = mode
         self.romaji_converter = KatakanaToRomajiConverter()
         self.hiragana_converter = KatakanaToHiraganaConverter() if mode == 'hiragana_input' else None
-        # Set temperature=1.0 and reasoning_effort='minimal' for gpt-5- models
+
+        # Get model name from environment variable
+        # Supported gpt-5 models: gpt-5, gpt-5-mini, gpt-5-nano
         model = os.getenv("SUMIBI_AI_MODEL", "gpt-4.1")
-        temperature = 1.0 if model.startswith("gpt-5-") else None
-        if model.startswith("gpt-5-"):
-            reasoning_effort = "minimal"
+
+        # Set temperature=1.0 for gpt-5 models
+        temperature = 1.0 if model.startswith("gpt-5") else None
+
+        # Set reasoning_effort based on model
+        if model.startswith("gpt-5"):
+            reasoning_effort = "minimal"  # Fixed to minimal for all gpt-5 models
         elif model.startswith("gpt-oss-") or model.startswith("openai.gpt-oss-"):
             reasoning_effort = "low"
         else:
             reasoning_effort = None
-        # Set verbosity='low' for gpt-5 models if SUMIBI_AI_VERBOSITY env is set
-        verbosity = os.getenv("SUMIBI_AI_VERBOSITY") if model.startswith("gpt-5") else None
 
-        self.client = SumibiTypicalConvertClient(temperature=temperature, reasoning_effort=reasoning_effort, verbosity=verbosity)
+        # Set verbosity for gpt-5 models
+        verbosity = None
+        if model.startswith("gpt-5"):
+            verbosity = "low"  # Fixed to low for all gpt-5 models
+
+        self.client = SumibiTypicalConvertClient(model=model, temperature=temperature, reasoning_effort=reasoning_effort, verbosity=verbosity)
         # collect conversion results
         self.result_arr = []
 
