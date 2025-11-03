@@ -9,13 +9,15 @@ from openai import OpenAI
 def remove_reasoning_tags(text):
     """
     Remove <reasoning>...</reasoning> tags from the given text.
-    
+
     Args:
         text (str): Input text that may contain reasoning tags
-        
+
     Returns:
         str: Text with reasoning tags removed and stripped of extra whitespace
     """
+    if text is None:
+        return ""
     return re.sub(r'<reasoning>.*?</reasoning>', '', text, flags=re.DOTALL).strip()
 
 class SumibiTypicalConvertClient:
