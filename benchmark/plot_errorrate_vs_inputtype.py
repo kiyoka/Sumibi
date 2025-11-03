@@ -84,8 +84,8 @@ def load_model_data(result_dir: str = "result_ver2.4.0") -> List[Dict[str, float
                 "katakana": katakana_cer
             })
 
-    # モデル名でソート
-    models_with_variants.sort(key=lambda x: x['model'])
+    # ひらがな入力のエラー率でソート（小さい順）
+    models_with_variants.sort(key=lambda x: x['hiragana'])
 
     return models_with_variants
 
