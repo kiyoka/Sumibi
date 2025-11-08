@@ -111,6 +111,13 @@ AIサービスはOpenAI以外にも切り替えられます。OpenAIのcompletio
 
     上記の例は、Windows環境にLLM Studioをインストールし、モデル gemma-3-12b-it-qat をホストしたエンドポイントに接続した一つの例です。
 
+### Sumibiに合ったモデルは？
+
+Sumibiを快適に使うためには、応答速度と変換精度の両方を満たすモデルが必要です。
+以下の青枠の中がスイートスポットですが、その中でもランニングコストなども考慮して、gemini-2.0-flashが最も適しているといえます。(2025年11月時点)
+
+![plot_errorrate_vs_inputtype_hiragana_1000x600.png](./images/plot_errorrate_vs_inputtype_hiragana_1000x600.png)
+
 ## 前後の文章の取り込み行数の調整
 
 Sumibiでは、変換対象のローマ字や英文をより自然な日本語に変換するために、対象文字列の前後の文章をAIに送信し、文脈情報として活用します。
