@@ -384,6 +384,30 @@ OpenAI 互換 API を利用しない（ローマ字→漢字を mozc で処理�
        sumibi--english-words-hash
        (gethash (downcase word) sumibi--english-words-hash)))
 
+(defun sumibi--convert-romaji-preserving-english (romaji-str)
+  "ローマ字文字列をひらがなに変換する。英単語は保持する。
+
+ROMAJI-STR: 変換対象のローマ字文字列（スペース区切り可）
+
+スペースで区切られた各単語に対して：
+  1. 英単語辞書にヒットする → そのまま保持
+  2. それ以外 → ローマ字→ひらがな変換を試みる
+
+戻り値: 変換後の文字列（スペースで結合）"
+  (if (string-match-p " " romaji-str)
+      ;; スペースが含まれる場合：各単語を個別に処理
+      (mapconcat
+       (lambda (word)
+         (if (sumibi--is-english-word word)
+             word  ; 英単語はそのまま保持
+           (sumibi-romaji-to-hiragana word nil)))  ; ローマ字→ひらがな変換
+       (split-string romaji-str " " t)
+       " ")
+    ;; スペースが含まれない場合：文字列全体を処理
+    (if (sumibi--is-english-word romaji-str)
+        romaji-str  ; 英単語はそのまま保持
+      (sumibi-romaji-to-hiragana romaji-str nil))))  ; ローマ字→ひらがな変換
+
 (defun sumibi-romaji-to-hiragana (romaji-str &optional preserve-english)
   "ローマ字文字列をひらがなに変換する。
 
@@ -1132,7 +1156,7 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
          ;; ローマ字→ひらがな変換 (Issue #97: 精度向上のため常に実行)
          (processed-roman
           (if (not (sumibi-backend-mozc-p))
-              (sumibi-romaji-to-hiragana core-roman t) ; ひらがなに変換
+              (sumibi--convert-romaji-preserving-english core-roman) ; ひらがなに変換（英単語は保持）
             core-roman)))  ; Mozcバックエンドの場合はローマ字のまま
     ;; デバッグ出力: 変換結果
     (sumibi-debug-print (format "  core-roman (入力): %s\n" core-roman))
