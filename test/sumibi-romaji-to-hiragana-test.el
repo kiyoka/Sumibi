@@ -215,15 +215,19 @@
 
 (ert-deftest test-romaji-to-hiragana-english-word-preservation ()
   "Test that English words are preserved when preserve-english is non-nil."
-  ;; Common English words that should be in the dictionary (3-6 letters)
+  ;; Common English words that should be in the dictionary (3-10 letters)
   (should (string= "test" (sumibi-romaji-to-hiragana "test" t)))
   (should (string= "hello" (sumibi-romaji-to-hiragana "hello" t)))
   (should (string= "world" (sumibi-romaji-to-hiragana "world" t)))
   (should (string= "about" (sumibi-romaji-to-hiragana "about" t)))
   (should (string= "think" (sumibi-romaji-to-hiragana "think" t)))
+  ;; Longer words (9-10 letters)
+  (should (string= "attention" (sumibi-romaji-to-hiragana "attention" t)))
+  (should (string= "additional" (sumibi-romaji-to-hiragana "additional" t)))
   ;; Case insensitive - should still be preserved
   (should (string= "Test" (sumibi-romaji-to-hiragana "Test" t)))
-  (should (string= "HELLO" (sumibi-romaji-to-hiragana "HELLO" t))))
+  (should (string= "HELLO" (sumibi-romaji-to-hiragana "HELLO" t)))
+  (should (string= "Attention" (sumibi-romaji-to-hiragana "Attention" t))))
 
 (ert-deftest test-romaji-to-hiragana-english-without-preserve ()
   "Test that English words are converted when preserve-english is nil."

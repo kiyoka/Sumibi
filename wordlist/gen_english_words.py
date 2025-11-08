@@ -19,11 +19,11 @@ def is_valid_word(word):
     単語が有効かどうかをチェックする
 
     基準:
-    - 3-8文字の英単語のみ
+    - 3-10文字の英単語のみ
     - アルファベットのみで構成される（ハイフン、アポストロフィなどを除外）
     """
-    # 3-8文字の制限
-    if len(word) < 3 or len(word) > 8:
+    # 3-10文字の制限
+    if len(word) < 3 or len(word) > 10:
         return False
 
     # アルファベットのみかチェック
@@ -85,7 +85,7 @@ def generate_emacs_lisp(words):
     print(';; under any license, including GPL.')
     print()
     print(';;; Commentary:')
-    print(';; This file contains a hash table of common English words (3-8 letters)')
+    print(';; This file contains a hash table of common English words (3-10 letters)')
     print(';; used by sumibi-romaji-to-hiragana to detect and preserve English words')
     print(';; during romaji-to-hiragana conversion.')
     print(';;')
@@ -104,7 +104,7 @@ def generate_emacs_lisp(words):
 
     # ハッシュテーブル定義の終了
     print('    ht)')
-    print('  "Hash table of common English words (3-8 letters).")')
+    print('  "Hash table of common English words (3-10 letters).")')
     print()
 
     # provide文

@@ -70,9 +70,9 @@ make clean
 
 ### 単語の選択基準
 
-- **文字数**: 3-8 文字の英単語のみ
+- **文字数**: 3-10 文字の英単語のみ
 - **文字種**: アルファベットのみ（ハイフン、アポストロフィなどを除外）
-- **総単語数**: 約 3,074 語
+- **総単語数**: 約 3,679 語
 
 ### ファイル形式
 
@@ -80,19 +80,20 @@ Emacs Lisp のハッシュテーブル形式：
 
 ```elisp
 (defconst sumibi--english-words-hash
-  (let ((ht (make-hash-table :test 'equal :size 3174)))
+  (let ((ht (make-hash-table :test 'equal :size 3779)))
     (puthash "test" t ht)
     (puthash "hello" t ht)
+    (puthash "attention" t ht)
     ...
     ht)
-  "Hash table of common English words (3-8 letters).")
+  "Hash table of common English words (3-10 letters).")
 ```
 
 ### 検索性能
 
 - **データ構造**: ハッシュテーブル
 - **検索速度**: O(1)
-- **メモリ使用量**: 約 85KB
+- **メモリ使用量**: 約 104KB
 
 ## カスタマイズ
 
@@ -102,8 +103,8 @@ Emacs Lisp のハッシュテーブル形式：
 
 ```python
 def is_valid_word(word):
-    # 文字数制限を変更（例: 3-10 文字）
-    if len(word) < 3 or len(word) > 10:
+    # 文字数制限を変更（例: 3-12 文字）
+    if len(word) < 3 or len(word) > 12:
         return False
     ...
 ```
