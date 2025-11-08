@@ -316,28 +316,6 @@ OpenAI 互換 API を利用しない（ローマ字→漢字を mozc で処理�
   :type  'integer
   :group 'sumibi)
 
-(defcustom sumibi-typo-correction t
-  "Non-nil の場合、タイプミス補正機能を有効化する（ローマ字のまま LLM に送る）。
-
-この変数は、LLM に送る入力形式を制御します：
-
-  - t (デフォルト): タイプミス補正 ON
-    ローマ字のまま LLM に送信します。
-    LLM がタイプミスを吸収してくれるため、入力エラーに強くなります。
-    例: \"shimasit\" → LLM が \"しました\" と正しく解釈
-
-  - nil: タイプミス補正 OFF（精度重視モード）
-    ローマ字を事前にひらがなに変換してから LLM に送信します。
-    Issue #96 のベンチマーク結果により、Local LLM の変換精度が
-    大幅に向上することが実証されました（エラー率 29-42% 削減）。
-    約 10B パラメータの小型モデルでも実用的な変換精度を実現できます。
-    ただし、タイプミス吸収機能は失われます。
-
-英単語は変換されず、ローマ字のまま保持されます。
-変換できない不正なローマ字もそのまま保持されます。"
-  :type 'boolean
-  :group 'sumibi)
-
 (defvar sumibi-mode nil             "漢字変換トグル変数.")
 
 ;; ------------------------------------------------------------------
@@ -1151,14 +1129,12 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
   (let* ((split (sumibi--split-markdown-prefix roman))
          (prefix (car split))
          (core-roman (cdr split))
-         ;; タイプミス補正のチェック (Issue #97)
+         ;; ローマ字→ひらがな変換 (Issue #97: 精度向上のため常に実行)
          (processed-roman
-          (if (and (not sumibi-typo-correction)  ; 補正OFF（精度重視モード）の場合
-                   (not (sumibi-backend-mozc-p)))
+          (if (not (sumibi-backend-mozc-p))
               (sumibi-romaji-to-hiragana core-roman t) ; ひらがなに変換
-            core-roman)))  ; 補正ON の場合はローマ字のまま
-    ;; デバッグ出力: タイプミス補正設定と変換結果
-    (sumibi-debug-print (format "  sumibi-typo-correction: %s\n" sumibi-typo-correction))
+            core-roman)))  ; Mozcバックエンドの場合はローマ字のまま
+    ;; デバッグ出力: 変換結果
     (sumibi-debug-print (format "  core-roman (入力): %s\n" core-roman))
     (sumibi-debug-print (format "  processed-roman (LLMへ送信): %s\n" processed-roman))
     ;; `mozc' backend -------------------------------------------------
