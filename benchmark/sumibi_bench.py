@@ -41,7 +41,9 @@ class SumibiBench:
         temperature = 1.0 if model.startswith("gpt-5") else None
 
         # Set reasoning_effort based on model
-        if model.startswith("gpt-5"):
+        if model == "gpt-5.1":
+            reasoning_effort = None  # gpt-5.1 uses reasoning_effort=none
+        elif model.startswith("gpt-5"):
             reasoning_effort = "minimal"  # Fixed to minimal for all gpt-5 models
         elif model.startswith("gpt-oss-") or model.startswith("openai.gpt-oss-"):
             reasoning_effort = "low"

@@ -48,7 +48,8 @@ response = self.client.chat.completions.create(
 ## 測定結果グラフ
 
 注記:
-  - gpt-5,gpt-5-mini,gpt-5-nanoはreasoning_effortをminimal固定です。(sumibi.elではminimalを利用)
+  - gpt-5,gpt-5-mini,gpt-5-nanoはreasoning_effortがminimal固定です。(sumibi.elでもminimalを利用)
+  - gpt-5.1はreasoning_effortがnone固定です。(sumibi.elでもnoneを利用)
 
 ### エラー率 vs コスト（全体表示）
 ![plot1](../images/plot_errorrate_vs_cost_1000x600.png)
