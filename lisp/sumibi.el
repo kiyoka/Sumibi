@@ -5,7 +5,7 @@
 ;; Copyright (C) 2023 Kiyoka Nishiyama
 ;;
 ;; Author: Kiyoka Nishiyama <kiyoka@sumibi.org>
-;; Version: 3.8.0
+;; Version: 4.0.0
 ;; Keywords: lisp, ime, japanese
 ;; Package-Requires: ((emacs "29.0") (popup "0.5.9") (unicode-escape "1.1") (deferred "0.5.1") (mozc))
 ;; URL: https://github.com/kiyoka/Sumibi
@@ -44,6 +44,7 @@
 (require 'unicode-escape)
 (require 'deferred)
 (require 'sumibi-localdic)
+(require 'sumibi-english-words)
 
 ;; --------------------------------------------------------------
 ;; Optional: use mozc.el as a local backend when the model name
@@ -317,6 +318,186 @@ OpenAI 互換 API を利用しない（ローマ字→漢字を mozc で処理�
 
 (defvar sumibi-mode nil             "漢字変換トグル変数.")
 
+;; ------------------------------------------------------------------
+;; Romaji to Hiragana conversion (for Issue #97)
+;; ------------------------------------------------------------------
+(defconst sumibi--romaji-to-hiragana-table
+  '(;; 3文字の拗音・外来音（最長一致のため最初に配置）
+    ("kya" . "きゃ") ("kyu" . "きゅ") ("kyo" . "きょ")
+    ("sha" . "しゃ") ("shu" . "しゅ") ("sho" . "しょ") ("she" . "しぇ")
+    ("cha" . "ちゃ") ("chu" . "ちゅ") ("cho" . "ちょ") ("che" . "ちぇ")
+    ("tya" . "ちゃ") ("tyu" . "ちゅ") ("tyo" . "ちょ") ("tye" . "ちぇ")
+    ("nya" . "にゃ") ("nyu" . "にゅ") ("nyo" . "にょ")
+    ("nna" . "んな") ("nni" . "んに") ("nnu" . "んぬ") ("nne" . "んね") ("nno" . "んの")
+    ("hya" . "ひゃ") ("hyu" . "ひゅ") ("hyo" . "ひょ")
+    ("mya" . "みゃ") ("myu" . "みゅ") ("myo" . "みょ")
+    ("rya" . "りゃ") ("ryu" . "りゅ") ("ryo" . "りょ")
+    ("gya" . "ぎゃ") ("gyu" . "ぎゅ") ("gyo" . "ぎょ")
+    ("jya" . "じゃ") ("jyu" . "じゅ") ("jyo" . "じょ")
+    ("bya" . "びゃ") ("byu" . "びゅ") ("byo" . "びょ")
+    ("pya" . "ぴゃ") ("pyu" . "ぴゅ") ("pyo" . "ぴょ")
+    ("kwa" . "くぁ") ("kwi" . "くぃ") ("kwe" . "くぇ") ("kwo" . "くぉ")
+    ("tsa" . "つぁ") ("tsi" . "つぃ") ("tse" . "つぇ") ("tso" . "つぉ")
+    ("gwa" . "ぐぁ") ("gwi" . "ぐぃ") ("gwe" . "ぐぇ") ("gwo" . "ぐぉ")
+    ("dyi" . "でぃ") ("dyu" . "どゅ") ("dye" . "でぇ") ("dyo" . "どぉ")
+    ("xwi" . "うぃ") ("xwe" . "うぇ") ("xwo" . "うぉ")
+    ("tyi" . "てぃ")
+    ("xtu" . "っ")
+    ("xya" . "ゃ") ("xyu" . "ゅ") ("xyo" . "ょ") ("xwa" . "ゎ")
+    ("xka" . "ヵ") ("xke" . "ヶ")
+    ;; 2文字の組み合わせ
+    ("shi" . "し") ("chi" . "ち") ("tsu" . "つ") ("fu" . "ふ")
+    ("ja" . "じゃ") ("ju" . "じゅ") ("ji" . "じ") ("jo" . "じょ") ("je" . "じぇ")
+    ("fa" . "ふぁ") ("fi" . "ふぃ") ("fe" . "ふぇ") ("fo" . "ふぉ")
+    ("va" . "ヴぁ") ("vi" . "ヴぃ") ("vu" . "ヴ") ("ve" . "ヴぇ") ("vo" . "ヴぉ")
+    ("wi" . "うぃ") ("we" . "うぇ") ("wo" . "を")
+    ("nn" . "ん")
+    ("xa" . "ぁ") ("xi" . "ぃ") ("xu" . "ぅ") ("xe" . "ぇ") ("xo" . "ぉ")
+    ("ka" . "か") ("ki" . "き") ("ku" . "く") ("ke" . "け") ("ko" . "こ")
+    ("sa" . "さ") ("si" . "し") ("su" . "す") ("se" . "せ") ("so" . "そ")
+    ("ta" . "た") ("ti" . "ち") ("tu" . "つ") ("te" . "て") ("to" . "と")
+    ("na" . "な") ("ni" . "に") ("nu" . "ぬ") ("ne" . "ね") ("no" . "の")
+    ("ha" . "は") ("hi" . "ひ") ("hu" . "ふ") ("he" . "へ") ("ho" . "ほ")
+    ("ma" . "ま") ("mi" . "み") ("mu" . "む") ("me" . "め") ("mo" . "も")
+    ("ya" . "や") ("yi" . "い") ("yu" . "ゆ") ("ye" . "いぇ") ("yo" . "よ")
+    ("ra" . "ら") ("ri" . "り") ("ru" . "る") ("re" . "れ") ("ro" . "ろ")
+    ("wa" . "わ")
+    ("ga" . "が") ("gi" . "ぎ") ("gu" . "ぐ") ("ge" . "げ") ("go" . "ご")
+    ("za" . "ざ") ("zi" . "じ") ("zu" . "ず") ("ze" . "ぜ") ("zo" . "ぞ")
+    ("da" . "だ") ("di" . "ぢ") ("du" . "づ") ("de" . "で") ("do" . "ど")
+    ("ba" . "ば") ("bi" . "び") ("bu" . "ぶ") ("be" . "べ") ("bo" . "ぼ")
+    ("pa" . "ぱ") ("pi" . "ぴ") ("pu" . "ぷ") ("pe" . "ぺ") ("po" . "ぽ")
+    ;; 1文字（母音）
+    ("a" . "あ") ("i" . "い") ("u" . "う") ("e" . "え") ("o" . "お")
+    ("n" . "ん")
+    ;; 記号
+    ("-" . "ー"))
+  "ローマ字からひらがなへの変換テーブル。
+最長一致のため、長いキーから順に配置されています。")
+
+(defun sumibi--is-english-word (word)
+  "WORD が英単語辞書に含まれているかチェックする。
+
+辞書が利用可能な場合はハッシュテーブルで高速検索を行う。
+辞書が利用できない場合は nil を返す。"
+  (and (boundp 'sumibi--english-words-hash)
+       sumibi--english-words-hash
+       (gethash (downcase word) sumibi--english-words-hash)))
+
+(defun sumibi--convert-romaji-preserving-english (romaji-str)
+  "ローマ字文字列をひらがなに変換する。英単語は保持する。
+
+ROMAJI-STR: 変換対象のローマ字文字列（スペース区切り可）
+
+スペースで区切られた各単語に対して：
+  1. 英単語辞書にヒットする → そのまま保持
+  2. それ以外 → ローマ字→ひらがな変換を試みる
+
+戻り値: 変換後の文字列（スペースで結合）"
+  (if (string-match-p " " romaji-str)
+      ;; スペースが含まれる場合：各単語を個別に処理
+      (mapconcat
+       (lambda (word)
+         (if (sumibi--is-english-word word)
+             word  ; 英単語はそのまま保持
+           (sumibi-romaji-to-hiragana word nil)))  ; ローマ字→ひらがな変換
+       (split-string romaji-str " " t)
+       " ")
+    ;; スペースが含まれない場合：文字列全体を処理
+    (if (sumibi--is-english-word romaji-str)
+        romaji-str  ; 英単語はそのまま保持
+      (sumibi-romaji-to-hiragana romaji-str nil))))  ; ローマ字→ひらがな変換
+
+(defun sumibi-romaji-to-hiragana (romaji-str &optional preserve-english)
+  "ローマ字文字列をひらがなに変換する。
+
+ROMAJI-STR: 変換対象のローマ字文字列
+PRESERVE-ENGLISH: non-nil の場合、英単語を検出して保持する
+
+重要:
+  1. PRESERVE-ENGLISH が non-nil で、入力が英単語辞書に含まれる場合、
+     元の文字列をそのまま返す（英単語として保持）
+  2. それ以外の場合、文字列に1箇所でも変換できない文字が含まれていれば、
+     文字列全体を変換せずに元のまま返す
+
+許容される文字:
+  - ローマ字 (a-z, A-Z)
+  - ハイフン (-) は長音として扱う
+
+変換できない文字の例:
+  - 数字 (0-9)
+  - 記号 (!@#$ など、ハイフン以外)
+  - 変換テーブルにない不正なローマ字パターン (xyz, q など)
+
+例:
+  \"watashi\" -> \"わたし\" (全て変換可能)
+  \"kyou\" -> \"きょう\" (全て変換可能)
+  \"kitte\" -> \"きって\" (全て変換可能)
+  \"shimasit\" -> \"shimasit\" (末尾の't'が単独で変換不可のため全体を保持)
+  \"axyz\" -> \"axyz\" (xyzが変換不可のため全体を保持)
+  \"watashi123\" -> \"watashi123\" (数字が含まれるため全体を保持)
+  \"o-saka\" -> \"おーさか\" (ハイフンは長音として変換可能)
+
+変換テーブル:
+  - 基本: a->あ, ka->か, shi->し, nn->ん, etc.
+  - 拗音: kya->きゃ, sha->しゃ, etc.
+  - 促音: 子音重複 (tt, kk, etc.) -> っ
+  - 長音: ハイフン (-) -> ー
+  - 最長一致: 長い文字列から優先的にマッチ"
+  (let ((result '())
+        (pos 0)
+        (len (length romaji-str))
+        (romaji-lower (downcase romaji-str))
+        (all-convertible t))  ; 全て変換可能かを追跡
+    ;; 空文字列の場合はそのまま返す
+    (if (= len 0)
+        romaji-str
+      ;; 英単語検出: preserve-english が non-nil で、辞書に含まれる場合は保持
+      (if (and preserve-english (sumibi--is-english-word romaji-str))
+          romaji-str
+        (progn
+          (while (and (< pos len) all-convertible)
+            (let ((matched nil)
+                  (current-char (aref romaji-lower pos)))
+              ;; ハイフンは長音として扱う
+              (when (eq current-char ?-)
+		(push "ー" result)
+		(setq pos (1+ pos))
+		(setq matched t))
+	      
+              ;; 促音チェック: 子音の重複 (tt, kk, pp, etc.)
+              (unless matched
+		(when (and (< (1+ pos) len)
+                           (eq current-char (aref romaji-lower (1+ pos)))
+                           (not (memq current-char '(?a ?i ?u ?e ?o ?n))))
+                  ;; 子音が重複している場合、促音「っ」を追加
+                  (push "っ" result)
+                  (setq pos (1+ pos))
+                  (setq matched t)))
+	      
+              ;; 最長一致で変換テーブルを検索
+              (unless matched
+		(catch 'found
+                  (dolist (entry sumibi--romaji-to-hiragana-table)
+                    (let* ((key (car entry))
+                           (value (cdr entry))
+                           (key-len (length key)))
+                      (when (and (<= (+ pos key-len) len)
+				 (string= key (substring romaji-lower pos (+ pos key-len))))
+			(push value result)
+			(setq pos (+ pos key-len))
+			(setq matched t)
+			(throw 'found t))))))
+
+              ;; マッチしなかった場合は変換不可 → 元の文字列を返す
+              (unless matched
+		(setq all-convertible nil))))
+
+	  ;; 全て変換できた場合のみ変換結果を返す
+	  ;; そうでない場合は元の文字列を返す
+	  (if all-convertible
+              (apply 'concat (nreverse result))
+	    romaji-str))))))
 
 (defun sumibi-drop-right-slash (url)
   (if (string-suffix-p "/" url)
@@ -971,10 +1152,18 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
   (sumibi-debug-print (format "sumibi-roman-to-kanji-with-surrounding()\n"))
   (let* ((split (sumibi--split-markdown-prefix roman))
          (prefix (car split))
-         (core-roman (cdr split)))
+         (core-roman (cdr split))
+         ;; ローマ字→ひらがな変換 (Issue #97: 精度向上のため常に実行)
+         (processed-roman
+          (if (not (sumibi-backend-mozc-p))
+              (sumibi--convert-romaji-preserving-english core-roman) ; ひらがなに変換（英単語は保持）
+            core-roman)))  ; Mozcバックエンドの場合はローマ字のまま
+    ;; デバッグ出力: 変換結果
+    (sumibi-debug-print (format "  core-roman (入力): %s\n" core-roman))
+    (sumibi-debug-print (format "  processed-roman (LLMへ送信): %s\n" processed-roman))
     ;; `mozc' backend -------------------------------------------------
     (if (sumibi-backend-mozc-p)
-        (let ((cands (sumibi-mozc--candidate-list core-roman arg-n)))
+        (let ((cands (sumibi-mozc--candidate-list processed-roman arg-n)))
           (mapcar (lambda (s)
                     (let ((ret (concat prefix s)))
 		      (when (get-text-property 0 'sumibi-mozc-candidate s)
@@ -1042,12 +1231,12 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 		"## これはMarkdownのセクションです。")
 	  (cons "user"
 		(format
-		 (concat 
+		 (concat
 		  "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
 		  "周辺の文章は、「%s」"
 		  "のような文章になっています。"
 		  "周辺の文脈を見てそれに合った語彙を選んでください。: %s")
-		 surrounding core-roman)))
+		 surrounding processed-roman)))
 	 arg-n
 	 (lambda (json-str)
 	   (let* ((json-obj (json-parse-string json-str))
@@ -2452,7 +2641,7 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
                                   (length sumibi-history-stack) file-path)))))
 
 (defconst sumibi-version
-  "3.8.0" ;;SUMIBI-VERSION
+  "4.0.0" ;;SUMIBI-VERSION
   )
 (defun sumibi-version (&optional _arg)
   "Sumibiのバージョン番号をミニバッファに表示する.

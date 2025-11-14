@@ -76,6 +76,7 @@ test:
 		      --eval "(require 'mozc nil 'noerror)" \
 		      --eval "(setq sumibi-test-use-mozc-mock nil)" \
 		      -l test/sumibi-mozc-tests.el \
+		      -l test/sumibi-romaji-to-hiragana-test.el \
 		      -f ert-run-tests-batch-and-exit; \
 	else \
 		echo "Running tests with mock (default)..."; \
@@ -83,5 +84,6 @@ test:
 		      -L lisp \
 		      --eval "(setq sumibi-test-use-mozc-mock t)" \
 		      -l test/sumibi-mozc-tests.el \
+		      -l test/sumibi-romaji-to-hiragana-test.el \
 		      -f ert-run-tests-batch-and-exit; \
 	fi
