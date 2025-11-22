@@ -290,7 +290,7 @@ OpenAI 互換 API を利用しない（ローマ字→漢字を mozc で処理�
   :type  'string
   :group 'sumibi)
 
-(defcustom sumibi-model-list '("gpt-5" "gpt-5-mini" "gpt-4.1" "gpt-4.1-mini" "gpt-4o" "gpt-4o-mini")
+(defcustom sumibi-model-list '("gpt-5.1" "gpt-5" "gpt-5-mini" "gpt-4.1" "gpt-4.1-mini" "gpt-4o" "gpt-4o-mini")
   "AI モデル名の候補を定義する (gpt-4 シリーズ以上)。"
   :type  '(repeat string)
   :group 'sumibi)
@@ -533,6 +533,12 @@ SUMIBI_AI_BASEURL環境変数が未設定の場合はデフォルトURL\"https:/
   (let ((model (sumibi-ai-model)))
     (and (stringp model)
          (string-match-p "\\`gpt-5" model))))
+
+(defun sumibi-gpt51-p ()
+  "現在のモデルがGPT-5.1かどうかを判定する."
+  (let ((model (sumibi-ai-model)))
+    (and (stringp model)
+         (string-match-p "\\`gpt-5\\.1\\'" model))))
 
 (defun sumibi-modeline-string ()
   "利用するモデル名を表示する."
@@ -1066,9 +1072,12 @@ Argument DEFERRED-FUNC2 : 非同期呼び出し時のコールバック関数 (2
                "  \"temperature\": 1.0,"
              "  \"temperature\": 0.8,")
            (format  "  \"n\": %d," arg-n)
-           (if (sumibi-gpt5-series-p)
-               "  \"reasoning_effort\": \"minimal\",  \"verbosity\": \"low\","
-             "")
+           (cond
+            ((sumibi-gpt51-p)
+             "  \"reasoning_effort\": \"none\",  \"verbosity\": \"low\",")
+            ((sumibi-gpt5-series-p)
+             "  \"reasoning_effort\": \"minimal\",  \"verbosity\": \"low\",")
+            (t ""))
            "  \"messages\": [ "
            (string-join
             (-map
