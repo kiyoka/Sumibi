@@ -5,7 +5,7 @@
 ;; Copyright (C) 2023 Kiyoka Nishiyama
 ;;
 ;; Author: Kiyoka Nishiyama <kiyoka@sumibi.org>
-;; Version: 4.0.0
+;; Version: 4.1.0
 ;; Keywords: lisp, ime, japanese
 ;; Package-Requires: ((emacs "29.0") (popup "0.5.9") (unicode-escape "1.1") (deferred "0.5.1") (mozc))
 ;; URL: https://github.com/kiyoka/Sumibi
@@ -2650,7 +2650,7 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
                                   (length sumibi-history-stack) file-path)))))
 
 (defconst sumibi-version
-  "4.0.0" ;;SUMIBI-VERSION
+  "4.1.0" ;;SUMIBI-VERSION
   )
 (defun sumibi-version (&optional _arg)
   "Sumibiのバージョン番号をミニバッファに表示する.
