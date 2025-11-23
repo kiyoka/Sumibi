@@ -281,8 +281,8 @@ OpenAI 互換 API を利用するため、この設定の影響を受けませ�
   "Return non-nil if `sumibi-backend' is `mozc'."
   (eq sumibi-backend 'mozc))
 
-(defcustom sumibi-current-model "gpt-5"
-  "使用する AI モデル名を指定する (デフォルトは gpt-5)。
+(defcustom sumibi-current-model "gpt-5.1"
+  "使用する AI モデル名を指定する (デフォルトは gpt-5.1)。
 
 この変数は OpenAI 互換 API に渡す **LLM モデル名** を示します。
 OpenAI 互換 API を利用しない（ローマ字→漢字を mozc で処理したい）場合は
