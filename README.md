@@ -70,8 +70,15 @@ M-x sumibi-switch-modelでポップアップから利用モデルを動的に変
 
 https://github.com/user-attachments/assets/7fae1c5b-84ed-402c-9b5e-9bfb39f29237
 
-デフォルトでは、"gpt-5"、"gpt-5-mini"、"gpt-4.1"、"gpt-4o"など多数のモデル名を登録しています。
+デフォルトでは、"gpt-5.1"、"gpt-5"、"gpt-5-mini"、"gpt-4.1"、"gpt-4o"など多数のモデル名を登録しています。
 選択肢を増やしたい場合は、カスタマイズ変数 `sumibi-model-list` に候補を追加してください。
+
+### Sumibiに合ったモデルは？
+
+Sumibiを快適に使うためには、応答速度と変換精度の両方を満たすモデルが必要です。
+以下の青枠の中がスイートスポットですが、その中でもランニングコストなども考慮して、gpt-5.1とgemini-2.0-flashが最も適しているといえます。(2025年11月時点)
+
+![plot_errorrate_vs_inputtype_hiragana_1000x600.png](./images/plot_errorrate_vs_inputtype_hiragana_1000x600.png)
 
 ## Undo
 
@@ -110,13 +117,6 @@ AIサービスはOpenAI以外にも切り替えられます。OpenAIのcompletio
     ```
 
     上記の例は、Windows環境にLLM Studioをインストールし、モデル gemma-3-12b-it-qat をホストしたエンドポイントに接続した一つの例です。
-
-### Sumibiに合ったモデルは？
-
-Sumibiを快適に使うためには、応答速度と変換精度の両方を満たすモデルが必要です。
-以下の青枠の中がスイートスポットですが、その中でもランニングコストなども考慮して、gemini-2.0-flashが最も適しているといえます。(2025年11月時点)
-
-![plot_errorrate_vs_inputtype_hiragana_1000x600.png](./images/plot_errorrate_vs_inputtype_hiragana_1000x600.png)
 
 ## 前後の文章の取り込み行数の調整
 
