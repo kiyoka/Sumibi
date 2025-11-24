@@ -146,11 +146,11 @@ def plot_hiragana_errorrate_and_responsetime(
     # 凡例を表示
     ax1.legend(lines, labels, loc='upper left', fontsize=10)
 
-    # レスポンス時間1秒以内かつエラー率20%以内のモデルを青枠で囲む
+    # レスポンス時間1.2秒以内かつエラー率20%以内のモデルを青枠で囲む
     # 条件を満たすモデルのインデックスを抽出
     target_indices = []
     for i, d in enumerate(models_data):
-        if d['hiragana_time'] <= 1.0 and d['hiragana_cer'] <= 0.20:
+        if d['hiragana_time'] <= 1.2 and d['hiragana_cer'] <= 0.20:
             target_indices.append(i)
 
     # 連続した範囲ごとにグループ化して青枠を描画
@@ -194,7 +194,7 @@ def plot_hiragana_errorrate_and_responsetime(
     # 保存
     plt.savefig(output_path, dpi=150, bbox_inches='tight')
     print(f"Graph saved to: {output_path}")
-    print(f"\nHighlighted models (Response time ≤ 1.0s AND Error rate ≤ 20%):")
+    print(f"\nHighlighted models (Response time ≤ 1.2s AND Error rate ≤ 20%):")
     for idx in target_indices:
         d = models_data[idx]
         print(f"  - {d['model']}: {d['hiragana_cer']*100:.1f}%, {d['hiragana_time']:.2f}s")
