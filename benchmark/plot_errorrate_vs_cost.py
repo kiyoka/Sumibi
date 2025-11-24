@@ -38,6 +38,7 @@ MASTER_COST: Dict[str, float] = {
     "gemini-2.0-flash-lite": 0.0000975,
     "gemini-2.5-flash": 0.00065,
     "gemini-2.5-pro": 0.001625,
+    "gemini-3-pro-preview": 0.001625,  # 推定値 (gemini-2.5-proベース、プレビュー価格未公開)
     "gemma-3-12b-it-qat": 0.0001,
     "claude-opus-4-1-20250805": 0.0225,
     "claude-opus-4-20250514": 0.0225,
@@ -67,6 +68,7 @@ COLOR_MAP: Dict[str, str] = {
     "gemini-2.0-flash-lite": "silver",
     "gemini-2.5-flash": "darkgray",
     "gemini-2.5-pro": "gray",
+    "gemini-3-pro-preview": "dimgray",
     "gemma-3-12b-it-qat": "wheat",
     "claude-opus-4-1-20250805": "mediumpurple",
     "claude-opus-4-20250514": "blueviolet",
@@ -91,6 +93,7 @@ DATA_V24: Dict[str, Dict[str, float]] = {
     "gemini-2.0-flash": {"cer": 0.212067, "elapsed": 1.053327},
     "gemini-2.5-flash": {"cer": 0.109744, "elapsed": 14.765599},
     "gemini-2.5-pro": {"cer": 0.048225, "elapsed": 78.868088},
+    "gemini-3-pro-preview": {"cer": 0.016123, "elapsed": 43.236321},
     "gemma-3-12b-it-qat": {"cer": 0.730364, "elapsed": 2.018562},
     "gpt-4.1-mini": {"cer": 0.308427, "elapsed": 1.597734},
     "gpt-4.1": {"cer": 0.117064, "elapsed": 2.704047},
