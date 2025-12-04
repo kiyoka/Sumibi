@@ -1,6 +1,0 @@
-openai>=1.0.0
-requests>=2.25.0
-pathlib
-dataclasses
-mwparserfromhell>=0.6.4
-matplotlib>=3.0.0
