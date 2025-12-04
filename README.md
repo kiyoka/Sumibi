@@ -127,5 +127,5 @@ APIの費用が気になる方は小さい数字に、変換精度を上げた�
 
 ## LLMが使えない環境での利用
 
-mozcを変換処理のバックエンドとして利用できます。
-[Mozcを利用する設定](MOZC.md)
+LLMが使えない環境向けには、別プロジェクト「mozc-modeless」をご利用ください。
+[mozc-modeless](https://github.com/kiyoka/mozc-modeless)
