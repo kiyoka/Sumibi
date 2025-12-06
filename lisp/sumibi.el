@@ -7,7 +7,7 @@
 ;; Author: Kiyoka Nishiyama <kiyoka@sumibi.org>
 ;; Version: 4.2.0
 ;; Keywords: lisp, ime, japanese
-;; Package-Requires: ((emacs "29.0") (popup "0.5.9") (unicode-escape "1.1") (deferred "0.5.1"))
+;; Package-Requires: ((emacs "29.0") (popup "0.5.9") (unicode-escape "1.1") (deferred "0.5.1") (markdown-mode "2.0"))
 ;; URL: https://github.com/kiyoka/Sumibi
 ;;
 ;; This file is part of Sumibi
@@ -334,6 +334,11 @@ SUMIBI_AI_BASEURL環境変数が未設定の場合はデフォルトURL\"https:/
 
 ;; ローマ字漢字変換時、対象とするローマ字を設定するための変数
 (defvar sumibi-skip-chars "a-zA-Z0-9.,@:`\\-+!\\[\\]?;' \t")
+
+(defun sumibi-in-markdown-mode-p ()
+  "現在のバッファがmarkdown-modeかどうかを判定する."
+  (eq major-mode 'markdown-mode))
+
 (defvar sumibi-rK-trans-key "\C-j"
   "*漢字変換キーを設定する.")
 (defvar sumibi-mode-map
@@ -948,90 +953,90 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
     ;; OpenAI backend ------------------------------------------------
     (let ((saved-marker (point-marker))
           (result nil))
-        (sumibi-openai-http-post
-         (list
-	  (cons "system"
-		(concat
-		 "あなたはローマ字とひらがなを日本語に変換するアシスタントです。"
-		 "ローマ字の 「nn」 は 「ん」と読んでください。"
-		 "[](URL)のようなmarkdown構文は維持してください。"
-		 "# や ## や ### や #### のようなmarkdown構文は維持してください。"
-		 "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
-		 "ローマ字の字面をそのままひらがなや漢字にするだけで、元のローマ字にない文章を作り出さないでください。"
-		 "出力は変換後の一文のみ。注釈や説明は一切付けないください。"
-		 "もし、入力された文章が英語の文章と判断できた場合は、日本語に翻訳してください。"))
-	  (cons "user"
-		(concat
-		 "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
-		 " 周辺の文章は、「こんにちは、中野です。watashi no namae ha nakano desu . どうぞよろしくお願いします。」"
-		 "のような文章になっています。"
-		 "周辺の文脈を見てそれに合った語彙を選んでください。: watashi no namae ha nakano desu ."))
-	  (cons "assistant"
-		"私の名前は中野です。")
-	  (cons "user"
-		(concat
-		 "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
-		 "周辺の文章は、「説明はここまでです。それ以外はikano toori desu .」"
-		 "のような文章になっています。"
-		 "周辺の文脈を見てそれに合った語彙を選んでください。: ikano toori desu ."))
-	  (cons "assistant"
-		"以下の通りです。")
-	  (cons "user"
-		(concat
-		 "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
-		 "周辺の文章は、「開始位置から終了位置までをhannishitei shimasuそれでは続いて、」"
-		 "のような文章になっています。"
-		 "周辺の文脈を見てそれに合った語彙を選んでください。: hannishitei shimasu"))
-	  (cons "assistant"
-		"範囲指定します")
-	  (cons "user"
-		(concat
-		 "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
-		 "周辺の文章は、「見てください!We succeeded in taking a photo like this:\n![example](https://www.example.com/dir1/dir2/example.png)、"
-		 "リアルな写真だと思いませんか？」"
-		 "のような文章になっています。"
-		 "周辺の文脈を見てそれに合った語彙を選んでください。: We succeeded in taking a photo like this:\n![example](https://www.example.com/dir1/dir2/example.png)"))
-	  (cons "assistant"
-		"このような写真を撮ることに成功しました：\n![例](https://www.example.com/dir1/dir2/example.png)")
-	  (cons "user"
-		(concat
-		 "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
-		 "周辺の文章は、「ここまでが前半の説明です。\n"
-		 "## this is markdown section\n"
-		 "\n"
-		 "」"
-		 "のような文章になっています。"
-		 "周辺の文脈を見てそれに合った語彙を選んでください。: ## this is markdown section"))
-	  (cons "assistant"
-		"## これはMarkdownのセクションです。")
-	  (cons "user"
-		(format
-		 (concat
-		  "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
-		  "周辺の文章は、「%s」"
-		  "のような文章になっています。"
-		  "周辺の文脈を見てそれに合った語彙を選んでください。: %s")
-		 surrounding processed-roman)))
-	 arg-n
-	 (lambda (json-str)
-	   (let* ((json-obj (json-parse-string json-str))
-                  (lst (sumibi-analyze-openai-json-obj json-obj arg-n)))
-             (setq result (mapcar (lambda (s) (concat prefix s)) lst))))
-	 (lambda (json-str)
-	   (let* ((json-obj (json-parse-string json-str))
-		  (lst (mapcar (lambda (s) (concat prefix s))
-			       (sumibi-analyze-openai-json-obj json-obj arg-n))))
-             (when (and lst (null deferred-func2))
-	       (setq result lst))
-             (when lst
-	       (save-excursion
-		 (goto-char (marker-position saved-marker))
-		 (insert (car lst))
-		 ;; 見出し `###` 等の直後にスペースが無ければ補完する
-		 (sumibi--ensure-space-after-heading (marker-position saved-marker))
-		 (goto-char (marker-position saved-marker))))))
-	 deferred-func2)
-        result)))
+      (sumibi-openai-http-post
+       (list
+	(cons "system"
+	      (concat
+	       "あなたはローマ字とひらがなを日本語に変換するアシスタントです。"
+	       "ローマ字の 「nn」 は 「ん」と読んでください。"
+	       "[](URL)のようなmarkdown構文は維持してください。"
+	       "# や ## や ### や #### のようなmarkdown構文は維持してください。"
+	       "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
+	       "ローマ字の字面をそのままひらがなや漢字にするだけで、元のローマ字にない文章を作り出さないでください。"
+	       "出力は変換後の一文のみ。注釈や説明は一切付けないください。"
+	       "もし、入力された文章が英語の文章と判断できた場合は、日本語に翻訳してください。"))
+	(cons "user"
+	      (concat
+	       "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
+	       " 周辺の文章は、「こんにちは、中野です。watashi no namae ha nakano desu . どうぞよろしくお願いします。」"
+	       "のような文章になっています。"
+	       "周辺の文脈を見てそれに合った語彙を選んでください。: watashi no namae ha nakano desu ."))
+	(cons "assistant"
+	      "私の名前は中野です。")
+	(cons "user"
+	      (concat
+	       "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
+	       "周辺の文章は、「説明はここまでです。それ以外はikano toori desu .」"
+	       "のような文章になっています。"
+	       "周辺の文脈を見てそれに合った語彙を選んでください。: ikano toori desu ."))
+	(cons "assistant"
+	      "以下の通りです。")
+	(cons "user"
+	      (concat
+	       "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
+	       "周辺の文章は、「開始位置から終了位置までをhannishitei shimasuそれでは続いて、」"
+	       "のような文章になっています。"
+	       "周辺の文脈を見てそれに合った語彙を選んでください。: hannishitei shimasu"))
+	(cons "assistant"
+	      "範囲指定します")
+	(cons "user"
+	      (concat
+	       "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
+	       "周辺の文章は、「見てください!We succeeded in taking a photo like this:\n![example](https://www.example.com/dir1/dir2/example.png)、"
+	       "リアルな写真だと思いませんか？」"
+	       "のような文章になっています。"
+	       "周辺の文脈を見てそれに合った語彙を選んでください。: We succeeded in taking a photo like this:\n![example](https://www.example.com/dir1/dir2/example.png)"))
+	(cons "assistant"
+	      "このような写真を撮ることに成功しました：\n![例](https://www.example.com/dir1/dir2/example.png)")
+	(cons "user"
+	      (concat
+	       "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
+	       "周辺の文章は、「ここまでが前半の説明です。\n"
+	       "## this is markdown section\n"
+	       "\n"
+	       "」"
+	       "のような文章になっています。"
+	       "周辺の文脈を見てそれに合った語彙を選んでください。: ## this is markdown section"))
+	(cons "assistant"
+	      "## これはMarkdownのセクションです。")
+	(cons "user"
+	      (format
+	       (concat
+		"ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
+		"周辺の文章は、「%s」"
+		"のような文章になっています。"
+		"周辺の文脈を見てそれに合った語彙を選んでください。: %s")
+	       surrounding processed-roman)))
+       arg-n
+       (lambda (json-str)
+	 (let* ((json-obj (json-parse-string json-str))
+                (lst (sumibi-analyze-openai-json-obj json-obj arg-n)))
+           (setq result (mapcar (lambda (s) (concat prefix s)) lst))))
+       (lambda (json-str)
+	 (let* ((json-obj (json-parse-string json-str))
+		(lst (mapcar (lambda (s) (concat prefix s))
+			     (sumibi-analyze-openai-json-obj json-obj arg-n))))
+           (when (and lst (null deferred-func2))
+	     (setq result lst))
+           (when lst
+	     (save-excursion
+	       (goto-char (marker-position saved-marker))
+	       (insert (car lst))
+	       ;; 見出し `###` 等の直後にスペースが無ければ補完する
+	       (sumibi--ensure-space-after-heading (marker-position saved-marker))
+	       (goto-char (marker-position saved-marker))))))
+       deferred-func2)
+      result)))
 
 (defun sumibi-roman-to-yomigana (roman deferred-func2)
   "ローマ字で書かれた文章を **OpenAI 互換** サーバーを使って読み仮名を返します。
@@ -1041,37 +1046,37 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 戻り値: (\"した\" \"シタ\") や (\"なの\" \"ナノ\")"
   (sumibi-debug-print (format "sumibi-roman-to-yomigana()\n"))
   (let ((saved-marker (point-marker)))
-      (sumibi-openai-http-post
-       (list
-	(cons "system"
-	      "あなたはローマ字をひらがなとカタカナに変換するアシスタントです。ローマ字の 「nn」 は 「ん」と読んでください。")
-	(cons "user"
-	      "ローマ字をひらがなとカタカナにしてください : shita")
-	(cons "assistant"
-	      "した シタ")
-	(cons "user"
-	      "ローマ字をひらがなとカタカナにしてください : nano")
-	(cons "assistant"
-	      "なの ナノ")
-	(cons "user"
-	      "ローマ字をひらがなとカタカナにしてください : aiueokakikukeko")
-	(cons "assistant"
-	      "あいうえおかきくけこ アイウエオカキクケコ")
-	(cons "user"
-	      (format "ローマ字をひらがなとカタカナにしてください : %s" roman)))
-       1
-       (lambda (json-str)
-	 (let ((json-obj (json-parse-string json-str)))
-           (split-string (car (sumibi-analyze-openai-json-obj json-obj 1)))))
-       (lambda (json-str)
-	 (let* ((json-obj (json-parse-string json-str))
-		(lst (split-string (car (sumibi-analyze-openai-json-obj json-obj 1)))))
-           (if lst
-	       (save-excursion
-		 (goto-char (marker-position saved-marker))
-		 (insert (car lst))
-		 (goto-char (marker-position saved-marker))))))
-       deferred-func2)))
+    (sumibi-openai-http-post
+     (list
+      (cons "system"
+	    "あなたはローマ字をひらがなとカタカナに変換するアシスタントです。ローマ字の 「nn」 は 「ん」と読んでください。")
+      (cons "user"
+	    "ローマ字をひらがなとカタカナにしてください : shita")
+      (cons "assistant"
+	    "した シタ")
+      (cons "user"
+	    "ローマ字をひらがなとカタカナにしてください : nano")
+      (cons "assistant"
+	    "なの ナノ")
+      (cons "user"
+	    "ローマ字をひらがなとカタカナにしてください : aiueokakikukeko")
+      (cons "assistant"
+	    "あいうえおかきくけこ アイウエオカキクケコ")
+      (cons "user"
+	    (format "ローマ字をひらがなとカタカナにしてください : %s" roman)))
+     1
+     (lambda (json-str)
+       (let ((json-obj (json-parse-string json-str)))
+         (split-string (car (sumibi-analyze-openai-json-obj json-obj 1)))))
+     (lambda (json-str)
+       (let* ((json-obj (json-parse-string json-str))
+	      (lst (split-string (car (sumibi-analyze-openai-json-obj json-obj 1)))))
+         (if lst
+	     (save-excursion
+	       (goto-char (marker-position saved-marker))
+	       (insert (car lst))
+	       (goto-char (marker-position saved-marker))))))
+     deferred-func2)))
 
 (defun sumibi-kanji-to-yomigana (kanji deferred-func2)
   "漢字仮名混じりで書かれた文章を **OpenAI 互換** サーバーを使って読み仮名を返します。
@@ -1935,7 +1940,11 @@ _ARG: (未使用)"
         (sumibi-debug-print (format "ascii? (%s) => t\n" (preceding-char)))
         ;; カーソル直前が alphabet だったら
         (let ((end (point))
-	      (gap (sumibi-skip-chars-backward)))
+	      (gap (if (sumibi-in-markdown-mode-p)
+                       ;; markdown-modeの場合は段落全体を対象とする
+                       (sumibi-skip-chars-backward-markdown)
+                     ;; それ以外は従来通り
+                     (sumibi-skip-chars-backward))))
           (when (/= gap 0)
             ;; 意味のある入力が見つかったので変換する
             (let (
@@ -2006,6 +2015,38 @@ _ARG: (未使用)"
   (and (eq (sumibi-char-charset ch) 'japanese-jisx0208)
        (string-match "[亜-黑]" (char-to-string ch))))
 
+
+(defun sumibi-skip-chars-backward-markdown ()
+  "markdown-mode用の変換範囲決定関数。
+括弧を含むローマ字部分を変換対象とし、日本語文字で停止する。
+行頭のインデントやMarkdown構文（リストマーカー、見出し）は
+変換対象から除外する。"
+  (save-excursion
+    (let* ((end (point))
+           (line-start (line-beginning-position))
+           (search-start line-start)
+           (skip-chars-with-parens (concat sumibi-skip-chars "()")))
+      ;; markdown-modeの場合、行頭のMarkdown構文をスキップ
+      (when (derived-mode-p 'markdown-mode)
+        (goto-char line-start)
+        ;; リストマーカー（-, *, +, 1. など）をチェック
+        ;; markdown-regex-listは行頭から始まる正規表現
+        (when (and (boundp 'markdown-regex-list)
+                   (looking-at markdown-regex-list))
+          (setq search-start (match-end 0)))
+        ;; ATXヘッダ（#, ## など）をチェック
+        (goto-char line-start)
+        (when (looking-at "^[ \t]*\\(#+\\)[ \t]+")
+          (setq search-start (max search-start (match-end 0)))))
+      ;; markdown-mode以外、またはMarkdown構文がない場合はインデントをスキップ
+      (when (= search-start line-start)
+        (goto-char line-start)
+        (skip-chars-forward " \t")
+        (setq search-start (point)))
+      ;; 指定文字を後方にスキップ
+      (goto-char end)
+      (skip-chars-backward skip-chars-with-parens search-start)
+      (- (point) end))))
 
 (defun sumibi-skip-chars-backward ()
   "ローマ字漢字変換時、変換対象とするローマ字を読み飛ばす."
