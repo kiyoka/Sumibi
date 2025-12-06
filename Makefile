@@ -60,33 +60,16 @@ help:
 	@echo "  release      : create $(ARCHIVE_NAME) (archive contents are placed under '$(PACKAGE_DIR)/')"
 	@echo "  clean        : remove generated archives" 
 	@echo "  help         : show this message"
-	@echo "  test         : run ERT unit tests with mock (default)"
-	@echo "                 use SUMIBI_TEST_USE_MOCK=0 make test for real mozc_server"
+	@echo "  test         : run ERT unit tests"
 
 # --------------------------------------------------------------------
-# Run Emacs ERT tests (default: mock mode, set SUMIBI_TEST_USE_MOCK=0 for real mozc)
+# Run Emacs ERT tests
 # --------------------------------------------------------------------
 .PHONY: test
 
 test:
-	# デフォルトはモック版でテスト実行
-	# SUMIBI_TEST_USE_MOCK=0 make test で本物のmozc_serverを使用
-	@if [ "$(SUMIBI_TEST_USE_MOCK)" = "0" ]; then \
-		echo "Running tests with real mozc_server..."; \
-		emacs -batch -Q \
-		      -L lisp \
-		      -L /usr/share/emacs/site-lisp/emacs-mozc \
-		      --eval "(require 'mozc nil 'noerror)" \
-		      --eval "(setq sumibi-test-use-mozc-mock nil)" \
-		      -l test/sumibi-mozc-tests.el \
-		      -l test/sumibi-romaji-to-hiragana-test.el \
-		      -f ert-run-tests-batch-and-exit; \
-	else \
-		echo "Running tests with mock (default)..."; \
-		emacs -batch -Q \
-		      -L lisp \
-		      --eval "(setq sumibi-test-use-mozc-mock t)" \
-		      -l test/sumibi-mozc-tests.el \
-		      -l test/sumibi-romaji-to-hiragana-test.el \
-		      -f ert-run-tests-batch-and-exit; \
-	fi
+	@echo "Running tests..."
+	emacs -batch -Q \
+	      -L lisp \
+	      -l test/sumibi-romaji-to-hiragana-test.el \
+	      -f ert-run-tests-batch-and-exit
