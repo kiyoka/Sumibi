@@ -154,7 +154,7 @@ def main() -> None:
     # 描画
     # ---------------------------------------------------------------------------
 
-    fig, ax1 = plt.subplots(figsize=(10, 6))
+    fig, ax1 = plt.subplots(figsize=(10, 18))
 
     # -- v2.4.0: 横棒バー (95パーセンタイル)
     bars = ax1.barh(models_sorted, elapsed_v24_sorted, color=bar_colors_sorted)
