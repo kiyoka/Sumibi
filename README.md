@@ -78,6 +78,8 @@ https://github.com/user-attachments/assets/7fae1c5b-84ed-402c-9b5e-9bfb39f29237
 Sumibiを快適に使うためには、応答速度と変換精度の両方を満たすモデルが必要です。
 以下の青枠の中がスイートスポットですが、その中でもランニングコストなども考慮して、gpt-5.1とgemini-2.0-flashが最も適しているといえます。(2025年11月時点)
 
+**注記**: gemini-3-flash-previewは非常に高精度（エラー率3.1%）ですが、応答時間が11秒程度と長く、IMEの実用基準（2秒以内）を満たしていません。これはpreview版であるためと考えられ、stable版がリリースされた際には応答速度が改善される可能性があります。stable版がリリースされた際には再度ベンチマークを実施する予定です。
+
 ![plot_errorrate_vs_inputtype_hiragana_1000x600.png](./images/plot_errorrate_vs_inputtype_hiragana_1000x600.png)
 
 ## Undo

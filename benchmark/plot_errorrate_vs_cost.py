@@ -98,6 +98,7 @@ DATA_V24: Dict[str, Dict[str, float]] = {
     "gemini-2.5-flash": {"cer": 0.109744, "elapsed": 14.765599},
     "gemini-2.5-pro": {"cer": 0.048225, "elapsed": 78.868088},
     "gemini-3-pro-preview": {"cer": 0.016123, "elapsed": 43.236321},
+    "gemini-3-flash-preview": {"cer": 0.032238, "elapsed": 9.874763},
     "gemma-3-12b-it-qat": {"cer": 0.730364, "elapsed": 2.018562},
     "gpt-4.1-mini": {"cer": 0.308427, "elapsed": 1.597734},
     "gpt-4.1": {"cer": 0.117064, "elapsed": 2.704047},
