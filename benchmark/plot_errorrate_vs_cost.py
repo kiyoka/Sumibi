@@ -39,6 +39,7 @@ MASTER_COST: Dict[str, float] = {
     "gemini-2.5-flash": 0.00065,
     "gemini-2.5-pro": 0.001625,
     "gemini-3-pro-preview": 0.001625,  # 推定値 (gemini-2.5-proベース、プレビュー価格未公開)
+    "gemini-3-flash-preview": 0.00085,  # $0.50 input + $3.00 output → (500×0.50 + 200×3.00)/1M = $0.85/1K
     "gemma-3-12b-it-qat": 0.0001,
     "claude-opus-4-1-20250805": 0.0225,
     "claude-opus-4-20250514": 0.0225,
@@ -70,6 +71,7 @@ COLOR_MAP: Dict[str, str] = {
     "gemini-2.5-flash": "darkgray",
     "gemini-2.5-pro": "gray",
     "gemini-3-pro-preview": "dimgray",
+    "gemini-3-flash-preview": "steelblue",
     "gemma-3-12b-it-qat": "wheat",
     "claude-opus-4-1-20250805": "mediumpurple",
     "claude-opus-4-20250514": "blueviolet",
