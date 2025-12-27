@@ -307,3 +307,6 @@ macOSのキーチェーンアクセスでAPI Keyを登録：
 この実装により、プレーンテキストでの環境変数保存から脱却し、より安全なAPI Key管理が可能になりました。
 
 このブランチに、mainブランチに入った変更を取り込んでください。
+
+マージしたあと、ctrl-jをおすと、以下のエラーが出ます。原因を調査してください。
+not: Symbol’s function definition is void: sumibi-backend-mozc-p [3 times]
