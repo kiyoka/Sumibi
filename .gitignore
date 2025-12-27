@@ -12,3 +12,4 @@ images/sumibi-demo.mov
 benchmark/error.txt
 lisp/sumibi.el.backup.txt
 /benchmark_mozc_conversion_helper/external
+.DS_Store
