@@ -4,16 +4,15 @@
 ## プロジェクト構成
 
 - `lisp/` Emacs Lisp 本体（主: `lisp/sumibi.el`、辞書: `lisp/sumibi-localdic.el`）
-- `test/` ERT テスト一式（`test/sumibi-mozc-tests.el`、`test/mozc-mock.el`）
-- `benchmark/`, `benchmark_mozc_conversion_helper/` ベンチマーク関連、`skkdic/` 辞書、`images/` 画像資産
-- ルート: `Makefile`（パッケージ/テスト入口）、`README.md`, `TESTING.md`, `MOZC.md` などの文書
+- `test/` ERT テスト一式
+- `benchmark/` ベンチマーク関連、`skkdic/` 辞書、`images/` 画像資産
+- ルート: `Makefile`（パッケージ/テスト入口）、`README.md`, `TESTING.md` などの文書
 
 ## ビルド・テスト・開発
 
 - `make release` `lisp/*.el` と文書・LICENSE を同梱した `Sumibi-elisp-<version>.tar.gz` を作成
 - `make clean` 生成物を削除
-- `make test` モック環境で ERT を実行（高速・再現性重視）
-- `SUMIBI_TEST_USE_MOCK=0 make test` 実 Mozc と接続してテスト（Mozc 必須）
+- `make test` ERT を実行（高速・再現性重視）
 
 ## コーディング規約（Emacs Lisp）
 
@@ -25,8 +24,8 @@
 ## テスト指針
 
 - フレームワーク: ERT。`test/` 配下に追加し、既存テストに倣う
-- 命名: `sumibi-mozc-...` を基本。確定的な検証はモックを使用
-- 実行: `make test`（モック）/ `SUMIBI_TEST_USE_MOCK=0 make test`（実 Mozc）
+- 命名: `sumibi-...` を基本とする
+- 実行: `make test`
 
 ## コミット / PR ガイド
 
@@ -44,4 +43,3 @@
 ## セキュリティ / 設定
 
 - 機密情報はコミットしない。API キー等は環境変数 `SUMIBI_AI_API_KEY`、任意で `SUMIBI_AI_BASEURL`, `SUMIBI_AI_MODEL` を使用
-- テストは既定でモックを使用し、外部ネットワーク不要で通る構成を維持

@@ -5,9 +5,9 @@
 ;; Copyright (C) 2023 Kiyoka Nishiyama
 ;;
 ;; Author: Kiyoka Nishiyama <kiyoka@sumibi.org>
-;; Version: 3.8.0
+;; Version: 4.2.0
 ;; Keywords: lisp, ime, japanese
-;; Package-Requires: ((emacs "29.0") (popup "0.5.9") (unicode-escape "1.1") (deferred "0.5.1") (mozc))
+;; Package-Requires: ((emacs "29.0") (popup "0.5.9") (unicode-escape "1.1") (deferred "0.5.1"))
 ;; URL: https://github.com/kiyoka/Sumibi
 ;;
 ;; This file is part of Sumibi
@@ -44,6 +44,7 @@
 (require 'unicode-escape)
 (require 'deferred)
 (require 'sumibi-localdic)
+(require 'sumibi-english-words)
 
 ;; --------------------------------------------------------------
 ;; Optional: use mozc.el as a local backend when the model name
@@ -158,7 +159,7 @@ ROMAN itself is returned so that callers can safely fall back."
         (progn
           candidates)))))
 
-;;; 
+;;;
 ;;;
 ;;; customize variables
 ;;;
@@ -175,127 +176,18 @@ ROMAN itself is returned so that callers can safely fall back."
 ;; ------------------------------------------------------------------
 ;; Utility: decide annotation label for a candidate string
 ;; ------------------------------------------------------------------
-(defun sumibi--annotation-label (str idx)
-  "Return annotation label for STR which is the (IDX+1)-th candidate.
+(defun sumibi--annotation-label (_str idx)
+  "Return annotation label for STR which is the (IDX+1)-th candidate."
+  (format "候補%d" idx))
 
-If STR originated from `sumibi-mozc--candidate-list' the text property
-`sumibi-mozc-candidate' is expected to be non-nil and the label will be
-prefixed with \"Mozc\" so that users can recognise the source easily."
-  (if (get-text-property 0 'sumibi-mozc-candidate str)
-      (format "Mozc候補%d" idx)
-    (format "候補%d" idx)))
+(defcustom sumibi-current-model "gpt-5.1"
+  "使用する AI モデル名を指定する (デフォルトは gpt-5.1)。
 
-;; ------------------------------------------------------------------
-;; Teach Mozc the actually committed candidate (optional)
-;; ------------------------------------------------------------------
-(defcustom sumibi-mozc-learn-at-kakutei t
-  "If non-nil, Sumibi asks Mozc to learn the candidate that was
-finally committed in `sumibi-select-kakutei'.
-
-This is achieved by spinning up a *separate* Mozc session at the
-moment of confirmation, performing the same conversion again, moving
-the selection to the committed candidate and sending an ENTER key so
-that Mozc's adaptive learning mechanism records the choice.
-
-The feature only works when `sumibi-backend' is `mozc'."
-  :type 'boolean
-  :group 'sumibi)
-
-;; Internal helper ----------------------------------------------------
-(defun sumibi--mozc-learn (roman committed)
-  "Let Mozc learn that ROMAN converts to COMMITTED.
-
-This function is called right after a candidate is confirmed via
-`sumibi-select-kakutei'.  A *new* Mozc session is created so that the
-learning operation is completely isolated from the session Sumibi
-uses for ordinary candidate acquisition.
-
-If COMMITTED cannot be found in Mozc's candidate list, the function
-simply commits the default candidate so that at least the roman string
-is registered in Mozc's history.  Any Mozc-related error is caught and
-silently ignored so as not to interfere with the original Sumibi
-workflow."
-  (when (and sumibi--mozc-available-p            ; Mozc is loadable
-             (sumibi-backend-mozc-p)             ; currently using Mozc backend
-             (stringp roman) (stringp committed)
-             (not (string-match-p "[ \t]" roman))) ; single segment only
-    (condition-case err
-        (progn
-          ;; start isolated session
-          (mozc-session-create t)
-
-          ;; feed roman characters
-          (dolist (ch (string-to-list (downcase roman)))
-            (mozc-session-sendkey (list ch)))
-
-          ;; send <space> up to 3 times until Mozc returns candidates
-          (let* ((iteration 0)
-                 resp cands)
-            (while (and (< iteration 3)
-                        (progn
-                          (setq resp  (mozc-session-sendkey '(space)))
-                          (setq cands (and resp (mozc-protobuf-get resp 'candidates)))
-                          (null cands)))
-              (setq iteration (1+ iteration)))
-
-            (let* ((cand-list (and cands (mozc-protobuf-get cands 'candidate)))
-                   (values    (and cand-list
-                                   (mapcar (lambda (cand)
-                                             (mozc-protobuf-get cand 'value))
-                                           cand-list)))
-                   (idx       (and values
-                                   (cl-position committed values :test #'string=))))
-
-              ;; The first space may have moved the selection to candidate 1.
-              ;; Send UP once to ensure we are at candidate 0, then navigate.
-              (when (and idx (> idx 0))
-		(mozc-session-sendkey '(up))
-		(dotimes (_ idx)
-                  (mozc-session-sendkey '(down)))))
-	    
-            ;; Commit current candidate so that Mozc learns it.
-            (mozc-session-sendkey '(enter)))
-
-          ;; terminate session if supported
-          (when (fboundp 'mozc-session-delete)
-            (mozc-session-delete)))
-      (error
-       err))))
-
-;; --------------------------------------------------------------
-;; Backend selection for roman→kanji conversion.
-;;   'openai (default) : use an OpenAI-compatible ChatCompletions API
-;;   'mozc            : use local mozc.el session
-;; --------------------------------------------------------------
-(defcustom sumibi-backend 'openai
-  "Backend engine used for *ローマ字→漢字かな混じり文* 変換.
-
-openai : OpenAI だけでなく **OpenAI 互換** の ChatCompletions API
-         (例: OpenAI, Google Gemini、ローカル LLM など) を利用する。
-         利用するサービスは `SUMIBI_AI_BASEURL' で指定した URL に
-         よって切り替えられます。
-mozc   : ネットワークを使わずローカルの mozc.el で変換する。
-
-読み仮名生成や翻訳など、ローマ字変換以外のルーチンは常に
-OpenAI 互換 API を利用するため、この設定の影響を受けません。"
-  :type '(choice (const :tag "OpenAI互換 API" openai)
-                 (const :tag "Mozc (local)" mozc))
-  :group 'sumibi)
-
-(defun sumibi-backend-mozc-p ()
-  "Return non-nil if `sumibi-backend' is `mozc'."
-  (eq sumibi-backend 'mozc))
-
-(defcustom sumibi-current-model "gpt-5"
-  "使用する AI モデル名を指定する (デフォルトは gpt-5)。
-
-この変数は OpenAI 互換 API に渡す **LLM モデル名** を示します。
-OpenAI 互換 API を利用しない（ローマ字→漢字を mozc で処理したい）場合は
-後述の `sumibi-backend' を `mozc' に設定してください。"
+この変数は OpenAI 互換 API に渡す **LLM モデル名** を示します。"
   :type  'string
   :group 'sumibi)
 
-(defcustom sumibi-model-list '("gpt-5" "gpt-5-mini" "gpt-4.1" "gpt-4.1-mini" "gpt-4o" "gpt-4o-mini")
+(defcustom sumibi-model-list '("gpt-5.1" "gpt-5" "gpt-5-mini" "gpt-4.1" "gpt-4.1-mini" "gpt-4o" "gpt-4o-mini")
   "AI モデル名の候補を定義する (gpt-4 シリーズ以上)。"
   :type  '(repeat string)
   :group 'sumibi)
@@ -336,6 +228,186 @@ OpenAI 互換 API を利用しない（ローマ字→漢字を mozc で処理�
 
 (defvar sumibi-mode nil             "漢字変換トグル変数.")
 
+;; ------------------------------------------------------------------
+;; Romaji to Hiragana conversion (for Issue #97)
+;; ------------------------------------------------------------------
+(defconst sumibi--romaji-to-hiragana-table
+  '(;; 3文字の拗音・外来音（最長一致のため最初に配置）
+    ("kya" . "きゃ") ("kyu" . "きゅ") ("kyo" . "きょ")
+    ("sha" . "しゃ") ("shu" . "しゅ") ("sho" . "しょ") ("she" . "しぇ")
+    ("cha" . "ちゃ") ("chu" . "ちゅ") ("cho" . "ちょ") ("che" . "ちぇ")
+    ("tya" . "ちゃ") ("tyu" . "ちゅ") ("tyo" . "ちょ") ("tye" . "ちぇ")
+    ("nya" . "にゃ") ("nyu" . "にゅ") ("nyo" . "にょ")
+    ("nna" . "んな") ("nni" . "んに") ("nnu" . "んぬ") ("nne" . "んね") ("nno" . "んの")
+    ("hya" . "ひゃ") ("hyu" . "ひゅ") ("hyo" . "ひょ")
+    ("mya" . "みゃ") ("myu" . "みゅ") ("myo" . "みょ")
+    ("rya" . "りゃ") ("ryu" . "りゅ") ("ryo" . "りょ")
+    ("gya" . "ぎゃ") ("gyu" . "ぎゅ") ("gyo" . "ぎょ")
+    ("jya" . "じゃ") ("jyu" . "じゅ") ("jyo" . "じょ")
+    ("bya" . "びゃ") ("byu" . "びゅ") ("byo" . "びょ")
+    ("pya" . "ぴゃ") ("pyu" . "ぴゅ") ("pyo" . "ぴょ")
+    ("kwa" . "くぁ") ("kwi" . "くぃ") ("kwe" . "くぇ") ("kwo" . "くぉ")
+    ("tsa" . "つぁ") ("tsi" . "つぃ") ("tse" . "つぇ") ("tso" . "つぉ")
+    ("gwa" . "ぐぁ") ("gwi" . "ぐぃ") ("gwe" . "ぐぇ") ("gwo" . "ぐぉ")
+    ("dyi" . "でぃ") ("dyu" . "どゅ") ("dye" . "でぇ") ("dyo" . "どぉ")
+    ("xwi" . "うぃ") ("xwe" . "うぇ") ("xwo" . "うぉ")
+    ("tyi" . "てぃ")
+    ("xtu" . "っ")
+    ("xya" . "ゃ") ("xyu" . "ゅ") ("xyo" . "ょ") ("xwa" . "ゎ")
+    ("xka" . "ヵ") ("xke" . "ヶ")
+    ;; 2文字の組み合わせ
+    ("shi" . "し") ("chi" . "ち") ("tsu" . "つ") ("fu" . "ふ")
+    ("ja" . "じゃ") ("ju" . "じゅ") ("ji" . "じ") ("jo" . "じょ") ("je" . "じぇ")
+    ("fa" . "ふぁ") ("fi" . "ふぃ") ("fe" . "ふぇ") ("fo" . "ふぉ")
+    ("va" . "ヴぁ") ("vi" . "ヴぃ") ("vu" . "ヴ") ("ve" . "ヴぇ") ("vo" . "ヴぉ")
+    ("wi" . "うぃ") ("we" . "うぇ") ("wo" . "を")
+    ("nn" . "ん")
+    ("xa" . "ぁ") ("xi" . "ぃ") ("xu" . "ぅ") ("xe" . "ぇ") ("xo" . "ぉ")
+    ("ka" . "か") ("ki" . "き") ("ku" . "く") ("ke" . "け") ("ko" . "こ")
+    ("sa" . "さ") ("si" . "し") ("su" . "す") ("se" . "せ") ("so" . "そ")
+    ("ta" . "た") ("ti" . "ち") ("tu" . "つ") ("te" . "て") ("to" . "と")
+    ("na" . "な") ("ni" . "に") ("nu" . "ぬ") ("ne" . "ね") ("no" . "の")
+    ("ha" . "は") ("hi" . "ひ") ("hu" . "ふ") ("he" . "へ") ("ho" . "ほ")
+    ("ma" . "ま") ("mi" . "み") ("mu" . "む") ("me" . "め") ("mo" . "も")
+    ("ya" . "や") ("yi" . "い") ("yu" . "ゆ") ("ye" . "いぇ") ("yo" . "よ")
+    ("ra" . "ら") ("ri" . "り") ("ru" . "る") ("re" . "れ") ("ro" . "ろ")
+    ("wa" . "わ")
+    ("ga" . "が") ("gi" . "ぎ") ("gu" . "ぐ") ("ge" . "げ") ("go" . "ご")
+    ("za" . "ざ") ("zi" . "じ") ("zu" . "ず") ("ze" . "ぜ") ("zo" . "ぞ")
+    ("da" . "だ") ("di" . "ぢ") ("du" . "づ") ("de" . "で") ("do" . "ど")
+    ("ba" . "ば") ("bi" . "び") ("bu" . "ぶ") ("be" . "べ") ("bo" . "ぼ")
+    ("pa" . "ぱ") ("pi" . "ぴ") ("pu" . "ぷ") ("pe" . "ぺ") ("po" . "ぽ")
+    ;; 1文字（母音）
+    ("a" . "あ") ("i" . "い") ("u" . "う") ("e" . "え") ("o" . "お")
+    ("n" . "ん")
+    ;; 記号
+    ("-" . "ー"))
+  "ローマ字からひらがなへの変換テーブル。
+最長一致のため、長いキーから順に配置されています。")
+
+(defun sumibi--is-english-word (word)
+  "WORD が英単語辞書に含まれているかチェックする。
+
+辞書が利用可能な場合はハッシュテーブルで高速検索を行う。
+辞書が利用できない場合は nil を返す。"
+  (and (boundp 'sumibi--english-words-hash)
+       sumibi--english-words-hash
+       (gethash (downcase word) sumibi--english-words-hash)))
+
+(defun sumibi--convert-romaji-preserving-english (romaji-str)
+  "ローマ字文字列をひらがなに変換する。英単語は保持する。
+
+ROMAJI-STR: 変換対象のローマ字文字列（スペース区切り可）
+
+スペースで区切られた各単語に対して：
+  1. 英単語辞書にヒットする → そのまま保持
+  2. それ以外 → ローマ字→ひらがな変換を試みる
+
+戻り値: 変換後の文字列（スペースで結合）"
+  (if (string-match-p " " romaji-str)
+      ;; スペースが含まれる場合：各単語を個別に処理
+      (mapconcat
+       (lambda (word)
+         (if (sumibi--is-english-word word)
+             word  ; 英単語はそのまま保持
+           (sumibi-romaji-to-hiragana word nil)))  ; ローマ字→ひらがな変換
+       (split-string romaji-str " " t)
+       " ")
+    ;; スペースが含まれない場合：文字列全体を処理
+    (if (sumibi--is-english-word romaji-str)
+        romaji-str  ; 英単語はそのまま保持
+      (sumibi-romaji-to-hiragana romaji-str nil))))  ; ローマ字→ひらがな変換
+
+(defun sumibi-romaji-to-hiragana (romaji-str &optional preserve-english)
+  "ローマ字文字列をひらがなに変換する。
+
+ROMAJI-STR: 変換対象のローマ字文字列
+PRESERVE-ENGLISH: non-nil の場合、英単語を検出して保持する
+
+重要:
+  1. PRESERVE-ENGLISH が non-nil で、入力が英単語辞書に含まれる場合、
+     元の文字列をそのまま返す（英単語として保持）
+  2. それ以外の場合、文字列に1箇所でも変換できない文字が含まれていれば、
+     文字列全体を変換せずに元のまま返す
+
+許容される文字:
+  - ローマ字 (a-z, A-Z)
+  - ハイフン (-) は長音として扱う
+
+変換できない文字の例:
+  - 数字 (0-9)
+  - 記号 (!@#$ など、ハイフン以外)
+  - 変換テーブルにない不正なローマ字パターン (xyz, q など)
+
+例:
+  \"watashi\" -> \"わたし\" (全て変換可能)
+  \"kyou\" -> \"きょう\" (全て変換可能)
+  \"kitte\" -> \"きって\" (全て変換可能)
+  \"shimasit\" -> \"shimasit\" (末尾の't'が単独で変換不可のため全体を保持)
+  \"axyz\" -> \"axyz\" (xyzが変換不可のため全体を保持)
+  \"watashi123\" -> \"watashi123\" (数字が含まれるため全体を保持)
+  \"o-saka\" -> \"おーさか\" (ハイフンは長音として変換可能)
+
+変換テーブル:
+  - 基本: a->あ, ka->か, shi->し, nn->ん, etc.
+  - 拗音: kya->きゃ, sha->しゃ, etc.
+  - 促音: 子音重複 (tt, kk, etc.) -> っ
+  - 長音: ハイフン (-) -> ー
+  - 最長一致: 長い文字列から優先的にマッチ"
+  (let ((result '())
+        (pos 0)
+        (len (length romaji-str))
+        (romaji-lower (downcase romaji-str))
+        (all-convertible t))  ; 全て変換可能かを追跡
+    ;; 空文字列の場合はそのまま返す
+    (if (= len 0)
+        romaji-str
+      ;; 英単語検出: preserve-english が non-nil で、辞書に含まれる場合は保持
+      (if (and preserve-english (sumibi--is-english-word romaji-str))
+          romaji-str
+        (progn
+          (while (and (< pos len) all-convertible)
+            (let ((matched nil)
+                  (current-char (aref romaji-lower pos)))
+              ;; ハイフンは長音として扱う
+              (when (eq current-char ?-)
+		(push "ー" result)
+		(setq pos (1+ pos))
+		(setq matched t))
+	      
+              ;; 促音チェック: 子音の重複 (tt, kk, pp, etc.)
+              (unless matched
+		(when (and (< (1+ pos) len)
+                           (eq current-char (aref romaji-lower (1+ pos)))
+                           (not (memq current-char '(?a ?i ?u ?e ?o ?n))))
+                  ;; 子音が重複している場合、促音「っ」を追加
+                  (push "っ" result)
+                  (setq pos (1+ pos))
+                  (setq matched t)))
+	      
+              ;; 最長一致で変換テーブルを検索
+              (unless matched
+		(catch 'found
+                  (dolist (entry sumibi--romaji-to-hiragana-table)
+                    (let* ((key (car entry))
+                           (value (cdr entry))
+                           (key-len (length key)))
+                      (when (and (<= (+ pos key-len) len)
+				 (string= key (substring romaji-lower pos (+ pos key-len))))
+			(push value result)
+			(setq pos (+ pos key-len))
+			(setq matched t)
+			(throw 'found t))))))
+
+              ;; マッチしなかった場合は変換不可 → 元の文字列を返す
+              (unless matched
+		(setq all-convertible nil))))
+
+	  ;; 全て変換できた場合のみ変換結果を返す
+	  ;; そうでない場合は元の文字列を返す
+	  (if all-convertible
+              (apply 'concat (nreverse result))
+	    romaji-str))))))
 
 (defun sumibi-drop-right-slash (url)
   (if (string-suffix-p "/" url)
@@ -349,22 +421,18 @@ SUMIBI_AI_BASEURL環境変数が未設定の場合はデフォルトURL\"https:/
 それ以外の場合は、値から末尾のスラッシュを除去し、末尾に\"/v1\"を付加して返す."
   (let ((env (getenv "SUMIBI_AI_BASEURL")))
     (cond
-     ((sumibi-backend-mozc-p)
-      "mozc_server")
      ((not env)
       "https://api.openai.com/v1")
      ((string-match-p "/v1" env)
       (sumibi-drop-right-slash env))
      (t
-      (concat 
+      (concat
        (sumibi-drop-right-slash env)
        "/v1")))))
 
 (defun sumibi-ai-model ()
   "利用中のAIモデル名を返す."
-  (if (sumibi-backend-mozc-p)
-      "mozc"
-    (or (getenv "SUMIBI_AI_MODEL") sumibi-current-model)))
+  (or (getenv "SUMIBI_AI_MODEL") sumibi-current-model))
 
 ;; --------------------------------------------------------------
 ;; API Key retrieval functions
@@ -430,6 +498,12 @@ hostとして 'api.openai.com' を使用し、loginは 'apikey' を想定."
   (let ((model (sumibi-ai-model)))
     (and (stringp model)
          (string-match-p "\\`gpt-5" model))))
+
+(defun sumibi-gpt51-p ()
+  "現在のモデルがGPT-5.1かどうかを判定する."
+  (let ((model (sumibi-ai-model)))
+    (and (stringp model)
+         (string-match-p "\\`gpt-5\\.1\\'" model))))
 
 (defun sumibi-modeline-string ()
   "利用するモデル名を表示する."
@@ -649,8 +723,6 @@ hostとして 'api.openai.com' を使用し、loginは 'apikey' を想定."
 	;; カスタム変数の値を出力
 	(insert "<h2>Custom Variables</h2>\n")
 	(let ((custom-vars '(sumibi-stop-chars
-                             sumibi-mozc-learn-at-kakutei
-                             sumibi-backend
                              sumibi-current-model
                              sumibi-model-list
                              sumibi-history-stack-limit
@@ -962,9 +1034,12 @@ Argument DEFERRED-FUNC2 : 非同期呼び出し時のコールバック関数 (2
                "  \"temperature\": 1.0,"
              "  \"temperature\": 0.8,")
            (format  "  \"n\": %d," arg-n)
-           (if (sumibi-gpt5-series-p)
-               "  \"reasoning_effort\": \"minimal\",  \"verbosity\": \"low\","
-             "")
+           (cond
+            ((sumibi-gpt51-p)
+             "  \"reasoning_effort\": \"none\",  \"verbosity\": \"low\",")
+            ((sumibi-gpt5-series-p)
+             "  \"reasoning_effort\": \"minimal\",  \"verbosity\": \"low\",")
+            (t ""))
            "  \"messages\": [ "
            (string-join
             (-map
@@ -1048,19 +1123,15 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
   (sumibi-debug-print (format "sumibi-roman-to-kanji-with-surrounding()\n"))
   (let* ((split (sumibi--split-markdown-prefix roman))
          (prefix (car split))
-         (core-roman (cdr split)))
-    ;; `mozc' backend -------------------------------------------------
-    (if (sumibi-backend-mozc-p)
-        (let ((cands (sumibi-mozc--candidate-list core-roman arg-n)))
-          (mapcar (lambda (s)
-                    (let ((ret (concat prefix s)))
-		      (when (get-text-property 0 'sumibi-mozc-candidate s)
-                        (put-text-property 0 (length ret) 'sumibi-mozc-candidate t ret))
-		      ret))
-                  cands))
-      ;; default: OpenAI backend -------------------------------------
-      (let ((saved-marker (point-marker))
-            (result nil))
+         (core-roman (cdr split))
+         ;; ローマ字→ひらがな変換 (Issue #97: 精度向上のため常に実行)
+         (processed-roman (sumibi--convert-romaji-preserving-english core-roman)))
+    ;; デバッグ出力: 変換結果
+    (sumibi-debug-print (format "  core-roman (入力): %s\n" core-roman))
+    (sumibi-debug-print (format "  processed-roman (LLMへ送信): %s\n" processed-roman))
+    ;; OpenAI backend ------------------------------------------------
+    (let ((saved-marker (point-marker))
+          (result nil))
         (sumibi-openai-http-post
          (list
 	  (cons "system"
@@ -1119,12 +1190,12 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 		"## これはMarkdownのセクションです。")
 	  (cons "user"
 		(format
-		 (concat 
+		 (concat
 		  "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
 		  "周辺の文章は、「%s」"
 		  "のような文章になっています。"
 		  "周辺の文脈を見てそれに合った語彙を選んでください。: %s")
-		 surrounding core-roman)))
+		 surrounding processed-roman)))
 	 arg-n
 	 (lambda (json-str)
 	   (let* ((json-obj (json-parse-string json-str))
@@ -1144,7 +1215,7 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 		 (sumibi--ensure-space-after-heading (marker-position saved-marker))
 		 (goto-char (marker-position saved-marker))))))
 	 deferred-func2)
-        result))))
+        result)))
 
 (defun sumibi-roman-to-yomigana (roman deferred-func2)
   "ローマ字で書かれた文章を **OpenAI 互換** サーバーを使って読み仮名を返します。
@@ -1153,9 +1224,7 @@ ARG-N: 候補を何件返すか
 DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 戻り値: (\"した\" \"シタ\") や (\"なの\" \"ナノ\")"
   (sumibi-debug-print (format "sumibi-roman-to-yomigana()\n"))
-  (if (sumibi-backend-mozc-p)
-      '()
-    (let ((saved-marker (point-marker)))
+  (let ((saved-marker (point-marker)))
       (sumibi-openai-http-post
        (list
 	(cons "system"
@@ -1186,7 +1255,7 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 		 (goto-char (marker-position saved-marker))
 		 (insert (car lst))
 		 (goto-char (marker-position saved-marker))))))
-       deferred-func2))))
+       deferred-func2)))
 
 (defun sumibi-kanji-to-yomigana (kanji deferred-func2)
   "漢字仮名混じりで書かれた文章を **OpenAI 互換** サーバーを使って読み仮名を返します。
@@ -1413,22 +1482,6 @@ str: ひらがな文字列"
    ;; その他（全角）
    (t 'z)))
 
-(defun sumibi-mozc-candidates-to-structure (cands)
-  "Mozc候補リストを適切な候補構造に変換する.
-CANDS: Mozcから返された候補文字列のリスト
-戻り値: 構造化された候補リスト"
-  (-map
-   (lambda (x)
-     (list (car x)
-           (if (get-text-property 0 'sumibi-mozc-candidate (car x))
-               (sumibi--annotation-label (car x) (+ 1 (cdr x)))
-             (sumibi--annotation-label (car x) (+ 1 (cdr x))))
-           0
-           (sumibi-determine-candidate-type (car x))
-           (cdr x)))
-   (-zip-pair
-    cands
-    (-iota (length cands)))))
 
 (defun sumibi-henkan-request (roman surrounding-text inverse-flag deferred-func2)
   "ローマ字で書かれた文章を複数候補作成して返す.
@@ -1578,51 +1631,9 @@ Argument INVERSE-FLAG：逆変換かどうか"
   (sumibi-init)
   (when sumibi-init
     (when (/= b e)
-      (if (eq sumibi-backend 'mozc)
-          ;; Mozc backend: セグメントごとに分割して処理
-          (sumibi-henkan-region-mozc-segments b e inverse-flag)
-        ;; 他のbackend: 従来通り
-        (if (sumibi-determine-sync-p (buffer-substring-no-properties b e))
-            (sumibi-henkan-region-sync b e inverse-flag)
-          (sumibi-henkan-region-async b e inverse-flag))))))
-
-(defun sumibi-henkan-region-mozc-segments (b e inverse-flag)
-  "Mozc backend用のセグメント分割変換処理.
-Argument B: リージョンの開始位置
-Argument E: リージョンの終了位置
-Argument INVERSE-FLAG：逆変換かどうか"
-  (let* ((region-text (buffer-substring-no-properties b e))
-         (segments (split-string region-text "[ \t]+" t)))
-    (setq sumibi-genbun region-text)
-    (if (> (length segments) 1)
-        ;; 複数セグメントの場合：各セグメントを個別に変換
-        (sumibi-henkan-region-mozc-multiple-segments b e segments inverse-flag)
-      ;; 単一セグメントの場合：従来通り
-      (if (sumibi-determine-sync-p region-text)
+      (if (sumibi-determine-sync-p (buffer-substring-no-properties b e))
           (sumibi-henkan-region-sync b e inverse-flag)
         (sumibi-henkan-region-async b e inverse-flag)))))
-
-(defun sumibi-henkan-region-mozc-multiple-segments (b e segments inverse-flag)
-  "複数セグメントを個別に変換する.
-Argument B: リージョンの開始位置
-Argument E: リージョンの終了位置
-Argument SEGMENTS: セグメントのリスト
-Argument INVERSE-FLAG：逆変換かどうか"
-  (let ((current-pos b)
-        (original-text (buffer-substring-no-properties b e))
-        (final-pos nil))
-    (goto-char b)
-    (delete-region b e)
-    (dolist (segment segments)
-      (when (> (length segment) 0)
-        (let ((segment-start (point))
-              (segment-end (+ (point) (length segment))))
-          (insert segment)
-          ;; 個別セグメントを変換
-          (sumibi-henkan-region-sync segment-start segment-end inverse-flag)
-          (setq final-pos (point)))))
-    ;; 最終位置にカーソルを設定（save-excursionを使わないため手動制御）
-    (when final-pos (goto-char final-pos))))
 
 
 (defun sumibi-char-charset (ch)
@@ -2071,18 +2082,6 @@ _ARG: (未使用)"
               (seq-take sumibi-history-stack sumibi-history-stack-limit))
         (sumibi-debug-print (format "sumibi-history-push: trimmed stack to %d entries\n"
                                     sumibi-history-stack-limit)))))
-  ;; --------------------------------------------------------------
-  ;; Mozc learning (optional)
-  ;; --------------------------------------------------------------
-  (sumibi-debug-print (format "sumibi-history-push: (sumibi-backend-mozc-p)=%s sumibi--mozc-available-p=%s sumibi-last-roman=%s sumibi-last-fix=%s\n" (sumibi-backend-mozc-p) sumibi--mozc-available-p sumibi-last-roman sumibi-last-fix))
-  (when (and sumibi-mozc-learn-at-kakutei
-             (sumibi-backend-mozc-p)
-             sumibi--mozc-available-p
-             (stringp sumibi-last-roman)
-             (> (length sumibi-last-roman) 0)
-             (stringp sumibi-last-fix)
-             (> (length sumibi-last-fix) 0))
-    (sumibi--mozc-learn sumibi-last-roman sumibi-last-fix))
   (sumibi-debug-save-dashboard))
 
 
@@ -2529,7 +2528,7 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
                                   (length sumibi-history-stack) file-path)))))
 
 (defconst sumibi-version
-  "3.8.0" ;;SUMIBI-VERSION
+  "4.2.0" ;;SUMIBI-VERSION
   )
 (defun sumibi-version (&optional _arg)
   "Sumibiのバージョン番号をミニバッファに表示する.
