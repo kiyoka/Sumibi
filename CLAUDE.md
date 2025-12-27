@@ -307,3 +307,5 @@ macOSのキーチェーンアクセスでAPI Keyを登録：
   - `sumibi-macos-keychain-available-p`: macOS環境チェック
 
 この実装により、プレーンテキストでの環境変数保存から脱却し、より安全なAPI Key管理が可能になりました。
+
+このブランチに、mainブランチに入った変更を取り込んでください。
