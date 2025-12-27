@@ -493,6 +493,12 @@ hostとして 'api.openai.com' を使用し、loginは 'apikey' を想定."
     (sumibi-setup-auth-source-for-keychain)  ; macOSチェック + auth-sources設定
     (sumibi-get-api-key-from-auth-source))))
 
+(defun sumibi-backend-mozc-p ()
+  "現在のバックエンドがMozcかどうかを判定する."
+  (let ((model (sumibi-ai-model)))
+    (and (stringp model)
+         (string= model "mozc"))))
+
 (defun sumibi-gpt5-series-p ()
   "現在のモデルがGPT-5シリーズかどうかを判定する."
   (let ((model (sumibi-ai-model)))
