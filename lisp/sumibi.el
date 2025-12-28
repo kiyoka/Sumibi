@@ -47,117 +47,10 @@
 (require 'sumibi-english-words)
 
 ;; --------------------------------------------------------------
-;; Optional: use mozc.el as a local backend when the model name
-;; `mozc' is specified.
-;; --------------------------------------------------------------
-
-(eval-when-compile (require 'cl-lib))
-
-(defvar sumibi--mozc-available-p (require 'mozc nil 'noerror)
-  "Non-nil if `mozc.el' could be loaded successfully.")
-
-;; --------------------------------------------------------------
 ;; auth-source for secure API key management
 ;; --------------------------------------------------------------
 
 (require 'auth-source)
-
-(defun sumibi-mozc--candidate-list (roman arg-n)
-  "Return up to ARG-N candidate strings for ROMAN using mozc.
-
-If mozc.el is unavailable, or Mozc raises any error, a list containing
-ROMAN itself is returned so that callers can safely fall back."
-  (if (not sumibi--mozc-available-p)
-      (list roman)
-    (setq roman (downcase roman))
-    (condition-case _err
-        (if (string-match-p "[ \t]" roman)
-            ;; 空白で分割 → 各セグメントを再帰的に1件だけ変換 → つなげて返す
-            (progn
-              (let* ((split-words (split-string roman "[ \t]+" t))
-                     (joined (apply #'concat
-                                    (mapcar (lambda (w)
-                                              (car (sumibi-mozc--candidate-list w 1)))
-                                            split-words))))
-                (list (propertize joined 'sumibi-mozc-candidate t))))
-          ;; セグメント1件のときは従来ロジック
-          (progn
-            (mozc-session-create t)
-            (dolist (ch (string-to-list roman))
-              (mozc-session-sendkey (list ch)))
-	    
-            (let* ((iteration 0) resp cands)
-              (while (and (< iteration 3)
-                          (progn
-                            (setq resp (mozc-session-sendkey '(space)))
-                            (setq cands (and resp (mozc-protobuf-get resp 'candidates)))
-                            (null cands)))
-                (setq iteration (1+ iteration)))
-	      
-              (if (not cands)
-                  (progn
-                    (list roman))
-                (progn
-                  (let* ((cand-list (mozc-protobuf-get cands 'candidate))
-                         ;; 候補の文字列リスト
-                         (values   (mapcar (lambda (cand)
-                                             (mozc-protobuf-get cand 'value))
-                                           cand-list))
-                         ;; annotation の description（カタカナ読み）
-                         (raw-anno  (mozc-protobuf-get (nth 0 cand-list) 'annotation))
-                         (anno-desc (and raw-anno (mozc-protobuf-get raw-anno 'description)))
-                         (kata      anno-desc)
-                         ;; ひらがなに変換
-                         (hira      (and kata (sumibi-katakana-to-hiragana kata))))
-                    ;; 候補 + ひらがな読み + カタカナ読み
-                    (let* ((lst (append values (delq nil (list hira kata))))
-                           ;; 履歴を考慮して候補順序を調整
-                           (reordered (sumibi-mozc--find-preferred-candidate roman lst)))
-                      ;; 各候補に origin プロパティを付与して返す - type check debug
-                      (mapcar (lambda (s) 
-                                (if (stringp s)
-                                    (propertize s 'sumibi-mozc-candidate t)
-                                  (progn
-                                    (propertize (format "%s" s) 'sumibi-mozc-candidate t))))
-                              reordered))))))))
-      ;; error path ----------------------------------------------------
-      (error
-       (list roman)))))
-
-(defun sumibi-mozc--find-preferred-candidate (roman candidates)
-  "履歴からROMANに対応する過去の選択候補を探し、その候補を先頭に並び替える（genbunキーで検索）."
-  (if (not sumibi-history-stack)
-      (progn
-        candidates)
-    (let ((preferred-candidate nil))
-      ;; 履歴から同じ原文入力の記録を探す
-      (dolist (entry sumibi-history-stack)
-        (when (not preferred-candidate)  ; まだ見つかっていない場合のみ
-          (let ((genbun (sumibi-assoc-ref 'genbun entry nil)))
-            (when (and genbun (equal roman genbun))
-              (let* ((kouho-list (sumibi-assoc-ref 'henkan-kouho-list entry nil))
-                     (cand-cur (sumibi-assoc-ref 'cand-cur entry nil)))
-                ;; 過去に選択された候補を取得
-                (when (and kouho-list cand-cur
-                           (>= cand-cur 0)
-                           (< cand-cur (length kouho-list)))
-                  (let ((raw-candidate (car (nth cand-cur kouho-list))))
-                    ;; 文字列であることを確認し、そうでなければ文字列に変換
-                    (setq preferred-candidate (if (stringp raw-candidate)
-                                                  raw-candidate
-                                                (format "%s" raw-candidate))))))))))
-      
-      ;; 見つかった場合は、その候補を先頭に移動
-      (if preferred-candidate
-          (progn
-            ;; 候補リストから該当候補を削除して先頭に追加
-            (let ((filtered (remove preferred-candidate candidates))
-                  (result))
-              (setq result (cons preferred-candidate filtered))
-              result))
-        ;; 見つからない場合は元の順序のまま
-        (progn
-          candidates)))))
 
 ;;;
 ;;;
@@ -952,8 +845,7 @@ space between the marker and the text.  This prevents constructs like
   (if sumibi-init
       t
     (cond
-     ((and (not (sumibi-backend-mozc-p))
-	   (not (sumibi-get-api-key)))
+     ((not (sumibi-get-api-key))
       (message "%s" "API Keyが見つかりません。環境変数 SUMIBI_AI_API_KEY または OPENAI_API_KEY を設定するか、sumibi-api-key-source を適切に設定してください。"))
      ((and (>= emacs-major-version 28) (>= emacs-minor-version 1))
       ;; 履歴ファイルから履歴を読み込む
