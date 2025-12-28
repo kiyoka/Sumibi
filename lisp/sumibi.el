@@ -354,10 +354,21 @@ SUMIBI_AI_BASEURL環境変数が未設定の場合はデフォルトURL\"https:/
   (setq auth-sources '(macos-keychain-internet macos-keychain-generic)))
 
 
+(defun sumibi-get-hostname-from-baseurl ()
+  "SUMIBI_AI_BASEURLからホスト名を抽出する.
+BASEURLが設定されていない場合は 'api.openai.com' を返す."
+  (let ((baseurl (getenv "SUMIBI_AI_BASEURL")))
+    (if (and baseurl (string-match "https?://\\([^/]+\\)" baseurl))
+        (match-string 1 baseurl)
+      "api.openai.com")))
+
 (defun sumibi-get-api-key-from-auth-source ()
   "auth-sourceからAPI Keyを取得する.
-hostとして 'api.openai.com' を使用し、loginは 'apikey' を想定."
-  (let* ((found (auth-source-search :host "api.openai.com"
+SUMIBI_AI_BASEURLからホスト名を抽出し、そのホスト名でauth-sourceを検索する.
+BASEURLが未設定の場合は 'api.openai.com' を使用する.
+loginは 'apikey' を想定."
+  (let* ((hostname (sumibi-get-hostname-from-baseurl))
+         (found (auth-source-search :host hostname
                                      :user "apikey"
                                      :require '(:secret)
                                      :max 1))
