@@ -67,6 +67,21 @@ macOS 15では新しい「パスワード」アプリが追加されましたが
 
 キーチェーンアクセスの検索バーで `api.openai.com` を検索し、項目が表示されることを確認します。
 
+#### 3-1. 複数のAPIサービスを使用する場合（オプション）
+
+Google Gemini APIも使用する場合は、追加で登録します：
+
+1. メニューから「ファイル」→「新規パスワード項目」を選択、または `⌘N` を押す
+2. 以下の情報を入力：
+
+   - **キーチェーン項目名**: `generativelanguage.googleapis.com`
+   - **アカウント名**: `apikey`
+   - **パスワード**: 実際の Gemini API Key
+
+3. 「追加」ボタンをクリック
+
+**注意:** Gemini APIのエンドポイント `https://generativelanguage.googleapis.com/v1beta/openai/` を使用する場合、ホスト名部分 `generativelanguage.googleapis.com` のみを項目名として登録します。
+
 #### 4. Emacs の設定
 
 `~/.emacs.d/init.el` または設定ファイルに追加：
@@ -145,7 +160,9 @@ security add-internet-password \
   -U
 ```
 
-### Gemini の登録（例）
+### Google Gemini の登録
+
+Gemini APIのエンドポイント `https://generativelanguage.googleapis.com/v1beta/openai/` を使用する場合、ホスト名部分のみを指定します：
 
 ```bash
 security add-internet-password \
@@ -154,6 +171,11 @@ security add-internet-password \
   -w "your-gemini-key-here" \
   -U
 ```
+
+**注意:**
+- `-s` パラメータにはホスト名のみを指定します（パスやプロトコルは含めません）
+- 完全なエンドポイントURL: `https://generativelanguage.googleapis.com/v1beta/openai/`
+- Keychain登録時のサーバー名: `generativelanguage.googleapis.com`
 
 ## トラブルシューティング
 
@@ -361,3 +383,4 @@ macOS 15（Sequoia）以降では、「パスワード」という新しいア�
 ---
 
 [← セキュリティトップに戻る](SECURITY.md)
+
