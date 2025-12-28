@@ -88,7 +88,11 @@ Google Gemini APIも使用する場合は、追加で登録します：
 
 ```elisp
 (setq sumibi-api-key-source 'auth-source-keychain)
+(setenv "SUMIBI_AI_BASEURL" "https://generativelanguage.googleapis.com/v1beta/openai/")
+(setenv "SUMIBI_AI_MODEL" "gemini-2.5-flash")
 ```
+
+SUMIBI_AI_MODELには好きなモデル名を指定してください。
 
 #### 5. Emacs を再起動
 
