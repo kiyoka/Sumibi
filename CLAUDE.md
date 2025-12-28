@@ -210,7 +210,7 @@ hostとして 'api.openai.com' を使用し、loginは 'apikey' を想定。"
 #### macOS Keychain
 ```elisp
 (setq sumibi-api-key-source 'auth-source-keychain)
-;; macOSのキーチェーンアクセスでAPI Keyを登録
+;; macOSのKeychainでAPI Keyを登録
 ;; サーバー: api.openai.com
 ;; アカウント: apikey
 ;; パスワード: sk-...
@@ -284,7 +284,7 @@ machine api.openai.com login apikey password sk-...
 (setq sumibi-api-key-source 'auth-source-keychain)
 ```
 
-macOSのキーチェーンアクセスでAPI Keyを登録：
+macOSのKeychainでAPI Keyを登録：
 - サーバー: api.openai.com
 - アカウント: apikey
 - パスワード: sk-...
