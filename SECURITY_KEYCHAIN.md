@@ -16,7 +16,7 @@ macOS 標準のキーチェーンに API Key を保存します。macOS での�
 
 - **macOS 標準の安全なストレージ** - Apple が提供する信頼性の高いセキュリティ機構
 - **パスワード入力が不要** - またはTouch ID で認証（Mac の設定による）
-- **設定が比較的簡単** - GUI で直感的に設定可能
+- **設定が比較的簡単** - コマンドラインで簡単に設定可能
 - **他のアプリケーションとキーチェーンを共有できる** - macOS の他のアプリケーションとも統合
 
 ### ⚠️ デメリット
@@ -30,79 +30,7 @@ macOS 標準のキーチェーンに API Key を保存します。macOS での�
 
 ## 設定手順
 
-### ⚠️ macOS 15（Sequoia）以降をお使いの方へ
-
-macOS 15では新しい「パスワード」アプリが追加されましたが、**Sumibiでは従来の「キーチェーンアクセス」アプリを使用します**。
-
-- **キーチェーンアクセスはまだ利用可能です** - Spotlightで「Keychain Access」または「キーチェーンアクセス」と検索すれば開けます
-- **「パスワード」アプリは使用できません** - auth-sourceがインターネットパスワード形式を必要とするため
-- **最も確実な方法**: 以下の「方法B: コマンドラインでの設定（推奨）」を使用してください
-
----
-
-### 方法A: GUI での設定
-
-⚠️ **macOS 15以降の場合は、方法B（コマンドライン）を推奨します。**
-
-#### 1. キーチェーンアクセスを開く
-
-- **Spotlight で検索**: `⌘ + Space` を押して「keychain」または「Keychain Access」と入力
-
-#### 2. インターネットパスワードとして登録
-
-キーチェーンアクセスで以下の操作を行います：
-
-1. メニューから「ファイル」→「新規パスワード項目」を選択、または `⌘N` を押す
-2. 以下の情報を入力：
-
-   - **キーチェーン項目名**: `api.openai.com`
-   - **アカウント名**: `apikey`
-   - **パスワード**: 実際の API Key（例: `sk-proj-...`）
-
-3. 「追加」ボタンをクリック
-
-**注意**: macOS 15以降では、「新規インターネットパスワード」メニューが利用できない場合があります。その場合は方法B（コマンドライン）を使用してください。
-
-#### 3. 登録を確認
-
-キーチェーンアクセスの検索バーで `api.openai.com` を検索し、項目が表示されることを確認します。
-
-#### 3-1. 複数のAPIサービスを使用する場合（オプション）
-
-Google Gemini APIも使用する場合は、追加で登録します：
-
-1. メニューから「ファイル」→「新規パスワード項目」を選択、または `⌘N` を押す
-2. 以下の情報を入力：
-
-   - **キーチェーン項目名**: `generativelanguage.googleapis.com`
-   - **アカウント名**: `apikey`
-   - **パスワード**: 実際の Gemini API Key
-
-3. 「追加」ボタンをクリック
-
-**注意:** Gemini APIのエンドポイント `https://generativelanguage.googleapis.com/v1beta/openai/` を使用する場合、ホスト名部分 `generativelanguage.googleapis.com` のみを項目名として登録します。
-
-#### 4. Emacs の設定
-
-`~/.emacs.d/init.el` または設定ファイルに追加：
-
-```elisp
-(setq sumibi-api-key-source 'auth-source-keychain)
-(setenv "SUMIBI_AI_BASEURL" "https://generativelanguage.googleapis.com/v1beta/openai/")
-(setenv "SUMIBI_AI_MODEL" "gemini-2.5-flash")
-```
-
-SUMIBI_AI_MODELには好きなモデル名を指定してください。
-
-#### 5. Emacs を再起動
-
-設定を反映するために Emacs を再起動します。
-
----
-
-### 方法B: コマンドラインでの設定（macOS 15以降で推奨）
-
-ターミナルから `security` コマンドを使用して設定します。この方法はすべてのmacOSバージョンで動作し、特にmacOS 15以降で最も確実です。
+ターミナルから `security` コマンドを使用して設定します。この方法はすべてのmacOSバージョンで動作します。
 
 #### 1. キーチェーンに追加
 
@@ -128,7 +56,7 @@ security find-internet-password -s api.openai.com
 
 #### 3. Emacs の設定
 
-方法A と同じく、`~/.emacs.d/init.el` に以下を追加：
+`~/.emacs.d/init.el` に以下を追加：
 
 ```elisp
 (setq sumibi-api-key-source 'auth-source-keychain)
@@ -138,7 +66,7 @@ security find-internet-password -s api.openai.com
 
 Emacs を起動して Sumibi を使用すると、macOS がキーチェーンから API Key を自動的に取得します。
 
-初回のみ、以下のダイアログが表示される場合があります：
+Emacs がキーチェーンの項目に初めてアクセスする時、以下のダイアログが表示されます：
 
 ```
 "Emacs" が機密情報にアクセスしようとしています。
@@ -148,7 +76,10 @@ Emacs を起動して Sumibi を使用すると、macOS がキーチェーンか
 - **「許可」** - 今回のみ許可
 - **「常に許可」** - 今後は常に許可（推奨）
 
-「常に許可」を選択すると、次回からは自動的にアクセスできます。
+**注意:**
+- 「**常に許可**」を選択すると、その後（macOS再起動後も含めて）ダイアログは表示されなくなります
+- macOSにログイン後、ログインキーチェーンは自動的にアンロックされているため、macOS再起動直後に特別な操作は不要です
+- 「許可」のみを選択した場合は、Emacsを起動するたびにダイアログが表示されます
 
 ## 複数の API サービスを使用する場合
 
@@ -207,7 +138,11 @@ security add-internet-password \
 
 **解決方法:**
 
-キーチェーンアクセスを開いて、`api.openai.com` の項目が存在するか確認します。
+以下のコマンドで `api.openai.com` の項目が存在するか確認します：
+
+```bash
+security find-internet-password -s api.openai.com
+```
 
 **原因2:** サーバ名が一致しない
 
@@ -225,37 +160,9 @@ security add-internet-password \
 
 **原因:** Emacs にキーチェーンへのアクセス権限がない
 
-**解決方法1:** 「常に許可」を選択
+**解決方法:**
 
 Emacs 起動時に表示されるダイアログで「常に許可」を選択します。
-
-**解決方法2:** キーチェーンの設定を確認
-
-1. キーチェーンアクセスを開く
-2. `api.openai.com` の項目をダブルクリック
-3. 「アクセス制御」タブを選択
-4. 「すべてのアプリケーションにこの項目へのアクセスを許可」をチェック
-5. または、「常にアクセスを許可するアプリケーション」に Emacs を追加
-
-### GUI から Emacs を起動するとキーチェーンにアクセスできない
-
-**原因:** GUI アプリケーションとして起動した Emacs が、正しくキーチェーンにアクセスできない場合がある
-
-**解決方法1:** ターミナルから Emacs を起動
-
-```bash
-/Applications/Emacs.app/Contents/MacOS/Emacs
-```
-
-または
-
-```bash
-open -a Emacs
-```
-
-**解決方法2:** Emacs.app を「常に許可」に追加
-
-キーチェーンアクセスで項目を開き、アクセス制御タブで Emacs.app を追加します。
 
 ## キーチェーン項目の管理
 
@@ -271,20 +178,9 @@ security find-internet-password -s api.openai.com
 security delete-internet-password -s api.openai.com
 ```
 
-GUI の場合は、キーチェーンアクセスで項目を選択して Delete キーを押します。
-
 ### 項目の更新
 
 API Key を変更する場合：
-
-1. **GUI の場合:**
-   - キーチェーンアクセスで項目をダブルクリック
-   - 「パスワードを表示」をチェック
-   - Mac のパスワードを入力
-   - 新しい API Key を入力
-   - 保存
-
-2. **コマンドラインの場合:**
 
 ```bash
 # 古い項目を削除
@@ -328,61 +224,27 @@ security add-internet-password \
 
 ## iCloud キーチェーンとの関係
 
-macOS のキーチェーンは、iCloud キーチェーンと同期される場合があります。
+`security add-internet-password` コマンドで追加した項目は、デフォルトでローカルのログインキーチェーンに保存されます。
 
-### iCloud キーチェーンを使用する場合
+### iCloud キーチェーンとの同期について
 
-**メリット:**
+システム環境設定でiCloudキーチェーンを有効にしている場合、**一部の項目が自動的にiCloudと同期される可能性があります**。
+
+**同期される場合のメリット:**
 - 複数の Mac で API Key を共有できる
-- iPhone/iPad でもアクセス可能（ただし Sumibi は macOS のみ）
+- 機種変更時に自動的に移行される
 
-**デメリット:**
+**同期される場合のデメリット:**
 - iCloud に API Key が保存される
 - セキュリティリスクがわずかに増加
 
-### iCloud キーチェーンを無効にする場合
-
-特定の項目を iCloud と同期しないようにするには：
-
-1. キーチェーンアクセスで項目を選択
-2. 「キーチェーン」列で「ログイン」を選択（「iCloud」ではなく）
-
-## macOS 15以降の「パスワード」アプリについて
-
-macOS 15（Sequoia）以降では、「パスワード」という新しいアプリが追加されました。
-
-### 「パスワード」アプリと「キーチェーンアクセス」の違い
-
-- **パスワードアプリ**: ウェブサイトやアプリのパスワード管理に特化した新しいGUI
-- **キーチェーンアクセス**: 証明書、認証トークン、セキュアノート、インターネットパスワードなど、より広範な機密情報を管理
-
-### Sumibiで「パスワード」アプリを使用できますか？
-
-**現時点では推奨しません。** 理由：
-
-1. **auth-sourceの互換性**: auth-sourceライブラリは従来のインターネットパスワード形式を期待します
-2. **確実性**: `security` コマンドでインターネットパスワードとして登録する方が確実です
-
-### 「パスワード」アプリでAPI Keyを保存したい場合
-
-技術的には可能ですが、動作は未検証です：
-
-1. 「パスワード」アプリを開く
-2. 「+」アイコンをクリック
-3. 「Webサイト、アプリまたはラベル」に `api.openai.com` を入力
-4. ユーザ名: `apikey`
-5. パスワード: 実際のAPI Key
-6. 保存
-
-**注意**: この方法でauth-sourceが正しく認識するかは保証されません。問題が発生した場合は、方法B（コマンドライン）を使用してください。
+**注意:** `security` コマンドで追加したインターネットパスワードは、通常はローカルのログインキーチェーンに保存され、明示的な設定変更がない限りiCloudと同期されません。ただし、macOSのバージョンやiCloud設定により動作が異なる場合があります。
 
 ## 参照
 
 - [Apple - キーチェーンアクセス](https://support.apple.com/ja-jp/guide/keychain-access/)
 - [Apple - iCloud キーチェーン](https://support.apple.com/ja-jp/HT204085)
-- [Apple - パスワードアプリの使い方](https://support.apple.com/en-us/120758)
 - [Emacs auth-source ドキュメント](https://www.gnu.org/software/emacs/manual/html_node/auth/)
-- [macOS 15 Sequoia のパスワード管理について（英語）](https://www.macobserver.com/tips/how-to/manage-your-passwords-with-the-apple-passwords-app/)
 
 ---
 
