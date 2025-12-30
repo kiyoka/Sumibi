@@ -85,6 +85,20 @@ uid                      Taro Yamada <taro@example.com>
 sub   rsa3072 2024-01-01 [E] [expires: 2026-01-01]
 ```
 
+もし、ターミナルの状態が悪く上記のメッセージが表示されなかったときは、以下のコマンドで生成が成功しているか確認できます。
+
+```bash
+gpg --list-keys --keyid-format LONG
+[keyboxd]
+---------
+pub   rsa3072 2024-01-01 [SC] [expires: 2026-01-01]
+      ABCD1234EFGH5678IJKL9012MNOP3456QRST7890
+uid                      Taro Yamada <taro@example.com>
+sub   rsa3072 2024-01-01 [E] [expires: 2026-01-01]
+```
+
+**注記**: 生成された鍵は `~/.gnupg/` ディレクトリに保存されます。
+
 ### 4. authinfo ファイルを作成
 
 `~/.authinfo` ファイルを作成（または既存のファイルに追記）：
@@ -168,6 +182,48 @@ Enter passphrase for GPG key:
 **解決方法:**
 
 GPG をインストールします（上記「2. GPG をインストール」を参照）。
+
+### エラー: "Inappropriate ioctl for device"（macOS）
+
+**エラーメッセージ例:**
+
+```
+Error while decrypting with "/opt/homebrew/bin/gpg":
+gpg: encrypted with cv25519 key, ID XXXXXXXXXXXX, created 2025-12-30
+      "Your Name <your@email.com>"
+gpg: public key decryption failed: Inappropriate ioctl for device
+gpg: decryption failed: Inappropriate ioctl for device
+```
+
+**原因:** Emacs から GPG を呼び出す際に、パスワードプロンプトを表示するための適切な入力デバイスが設定されていない
+
+**解決方法（macOS）:**
+
+1. **pinentry-mac をインストール:**
+
+```bash
+brew install pinentry-mac
+```
+
+2. **gpg-agent.conf を作成:**
+
+```bash
+cat > ~/.gnupg/gpg-agent.conf << 'EOF'
+pinentry-program /opt/homebrew/bin/pinentry-mac
+EOF
+```
+
+3. **gpg-agent を再起動:**
+
+```bash
+gpgconf --kill gpg-agent
+```
+
+4. **Emacs を再起動:**
+
+Emacs を再起動して、新しい GPG 設定を反映させます。
+
+これで、Emacs から `.authinfo.gpg` ファイルを復号化する際に、macOS の GUI ダイアログでパスワードを入力できるようになります。
 
 ### エラー: "API Keyが見つかりません"
 
