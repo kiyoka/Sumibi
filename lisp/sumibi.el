@@ -369,9 +369,9 @@ BASEURLが未設定の場合は 'api.openai.com' を使用する.
 loginは 'apikey' を想定."
   (let* ((hostname (sumibi-get-hostname-from-baseurl))
          (found (auth-source-search :host hostname
-                                     :user "apikey"
-                                     :require '(:secret)
-                                     :max 1))
+                                    :user "apikey"
+                                    :require '(:secret)
+                                    :max 1))
          (secret (when found
                    (plist-get (car found) :secret))))
     (if (functionp secret)
@@ -2009,6 +2009,11 @@ _ARG: (未使用)"
   (sumibi-debug-print "sumibi-rK-trans()")
 
   (cond
+   ;; *scratch*バッファで直前が ')' の場合は eval-print-last-sexp を実行
+   ((and (string= (buffer-name) "*scratch*")
+         (char-equal (preceding-char) ?\)))
+    (eval-print-last-sexp))
+
    ;; region指定している場合
    ((region-active-p)
     (let ((b (region-beginning))

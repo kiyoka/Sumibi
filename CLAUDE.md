@@ -27,6 +27,13 @@ make test
 ### リント／構文チェック
 Emacs Lispファイルを編集した後は、**必ず**括弧バランスチェックツールを実行してください：
 
+- macOSの場合のコマンドはこちら
+
+```bash
+agent-lisp-paren-aid lisp/sumibi.el
+```
+- Linuxの場合のコマンドはこちら
+
 ```bash
 agent-lisp-paren-aid-linux lisp/sumibi.el
 ```
