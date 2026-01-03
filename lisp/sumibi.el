@@ -914,7 +914,12 @@ space between the marker and the text.  This prevents constructs like
       t
     (cond
      ((not (sumibi-get-api-key))
-      (message "API Keyが見つかりません (ホスト: %s)。環境変数 SUMIBI_AI_API_KEY または OPENAI_API_KEY を設定するか、sumibi-api-key-source を適切に設定してください。" (sumibi-get-hostname-from-baseurl)))
+      (if (and (not noninteractive)
+               (y-or-n-p (format "API Keyが見つかりません (ホスト: %s)。今すぐ保存しますか？" (sumibi-get-hostname-from-baseurl))))
+          (progn
+            (sumibi-setup-api-key)
+            (message "API Keyを保存しました。Emacsを再起動してください。"))
+        (message "API Keyが見つかりません (ホスト: %s)。環境変数 SUMIBI_AI_API_KEY または OPENAI_API_KEY を設定するか、sumibi-api-key-source を適切に設定してください。" (sumibi-get-hostname-from-baseurl))))
      ((and (>= emacs-major-version 28) (>= emacs-minor-version 1))
       ;; 履歴ファイルから履歴を読み込む
       (sumibi-load-history-from-file)
