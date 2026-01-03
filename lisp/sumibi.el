@@ -397,6 +397,52 @@ loginは 'apikey' を想定."
     (sumibi-setup-auth-source-for-keychain)  ; macOSチェック + auth-sources設定
     (sumibi-get-api-key-from-auth-source))))
 
+(defun sumibi-save-api-key-to-keychain (api-key)
+  "API KEYをmacOS Keychainに保存する.
+引数API-KEYには保存するAPIキーの文字列を指定する."
+  (unless (sumibi-macos-keychain-available-p)
+    (error "macOS KeychainはmacOSでのみ利用可能です。現在のシステム: %s" system-type))
+  (let* ((hostname (sumibi-get-hostname-from-baseurl))
+         (result (shell-command-to-string
+                  (format "security add-internet-password -a apikey -s %s -w %s -U 2>&1"
+                          (shell-quote-argument hostname)
+                          (shell-quote-argument api-key)))))
+    ;; -U オプション使用時、成功すると何も出力されない
+    (if (string-empty-p (string-trim result))
+        (message "API KeyをKeychainに保存しました (host: %s)" hostname)
+      (error "Keychainへの保存に失敗しました: %s" result))))
+
+;;;###autoload
+(defun sumibi-setup-api-key ()
+  "API Keyを設定する.
+現在の sumibi-api-key-source の設定に基づいて適切な保存先に保管する.
+
+- auth-source-keychain: macOS Keychainに保存
+- auth-source-gpg: 未実装（手動で ~/.authinfo.gpg を編集してください）
+- environment: 環境変数の設定方法を案内"
+  (interactive)
+  (let ((api-key (read-passwd (format "API Keyを入力してください (ホスト: %s): " (sumibi-get-hostname-from-baseurl)))))
+    (when (or (not api-key) (string-empty-p api-key))
+      (error "API Keyが入力されませんでした"))
+    (cond
+     ;; macOS Keychainに保存
+     ((eq sumibi-api-key-source 'auth-source-keychain)
+      (sumibi-save-api-key-to-keychain api-key))
+
+     ;; GPGは未実装
+     ((eq sumibi-api-key-source 'auth-source-gpg)
+      (message "GPG暗号化ファイルへの自動保存は未実装です。\n手動で ~/.authinfo.gpg を編集してください。\n形式: machine %s login apikey password %s"
+               (sumibi-get-hostname-from-baseurl)
+               api-key))
+
+     ;; 環境変数の場合は案内
+     ((eq sumibi-api-key-source 'environment)
+      (message "環境変数モードです。以下のいずれかの方法で設定してください:\n1. ~/.bashrc や ~/.zshrc に export SUMIBI_AI_API_KEY=%s を追加\n2. または export OPENAI_API_KEY=%s を追加"
+               api-key api-key))
+
+     (t
+      (error "不明な sumibi-api-key-source 設定: %s" sumibi-api-key-source)))))
+
 (defun sumibi-backend-mozc-p ()
   "現在のバックエンドがMozcかどうかを判定する."
   (let ((model (sumibi-ai-model)))
@@ -868,7 +914,7 @@ space between the marker and the text.  This prevents constructs like
       t
     (cond
      ((not (sumibi-get-api-key))
-      (message "%s" "API Keyが見つかりません。環境変数 SUMIBI_AI_API_KEY または OPENAI_API_KEY を設定するか、sumibi-api-key-source を適切に設定してください。"))
+      (message "API Keyが見つかりません (ホスト: %s)。環境変数 SUMIBI_AI_API_KEY または OPENAI_API_KEY を設定するか、sumibi-api-key-source を適切に設定してください。" (sumibi-get-hostname-from-baseurl)))
      ((and (>= emacs-major-version 28) (>= emacs-minor-version 1))
       ;; 履歴ファイルから履歴を読み込む
       (sumibi-load-history-from-file)
