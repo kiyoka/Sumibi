@@ -127,14 +127,14 @@ non-nilの場合、助詞の後にスペースを入力すると自動的に変�
   :group 'sumibi)
 
 (defcustom sumibi-auto-convert-particles
-  '("wa" "ga" "wo" "ni" "de" "to" "kara" "made" "he" "mo" "no" "ya" "desu")
+  '("wa" "ha" "ga" "wo" "ni" "de" "to" "kara" "made" "he" "mo" "no" "ya" "desu")
   "自動変換のトリガーとなる助詞のリスト。
 これらの助詞の後にスペースが入力されると、自動的に変換が実行される。"
   :type '(repeat string)
   :group 'sumibi)
 
 (defcustom sumibi-auto-convert-punctuation
-  '(?. ?,)
+  '(?. ?, ??)
   "自動変換のトリガーとなる句読点のリスト。
 これらの句読点が入力されると、直前のローマ字を自動的に変換する。"
   :type '(repeat character)
@@ -2414,8 +2414,14 @@ _ARG: (未使用)"
                                   (string-suffix-p particle text))
                                 sumibi-auto-convert-particles))
               (sumibi-debug-print "sumibi-check-particle-trigger: particle detected! executing auto-convert\n")
-              ;; スペースを削除
+              ;; 最後のスペースを削除
               (delete-char -1)
+              ;; 助詞の前のスペースも削除（ある場合）
+              (when (and (> (point) start)
+                         (eq (char-before start) ?\s))
+                (save-excursion
+                  (goto-char start)
+                  (delete-char -1)))
               ;; 自動変換を実行
               (sumibi-rK-trans)))))
 
