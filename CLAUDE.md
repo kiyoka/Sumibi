@@ -312,3 +312,89 @@ macOSのKeychainでAPI Keyを登録：
   - `sumibi-macos-keychain-available-p`: macOS環境チェック
 
 この実装により、プレーンテキストでの環境変数保存から脱却し、より安全なAPI Key管理が可能になりました。
+
+---
+
+## GitHub Issue 119 実装完了報告
+
+### 実装完了のお知らせ
+
+Issue #119 で要望いただいた、助詞検出ベースの自動変換機能を実装しました。Ctrl+Jを押さなくても、助詞の後にスペースを入力するだけで自動的に日本語変換が実行されます。
+
+### 実装した機能
+
+#### 1. 助詞+スペースでの自動変換
+助詞の後にスペースを入力すると、自動的にローマ字を日本語に変換します：
+
+**動作例**:
+- `watashiwa ` → `私は`
+- `nihonga ` → `日本が`
+- `tokyode ` → `東京で`
+- `watashidesu ` → `私です`
+
+#### 2. 句読点での自動変換
+句読点（`.` または `,`）を入力すると、直前のローマ字を自動変換し、句読点を全角に変換します：
+
+**動作例**:
+- `nihongoni.` → `日本語に。`
+- `tokyode,` → `東京で、`
+
+#### 3. カスタマイズ可能な設定
+新しいカスタマイズ変数を追加しました：
+
+```elisp
+;; 自動変換機能の有効/無効（デフォルト: nil）
+(defcustom sumibi-auto-convert-enable nil
+  :type 'boolean
+  :group 'sumibi)
+
+;; トリガーとなる助詞のリスト
+(defcustom sumibi-auto-convert-particles
+  '("wa" "ga" "wo" "ni" "de" "to" "kara" "made" "he" "mo" "no" "ya" "desu")
+  :type '(repeat string)
+  :group 'sumibi)
+
+;; トリガーとなる句読点のリスト
+(defcustom sumibi-auto-convert-punctuation
+  '(?. ?,)
+  :type '(repeat character)
+  :group 'sumibi)
+```
+
+### 使用方法
+
+#### init.elでの設定例
+
+```elisp
+;; Sumibi
+(when t
+  (add-to-list 'load-path (expand-file-name "~/GitHub/Sumibi/lisp"))
+  (load-file "~/GitHub/Sumibi/lisp/sumibi.el")
+  (setq sumibi-debug nil)
+  (setq sumibi-auto-convert-enable t)  ; 自動変換を有効化
+  (global-sumibi-mode 1))
+```
+
+`global-sumibi-mode`を有効にするだけで、全てのバッファで自動変換が動作します。
+
+### テスト結果
+- ✅ 全24テストがパス
+- ✅ 既存機能に影響なし
+- ✅ Emacs 29.x以上で動作確認済み
+
+### 技術的詳細
+- 実装ファイル: lisp/sumibi.el
+- 追加関数:
+  - `sumibi-check-particle-trigger`: スペース/句読点入力時の助詞チェックと自動変換実行
+  - `sumibi-setup-auto-convert-hook`: `post-self-insert-hook`の管理
+  - `sumibi-auto-convert-hook-function`: `after-change-major-mode-hook`用のフック関数
+
+### 実装のポイント
+
+1. **`post-self-insert-hook`の活用**: 文字入力ごとにチェックを実行し、条件を満たせば自動変換
+2. **`after-change-major-mode-hook`との統合**: `global-sumibi-mode`有効時、新しいバッファでも自動的にフックが設定される
+3. **デバッグメッセージの制御**: `sumibi-debug`フラグで制御し、通常使用時は`*Messages*`バッファをクリーンに保つ
+
+この実装により、Ctrl+Jを押す手間が省け、より自然な日本語入力が可能になりました。
+
+はい作成してください。

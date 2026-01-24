@@ -119,6 +119,27 @@
                  (const :tag "auth-source (macOS Keychain)" auth-source-keychain))
   :group 'sumibi)
 
+(defcustom sumibi-auto-convert-enable nil
+  "自動変換機能を有効にするかどうか。
+nilの場合は従来通りCtrl+Jでの手動変換のみ。
+non-nilの場合、助詞の後にスペースを入力すると自動的に変換される。"
+  :type 'boolean
+  :group 'sumibi)
+
+(defcustom sumibi-auto-convert-particles
+  '("wa" "ga" "wo" "ni" "de" "to" "kara" "made" "he" "mo" "no" "ya" "desu")
+  "自動変換のトリガーとなる助詞のリスト。
+これらの助詞の後にスペースが入力されると、自動的に変換が実行される。"
+  :type '(repeat string)
+  :group 'sumibi)
+
+(defcustom sumibi-auto-convert-punctuation
+  '(?. ?,)
+  "自動変換のトリガーとなる句読点のリスト。
+これらの句読点が入力されると、直前のローマ字を自動的に変換する。"
+  :type '(repeat character)
+  :group 'sumibi)
+
 (defvar sumibi-mode nil             "漢字変換トグル変数.")
 
 ;; ------------------------------------------------------------------
@@ -2306,6 +2327,85 @@ _ARG: (未使用)"
     (dotimes(_ times)
       (insert " "))))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 自動変換機能（助詞検出ベース）
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun sumibi-check-particle-trigger ()
+  "スペースまたは句読点入力時、直前が助詞で終わっているかチェックし、条件を満たせば自動変換を実行する。"
+  (sumibi-debug-print (format "sumibi-check-particle-trigger: enable=%s mode=%s select-mode=%s char-before=%s\n"
+                              sumibi-auto-convert-enable
+                              sumibi-mode
+                              sumibi-select-mode
+                              (char-before)))
+  (when (and sumibi-auto-convert-enable
+             sumibi-mode
+             (not sumibi-select-mode))
+    (let ((char (char-before)))
+      (cond
+       ;; スペース入力時: 直前が助詞で終わっているかチェック
+       ((eq char ?\s)
+        (let* ((end (save-excursion
+                      (backward-char 1)  ; スペースの前に移動
+                      (point)))
+               (start (save-excursion
+                        (backward-char 1)
+                        (skip-chars-backward "a-z")
+                        (point)))
+               (text (buffer-substring-no-properties start end)))
+          (sumibi-debug-print (format "sumibi-check-particle-trigger: text='%s' start=%d end=%d\n" text start end))
+          ;; テキストが存在し、かつ助詞で終わっているかチェック
+          (when (and (> (length text) 0)
+                     (cl-some (lambda (particle)
+                                (string-suffix-p particle text))
+                              sumibi-auto-convert-particles))
+            (sumibi-debug-print "sumibi-check-particle-trigger: particle detected! executing auto-convert\n")
+            ;; スペースを削除
+            (delete-char -1)
+            ;; 自動変換を実行
+            (sumibi-rK-trans))))
+
+       ;; 句読点入力時: 直前のローマ字を変換
+       ((memq char sumibi-auto-convert-punctuation)
+        (let* ((end (save-excursion
+                      (backward-char 1)  ; 句読点の前に移動
+                      (point)))
+               (start (save-excursion
+                        (backward-char 1)
+                        (skip-chars-backward "a-z")
+                        (point)))
+               (text (buffer-substring-no-properties start end)))
+          (sumibi-debug-print (format "sumibi-check-particle-trigger: punctuation, text='%s' start=%d end=%d\n" text start end))
+          ;; ローマ字テキストが存在する場合のみ変換
+          (when (> (length text) 0)
+            (sumibi-debug-print "sumibi-check-particle-trigger: punctuation detected! executing auto-convert\n")
+            ;; 句読点を削除
+            (delete-char -1)
+            ;; 自動変換を実行
+            (sumibi-rK-trans)
+            ;; 句読点を全角に変換して再挿入
+            (insert (cond
+                     ((eq char ?.) "。")
+                     ((eq char ?,) "、")
+                     (t (char-to-string char)))))))))))
+
+(defun sumibi-setup-auto-convert-hook ()
+  "sumibi-mode有効時に自動変換のフックを設定する。"
+  (sumibi-debug-print (format "sumibi-setup-auto-convert-hook: sumibi-mode=%s\n" sumibi-mode))
+  (if sumibi-mode
+      (progn
+        (add-hook 'post-self-insert-hook #'sumibi-check-particle-trigger nil t)
+        (sumibi-debug-print "sumibi-setup-auto-convert-hook: hook added\n"))
+    (remove-hook 'post-self-insert-hook #'sumibi-check-particle-trigger t)
+    (sumibi-debug-print "sumibi-setup-auto-convert-hook: hook removed\n")))
+
+(defun sumibi-auto-convert-hook-function ()
+  "after-change-major-mode-hook用の関数。sumibi-mode有効時に自動変換フックを設定する。"
+  (when sumibi-mode
+    (sumibi-setup-auto-convert-hook)))
+
+
 (defun sumibi-switch-model (&optional _arg)
   "GPTのモデルを切り替える.
 引数_ARG: 未使用"
@@ -2376,7 +2476,11 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
         (setq default-input-method "japanese-sumibi")
         (setq-default sumibi-mode (if (null arg) (not sumibi-mode)
                                     (> (prefix-numeric-value arg) 0)))
-        (sumibi-kill-sumibi-mode))
+        (sumibi-kill-sumibi-mode)
+        ;; グローバルモード有効時: after-change-major-mode-hookで自動的にフックを設定
+        (if (default-value 'sumibi-mode)
+            (add-hook 'after-change-major-mode-hook #'sumibi-auto-convert-hook-function)
+          (remove-hook 'after-change-major-mode-hook #'sumibi-auto-convert-hook-function)))
     (setq sumibi-mode (if (null arg) (not sumibi-mode)
                         (> (prefix-numeric-value arg) 0))))
   (when sumibi-mode (run-hooks 'sumibi-mode-hook))
@@ -2412,6 +2516,9 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
 	  (lambda ()
 	    (setq-default mode-line-format (delq sumibi-mode-line-string mode-line-format))
 	    (setq-default mode-line-format (append mode-line-format (list sumibi-mode-line-string)))))
+
+;; sumibi-mode有効時に自動変換フックを設定する.
+(add-hook 'sumibi-mode-hook #'sumibi-setup-auto-convert-hook)
 
 ;; 全バッファで sumibi-input-mode を変更する
 (defun sumibi-input-mode (&optional arg)
