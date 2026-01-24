@@ -397,4 +397,77 @@ Issue #119 で要望いただいた、助詞検出ベースの自動変換機能
 
 この実装により、Ctrl+Jを押す手間が省け、より自然な日本語入力が可能になりました。
 
-はい作成してください。
+---
+
+## 英文の自動変換スキップ機能の追加
+
+### 概要
+
+自動変換機能の改良として、英文を誤って日本語に変換しないように、英文判定機能を追加しました。テキスト中の英単語の割合が80%以上の場合、自動変換をスキップします。
+
+### 実装した機能
+
+#### 1. 短い英単語のリスト
+英単語辞書（sumibi-english-words.el）には3文字以上の単語しか含まれていないため、1-3文字の一般的な英単語のリストを追加しました。
+
+```elisp
+(defconst sumibi--short-english-words
+  '("i" "a" "an" "as" "at" "be" "by" "do" "go" "he" "if" "in" "is" "it"
+    "me" "my" "no" "of" "on" "or" "so" "to" "up" "us" "we"
+    "add" "all" "am" "and" "any" "are" "bad" "big" "box" "but" "can" "did"
+    "end" "far" "few" "fly" "for" "fox" "get" "got" "had" "has" "her" "him"
+    "his" "hot" "how" "its" "let" "may" "new" "not" "now" "off" "old" "one"
+    "our" "out" "own" "per" "put" "run" "saw" "say" "see" "she" "the" "too"
+    "top" "two" "use" "was" "way" "who" "why" "win" "yes" "yet" "you")
+  "英単語辞書に含まれない短い（1-3文字）の一般的な英単語のリスト。")
+```
+
+#### 2. 英文判定関数
+テキスト全体を分析し、英単語の割合を計算する関数を実装しました。
+
+```elisp
+(defcustom sumibi-auto-convert-english-threshold 0.8
+  "自動変換をスキップする英単語の割合の閾値。
+デフォルトは 0.8 (80%)。"
+  :type 'float
+  :group 'sumibi)
+
+(defun sumibi-is-english-text-p (text)
+  "TEXT が英文かどうかを判定する。
+英単語の割合が sumibi-auto-convert-english-threshold 以上の場合、t を返す。"
+  ...)
+```
+
+#### 3. 自動変換トリガーの改良
+スペース入力時と句読点入力時、行頭から現在位置までのテキストで英文判定を実行し、英文の場合は自動変換をスキップします。
+
+### 動作例
+
+**英文の場合（自動変換スキップ）**:
+- `I will not create a pull request.` → そのまま（ピリオドも半角）
+
+**日本語の場合（自動変換実行）**:
+- `watashiwa ` → `私は`
+- `nihongoni.` → `日本語に。`
+
+**混在テキストの判定**:
+- `I will not create watashi` → 5単語中4単語が英語（80%）→ スキップ
+- `I will watashi nihongo desu` → 5単語中3単語が英語（60%）→ 変換実行
+
+### テスト結果
+- ✅ 新規英文判定テスト: 全10テストがパス
+  - `test-is-english-word-*`: 英単語認識テスト
+  - `test-is-english-text-*`: 英文判定テスト
+- ✅ 既存テスト: 全24テストがパス
+- ✅ 既存機能に影響なし
+
+### 技術的詳細
+- 実装ファイル: lisp/sumibi.el
+- テストファイル: test/sumibi-english-detection-test.el
+- 追加関数:
+  - `sumibi--short-english-words`: 短い英単語のリスト（定数）
+  - `sumibi--is-short-english-word-p`: 短い英単語の判定関数
+  - `sumibi-is-english-text-p`: テキスト全体の英文判定関数
+  - `sumibi-auto-convert-english-threshold`: 英文判定の閾値（カスタマイズ変数）
+
+この実装により、英文を入力する際に自動変換が誤って発動することがなくなり、より実用的な自動変換機能になりました。

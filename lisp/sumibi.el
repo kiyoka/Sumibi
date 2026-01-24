@@ -208,6 +208,52 @@ non-nilの場合、助詞の後にスペースを入力すると自動的に変�
        sumibi--english-words-hash
        (gethash (downcase word) sumibi--english-words-hash)))
 
+(defcustom sumibi-auto-convert-english-threshold 0.8
+  "自動変換をスキップする英単語の割合の閾値。
+テキスト中の英単語の割合がこの値以上の場合、自動変換をスキップする。
+デフォルトは 0.8 (80%)。"
+  :type 'float
+  :group 'sumibi)
+
+(defconst sumibi--short-english-words
+  '("i" "a" "an" "as" "at" "be" "by" "do" "go" "he" "if" "in" "is" "it"
+    "me" "my" "no" "of" "on" "or" "so" "to" "up" "us" "we"
+    "add" "all" "am" "and" "any" "are" "bad" "big" "box" "but" "can" "did"
+    "end" "far" "few" "fly" "for" "fox" "get" "got" "had" "has" "her" "him"
+    "his" "hot" "how" "its" "let" "may" "new" "not" "now" "off" "old" "one"
+    "our" "out" "own" "per" "put" "run" "saw" "say" "see" "she" "the" "too"
+    "top" "two" "use" "was" "way" "who" "why" "win" "yes" "yet" "you")
+  "英単語辞書に含まれない短い（1-3文字）の一般的な英単語のリスト。
+英文判定で使用される。")
+
+(defun sumibi--is-short-english-word-p (word)
+  "WORD が短い英単語のリストに含まれているかチェックする。
+1-2文字の一般的な英単語を判定する。"
+  (member (downcase word) sumibi--short-english-words))
+
+(defun sumibi-is-english-text-p (text)
+  "TEXT が英文かどうかを判定する。
+テキストをスペースで分割し、各単語が英単語辞書に含まれているかチェックする。
+英単語の割合が sumibi-auto-convert-english-threshold 以上の場合、t を返す。
+
+TEXT: 判定対象のテキスト
+戻り値: 英文と判定された場合 t、そうでない場合 nil"
+  (when (and (stringp text) (> (length text) 0))
+    (let* ((words (split-string text "[ \t\n]+" t))  ; スペースで分割
+           (total-words (length words))
+           (english-count 0))
+      (when (> total-words 0)
+        ;; 各単語が英単語かチェック（辞書または短い英単語リスト）
+        (dolist (word words)
+          (when (or (sumibi--is-english-word word)
+                    (sumibi--is-short-english-word-p word))
+            (setq english-count (1+ english-count))))
+        ;; 英単語の割合を計算
+        (let ((ratio (/ (float english-count) (float total-words))))
+          (sumibi-debug-print (format "sumibi-is-english-text-p: text='%s' total=%d english=%d ratio=%.2f\n"
+                                      text total-words english-count ratio))
+          (>= ratio sumibi-auto-convert-english-threshold))))))
+
 (defun sumibi--convert-romaji-preserving-english (romaji-str)
   "ローマ字文字列をひらがなに変換する。英単語は保持する。
 
@@ -2353,18 +2399,25 @@ _ARG: (未使用)"
                         (backward-char 1)
                         (skip-chars-backward "a-z")
                         (point)))
-               (text (buffer-substring-no-properties start end)))
+               (text (buffer-substring-no-properties start end))
+               ;; 英文判定のため、行頭から現在位置までのテキストを取得
+               (line-text (buffer-substring-no-properties
+                           (line-beginning-position)
+                           (save-excursion (backward-char 1) (point)))))
           (sumibi-debug-print (format "sumibi-check-particle-trigger: text='%s' start=%d end=%d\n" text start end))
-          ;; テキストが存在し、かつ助詞で終わっているかチェック
-          (when (and (> (length text) 0)
-                     (cl-some (lambda (particle)
-                                (string-suffix-p particle text))
-                              sumibi-auto-convert-particles))
-            (sumibi-debug-print "sumibi-check-particle-trigger: particle detected! executing auto-convert\n")
-            ;; スペースを削除
-            (delete-char -1)
-            ;; 自動変換を実行
-            (sumibi-rK-trans))))
+          ;; 英文判定: 行全体が英文の場合は自動変換をスキップ
+          (if (sumibi-is-english-text-p line-text)
+              (sumibi-debug-print (format "sumibi-check-particle-trigger: English text detected, skipping auto-convert: '%s'\n" line-text))
+            ;; テキストが存在し、かつ助詞で終わっているかチェック
+            (when (and (> (length text) 0)
+                       (cl-some (lambda (particle)
+                                  (string-suffix-p particle text))
+                                sumibi-auto-convert-particles))
+              (sumibi-debug-print "sumibi-check-particle-trigger: particle detected! executing auto-convert\n")
+              ;; スペースを削除
+              (delete-char -1)
+              ;; 自動変換を実行
+              (sumibi-rK-trans)))))
 
        ;; 句読点入力時: 直前のローマ字を変換
        ((memq char sumibi-auto-convert-punctuation)
@@ -2375,20 +2428,27 @@ _ARG: (未使用)"
                         (backward-char 1)
                         (skip-chars-backward "a-z")
                         (point)))
-               (text (buffer-substring-no-properties start end)))
+               (text (buffer-substring-no-properties start end))
+               ;; 英文判定のため、行頭から現在位置までのテキストを取得
+               (line-text (buffer-substring-no-properties
+                           (line-beginning-position)
+                           (save-excursion (backward-char 1) (point)))))
           (sumibi-debug-print (format "sumibi-check-particle-trigger: punctuation, text='%s' start=%d end=%d\n" text start end))
-          ;; ローマ字テキストが存在する場合のみ変換
-          (when (> (length text) 0)
-            (sumibi-debug-print "sumibi-check-particle-trigger: punctuation detected! executing auto-convert\n")
-            ;; 句読点を削除
-            (delete-char -1)
-            ;; 自動変換を実行
-            (sumibi-rK-trans)
-            ;; 句読点を全角に変換して再挿入
-            (insert (cond
-                     ((eq char ?.) "。")
-                     ((eq char ?,) "、")
-                     (t (char-to-string char)))))))))))
+          ;; 英文判定: 行全体が英文の場合は自動変換をスキップ（句読点も半角のまま）
+          (if (sumibi-is-english-text-p line-text)
+              (sumibi-debug-print (format "sumibi-check-particle-trigger: English text detected, skipping auto-convert: '%s'\n" line-text))
+            ;; ローマ字テキストが存在する場合のみ変換
+            (when (> (length text) 0)
+              (sumibi-debug-print "sumibi-check-particle-trigger: punctuation detected! executing auto-convert\n")
+              ;; 句読点を削除
+              (delete-char -1)
+              ;; 自動変換を実行
+              (sumibi-rK-trans)
+              ;; 句読点を全角に変換して再挿入
+              (insert (cond
+                       ((eq char ?.) "。")
+                       ((eq char ?,) "、")
+                       (t (char-to-string char))))))))))))
 
 (defun sumibi-setup-auto-convert-hook ()
   "sumibi-mode有効時に自動変換のフックを設定する。"
