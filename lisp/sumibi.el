@@ -231,6 +231,32 @@ non-nilの場合、助詞の後にスペースを入力すると自動的に変�
 1-2文字の一般的な英単語を判定する。"
   (member (downcase word) sumibi--short-english-words))
 
+(defun sumibi--remove-apostrophe (word)
+  "WORD からアポストロフィ（'）を除去する。
+例: \"that's\" → \"thats\", \"it's\" → \"its\", \"don't\" → \"dont\""
+  (replace-regexp-in-string "'" "" word))
+
+(defun sumibi--normalize-word (word)
+  "WORD から句読点やクォーテーションを除去して正規化する。
+例: \"hello,\" → \"hello\", \"world.\" → \"world\", \"\\\"test\\\"\" → \"test\""
+  (let ((result word))
+    ;; 各句読点を順番に削除
+    (setq result (replace-regexp-in-string "," "" result))
+    (setq result (replace-regexp-in-string "\\." "" result))
+    (setq result (replace-regexp-in-string ";" "" result))
+    (setq result (replace-regexp-in-string ":" "" result))
+    (setq result (replace-regexp-in-string "!" "" result))
+    (setq result (replace-regexp-in-string "\\?" "" result))
+    (setq result (replace-regexp-in-string "\"" "" result))
+    (setq result (replace-regexp-in-string "'" "" result))
+    (setq result (replace-regexp-in-string "(" "" result))
+    (setq result (replace-regexp-in-string ")" "" result))
+    (setq result (replace-regexp-in-string "\\[" "" result))
+    (setq result (replace-regexp-in-string "\\]" "" result))
+    (setq result (replace-regexp-in-string "{" "" result))
+    (setq result (replace-regexp-in-string "}" "" result))
+    result))
+
 (defun sumibi-is-english-text-p (text)
   "TEXT が英文かどうかを判定する。
 テキストをスペースで分割し、各単語が英単語辞書に含まれているかチェックする。
@@ -243,11 +269,21 @@ TEXT: 判定対象のテキスト
            (total-words (length words))
            (english-count 0))
       (when (> total-words 0)
-        ;; 各単語が英単語かチェック（辞書または短い英単語リスト）
+        ;; 各単語が英単語かチェック（辞書、短い英単語リスト、または大文字で始まる単語）
         (dolist (word words)
-          (when (or (sumibi--is-english-word word)
-                    (sumibi--is-short-english-word-p word))
-            (setq english-count (1+ english-count))))
+          ;; 句読点を除去してから正規化
+          (let* ((clean-word (sumibi--normalize-word word))
+                 (normalized-word (sumibi--remove-apostrophe clean-word)))
+            (when (or (sumibi--is-english-word clean-word)
+                      (sumibi--is-short-english-word-p clean-word)
+                      ;; アポストロフィを除去した単語でもチェック
+                      (sumibi--is-english-word normalized-word)
+                      (sumibi--is-short-english-word-p normalized-word)
+                      ;; 大文字で始まる単語（固有名詞）も英単語として扱う
+                      (and (> (length clean-word) 0)
+                           (let ((first-char (aref clean-word 0)))
+                             (and (>= first-char ?A) (<= first-char ?Z)))))
+              (setq english-count (1+ english-count)))))
         ;; 英単語の割合を計算
         (let ((ratio (/ (float english-count) (float total-words))))
           (sumibi-debug-print (format "sumibi-is-english-text-p: text='%s' total=%d english=%d ratio=%.2f\n"

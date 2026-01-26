@@ -101,5 +101,41 @@
   (should (sumibi-is-english-text-p "The Quick Brown Fox"))
   (should (sumibi-is-english-text-p "THIS IS A TEST")))
 
+;;; Tests for apostrophe handling
+
+(ert-deftest test-is-english-text-with-apostrophe ()
+  "Test that English text with apostrophes is detected correctly."
+  (should (sumibi-is-english-text-p "that's what our new LLMFunction is about"))
+  (should (sumibi-is-english-text-p "it's a new day"))
+  (should (sumibi-is-english-text-p "I don't think we can do that"))
+  (should (sumibi-is-english-text-p "you're welcome to join us")))
+
+(ert-deftest test-remove-apostrophe ()
+  "Test apostrophe removal function."
+  (should (equal "thats" (sumibi--remove-apostrophe "that's")))
+  (should (equal "its" (sumibi--remove-apostrophe "it's")))
+  (should (equal "dont" (sumibi--remove-apostrophe "don't")))
+  (should (equal "cant" (sumibi--remove-apostrophe "can't")))
+  (should (equal "youre" (sumibi--remove-apostrophe "you're")))
+  (should (equal "hello" (sumibi--remove-apostrophe "hello"))))
+
+;;; Tests for punctuation handling
+
+(ert-deftest test-normalize-word ()
+  "Test word normalization function."
+  (should (equal "hello" (sumibi--normalize-word "hello,")))
+  (should (equal "world" (sumibi--normalize-word "world.")))
+  (should (equal "test" (sumibi--normalize-word "test?")))
+  (should (equal "package" (sumibi--normalize-word "\"package")))
+  (should (equal "up" (sumibi--normalize-word "up\"")))
+  (should (equal "hello" (sumibi--normalize-word "hello"))))
+
+(ert-deftest test-is-english-text-with-punctuation-marks ()
+  "Test that English text with punctuation marks is detected correctly."
+  (should (sumibi-is-english-text-p "Hello, world. How are you?"))
+  (should (sumibi-is-english-text-p "I will not create a pull request."))
+  (should (sumibi-is-english-text-p "So far, we mostly think of LLMs as things we interact directly with"))
+  (should (sumibi-is-english-text-p "that's what our new LLMFunction is about")))
+
 (provide 'sumibi-english-detection-test)
 ;;; sumibi-english-detection-test.el ends here
