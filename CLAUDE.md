@@ -672,11 +672,21 @@ Claude's new feature, called "auto-convert," helps Japanese users type more natu
 - 実装ファイル: lisp/sumibi.el
 - テストファイル: test/sumibi-romaji-ratio-test.el
 - 追加関数:
-  - `sumibi-romaji-converted-chars` (449行目)
-  - `sumibi-romaji-ratio` (463行目)
-  - `sumibi-has-sufficient-romaji-p` (488行目)
+  - `sumibi-romaji-to-hiragana-partial`: 部分変換（変換できない文字はそのまま残す）
+  - `sumibi--count-hiragana`: ひらがな/カタカナ文字数カウント
+  - `sumibi-romaji-converted-chars`: 変換された文字数を計算
+  - `sumibi-romaji-ratio`: ローマ字比率を計算
+  - `sumibi-has-sufficient-romaji-p`: 閾値判定
 - 追加カスタマイズ変数:
   - `sumibi-auto-convert-romaji-threshold` (218行目)
+
+### 部分変換の例
+
+```
+"anbientokonpyu-thingu" → "あんびえんとこんぴゅーtひんぐ"
+"thingu" → "tひんぐ"
+"hello" → 英単語なので変換しない (0文字)
+```
 
 ### テスト結果
 - ✅ ローマ字変換テスト: 全24テストがパス
@@ -684,3 +694,43 @@ Claude's new feature, called "auto-convert," helps Japanese users type more natu
 - ✅ ローマ字比率テスト: 全11テストがパス
 - ✅ 括弧バランスチェック: OK
 - ✅ 既存機能に影響なし
+
+---
+
+## 判定用テキスト取得範囲の修正
+
+### 問題
+
+「Emacsでro-majiwouchituduketeiruto,」のような入力で、自動変換が発動しない問題がありました。
+
+**原因**: `line-text` を行頭から取得していたため、「Emacsでro-majiwouchituduketeiruto」全体が判定対象となり、「E」で始まるため固有名詞として英文と判定されていました。
+
+### 修正
+
+`sumibi-skip-chars` を使って後方スキップし、マッチしない文字（ひらがな「で」等）で区切るようにしました。
+
+```elisp
+;; 修正前: 行頭から取得
+(line-text (buffer-substring-no-properties
+            (line-beginning-position)
+            (save-excursion (backward-char 1) (point))))
+
+;; 修正後: sumibi-skip-charsで後方スキップした範囲を取得
+(line-text (save-excursion
+             (backward-char 1)
+             (let ((current (point)))
+               (skip-chars-backward sumibi-skip-chars (line-beginning-position))
+               (buffer-substring-no-properties (point) current))))
+```
+
+### 動作例
+
+「Emacsでro-majiwouchituduketeiruto,」の場合:
+- 修正前: 「Emacsでro-majiwouchituduketeiruto」が判定対象 → 英文と判定 → スキップ
+- 修正後: 「ro-majiwouchituduketeiruto」のみが判定対象 → ローマ字100% → 発動
+
+### テスト結果
+- ✅ ローマ字変換テスト: 全24テストがパス
+- ✅ 英文検出テスト: 全16テストがパス
+- ✅ ローマ字比率テスト: 全11テストがパス
+- ✅ 括弧バランスチェック: OK

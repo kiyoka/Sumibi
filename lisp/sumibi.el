@@ -275,6 +275,20 @@ non-nilの場合、助詞の後にスペースを入力すると自動的に変�
 例: \"that's\" → \"thats\", \"it's\" → \"its\", \"don't\" → \"dont\""
   (replace-regexp-in-string "'" "" word))
 
+(defun sumibi--contains-japanese-p (str)
+  "STR に日本語文字（ひらがな、カタカナ、漢字）が含まれているかチェックする。"
+  (let ((contains nil))
+    (dotimes (i (length str))
+      (let ((char (aref str i)))
+        ;; ひらがな: U+3040 - U+309F
+        ;; カタカナ: U+30A0 - U+30FF
+        ;; CJK統合漢字: U+4E00 - U+9FFF
+        (when (or (and (>= char #x3040) (<= char #x309F))
+                  (and (>= char #x30A0) (<= char #x30FF))
+                  (and (>= char #x4E00) (<= char #x9FFF)))
+          (setq contains t))))
+    contains))
+
 (defun sumibi--normalize-word (word)
   "WORD から句読点やクォーテーションを除去して正規化する。
 アポストロフィは短縮形の判定のため保持する。
@@ -446,20 +460,87 @@ PRESERVE-ENGLISH: non-nil の場合、英単語を検出して保持する
               (apply 'concat (nreverse result))
 	    romaji-str))))))
 
+(defun sumibi-romaji-to-hiragana-partial (romaji-str)
+  "ローマ字文字列を可能な限りひらがなに変換する。
+変換できない文字はそのまま残す。
+
+ROMAJI-STR: 変換対象のローマ字文字列
+
+例:
+  \"watashi\" -> \"わたし\" (全て変換可能)
+  \"thingu\" -> \"thinぐ\" (thは変換不可、inguは変換可能)
+  \"anbientokonpyu-thingu\" -> \"あんびえんとこんぴゅーthinぐ\""
+  (let ((result '())
+        (pos 0)
+        (len (length romaji-str))
+        (romaji-lower (downcase romaji-str)))
+    (if (= len 0)
+        romaji-str
+      (while (< pos len)
+        (let ((matched nil)
+              (current-char (aref romaji-lower pos)))
+          ;; ハイフンは長音として扱う
+          (when (eq current-char ?-)
+            (push "ー" result)
+            (setq pos (1+ pos))
+            (setq matched t))
+
+          ;; 促音チェック: 子音の重複 (tt, kk, pp, etc.)
+          (unless matched
+            (when (and (< (1+ pos) len)
+                       (eq current-char (aref romaji-lower (1+ pos)))
+                       (not (memq current-char '(?a ?i ?u ?e ?o ?n))))
+              (push "っ" result)
+              (setq pos (1+ pos))
+              (setq matched t)))
+
+          ;; 最長一致で変換テーブルを検索
+          (unless matched
+            (catch 'found
+              (dolist (entry sumibi--romaji-to-hiragana-table)
+                (let* ((key (car entry))
+                       (value (cdr entry))
+                       (key-len (length key)))
+                  (when (and (<= (+ pos key-len) len)
+                             (string= key (substring romaji-lower pos (+ pos key-len))))
+                    (push value result)
+                    (setq pos (+ pos key-len))
+                    (setq matched t)
+                    (throw 'found t))))))
+
+          ;; マッチしなかった場合は元の文字をそのまま追加
+          (unless matched
+            (push (char-to-string (aref romaji-str pos)) result)
+            (setq pos (1+ pos)))))
+      (apply 'concat (nreverse result)))))
+
+(defun sumibi--count-hiragana (str)
+  "STR 中のひらがな文字数をカウントする。"
+  (let ((count 0))
+    (dotimes (i (length str))
+      (let ((char (aref str i)))
+        ;; ひらがな: U+3040 - U+309F、カタカナ: U+30A0 - U+30FF
+        (when (or (and (>= char #x3040) (<= char #x309F))
+                  (and (>= char #x30A0) (<= char #x30FF)))
+          (setq count (1+ count)))))
+    count))
+
 (defun sumibi-romaji-converted-chars (word)
   "WORD をローマ字変換した場合の、変換された文字数を返す。
-sumibi-romaji-to-hiragana で変換し、変換後のひらがな文字数 × 2 を
-ローマ字として変換された文字数として返す。
-変換されなかった場合（英単語等）は 0 を返す。"
-  (let* ((result (sumibi-romaji-to-hiragana word nil))
-         (original-len (length word))
-         (result-len (length result)))
-    (if (string= word result)
-        ;; 変換されなかった場合
-        0
-      ;; 変換された場合: ひらがな文字数 × 2 をローマ字文字数として返す
+英単語辞書にある単語は 0 を返す。
+それ以外は sumibi-romaji-to-hiragana-partial で部分変換し、
+変換後のひらがな/カタカナ文字数 × 2 をローマ字として変換された文字数として返す。"
+  ;; 英単語チェック: 英単語辞書にある場合は 0 を返す
+  (if (or (sumibi--is-english-word word)
+          (sumibi--is-short-english-word-p word)
+          (sumibi--is-english-contraction-p word))
+      0
+    (let* ((result (sumibi-romaji-to-hiragana-partial word))
+           (original-len (length word))
+           (hiragana-count (sumibi--count-hiragana result)))
+      ;; ひらがな文字数 × 2 をローマ字文字数として返す
       ;; ただし、元の文字数を超えないようにする
-      (min (* result-len 2) original-len))))
+      (min (* hiragana-count 2) original-len))))
 
 (defun sumibi-romaji-ratio (text)
   "TEXT 中のローマ字変換可能な文字の割合を計算する。
@@ -2523,10 +2604,13 @@ _ARG: (未使用)"
                         (skip-chars-backward "a-z")
                         (point)))
                (text (buffer-substring-no-properties start end))
-               ;; 英文判定のため、行頭から現在位置までのテキストを取得
-               (line-text (buffer-substring-no-properties
-                           (line-beginning-position)
-                           (save-excursion (backward-char 1) (point)))))
+               ;; 英文/ローマ字判定のため、sumibi-skip-charsで後方スキップした範囲を取得
+               ;; （ひらがな等のsumibi-skip-charsにマッチしない文字で区切る）
+               (line-text (save-excursion
+                            (backward-char 1)
+                            (let ((current (point)))
+                              (skip-chars-backward sumibi-skip-chars (line-beginning-position))
+                              (buffer-substring-no-properties (point) current)))))
           (sumibi-debug-print (format "sumibi-check-particle-trigger: text='%s' start=%d end=%d\n" text start end))
           ;; 英文判定: 行全体が英文の場合は自動変換をスキップ
           (if (sumibi-is-english-text-p line-text)
@@ -2564,10 +2648,13 @@ _ARG: (未使用)"
                         (skip-chars-backward "a-z")
                         (point)))
                (text (buffer-substring-no-properties start end))
-               ;; 英文判定のため、行頭から現在位置までのテキストを取得
-               (line-text (buffer-substring-no-properties
-                           (line-beginning-position)
-                           (save-excursion (backward-char 1) (point)))))
+               ;; 英文/ローマ字判定のため、sumibi-skip-charsで後方スキップした範囲を取得
+               ;; （ひらがな等のsumibi-skip-charsにマッチしない文字で区切る）
+               (line-text (save-excursion
+                            (backward-char 1)
+                            (let ((current (point)))
+                              (skip-chars-backward sumibi-skip-chars (line-beginning-position))
+                              (buffer-substring-no-properties (point) current)))))
           (sumibi-debug-print (format "sumibi-check-particle-trigger: punctuation, text='%s' start=%d end=%d\n" text start end))
           ;; 英文判定: 行全体が英文の場合は自動変換をスキップ（句読点も半角のまま）
           (if (sumibi-is-english-text-p line-text)

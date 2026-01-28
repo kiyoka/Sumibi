@@ -62,9 +62,11 @@
   (should (= (sumibi-romaji-converted-chars "world") 0)))
 
 (ert-deftest test-romaji-converted-chars-mixed ()
-  "Mixed characters should return 0 (not converted)."
-  (should (= (sumibi-romaji-converted-chars "test123") 0))
-  (should (= (sumibi-romaji-converted-chars "abc@def") 0)))
+  "Mixed characters are partially converted."
+  ;; "test123" → "てst123" (teがてに変換) → ひらがな1文字 → 2
+  (should (> (sumibi-romaji-converted-chars "test123") 0))
+  ;; "abc@def" → 数字・記号は変換されないが、"a"は"あ"に変換可能
+  (should (> (sumibi-romaji-converted-chars "abc@def") 0)))
 
 ;;; テスト: sumibi-romaji-ratio
 
