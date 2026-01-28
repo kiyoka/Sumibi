@@ -560,3 +560,66 @@ Issue #119 で要望いただいた、助詞検出ベースの自動変換機能
 - ✅ 既存機能に影響なし
 
 ---
+
+## サンプル英文（ブログ用）
+
+### 固有名詞を含む例
+```
+Claude Code is an AI-powered coding assistant developed by Anthropic.
+GitHub Copilot and OpenAI Codex are also popular AI coding tools.
+The LLMFunction API allows developers to integrate AI capabilities easily.
+```
+
+### アポストロフィを含む例
+```
+It's amazing how AI can understand natural language.
+That's what makes modern language models so powerful.
+I don't think we've seen anything like this before.
+You're going to love this new feature.
+```
+
+### 句読点を含む長文例
+```
+So far, we mostly think of LLMs as things we interact directly with, say through chat interfaces. But what if we could take LLM functionality and "package it up" so that we can routinely use it as a component inside anything we're doing? Well, that's what our new LLMFunction is about.
+```
+
+### 混合パターン例
+```
+Claude's new feature, called "auto-convert," helps Japanese users type more naturally. It's designed to skip English text automatically, so phrases like "Hello, World!" won't be converted to hiragana.
+```
+
+これらの英文を入力して、自動変換が誤って発動しないことを確認できます。
+
+---
+
+## 英語短縮形（Contractions）の対応
+
+### 問題
+
+"I don't think we've seen anything like this before." のような短縮形を含む英文で、自動変換が誤って発動する問題がありました。
+- "don't" → "dont" に正規化されるが辞書にない
+- "we've" → "weve" に正規化されるが辞書にない
+- 結果: 9単語中7単語しか認識されず、比率が78%で閾値80%を下回る
+
+### 解決策
+
+一般的な英語の短縮形リスト `sumibi--english-contractions` を追加しました。
+
+### 追加した短縮形（抜粋）
+- 人称代名詞: I'm, I've, I'll, you're, you've, we're, we've, they're, they've
+- be動詞否定: isn't, aren't, wasn't, weren't
+- have動詞否定: hasn't, haven't, hadn't
+- do動詞否定: don't, doesn't, didn't
+- 助動詞否定: can't, couldn't, won't, wouldn't, shouldn't
+- その他: it's, that's, what's, let's, here's, there's
+
+### 技術詳細
+- 追加定数: `sumibi--english-contractions` (228-244行目)
+- 追加関数: `sumibi--is-english-contraction-p` (246行目)
+- 修正関数: `sumibi-is-english-text-p` (309行目に短縮形チェックを追加)
+
+### テスト結果
+- ✅ ローマ字変換テスト: 全24テストがパス
+- ✅ 英文検出テスト: 全16テストがパス（短縮形テスト含む）
+- ✅ 括弧バランスチェック: OK
+- ✅ 既存機能に影響なし
