@@ -137,5 +137,22 @@
   (should (sumibi-is-english-text-p "So far, we mostly think of LLMs as things we interact directly with"))
   (should (sumibi-is-english-text-p "that's what our new LLMFunction is about")))
 
+;;; Tests for contractions handling
+
+(ert-deftest test-is-english-contraction ()
+  "Test that contractions are recognized correctly."
+  (should (sumibi--is-english-contraction-p "don't"))
+  (should (sumibi--is-english-contraction-p "we've"))
+  (should (sumibi--is-english-contraction-p "I'm"))
+  (should (sumibi--is-english-contraction-p "you're"))
+  (should (sumibi--is-english-contraction-p "it's"))
+  (should-not (sumibi--is-english-contraction-p "hello")))
+
+(ert-deftest test-is-english-text-with-contractions ()
+  "Test that English text with contractions is detected correctly."
+  (should (sumibi-is-english-text-p "I don't think we've seen anything like this before"))
+  (should (sumibi-is-english-text-p "It's amazing how AI can understand natural language"))
+  (should (sumibi-is-english-text-p "You're going to love this new feature")))
+
 (provide 'sumibi-english-detection-test)
 ;;; sumibi-english-detection-test.el ends here

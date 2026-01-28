@@ -226,6 +226,37 @@ non-nilの場合、助詞の後にスペースを入力すると自動的に変�
   "英単語辞書に含まれない短い（1-3文字）の一般的な英単語のリスト。
 英文判定で使用される。")
 
+(defconst sumibi--english-contractions
+  '(;; I
+    "i'm" "i've" "i'll" "i'd"
+    ;; you
+    "you're" "you've" "you'll" "you'd"
+    ;; we
+    "we're" "we've" "we'll" "we'd"
+    ;; they
+    "they're" "they've" "they'll" "they'd"
+    ;; he/she/it
+    "he's" "he'll" "he'd" "she's" "she'll" "she'd" "it's" "it'll"
+    ;; that/what/who/there/here
+    "that's" "that'll" "that'd" "what's" "what'll" "who's" "who'll"
+    "there's" "there'll" "here's"
+    ;; be動詞の否定形
+    "isn't" "aren't" "wasn't" "weren't"
+    ;; have動詞の否定形
+    "hasn't" "haven't" "hadn't"
+    ;; do動詞の否定形
+    "doesn't" "don't" "didn't"
+    ;; 助動詞の否定形
+    "can't" "couldn't" "won't" "wouldn't" "shouldn't" "mustn't" "mightn't"
+    ;; その他
+    "let's" "how's" "where's" "when's" "why's")
+  "一般的な英語の短縮形（contractions）のリスト。
+英文判定で使用される。")
+
+(defun sumibi--is-english-contraction-p (word)
+  "WORD が英語の短縮形かチェックする。"
+  (member (downcase word) sumibi--english-contractions))
+
 (defun sumibi--is-short-english-word-p (word)
   "WORD が短い英単語のリストに含まれているかチェックする。
 1-2文字の一般的な英単語を判定する。"
@@ -238,9 +269,10 @@ non-nilの場合、助詞の後にスペースを入力すると自動的に変�
 
 (defun sumibi--normalize-word (word)
   "WORD から句読点やクォーテーションを除去して正規化する。
-例: \"hello,\" → \"hello\", \"world.\" → \"world\", \"\\\"test\\\"\" → \"test\""
+アポストロフィは短縮形の判定のため保持する。
+例: \"hello,\" → \"hello\", \"world.\" → \"world\", \"don't\" → \"don't\""
   (let ((result word))
-    ;; 各句読点を順番に削除
+    ;; 各句読点を順番に削除（アポストロフィは保持）
     (setq result (replace-regexp-in-string "," "" result))
     (setq result (replace-regexp-in-string "\\." "" result))
     (setq result (replace-regexp-in-string ";" "" result))
@@ -248,7 +280,6 @@ non-nilの場合、助詞の後にスペースを入力すると自動的に変�
     (setq result (replace-regexp-in-string "!" "" result))
     (setq result (replace-regexp-in-string "\\?" "" result))
     (setq result (replace-regexp-in-string "\"" "" result))
-    (setq result (replace-regexp-in-string "'" "" result))
     (setq result (replace-regexp-in-string "(" "" result))
     (setq result (replace-regexp-in-string ")" "" result))
     (setq result (replace-regexp-in-string "\\[" "" result))
@@ -269,13 +300,15 @@ TEXT: 判定対象のテキスト
            (total-words (length words))
            (english-count 0))
       (when (> total-words 0)
-        ;; 各単語が英単語かチェック（辞書、短い英単語リスト、または大文字で始まる単語）
+        ;; 各単語が英単語かチェック（辞書、短い英単語リスト、短縮形、または大文字で始まる単語）
         (dolist (word words)
-          ;; 句読点を除去してから正規化
+          ;; 句読点を除去してから正規化（アポストロフィは保持）
           (let* ((clean-word (sumibi--normalize-word word))
                  (normalized-word (sumibi--remove-apostrophe clean-word)))
             (when (or (sumibi--is-english-word clean-word)
                       (sumibi--is-short-english-word-p clean-word)
+                      ;; 短縮形をチェック（アポストロフィを保持した状態で）
+                      (sumibi--is-english-contraction-p clean-word)
                       ;; アポストロフィを除去した単語でもチェック
                       (sumibi--is-english-word normalized-word)
                       (sumibi--is-short-english-word-p normalized-word)
