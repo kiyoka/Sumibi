@@ -623,3 +623,64 @@ Claude's new feature, called "auto-convert," helps Japanese users type more natu
 - ✅ 英文検出テスト: 全16テストがパス（短縮形テスト含む）
 - ✅ 括弧バランスチェック: OK
 - ✅ 既存機能に影響なし
+
+---
+
+## ローマ字比率による自動変換閾値の追加
+
+### 概要
+
+自動変換機能に新しい閾値を追加しました。テキスト中のローマ字として変換可能な文字の割合が50%を超えた場合のみ、自動変換を発動します。
+
+### 実装した機能
+
+#### 1. 新しいカスタマイズ変数
+```elisp
+(defcustom sumibi-auto-convert-romaji-threshold 0.5
+  "自動変換を発動するローマ字変換可能文字の割合の閾値。
+デフォルトは 0.5 (50%)。"
+  :type 'float
+  :group 'sumibi)
+```
+
+#### 2. ローマ字変換文字数計算関数
+`sumibi-romaji-converted-chars`: `sumibi-romaji-to-hiragana` で変換し、変換後のひらがな文字数 × 2 をローマ字として変換された文字数として返す。
+
+```elisp
+;; 例:
+;; "watashi" (7文字) → "わたし" (3文字) → 3×2=6文字
+;; "nihon" (5文字) → "にほん" (3文字) → min(3×2, 5)=5文字
+;; "hello" (英単語) → 変換されない → 0文字
+```
+
+#### 3. ローマ字比率計算関数
+`sumibi-romaji-ratio`: テキスト全体のローマ字変換可能な文字の割合を計算。
+
+#### 4. 閾値判定関数
+`sumibi-has-sufficient-romaji-p`: 割合が閾値以上かを判定。
+
+### 動作例
+
+| テキスト | 計算 | 比率 | 自動変換 |
+|---------|------|------|---------|
+| `watashi nihon` | (6+5)/(7+5) | 92% | ✅ 発動 |
+| `watashi hello` | (6+0)/(7+5) | 50% | ✅ 発動 |
+| `nihon hello world` | (5+0+0)/(5+5+5) | 33% | ❌ スキップ |
+| `I will not create watashi` | (0+0+0+0+6)/21 | 29% | ❌ スキップ |
+
+### 技術詳細
+- 実装ファイル: lisp/sumibi.el
+- テストファイル: test/sumibi-romaji-ratio-test.el
+- 追加関数:
+  - `sumibi-romaji-converted-chars` (449行目)
+  - `sumibi-romaji-ratio` (463行目)
+  - `sumibi-has-sufficient-romaji-p` (488行目)
+- 追加カスタマイズ変数:
+  - `sumibi-auto-convert-romaji-threshold` (218行目)
+
+### テスト結果
+- ✅ ローマ字変換テスト: 全24テストがパス
+- ✅ 英文検出テスト: 全16テストがパス
+- ✅ ローマ字比率テスト: 全11テストがパス
+- ✅ 括弧バランスチェック: OK
+- ✅ 既存機能に影響なし

@@ -215,6 +215,14 @@ non-nilの場合、助詞の後にスペースを入力すると自動的に変�
   :type 'float
   :group 'sumibi)
 
+(defcustom sumibi-auto-convert-romaji-threshold 0.5
+  "自動変換を発動するローマ字変換可能文字の割合の閾値。
+テキスト中のローマ字としてひらがなに変換可能な文字の割合が
+この値以上の場合のみ、自動変換を発動する。
+デフォルトは 0.5 (50%)。"
+  :type 'float
+  :group 'sumibi)
+
 (defconst sumibi--short-english-words
   '("i" "a" "an" "as" "at" "be" "by" "do" "go" "he" "if" "in" "is" "it"
     "me" "my" "no" "of" "on" "or" "so" "to" "up" "us" "we"
@@ -437,6 +445,52 @@ PRESERVE-ENGLISH: non-nil の場合、英単語を検出して保持する
 	  (if all-convertible
               (apply 'concat (nreverse result))
 	    romaji-str))))))
+
+(defun sumibi-romaji-converted-chars (word)
+  "WORD をローマ字変換した場合の、変換された文字数を返す。
+sumibi-romaji-to-hiragana で変換し、変換後のひらがな文字数 × 2 を
+ローマ字として変換された文字数として返す。
+変換されなかった場合（英単語等）は 0 を返す。"
+  (let* ((result (sumibi-romaji-to-hiragana word nil))
+         (original-len (length word))
+         (result-len (length result)))
+    (if (string= word result)
+        ;; 変換されなかった場合
+        0
+      ;; 変換された場合: ひらがな文字数 × 2 をローマ字文字数として返す
+      ;; ただし、元の文字数を超えないようにする
+      (min (* result-len 2) original-len))))
+
+(defun sumibi-romaji-ratio (text)
+  "TEXT 中のローマ字変換可能な文字の割合を計算する。
+戻り値: 0.0 から 1.0 の間の浮動小数点数。
+  - 空文字列の場合は 0.0 を返す
+  - 各単語について sumibi-romaji-to-hiragana で変換を試み、
+    変換後のひらがな文字数 × 2 をローマ字文字数としてカウント
+  - スペースは文字数に含めない"
+  (if (or (null text) (string-empty-p text))
+      0.0
+    (let* ((words (split-string text "[ \t]+" t))
+           (total-chars 0)
+           (romaji-chars 0))
+      ;; 各単語について処理
+      (dolist (word words)
+        (let* ((normalized (sumibi--normalize-word word))
+               (word-len (length word))
+               (converted (sumibi-romaji-converted-chars normalized)))
+          ;; 単語の長さを総文字数に加算
+          (setq total-chars (+ total-chars word-len))
+          ;; 変換された文字数を加算
+          (setq romaji-chars (+ romaji-chars converted))))
+      ;; 割合を計算（ゼロ除算を防ぐ）
+      (if (> total-chars 0)
+          (/ (float romaji-chars) total-chars)
+        0.0))))
+
+(defun sumibi-has-sufficient-romaji-p (text)
+  "TEXT 中のローマ字変換可能な文字の割合が閾値以上かを判定する。
+sumibi-auto-convert-romaji-threshold 以上の場合は t を返す。"
+  (>= (sumibi-romaji-ratio text) sumibi-auto-convert-romaji-threshold))
 
 (defun sumibi-drop-right-slash (url)
   (if (string-suffix-p "/" url)
@@ -2477,22 +2531,28 @@ _ARG: (未使用)"
           ;; 英文判定: 行全体が英文の場合は自動変換をスキップ
           (if (sumibi-is-english-text-p line-text)
               (sumibi-debug-print (format "sumibi-check-particle-trigger: English text detected, skipping auto-convert: '%s'\n" line-text))
-            ;; テキストが存在し、かつ助詞で終わっているかチェック
-            (when (and (> (length text) 0)
-                       (cl-some (lambda (particle)
-                                  (string-suffix-p particle text))
-                                sumibi-auto-convert-particles))
-              (sumibi-debug-print "sumibi-check-particle-trigger: particle detected! executing auto-convert\n")
-              ;; 最後のスペースを削除
-              (delete-char -1)
-              ;; 助詞の前のスペースも削除（ある場合）
-              (when (and (> (point) start)
-                         (eq (char-before start) ?\s))
-                (save-excursion
-                  (goto-char start)
-                  (delete-char -1)))
-              ;; 自動変換を実行
-              (sumibi-rK-trans)))))
+            ;; ローマ字比率判定: ローマ字変換可能な文字が閾値以上かチェック
+            (if (not (sumibi-has-sufficient-romaji-p line-text))
+                (sumibi-debug-print (format "sumibi-check-particle-trigger: Insufficient romaji ratio (%.2f < %.2f), skipping: '%s'\n"
+                                            (sumibi-romaji-ratio line-text)
+                                            sumibi-auto-convert-romaji-threshold
+                                            line-text))
+              ;; テキストが存在し、かつ助詞で終わっているかチェック
+              (when (and (> (length text) 0)
+                         (cl-some (lambda (particle)
+                                    (string-suffix-p particle text))
+                                  sumibi-auto-convert-particles))
+                (sumibi-debug-print "sumibi-check-particle-trigger: particle detected! executing auto-convert\n")
+                ;; 最後のスペースを削除
+                (delete-char -1)
+                ;; 助詞の前のスペースも削除（ある場合）
+                (when (and (> (point) start)
+                           (eq (char-before start) ?\s))
+                  (save-excursion
+                    (goto-char start)
+                    (delete-char -1)))
+                ;; 自動変換を実行
+                (sumibi-rK-trans))))))
 
        ;; 句読点入力時: 直前のローマ字を変換
        ((memq char sumibi-auto-convert-punctuation)
@@ -2512,18 +2572,24 @@ _ARG: (未使用)"
           ;; 英文判定: 行全体が英文の場合は自動変換をスキップ（句読点も半角のまま）
           (if (sumibi-is-english-text-p line-text)
               (sumibi-debug-print (format "sumibi-check-particle-trigger: English text detected, skipping auto-convert: '%s'\n" line-text))
-            ;; ローマ字テキストが存在する場合のみ変換
-            (when (> (length text) 0)
-              (sumibi-debug-print "sumibi-check-particle-trigger: punctuation detected! executing auto-convert\n")
-              ;; 句読点を削除
-              (delete-char -1)
-              ;; 自動変換を実行
-              (sumibi-rK-trans)
-              ;; 句読点を全角に変換して再挿入
-              (insert (cond
-                       ((eq char ?.) "。")
-                       ((eq char ?,) "、")
-                       (t (char-to-string char))))))))))))
+            ;; ローマ字比率判定: ローマ字変換可能な文字が閾値以上かチェック
+            (if (not (sumibi-has-sufficient-romaji-p line-text))
+                (sumibi-debug-print (format "sumibi-check-particle-trigger: Insufficient romaji ratio (%.2f < %.2f), skipping: '%s'\n"
+                                            (sumibi-romaji-ratio line-text)
+                                            sumibi-auto-convert-romaji-threshold
+                                            line-text))
+              ;; ローマ字テキストが存在する場合のみ変換
+              (when (> (length text) 0)
+                (sumibi-debug-print "sumibi-check-particle-trigger: punctuation detected! executing auto-convert\n")
+                ;; 句読点を削除
+                (delete-char -1)
+                ;; 自動変換を実行
+                (sumibi-rK-trans)
+                ;; 句読点を全角に変換して再挿入
+                (insert (cond
+                         ((eq char ?.) "。")
+                         ((eq char ?,) "、")
+                         (t (char-to-string char)))))))))))))
 
 (defun sumibi-setup-auto-convert-hook ()
   "sumibi-mode有効時に自動変換のフックを設定する。"
