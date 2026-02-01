@@ -140,6 +140,22 @@ non-nilの場合、助詞の後にスペースを入力すると自動的に変�
   :type '(repeat character)
   :group 'sumibi)
 
+(defcustom sumibi-auto-convert-exclude-modes
+  '(shell-mode)
+  "自動変換を無効にするメジャーモードのリスト。
+シェルバッファなど、コマンドラインでの操作が主体となるバッファでは、
+ファイル名やコマンド名が自動変換されると問題が生じるため、除外します。"
+  :type '(repeat symbol)
+  :group 'sumibi)
+
+(defcustom sumibi-auto-convert-exclude-file-extensions
+  '("gpg")
+  "自動変換を無効にするファイル拡張子のリスト。
+GPG暗号化ファイルなど、機密情報がLLM APIに送信されるリスクがあるファイルでは、
+セキュリティ上の理由から自動変換を無効にします。"
+  :type '(repeat string)
+  :group 'sumibi)
+
 (defvar sumibi-mode nil             "漢字変換トグル変数.")
 
 ;; ------------------------------------------------------------------
@@ -2582,6 +2598,22 @@ _ARG: (未使用)"
 ;; 自動変換機能（助詞検出ベース）
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun sumibi-should-exclude-auto-convert-p ()
+  "現在のバッファが自動変換の除外対象かどうかを判定する。
+以下の条件のいずれかを満たす場合、t を返す:
+1. 現在のメジャーモードが `sumibi-auto-convert-exclude-modes` に含まれている
+2. 現在のバッファのファイル拡張子が `sumibi-auto-convert-exclude-file-extensions` に含まれている
+3. 現在のバッファがミニバッファである（Find File: などの入力エリア）"
+  (or
+   ;; ミニバッファチェック
+   (minibufferp)
+   ;; メジャーモードチェック
+   (memq major-mode sumibi-auto-convert-exclude-modes)
+   ;; ファイル拡張子チェック
+   (when-let* ((filename (buffer-file-name))
+               (extension (file-name-extension filename)))
+     (member extension sumibi-auto-convert-exclude-file-extensions))))
+
 (defun sumibi-check-particle-trigger ()
   "スペースまたは句読点入力時、直前が助詞で終わっているかチェックし、条件を満たせば自動変換を実行する。"
   (sumibi-debug-print (format "sumibi-check-particle-trigger: enable=%s mode=%s select-mode=%s char-before=%s\n"
@@ -2589,9 +2621,15 @@ _ARG: (未使用)"
                               sumibi-mode
                               sumibi-select-mode
                               (char-before)))
+  ;; 除外対象チェック
+  (when (sumibi-should-exclude-auto-convert-p)
+    (sumibi-debug-print (format "sumibi-check-particle-trigger: auto-convert excluded (mode=%s, file=%s)\n"
+                                major-mode
+                                (buffer-file-name))))
   (when (and sumibi-auto-convert-enable
              sumibi-mode
-             (not sumibi-select-mode))
+             (not sumibi-select-mode)
+             (not (sumibi-should-exclude-auto-convert-p)))
     (let ((char (char-before)))
       (cond
        ;; スペース入力時: 直前が助詞で終わっているかチェック

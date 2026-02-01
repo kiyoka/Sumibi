@@ -734,3 +734,182 @@ Claude's new feature, called "auto-convert," helps Japanese users type more natu
 - ✅ 英文検出テスト: 全16テストがパス
 - ✅ ローマ字比率テスト: 全11テストがパス
 - ✅ 括弧バランスチェック: OK
+
+---
+
+## 自動変換の除外機能の実装
+
+### 概要
+
+自動変換機能に、特定のバッファやファイルで自動変換を無効化する除外機能を追加しました。セキュリティ上のリスクや、誤変換による操作ミスを防ぐために、以下のケースで自動変換をスキップします。
+
+### 実装した機能
+
+#### 1. シェルバッファでの自動変換の無効化
+
+シェルバッファ（`shell-mode`）では、コマンドラインでの操作が主体となります。ファイル名やコマンド名、オプション引数などはローマ字の連続で構成されることが多く、これらを日本語に変換してしまうと操作に支障をきたします。
+
+**具体例**:
+- `ls -la Documents/project-alpha/` → ディレクトリ名が変換されると意図しない結果に
+- `git checkout feature/user-authentication` → ブランチ名の誤変換を防ぐ
+- 環境変数名やファイルパスも同様
+
+前述の英単語辞書による判定があるものの、ローマ字のディレクトリ名やプロジェクト名は英単語として認識されない可能性があるため、シェルバッファでは自動変換を完全に無効化しました。
+
+#### 2. GPG暗号化ファイルでの自動変換の無効化
+
+GPG（GNU Privacy Guard）で暗号化されたファイル（`.gpg`拡張子）には、パスワードや秘密鍵、個人情報などの機密データが含まれている可能性が高いです。
+
+Sumibiは変換処理にLLM（GPT-5.1やGemini）を使用するため、入力された文字列はOpenAIやGoogleのAPIサーバーに送信されます。暗号化ファイルの内容を復号化した後に編集する際、その内容が外部APIに送信されることは、セキュリティ上重大なリスクとなります。
+
+**リスクの具体例**:
+- パスワードマネージャーのデータベース
+- SSH秘密鍵
+- API認証情報
+- 個人情報を含むファイル
+
+これらの機密情報が誤ってクラウドに送信されることを絶対に避けるため、`.gpg`拡張子のファイルでは自動変換を無効にしました。
+
+#### 3. カスタマイズ可能な設定
+
+新しいカスタマイズ変数を追加しました：
+
+```elisp
+;; 除外するメジャーモード
+(defcustom sumibi-auto-convert-exclude-modes
+  '(shell-mode)
+  "自動変換を無効にするメジャーモードのリスト。"
+  :type '(repeat symbol)
+  :group 'sumibi)
+
+;; 除外するファイル拡張子
+(defcustom sumibi-auto-convert-exclude-file-extensions
+  '("gpg")
+  "自動変換を無効にするファイル拡張子のリスト。"
+  :type '(repeat string)
+  :group 'sumibi)
+```
+
+### 使用方法
+
+#### デフォルト設定
+
+特別な設定なしで、以下のバッファで自動変換が無効になります：
+- `shell-mode`（シェルバッファ）
+- `.gpg`拡張子のファイル
+
+#### カスタマイズ例
+
+他のモードや拡張子を追加したい場合：
+
+```elisp
+;; init.el での設定例
+
+;; emacs-lisp-mode でも自動変換を無効化
+(setq sumibi-auto-convert-exclude-modes
+      '(shell-mode emacs-lisp-mode))
+
+;; .secret 拡張子のファイルでも自動変換を無効化
+(setq sumibi-auto-convert-exclude-file-extensions
+      '("gpg" "secret"))
+```
+
+### テスト結果
+- ✅ 自動変換除外テスト: 全7テストがパス
+  - `test-should-exclude-shell-mode`: シェルモードでの除外
+  - `test-should-exclude-gpg-file`: GPGファイルでの除外
+  - `test-should-not-exclude-normal-buffer`: 通常バッファでは除外されない
+  - `test-should-not-exclude-normal-file`: 通常ファイルでは除外されない
+  - `test-should-exclude-custom-mode`: カスタムモードの除外
+  - `test-should-exclude-custom-extension`: カスタム拡張子の除外
+  - `test-should-not-exclude-buffer-without-file`: ファイル名なしバッファ
+- ✅ ローマ字変換テスト: 全24テストがパス
+- ✅ 英文検出テスト: 全16テストがパス
+- ✅ ローマ字比率テスト: 全11テストがパス
+- ✅ 括弧バランスチェック: OK
+- ✅ 既存機能に影響なし
+
+### 技術的詳細
+- 実装ファイル: lisp/sumibi.el
+- テストファイル: test/sumibi-auto-convert-exclude-test.el
+- 追加関数:
+  - `sumibi-should-exclude-auto-convert-p`: 除外対象かどうかを判定する関数（2597-2611行目）
+    - メジャーモードが `sumibi-auto-convert-exclude-modes` に含まれているかチェック
+    - ファイル拡張子が `sumibi-auto-convert-exclude-file-extensions` に含まれているかチェック
+- 追加カスタマイズ変数:
+  - `sumibi-auto-convert-exclude-modes` (144-149行目)
+  - `sumibi-auto-convert-exclude-file-extensions` (151-156行目)
+- 修正関数: `sumibi-check-particle-trigger` (2613-2699行目)
+  - 除外チェックを追加し、除外対象の場合は自動変換をスキップ
+
+この実装により、セキュリティリスクの高いファイルや、誤変換によるトラブルが発生しやすいバッファで、自動変換が適切に無効化されるようになりました。
+
+---
+
+## ミニバッファでの自動変換無効化の追加
+
+### 概要
+
+自動変換除外機能に、ミニバッファ（Find File:などの入力エリア）での自動変換を無効化する機能を追加しました。
+
+### 問題
+
+ファイル名入力などのミニバッファで自動変換が発動すると、非常に不便です。
+
+**具体例**:
+- `M-x find-file` で `a.txt` と入力したとき、ドット `.` のタイミングで自動変換が発動
+- `M-x grep` でコマンドを入力中に、句読点で自動変換が発動
+- バッファ名やディレクトリ名の入力中に誤変換が発生
+
+### 実装した機能
+
+`sumibi-should-exclude-auto-convert-p` 関数に、ミニバッファのチェックを追加しました。Emacsの組み込み関数 `minibufferp` を使用して、現在のバッファがミニバッファかどうかを判定します。
+
+```elisp
+(defun sumibi-should-exclude-auto-convert-p ()
+  "現在のバッファが自動変換の除外対象かどうかを判定する。
+以下の条件のいずれかを満たす場合、t を返す:
+1. 現在のメジャーモードが `sumibi-auto-convert-exclude-modes` に含まれている
+2. 現在のバッファのファイル拡張子が `sumibi-auto-convert-exclude-file-extensions` に含まれている
+3. 現在のバッファがミニバッファである（Find File: などの入力エリア）"
+  (or
+   ;; ミニバッファチェック
+   (minibufferp)
+   ;; メジャーモードチェック
+   (memq major-mode sumibi-auto-convert-exclude-modes)
+   ;; ファイル拡張子チェック
+   (when-let* ((filename (buffer-file-name))
+               (extension (file-name-extension filename)))
+     (member extension sumibi-auto-convert-exclude-file-extensions))))
+```
+
+### 動作確認方法
+
+以下の操作で、ミニバッファでの自動変換が無効になることを確認できます：
+
+1. `M-x find-file` を実行
+2. ミニバッファで `a.txt` と入力
+3. ドット `.` を入力しても自動変換が発動しない ✓
+4. `M-x grep` を実行
+5. コマンド入力中に句読点を入力しても自動変換が発動しない ✓
+
+### テスト結果
+- ✅ 自動変換除外テスト: 全8テストがパス（ミニバッファテスト追加）
+- ✅ ローマ字変換テスト: 全24テストがパス
+- ✅ 英文検出テスト: 全16テストがパス
+- ✅ ローマ字比率テスト: 全11テストがパス
+- ✅ 括弧バランスチェック: OK
+- ✅ 既存機能に影響なし
+
+### 技術的詳細
+- 実装ファイル: lisp/sumibi.el
+- テストファイル: test/sumibi-auto-convert-exclude-test.el
+- 修正関数: `sumibi-should-exclude-auto-convert-p` (2601-2615行目)
+  - `minibufferp` によるミニバッファチェックを最初に追加
+  - ミニバッファの場合は即座に `t` を返して自動変換をスキップ
+
+この実装により、ファイル名入力やコマンド入力など、ミニバッファでの操作時に自動変換が誤って発動することがなくなり、より快適な操作が可能になりました。
+
+コミットログを考えてみてください。本文は5行くらいにしてください。
+
+コミットは、手元で行います。
