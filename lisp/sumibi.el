@@ -2639,7 +2639,7 @@ _ARG: (未使用)"
                       (point)))
                (start (save-excursion
                         (backward-char 1)
-                        (skip-chars-backward "a-z")
+                        (skip-chars-backward "a-zA-Z")
                         (point)))
                (text (buffer-substring-no-properties start end))
                ;; 英文/ローマ字判定のため、sumibi-skip-charsで後方スキップした範囲を取得
@@ -2683,7 +2683,7 @@ _ARG: (未使用)"
                       (point)))
                (start (save-excursion
                         (backward-char 1)
-                        (skip-chars-backward "a-z")
+                        (skip-chars-backward "a-zA-Z")
                         (point)))
                (text (buffer-substring-no-properties start end))
                ;; 英文/ローマ字判定のため、sumibi-skip-charsで後方スキップした範囲を取得
