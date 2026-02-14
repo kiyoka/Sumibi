@@ -75,7 +75,7 @@
 
 (ert-deftest test-should-exclude-custom-mode ()
   "カスタマイズ変数に追加したモードでは自動変換が除外されることを確認する。"
-  (let ((sumibi-auto-convert-exclude-modes '(shell-mode emacs-lisp-mode)))
+  (let ((sumibi-ambient-exclude-modes '(shell-mode emacs-lisp-mode)))
     (with-temp-buffer
       (emacs-lisp-mode)
       (should (eq major-mode 'emacs-lisp-mode))
@@ -83,7 +83,7 @@
 
 (ert-deftest test-should-exclude-custom-extension ()
   "カスタマイズ変数に追加した拡張子では自動変換が除外されることを確認する。"
-  (let ((sumibi-auto-convert-exclude-file-extensions '("gpg" "secret"))
+  (let ((sumibi-ambient-exclude-file-extensions '("gpg" "secret"))
         (temp-file (make-temp-file "test-sumibi-" nil ".secret")))
     (unwind-protect
         (with-temp-buffer

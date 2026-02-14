@@ -119,28 +119,24 @@
                  (const :tag "auth-source (macOS Keychain)" auth-source-keychain))
   :group 'sumibi)
 
-(defcustom sumibi-auto-convert-enable nil
+(defcustom sumibi-ambient-enable nil
   "自動変換機能を有効にするかどうか。
 nilの場合は従来通りCtrl+Jでの手動変換のみ。
 non-nilの場合、助詞の後にスペースを入力すると自動的に変換される。"
   :type 'boolean
   :group 'sumibi)
 
-(defcustom sumibi-auto-convert-particles
+(defvar sumibi-auto-convert-particles
   '("wa" "ha" "ga" "wo" "ni" "de" "to" "kara" "made" "he" "mo" "no" "ya" "desu")
   "自動変換のトリガーとなる助詞のリスト。
-これらの助詞の後にスペースが入力されると、自動的に変換が実行される。"
-  :type '(repeat string)
-  :group 'sumibi)
+これらの助詞の後にスペースが入力されると、自動的に変換が実行される。")
 
-(defcustom sumibi-auto-convert-punctuation
+(defvar sumibi-auto-convert-punctuation
   '(?. ?, ??)
   "自動変換のトリガーとなる句読点のリスト。
-これらの句読点が入力されると、直前のローマ字を自動的に変換する。"
-  :type '(repeat character)
-  :group 'sumibi)
+これらの句読点が入力されると、直前のローマ字を自動的に変換する。")
 
-(defcustom sumibi-auto-convert-exclude-modes
+(defcustom sumibi-ambient-exclude-modes
   '(shell-mode)
   "自動変換を無効にするメジャーモードのリスト。
 シェルバッファなど、コマンドラインでの操作が主体となるバッファでは、
@@ -148,7 +144,7 @@ non-nilの場合、助詞の後にスペースを入力すると自動的に変�
   :type '(repeat symbol)
   :group 'sumibi)
 
-(defcustom sumibi-auto-convert-exclude-file-extensions
+(defcustom sumibi-ambient-exclude-file-extensions
   '("gpg")
   "自動変換を無効にするファイル拡張子のリスト。
 GPG暗号化ファイルなど、機密情報がLLM APIに送信されるリスクがあるファイルでは、
@@ -224,20 +220,16 @@ GPG暗号化ファイルなど、機密情報がLLM APIに送信されるリス�
        sumibi--english-words-hash
        (gethash (downcase word) sumibi--english-words-hash)))
 
-(defcustom sumibi-auto-convert-english-threshold 0.8
+(defvar sumibi-auto-convert-english-threshold 0.8
   "自動変換をスキップする英単語の割合の閾値。
 テキスト中の英単語の割合がこの値以上の場合、自動変換をスキップする。
-デフォルトは 0.8 (80%)。"
-  :type 'float
-  :group 'sumibi)
+デフォルトは 0.8 (80%)。")
 
-(defcustom sumibi-auto-convert-romaji-threshold 0.5
+(defvar sumibi-auto-convert-romaji-threshold 0.5
   "自動変換を発動するローマ字変換可能文字の割合の閾値。
 テキスト中のローマ字としてひらがなに変換可能な文字の割合が
 この値以上の場合のみ、自動変換を発動する。
-デフォルトは 0.5 (50%)。"
-  :type 'float
-  :group 'sumibi)
+デフォルトは 0.5 (50%)。")
 
 (defconst sumibi--short-english-words
   '("i" "a" "an" "as" "at" "be" "by" "do" "go" "he" "if" "in" "is" "it"
@@ -2601,23 +2593,23 @@ _ARG: (未使用)"
 (defun sumibi-should-exclude-auto-convert-p ()
   "現在のバッファが自動変換の除外対象かどうかを判定する。
 以下の条件のいずれかを満たす場合、t を返す:
-1. 現在のメジャーモードが `sumibi-auto-convert-exclude-modes` に含まれている
-2. 現在のバッファのファイル拡張子が `sumibi-auto-convert-exclude-file-extensions` に含まれている
+1. 現在のメジャーモードが `sumibi-ambient-exclude-modes` に含まれている
+2. 現在のバッファのファイル拡張子が `sumibi-ambient-exclude-file-extensions` に含まれている
 3. 現在のバッファがミニバッファである（Find File: などの入力エリア）"
   (or
    ;; ミニバッファチェック
    (minibufferp)
    ;; メジャーモードチェック
-   (memq major-mode sumibi-auto-convert-exclude-modes)
+   (memq major-mode sumibi-ambient-exclude-modes)
    ;; ファイル拡張子チェック
    (when-let* ((filename (buffer-file-name))
                (extension (file-name-extension filename)))
-     (member extension sumibi-auto-convert-exclude-file-extensions))))
+     (member extension sumibi-ambient-exclude-file-extensions))))
 
 (defun sumibi-check-particle-trigger ()
   "スペースまたは句読点入力時、直前が助詞で終わっているかチェックし、条件を満たせば自動変換を実行する。"
   (sumibi-debug-print (format "sumibi-check-particle-trigger: enable=%s mode=%s select-mode=%s char-before=%s\n"
-                              sumibi-auto-convert-enable
+                              sumibi-ambient-enable
                               sumibi-mode
                               sumibi-select-mode
                               (char-before)))
@@ -2626,7 +2618,7 @@ _ARG: (未使用)"
     (sumibi-debug-print (format "sumibi-check-particle-trigger: auto-convert excluded (mode=%s, file=%s)\n"
                                 major-mode
                                 (buffer-file-name))))
-  (when (and sumibi-auto-convert-enable
+  (when (and sumibi-ambient-enable
              sumibi-mode
              (not sumibi-select-mode)
              (not (sumibi-should-exclude-auto-convert-p)))
