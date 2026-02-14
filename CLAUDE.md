@@ -344,21 +344,17 @@ Issue #119 で要望いただいた、助詞検出ベースの自動変換機能
 
 ```elisp
 ;; 自動変換機能の有効/無効（デフォルト: nil）
-(defcustom sumibi-auto-convert-enable nil
+(defcustom sumibi-ambient-enable nil
   :type 'boolean
   :group 'sumibi)
 
 ;; トリガーとなる助詞のリスト
-(defcustom sumibi-auto-convert-particles
-  '("wa" "ga" "wo" "ni" "de" "to" "kara" "made" "he" "mo" "no" "ya" "desu")
-  :type '(repeat string)
-  :group 'sumibi)
+(defvar sumibi-auto-convert-particles
+  '("wa" "ha" "ga" "wo" "ni" "de" "to" "kara" "made" "he" "mo" "no" "ya" "desu"))
 
 ;; トリガーとなる句読点のリスト
-(defcustom sumibi-auto-convert-punctuation
-  '(?. ?,)
-  :type '(repeat character)
-  :group 'sumibi)
+(defvar sumibi-auto-convert-punctuation
+  '(?. ?, ??))
 ```
 
 ### 使用方法
@@ -371,7 +367,7 @@ Issue #119 で要望いただいた、助詞検出ベースの自動変換機能
   (add-to-list 'load-path (expand-file-name "~/GitHub/Sumibi/lisp"))
   (load-file "~/GitHub/Sumibi/lisp/sumibi.el")
   (setq sumibi-debug nil)
-  (setq sumibi-auto-convert-enable t)  ; 自動変換を有効化
+  (setq sumibi-ambient-enable t)  ; 自動変換を有効化
   (global-sumibi-mode 1))
 ```
 
@@ -426,11 +422,9 @@ Issue #119 で要望いただいた、助詞検出ベースの自動変換機能
 テキスト全体を分析し、英単語の割合を計算する関数を実装しました。
 
 ```elisp
-(defcustom sumibi-auto-convert-english-threshold 0.8
+(defvar sumibi-auto-convert-english-threshold 0.8
   "自動変換をスキップする英単語の割合の閾値。
-デフォルトは 0.8 (80%)。"
-  :type 'float
-  :group 'sumibi)
+デフォルトは 0.8 (80%)。")
 
 (defun sumibi-is-english-text-p (text)
   "TEXT が英文かどうかを判定する。
@@ -636,11 +630,9 @@ Claude's new feature, called "auto-convert," helps Japanese users type more natu
 
 #### 1. 新しいカスタマイズ変数
 ```elisp
-(defcustom sumibi-auto-convert-romaji-threshold 0.5
+(defvar sumibi-auto-convert-romaji-threshold 0.5
   "自動変換を発動するローマ字変換可能文字の割合の閾値。
-デフォルトは 0.5 (50%)。"
-  :type 'float
-  :group 'sumibi)
+デフォルトは 0.5 (50%)。")
 ```
 
 #### 2. ローマ字変換文字数計算関数
@@ -776,14 +768,14 @@ Sumibiは変換処理にLLM（GPT-5.1やGemini）を使用するため、入力�
 
 ```elisp
 ;; 除外するメジャーモード
-(defcustom sumibi-auto-convert-exclude-modes
+(defcustom sumibi-ambient-exclude-modes
   '(shell-mode)
   "自動変換を無効にするメジャーモードのリスト。"
   :type '(repeat symbol)
   :group 'sumibi)
 
 ;; 除外するファイル拡張子
-(defcustom sumibi-auto-convert-exclude-file-extensions
+(defcustom sumibi-ambient-exclude-file-extensions
   '("gpg")
   "自動変換を無効にするファイル拡張子のリスト。"
   :type '(repeat string)
@@ -806,11 +798,11 @@ Sumibiは変換処理にLLM（GPT-5.1やGemini）を使用するため、入力�
 ;; init.el での設定例
 
 ;; emacs-lisp-mode でも自動変換を無効化
-(setq sumibi-auto-convert-exclude-modes
+(setq sumibi-ambient-exclude-modes
       '(shell-mode emacs-lisp-mode))
 
 ;; .secret 拡張子のファイルでも自動変換を無効化
-(setq sumibi-auto-convert-exclude-file-extensions
+(setq sumibi-ambient-exclude-file-extensions
       '("gpg" "secret"))
 ```
 
@@ -834,11 +826,11 @@ Sumibiは変換処理にLLM（GPT-5.1やGemini）を使用するため、入力�
 - テストファイル: test/sumibi-auto-convert-exclude-test.el
 - 追加関数:
   - `sumibi-should-exclude-auto-convert-p`: 除外対象かどうかを判定する関数（2597-2611行目）
-    - メジャーモードが `sumibi-auto-convert-exclude-modes` に含まれているかチェック
-    - ファイル拡張子が `sumibi-auto-convert-exclude-file-extensions` に含まれているかチェック
+    - メジャーモードが `sumibi-ambient-exclude-modes` に含まれているかチェック
+    - ファイル拡張子が `sumibi-ambient-exclude-file-extensions` に含まれているかチェック
 - 追加カスタマイズ変数:
-  - `sumibi-auto-convert-exclude-modes` (144-149行目)
-  - `sumibi-auto-convert-exclude-file-extensions` (151-156行目)
+  - `sumibi-ambient-exclude-modes` (144-149行目)
+  - `sumibi-ambient-exclude-file-extensions` (151-156行目)
 - 修正関数: `sumibi-check-particle-trigger` (2613-2699行目)
   - 除外チェックを追加し、除外対象の場合は自動変換をスキップ
 
@@ -869,18 +861,18 @@ Sumibiは変換処理にLLM（GPT-5.1やGemini）を使用するため、入力�
 (defun sumibi-should-exclude-auto-convert-p ()
   "現在のバッファが自動変換の除外対象かどうかを判定する。
 以下の条件のいずれかを満たす場合、t を返す:
-1. 現在のメジャーモードが `sumibi-auto-convert-exclude-modes` に含まれている
-2. 現在のバッファのファイル拡張子が `sumibi-auto-convert-exclude-file-extensions` に含まれている
+1. 現在のメジャーモードが `sumibi-ambient-exclude-modes` に含まれている
+2. 現在のバッファのファイル拡張子が `sumibi-ambient-exclude-file-extensions` に含まれている
 3. 現在のバッファがミニバッファである（Find File: などの入力エリア）"
   (or
    ;; ミニバッファチェック
    (minibufferp)
    ;; メジャーモードチェック
-   (memq major-mode sumibi-auto-convert-exclude-modes)
+   (memq major-mode sumibi-ambient-exclude-modes)
    ;; ファイル拡張子チェック
    (when-let* ((filename (buffer-file-name))
                (extension (file-name-extension filename)))
-     (member extension sumibi-auto-convert-exclude-file-extensions))))
+     (member extension sumibi-ambient-exclude-file-extensions))))
 ```
 
 ### 動作確認方法
@@ -909,3 +901,5 @@ Sumibiは変換処理にLLM（GPT-5.1やGemini）を使用するため、入力�
   - ミニバッファの場合は即座に `t` を返して自動変換をスキップ
 
 この実装により、ファイル名入力やコマンド入力など、ミニバッファでの操作時に自動変換が誤って発動することがなくなり、より快適な操作が可能になりました。
+
+このファイルで、GitHub Issue 119について実装された内容のうち、最後に変数名などを変更した内容を追従させておいてください。
