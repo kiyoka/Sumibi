@@ -6,7 +6,17 @@
 
 ### `typo-survey-2026/`
 
-2026年2月に実施した、過去のブログ記事（_posts/）の誤字脱字調査結果を保存しています。
+2026年2月に実施した、過去のブログ記事（_posts/）と新しいブログ記事（zennのarticles/）の誤字脱字調査結果を保存しています。
+
+調査対象のブログ記事は、以下の2つのリポジトリに保管されています：
+
+主にSKKを使って書かれたブログ記事は、以下のGitHubリポジトリに保管されています：
+- GitHubリポジトリ: https://github.com/kiyoka/blog-archive
+- ディレクトリ: `_posts/*`
+
+主にLLMを作ったIME(Sumibi)を使って書かれたブログ記事は、以下のGitHubリポジトリに保管されています：
+- GitHubリポジトリ: https://github.com/kiyoka/zenn-content
+- ディレクトリ: `articles/*`
 
 **調査概要:**
 - 対象: _posts/*.md 全478ファイル（2004-2015年のブログ記事）
@@ -18,8 +28,7 @@
 - 同音異義語の誤変換が約40%を占める（安定板→安定版、時前→自前、再起→再帰など）
 - SKK入力の特徴的な誤りパターンが明確に
 - LLM変換（articles/）との比較により、それぞれの長所・短所が明らかに
-
-詳細は [CLAUDE.md](../CLAUDE.md) の「古いブログ記事（_posts/）全件調査結果」セクションを参照してください。
+詳細は [typo-survey-2026/SUMMARY.md](typo-survey-2026/SUMMARY.md) を参照してください。
 
 ### `proofreading-tests/`
 
