@@ -98,12 +98,9 @@
   "現在のプロバイダーのKEYに対応するデフォルト値を返す。"
   (plist-get (cdr (assq sumibi-provider sumibi-provider-defaults)) key))
 
-(defcustom sumibi-current-model "gpt-5.1"
-  "使用する AI モデル名を指定する (デフォルトは gpt-5.1)。
-
-この変数は OpenAI 互換 API に渡す **LLM モデル名** を示します。"
-  :type  'string
-  :group 'sumibi)
+(defvar sumibi-current-model nil
+  "sumibi-switch-model で選択されたモデル名を保持する。
+nil の場合は sumibi-provider のデフォルトモデルが使用される。")
 
 
 (defcustom sumibi-history-stack-limit 100
@@ -627,13 +624,11 @@ SUMIBI_AI_BASEURL環境変数が設定されていればそれを優先する.
 (defun sumibi-ai-model ()
   "利用中のAIモデル名を返す.
 環境変数 SUMIBI_AI_MODEL が設定されていればそれを優先する.
-次に sumibi-current-model がデフォルト値から変更されていればそれを使用する.
+次に sumibi-current-model が設定されていればそれを使用する.
 どちらも未設定の場合は sumibi-provider に応じたデフォルトモデルを返す."
   (or (getenv "SUMIBI_AI_MODEL")
-      (let ((provider-model (sumibi-provider-get :model)))
-        (if (string= sumibi-current-model (eval (car (get 'sumibi-current-model 'standard-value))))
-            provider-model
-          sumibi-current-model))))
+      sumibi-current-model
+      (sumibi-provider-get :model)))
 
 ;; --------------------------------------------------------------
 ;; API Key retrieval functions
@@ -667,9 +662,8 @@ SUMIBI_AI_BASEURL環境変数が設定されていればそれを優先する.
 BASEURLが設定されていない場合はプロバイダーのデフォルトURLからホスト名を抽出する."
   (let ((baseurl (or (getenv "SUMIBI_AI_BASEURL")
                      (sumibi-provider-get :base-url))))
-    (if (and baseurl (string-match "https?://\\([^/]+\\)" baseurl))
-        (match-string 1 baseurl)
-      "api.openai.com")))
+    (when (string-match "https?://\\([^/]+\\)" baseurl)
+      (match-string 1 baseurl))))
 
 (defun sumibi-get-api-key-from-auth-source ()
   "auth-sourceからAPI Keyを取得する.
