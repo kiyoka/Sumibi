@@ -2339,6 +2339,16 @@ _ARG: (未使用)"
   (sumibi-debug-print "sumibi-rK-trans()")
 
   (cond
+   ;; 直前が全角句読点の場合は半角に戻す
+   ((and (not (region-active-p))
+         (memq (preceding-char) '(?。 ?、 ?？)))
+    (let ((half (cond
+                 ((char-equal (preceding-char) ?。) ".")
+                 ((char-equal (preceding-char) ?、) ",")
+                 ((char-equal (preceding-char) ?？) "?"))))
+      (delete-char -1)
+      (insert half)))
+
    ;; *scratch*バッファで直前が ')' の場合は eval-print-last-sexp を実行
    ((and (string= (buffer-name) "*scratch*")
          (char-equal (preceding-char) ?\)))
