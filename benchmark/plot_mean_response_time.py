@@ -109,6 +109,8 @@ def get_color_for_model(model_name: str) -> str:
             return "forestgreen"
     elif model_name.startswith("gpt-5-nano"):
         return "darkgreen"
+    elif model_name.startswith("gpt-5.4"):
+        return "lime"
     elif model_name.startswith("gpt-5"):
         if "medium" in model_name:
             return "green"

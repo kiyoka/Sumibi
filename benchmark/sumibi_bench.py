@@ -46,8 +46,8 @@ class SumibiBench:
 
         # Set reasoning_effort based on model
         # Note: For gemini-3-flash models, reasoning_effort automatically maps to thinking_level in OpenAI compatibility mode
-        if model in ("gpt-5.1", "gpt-5.2"):
-            reasoning_effort = None  # gpt-5.1 and gpt-5.2 use reasoning_effort=none
+        if model in ("gpt-5.1", "gpt-5.2", "gpt-5.4"):
+            reasoning_effort = None  # gpt-5.1, gpt-5.2, gpt-5.4 use reasoning_effort=none
         elif model.startswith("gpt-5"):
             reasoning_effort = "minimal"  # Fixed to minimal for all gpt-5 models
         elif model.startswith("gpt-oss-") or model.startswith("openai.gpt-oss-"):
