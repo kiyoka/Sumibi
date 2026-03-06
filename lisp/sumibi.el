@@ -84,8 +84,8 @@
 (defconst sumibi-provider-defaults
   '((openai
      :base-url "https://api.openai.com/v1"
-     :model "gpt-5.1"
-     :model-list ("gpt-5.1" "gpt-5" "gpt-5-mini" "gpt-4.1" "gpt-4.1-mini" "gpt-4o" "gpt-4o-mini")
+     :model "gpt-5.4"
+     :model-list ("gpt-5.4" "gpt-5.2" "gpt-5.1" "gpt-5" "gpt-5-mini" "gpt-4.1" "gpt-4.1-mini" "gpt-4o" "gpt-4o-mini")
      :api-key-env ("SUMIBI_AI_API_KEY" "OPENAI_API_KEY"))
     (gemini
      :base-url "https://generativelanguage.googleapis.com/v1beta/openai"
@@ -759,10 +759,11 @@ loginは 'apikey' を想定."
          (string-match-p "\\`gpt-5" model))))
 
 (defun sumibi-gpt51-p ()
-  "現在のモデルがGPT-5.1かどうかを判定する."
+  "現在のモデルがGPT-5.1/5.2/5.4かどうかを判定する.
+これらのモデルはreasoning_effort=noneを使用する."
   (let ((model (sumibi-ai-model)))
     (and (stringp model)
-         (string-match-p "\\`gpt-5\\.1\\'" model))))
+         (string-match-p "\\`gpt-5\\.[124]\\'" model))))
 
 (defun sumibi-modeline-string ()
   "利用するモデル名を表示する."
