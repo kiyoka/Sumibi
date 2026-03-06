@@ -22,7 +22,8 @@ RESULTS := gpt-3.5-turbe.json gpt-4.1-mini.json gpt-4.1.json gpt-4o-mini.json gp
 	   gpt-5.json \
 	   gpt-5.1.json \
            gpt-oss-120b\(low\).json \
-           qwen3-vl-8b-instruct-mlx.json
+           qwen3-vl-8b-instruct-mlx.json \
+           gemini-3.1-flash-lite-preview.json
 
 # Notification script to run after benchmark completion
 define run_notify
