@@ -55,6 +55,8 @@ MASTER_COST: Dict[str, float] = {
     "gpt-oss-120b(low)": 0.00196,
     "llm-jp-3.1-13b-instruct4": 0.0001,
     "llm-jp-3.1-8x13b-instruct4": 0.0002,
+    "google_ime_native": 0.0,     # ローカルIME（無料）
+    "google_ime_cgi": 0.0,        # Google CGI API（無料）
 }
 
 # モデルごとの基本色。matplotlib の named color もしくは hex
@@ -89,6 +91,8 @@ COLOR_MAP: Dict[str, str] = {
     "gpt-oss-120b(low)": "olive",
     "llm-jp-3.1-13b-instruct4": "coral",
     "llm-jp-3.1-8x13b-instruct4": "salmon",
+    "google_ime_native": "darkorange",
+    "google_ime_cgi": "gold",
 }
 
 # ---------------------------------------------------------------------------
@@ -126,6 +130,8 @@ DATA_V24: Dict[str, Dict[str, float]] = {
     "gpt-oss-120b(low)": {"cer": 0.591938, "elapsed": 17.565630},
     "llm-jp-3.1-13b-instruct4": {"cer": 0.914891, "elapsed": 2.577443},
     "llm-jp-3.1-8x13b-instruct4": {"cer": 0.735276, "elapsed": 12.738874},
+    "google_ime_native": {"cer": 0.065977, "elapsed": 0.082499},
+    "google_ime_cgi": {"cer": 0.061108, "elapsed": 0.296260},
 }
 
 # ---------------------------------------------------------------------------
