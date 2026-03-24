@@ -9,7 +9,9 @@ benchmark ディレクトリの README
 このディレクトリには、Sumibi クライアントを用いて取得した各モデルの応答時間および文字誤り率（CER: Character Error Rate）を集計・可視化するスクリプトと測定結果が含まれています。なお、Sumibiはローマ字かな漢字変換という性質上、応答時間が約1秒を超えるとユーザビリティが低下します。そのため、応答時間の長いモデルは実用面で不利であり、評価においても高く評価されにくい点に留意してください。
 
 ## ディレクトリ構成
-- `sumibi_bench.py` / `sumibi_typical_convert_client.py`: ベンチマーク実行用スクリプト
+- `sumibi_bench.py` / `sumibi_typical_convert_client.py`: Sumibi (LLM) ベンチマーク実行用スクリプト
+- `mozc_bench.py`: mozcベンチマーク実行用スクリプト（ひらがな入力）
+- `google_ime_bench.py`: Google日本語入力ベンチマーク実行用スクリプト（ひらがな入力、Google CGI API使用）
 - `aggregate_results.py`: JSON 形式の結果を統合し、CSV に出力するスクリプト
 - `plot_mean_response_time.py`: 各モデルの平均応答時間を横長バー＋エラー率折れ線でプロット
 - `plot_errorrate_vs_cost.py`: 文字誤り率と API コストの関係をプロット
@@ -174,12 +176,24 @@ Sumibi のユーザビリティを左右する主要因として、以下の観�
    make result/gemini-2.0-flash.json
    ```  
 
-2. 結果集計
+2. mozcベンチマーク実行
    ```bash
-   make aggregate 
-   ```  
-   
-3. プロット生成
+   make mozc
+   ```
+   前提条件: mozcがインストールされていること（`mozc_emacs_helper` コマンドが利用可能であること）
+
+3. Google日本語入力ベンチマーク実行
+   ```bash
+   make google_ime
+   ```
+   前提条件: インターネット接続が必要（Google CGI API を使用）
+
+4. 結果集計
+   ```bash
+   make aggregate
+   ```
+
+5. プロット生成
    ```bash
    make plots
    ```

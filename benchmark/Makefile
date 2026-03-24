@@ -1,5 +1,7 @@
 EVAL    := ./AJIMEE-Bench/JWTD_v2/v1/evaluation_items.json
 SCRIPT  := sumibi_bench.py
+MOZC_SCRIPT := mozc_bench.py
+GOOGLE_IME_SCRIPT := google_ime_bench.py
 RESULTS := gpt-3.5-turbe.json gpt-4.1-mini.json gpt-4.1.json gpt-4o-mini.json gpt-4o.json deepseek-v3.json o4-mini.json o3.json \
 	   gemini-2.0-flash.json \
 	   gemini-2.0-flash-lite.json \
@@ -26,6 +28,10 @@ RESULTS := gpt-3.5-turbe.json gpt-4.1-mini.json gpt-4.1.json gpt-4o-mini.json gp
            gemini-3.1-flash-lite-preview.json \
            gpt-5.4.json
 
+# Mozc and Google IME benchmark results (hiragana input only)
+MOZC_RESULTS := mozc.json
+GOOGLE_IME_RESULTS := google_ime.json
+
 # Notification script to run after benchmark completion
 define run_notify
 	@if [ -n "$$NOTIFY_SCRIPT" ]; then \
@@ -41,6 +47,8 @@ help:
 	@echo "Usage: make [target]"
 	@echo "Targets:"
 	@echo "  all       generate all result JSONs"
+	@echo "  mozc      generate mozc benchmark results"
+	@echo "  google_ime generate Google IME benchmark results"
 	@echo "  aggregate perform aggregation on all result JSONs"
 	@echo "  clean     remove result JSONs"
 	@echo "  plots     generate plot PNG images"
@@ -75,6 +83,22 @@ result_ver2.3.0/%_katakana.json: $(EVAL) $(SCRIPT)
 
 result_ver2.4.0/%_katakana.json: $(EVAL) $(SCRIPT)
 	python3 $(SCRIPT) $(EVAL) "$@" katakana_input
+	$(run_notify)
+
+# Mozc benchmark targets (hiragana input)
+.PHONY: mozc google_ime
+
+mozc: result_ver2.4.0/mozc.json
+
+result_ver2.4.0/mozc.json: $(EVAL) $(MOZC_SCRIPT)
+	python3 $(MOZC_SCRIPT) $(EVAL) "$@"
+	$(run_notify)
+
+# Google IME benchmark targets (hiragana input via CGI API)
+google_ime: result_ver2.4.0/google_ime.json
+
+result_ver2.4.0/google_ime.json: $(EVAL) $(GOOGLE_IME_SCRIPT)
+	python3 $(GOOGLE_IME_SCRIPT) $(EVAL) "$@"
 	$(run_notify)
 
 # Generate plot images in the project's images directory
