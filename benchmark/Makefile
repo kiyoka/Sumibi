@@ -1,7 +1,7 @@
 EVAL    := ./AJIMEE-Bench/JWTD_v2/v1/evaluation_items.json
 SCRIPT  := sumibi_bench.py
-MOZC_SCRIPT := mozc_bench.py
-GOOGLE_IME_SCRIPT := google_ime_bench.py
+GOOGLE_IME_NATIVE_SCRIPT := google_ime_native_bench.py
+GOOGLE_IME_CGI_SCRIPT := google_ime_cgi_bench.py
 RESULTS := gpt-3.5-turbe.json gpt-4.1-mini.json gpt-4.1.json gpt-4o-mini.json gpt-4o.json deepseek-v3.json o4-mini.json o3.json \
 	   gemini-2.0-flash.json \
 	   gemini-2.0-flash-lite.json \
@@ -90,15 +90,15 @@ result_ver2.4.0/%_katakana.json: $(EVAL) $(SCRIPT)
 
 google_ime_native: result_ver2.4.0/google_ime_native.json
 
-result_ver2.4.0/google_ime_native.json: $(EVAL) $(MOZC_SCRIPT)
-	python3 $(MOZC_SCRIPT) $(EVAL) "$@"
+result_ver2.4.0/google_ime_native.json: $(EVAL) $(GOOGLE_IME_NATIVE_SCRIPT)
+	python3 $(GOOGLE_IME_NATIVE_SCRIPT) $(EVAL) "$@"
 	$(run_notify)
 
 # Google IME (CGI API) benchmark targets
 google_ime_cgi: result_ver2.4.0/google_ime_cgi.json
 
-result_ver2.4.0/google_ime_cgi.json: $(EVAL) $(GOOGLE_IME_SCRIPT)
-	python3 $(GOOGLE_IME_SCRIPT) $(EVAL) "$@"
+result_ver2.4.0/google_ime_cgi.json: $(EVAL) $(GOOGLE_IME_CGI_SCRIPT)
+	python3 $(GOOGLE_IME_CGI_SCRIPT) $(EVAL) "$@"
 	$(run_notify)
 
 # Generate plot images in the project's images directory
