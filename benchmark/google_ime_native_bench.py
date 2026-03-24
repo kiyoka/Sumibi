@@ -157,58 +157,61 @@ class MozcBench:
     """
     mozcのかな漢字変換ベンチマークを実行するクラス。
 
-    AJIMEE-Benchの評価データを使用して、mozcの変換精度を測定します。
-    入力はカタカナ→ひらがなに変換してからmozcに渡します。
+    AJIMEE-Benchの評価データを使用して、Google日本語入力 (native) の変換精度を測定します。
+    hiragana_input モードではカタカナ→ひらがなに変換してから渡します。
+    katakana_input モードではカタカナをそのまま渡します。
     """
 
-    def __init__(self):
-        """ベンチマークを初期化します。"""
+    def __init__(self, mode='hiragana_input'):
+        """ベンチマークを初期化します。
+
+        Args:
+            mode: 'hiragana_input' または 'katakana_input'
+        """
+        self.mode = mode
         self.hiragana_converter = KatakanaToHiraganaConverter()
         self.client = MozcClient()
         self.result_arr = []
 
-    def henkan(self, expected_output, hiragana_text, katakana_text, context_text,
+    def _convert_input(self, katakana_text):
+        """モードに応じて入力テキストを変換する。"""
+        if self.mode == 'katakana_input':
+            return katakana_text
+        else:
+            return self.hiragana_converter.convert(katakana_text)
+
+    def henkan(self, expected_output, input_text, katakana_text, context_text,
                splitted_input=None, skip_save=False):
         """
-        mozcによる変換を実行し、結果を記録します。
-
-        mozcは入力長に制限があるため、splitted_input_for_limited_input_length が
-        提供されている場合は、分割して変換し結果を結合します。
+        Google日本語入力 (native) による変換を実行し、結果を記録します。
 
         Args:
             expected_output: 期待される変換結果のリスト
-            hiragana_text: ひらがなの入力テキスト
+            input_text: 変換対象のテキスト（ひらがなまたはカタカナ）
             katakana_text: カタカナの入力テキスト（表示用）
-            context_text: コンテキストテキスト（mozcでは使用しない）
+            context_text: コンテキストテキスト
             splitted_input: 分割入力データ（長い入力用）
             skip_save: Trueの場合、結果を保存しない（ウォームアップ用）
         """
         # 分割入力がある場合は分割して変換
         if splitted_input and len(splitted_input) > 0:
-            parts = []
-            for katakana_part in splitted_input:
-                hiragana_part = self.hiragana_converter.convert(katakana_part)
-                parts.append(hiragana_part)
-            # 各パートを個別に変換して結合
+            parts = [self._convert_input(part) for part in splitted_input]
             start = time.perf_counter()
-            result_parts = []
-            for part in parts:
-                result_parts.append(self.client.convert(part))
+            result_parts = [self.client.convert(part) for part in parts]
             result = "".join(result_parts)
             end = time.perf_counter()
         else:
-            # 通常の変換
             start = time.perf_counter()
-            result = self.client.convert(hiragana_text)
+            result = self.client.convert(input_text)
             end = time.perf_counter()
 
         elapsed = end - start
 
         warmup_label = " [WARMUP - not saved]" if skip_save else ""
         print(f"  => elapsed: {elapsed:.2f} sec{warmup_label}")
-        print(f"mode:            'mozc (hiragana input)'")
+        print(f"mode:            'google_ime_native ({self.mode})'")
         print(f"katakana_text:   '{katakana_text}'")
-        print(f"hiragana_text:   '{hiragana_text}'")
+        print(f"input_text:      '{input_text}'")
         print(f"expect:          '{expected_output}'")
         print(f"result:          '{result}'\n")
 
@@ -216,8 +219,8 @@ class MozcBench:
             cer = ajimee_utils.calculate_MinCER(expected_output, result)
             at1 = ajimee_utils.calculate_accuracy_at1(expected_output, result)
             self.result_arr.append({
-                'surrounding_text': context_text + hiragana_text,
-                'henkan_text': hiragana_text,
+                'surrounding_text': context_text + input_text,
+                'henkan_text': input_text,
                 'expect': expected_output,
                 'result': result,
                 'cer': cer,
@@ -238,17 +241,17 @@ class MozcBench:
 
         # ウォームアップ: 最初のエントリを1回実行
         print("=" * 80)
-        print("WARMUP PHASE: Executing first entry to initialize mozc")
+        print(f"WARMUP PHASE: Executing first entry to initialize ({self.mode})")
         print("=" * 80)
         first_entry = evaluation_data[0]
         katakana_text = first_entry.get('input', '')
-        hiragana_text = self.hiragana_converter.convert(katakana_text)
+        input_text = self._convert_input(katakana_text)
         context_text = first_entry.get('context_text', '')
         expected_output = first_entry.get('expected_output', [])
         splitted = first_entry.get('splitted_input_for_limited_input_length', [])
 
         print("\nWarmup run:")
-        self.henkan(expected_output, hiragana_text, katakana_text, context_text,
+        self.henkan(expected_output, input_text, katakana_text, context_text,
                     splitted_input=splitted, skip_save=True)
 
         # ベンチマーク実行
@@ -261,30 +264,31 @@ class MozcBench:
             expected_output = entry.get('expected_output', [])
             context_text = entry.get('context_text', '')
             katakana_text = entry.get('input', '')
-            hiragana_text = self.hiragana_converter.convert(katakana_text)
+            input_text = self._convert_input(katakana_text)
             splitted = entry.get('splitted_input_for_limited_input_length', [])
 
-            self.henkan(expected_output, hiragana_text, katakana_text, context_text,
+            self.henkan(expected_output, input_text, katakana_text, context_text,
                         splitted_input=splitted, skip_save=False)
 
 
 def main():
     if len(sys.argv) < 3:
-        print(f"Usage: {sys.argv[0]} <evaluation_json_file> <output_json_file>")
-        print(f"\nmozcのかな漢字変換ベンチマークを実行します。")
-        print(f"入力はカタカナ→ひらがなに変換してからmozcに渡します。")
+        print(f"Usage: {sys.argv[0]} <evaluation_json_file> <output_json_file> [mode]")
+        print(f"  mode: 'hiragana_input' (default) or 'katakana_input'")
+        print(f"\nGoogle日本語入力 (native / mozc_emacs_helper経由) のベンチマークを実行します。")
         print(f"\n前提条件:")
-        print(f"  - mozcがインストールされていること")
+        print(f"  - Google日本語入力がインストールされていること")
         print(f"  - mozc_emacs_helper コマンドが利用可能であること")
         sys.exit(1)
 
     input_path = sys.argv[1]
     output_path = sys.argv[2]
+    mode = sys.argv[3] if len(sys.argv) > 3 else 'hiragana_input'
 
     with open(input_path, 'r', encoding='utf-8') as f:
         evaluation_data = json.load(f)
 
-    bench = MozcBench()
+    bench = MozcBench(mode=mode)
     bench.benchmark(evaluation_data)
 
     with open(output_path, 'w', encoding='utf-8') as fo:

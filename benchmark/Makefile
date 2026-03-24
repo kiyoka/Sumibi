@@ -94,11 +94,19 @@ result_ver2.4.0/google_ime_native.json: $(EVAL) $(GOOGLE_IME_NATIVE_SCRIPT)
 	python3 $(GOOGLE_IME_NATIVE_SCRIPT) $(EVAL) "$@"
 	$(run_notify)
 
+result_ver2.4.0/google_ime_native_hiragana.json: $(EVAL) $(GOOGLE_IME_NATIVE_SCRIPT)
+	python3 $(GOOGLE_IME_NATIVE_SCRIPT) $(EVAL) "$@" hiragana_input
+	$(run_notify)
+
 # Google IME (CGI API) benchmark targets
 google_ime_cgi: result_ver2.4.0/google_ime_cgi.json
 
 result_ver2.4.0/google_ime_cgi.json: $(EVAL) $(GOOGLE_IME_CGI_SCRIPT)
 	python3 $(GOOGLE_IME_CGI_SCRIPT) $(EVAL) "$@"
+	$(run_notify)
+
+result_ver2.4.0/google_ime_cgi_hiragana.json: $(EVAL) $(GOOGLE_IME_CGI_SCRIPT)
+	python3 $(GOOGLE_IME_CGI_SCRIPT) $(EVAL) "$@" hiragana_input
 	$(run_notify)
 
 # Generate plot images in the project's images directory
