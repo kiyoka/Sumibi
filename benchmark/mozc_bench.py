@@ -55,11 +55,12 @@ class MozcClient:
         # 一般的なパスを検索
         candidates = [
             "mozc_emacs_helper",  # PATH上にある場合
+            "/usr/local/bin/mozc_emacs_helper",  # macOS (Homebrew bin)
             "/usr/lib/mozc/mozc_emacs_helper",  # Linux (Debian/Ubuntu)
             "/usr/lib64/mozc/mozc_emacs_helper",  # Linux (Fedora)
             "/usr/local/lib/mozc/mozc_emacs_helper",  # 手動インストール
             "/opt/homebrew/lib/mozc/mozc_emacs_helper",  # macOS (Homebrew ARM)
-            "/usr/local/lib/mozc/mozc_emacs_helper",  # macOS (Homebrew Intel)
+            "/opt/homebrew/bin/mozc_emacs_helper",  # macOS (Homebrew ARM bin)
         ]
         for candidate in candidates:
             # which で検索、または絶対パスの場合は存在チェック
@@ -79,7 +80,8 @@ class MozcClient:
         """
         ひらがなテキストをmozcでかな漢字変換します。
 
-        mozc_emacs_helper にひらがなを送信し、第1候補の変換結果を返します。
+        mozc_emacs_helper にひらがなをS式プロトコルで送信し、
+        スペースで変換、Enterで確定して結果を返します。
 
         Args:
             hiragana_text: 変換対象のひらがなテキスト
@@ -87,9 +89,8 @@ class MozcClient:
         Returns:
             変換後の日本語テキスト（第1候補）
         """
+        import re
         try:
-            # mozc_emacs_helper を使用した変換
-            # プロトコル: CreateSession -> SendKey (各文字) -> GetCandidates -> DeleteSession
             proc = subprocess.Popen(
                 [self.mozc_helper],
                 stdin=subprocess.PIPE,
@@ -98,27 +99,51 @@ class MozcClient:
                 text=True
             )
 
-            # mozc_emacs_helper のプロトコルに従ってコマンドを送信
+            # mozc_emacs_helper のS式プロトコルに従ってコマンドを構築
+            # フォーマット: (event_id command [session_id] [args...])
             commands = []
+            event_id = 0
+
             # セッションを作成
-            commands.append("CreateSession")
-            # ひらがなを1文字ずつ送信
+            commands.append(f"({event_id} CreateSession)")
+            event_id += 1
+
+            # ひらがなを1文字ずつ送信（セッションID=1）
             for char in hiragana_text:
-                # mozc_emacs_helper では SendKey コマンドでキーを送信
-                commands.append(f"SendKey {ord(char)}")
-            # 変換を実行
-            commands.append("Convert")
-            # 結果を取得
-            commands.append("GetOutput")
+                commands.append(f'({event_id} SendKey 1 "{char}")')
+                event_id += 1
+
+            # スペースで変換を実行
+            commands.append(f"({event_id} SendKey 1 space)")
+            event_id += 1
+
+            # Enterで確定
+            commands.append(f"({event_id} SendKey 1 return)")
+            event_id += 1
+
             # セッションを削除
-            commands.append("DeleteSession")
+            commands.append(f"({event_id} DeleteSession 1)")
 
             input_text = "\n".join(commands) + "\n"
             stdout, stderr = proc.communicate(input=input_text, timeout=30)
 
-            # 出力をパースして変換結果を取得
-            result = self._parse_mozc_output(stdout, hiragana_text)
-            return result if result else hiragana_text
+            # 確定結果（return送信後のレスポンス）からresultのvalueを抽出
+            # 形式: (result . ((type . string)(value . "変換結果")...))
+            lines = stdout.strip().split("\n")
+            for line in reversed(lines):
+                # result の value を探す
+                match = re.search(r'\(result \. \(\(type \. string\)\(value \. "([^"]*)"\)', line)
+                if match:
+                    return match.group(1)
+
+            # resultが見つからない場合、preeditのvalueから取得を試みる
+            # （変換後スペース押下時のレスポンスから）
+            for line in reversed(lines):
+                match = re.search(r'\(annotation \. highlight\)\(value \. "([^"]*)"\)', line)
+                if match:
+                    return match.group(1)
+
+            return hiragana_text
 
         except subprocess.TimeoutExpired:
             proc.kill()
@@ -126,36 +151,6 @@ class MozcClient:
         except Exception as e:
             print(f"  => mozc変換エラー: {e}")
             return hiragana_text
-
-    def _parse_mozc_output(self, output, fallback):
-        """
-        mozc_emacs_helper の出力をパースして変換結果を取得します。
-
-        Args:
-            output: mozc_emacs_helper の標準出力
-            fallback: パース失敗時のフォールバック値
-
-        Returns:
-            変換結果の文字列
-        """
-        if not output:
-            return fallback
-
-        # mozc_emacs_helper の出力形式をパース
-        # 出力には (mozc-emacs-helper-output ...) 形式のS式が含まれる
-        lines = output.strip().split("\n")
-        for line in lines:
-            line = line.strip()
-            # 変換結果を含む行を探す
-            if "output" in line.lower() or "result" in line.lower():
-                # S式から結果を抽出する簡易パーサー
-                # 例: ((result ((value . "変換結果"))))
-                import re
-                match = re.search(r'"([^"]*)"', line)
-                if match:
-                    return match.group(1)
-
-        return fallback
 
 
 class MozcBench:
