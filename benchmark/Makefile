@@ -28,9 +28,9 @@ RESULTS := gpt-3.5-turbe.json gpt-4.1-mini.json gpt-4.1.json gpt-4o-mini.json gp
            gemini-3.1-flash-lite-preview.json \
            gpt-5.4.json
 
-# Mozc and Google IME benchmark results (hiragana input only)
-MOZC_RESULTS := mozc.json
-GOOGLE_IME_RESULTS := google_ime.json
+# Google IME benchmark results (hiragana input only)
+GOOGLE_IME_NATIVE_RESULTS := google_ime_native.json
+GOOGLE_IME_CGI_RESULTS := google_ime_cgi.json
 
 # Notification script to run after benchmark completion
 define run_notify
@@ -47,8 +47,8 @@ help:
 	@echo "Usage: make [target]"
 	@echo "Targets:"
 	@echo "  all       generate all result JSONs"
-	@echo "  mozc      generate mozc benchmark results"
-	@echo "  google_ime generate Google IME benchmark results"
+	@echo "  google_ime_native  generate Google IME (native) benchmark results"
+	@echo "  google_ime_cgi    generate Google IME (CGI API) benchmark results"
 	@echo "  aggregate perform aggregation on all result JSONs"
 	@echo "  clean     remove result JSONs"
 	@echo "  plots     generate plot PNG images"
@@ -85,19 +85,19 @@ result_ver2.4.0/%_katakana.json: $(EVAL) $(SCRIPT)
 	python3 $(SCRIPT) $(EVAL) "$@" katakana_input
 	$(run_notify)
 
-# Mozc benchmark targets (hiragana input)
-.PHONY: mozc google_ime
+# Google IME (native / mozc_emacs_helper) benchmark targets
+.PHONY: google_ime_native google_ime_cgi
 
-mozc: result_ver2.4.0/mozc.json
+google_ime_native: result_ver2.4.0/google_ime_native.json
 
-result_ver2.4.0/mozc.json: $(EVAL) $(MOZC_SCRIPT)
+result_ver2.4.0/google_ime_native.json: $(EVAL) $(MOZC_SCRIPT)
 	python3 $(MOZC_SCRIPT) $(EVAL) "$@"
 	$(run_notify)
 
-# Google IME benchmark targets (hiragana input via CGI API)
-google_ime: result_ver2.4.0/google_ime.json
+# Google IME (CGI API) benchmark targets
+google_ime_cgi: result_ver2.4.0/google_ime_cgi.json
 
-result_ver2.4.0/google_ime.json: $(EVAL) $(GOOGLE_IME_SCRIPT)
+result_ver2.4.0/google_ime_cgi.json: $(EVAL) $(GOOGLE_IME_SCRIPT)
 	python3 $(GOOGLE_IME_SCRIPT) $(EVAL) "$@"
 	$(run_notify)
 
