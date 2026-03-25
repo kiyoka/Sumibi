@@ -57,6 +57,7 @@ MASTER_COST: Dict[str, float] = {
     "llm-jp-3.1-8x13b-instruct4": 0.0002,
     "google_ime_native": 0.0,     # ローカルIME（無料）
     "google_ime_cgi": 0.0,        # Google CGI API（無料）
+    "mozc": 0.0,                  # ローカルIME（無料）
 }
 
 # モデルごとの基本色。matplotlib の named color もしくは hex
@@ -93,6 +94,7 @@ COLOR_MAP: Dict[str, str] = {
     "llm-jp-3.1-8x13b-instruct4": "salmon",
     "google_ime_native": "darkorange",
     "google_ime_cgi": "gold",
+    "mozc": "orange",
 }
 
 # ---------------------------------------------------------------------------
@@ -132,6 +134,7 @@ DATA_V24: Dict[str, Dict[str, float]] = {
     "llm-jp-3.1-8x13b-instruct4": {"cer": 0.735276, "elapsed": 12.738874},
     "google_ime_native": {"cer": 0.065977, "elapsed": 0.082499},
     "google_ime_cgi": {"cer": 0.061108, "elapsed": 0.296260},
+    "mozc": {"cer": 0.081243, "elapsed": 0.035803},
 }
 
 # ---------------------------------------------------------------------------

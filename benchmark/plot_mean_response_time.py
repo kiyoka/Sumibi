@@ -128,6 +128,8 @@ def get_color_for_model(model_name: str) -> str:
         return "darkorange"
     elif model_name.startswith("google_ime_cgi"):
         return "gold"
+    elif model_name.startswith("mozc"):
+        return "orange"
     else:
         return "steelblue"
 
