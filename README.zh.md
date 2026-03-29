@@ -1,0 +1,109 @@
+# Sumibi Chinese
+
+基于 LLM API 的 Emacs 中文拼音输入法
+
+## 什么是 Sumibi Chinese
+
+这是一个为 Emacs 设计的中文输入系统，是 [Sumibi](README.en.md)（日语输入法）的中文版模块。
+
+Sumibi Chinese 是无模式的。
+无需切换到中文输入模式即可输入中文。
+
+通过输入拼音并按 Ctrl-J，即可将拼音转换为中文（简体字）。
+
+## 支持的 Emacs 版本
+
+Emacs version 29.x 以上（Windows/Linux/macOS）。需要先安装 Sumibi 主包。
+
+## 安装
+
+1. 注册 OpenAI AI 的订阅服务。
+
+[https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys)
+
+2. 将 OpenAI API Key 设置到环境变量 `OPENAI_API_KEY`。（也可以使用 `SUMIBI_AI_API_KEY`）
+3. 从 MELPA 安装包「sumibi」。
+4. 在 ~/.emacs.d/init.el 中添加以下代码。
+
+```lisp
+(require 'sumibi-chinese)
+(global-sumibi-chinese-mode 1)
+```
+
+使用 Gemini API 的情况下，设置环境变量 `GEMINI_API_KEY`，并在 init.el 中添加以下内容：
+
+```lisp
+(require 'sumibi-chinese)
+(setq sumibi-provider 'gemini)
+(global-sumibi-chinese-mode 1)
+```
+
+## 确认安装是否成功
+
+重启 Emacs 后，状态栏会显示 `[中]`。
+
+## 将拼音转换为中文
+
+1. 将光标移到拼音文本的末尾，按 Ctrl-J 即可转换为中文。
+
+   例：
+   ```
+   wo shi zhongguo ren  →  我是中国人
+   ni hao ma            →  你好吗
+   jin tian tian qi hen hao  →  今天天气很好
+   xue xi zhong wen     →  学习中文
+   ```
+
+2. 如果对转换结果不满意，再次按 Ctrl-J 会弹出候选列表，可以从中选择。
+
+3. 也可以选中一段拼音文本（region），然后按 Ctrl-J 进行转换。
+
+## 撤销
+
+如果对转换结果不满意，按 ESC-u 键可以撤销。
+
+或者，在候选列表中选择「原文」选项，恢复原始拼音。
+
+## 切换 AI 服务
+
+AI 服务的切换方式与 Sumibi 日语版相同。请参考 [README (English)](README.en.md) 中的 "Switching AI Services" 部分。
+
+- 切换到 Gemini（推荐）
+
+    ```lisp
+    (setq sumibi-provider 'gemini)
+    ```
+
+- 切换到 DeepSeek
+
+    ```lisp
+    (setenv "SUMIBI_AI_API_KEY" "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxx")
+    (setenv "SUMIBI_AI_BASEURL" "https://api.deepseek.com/")
+    (setenv "SUMIBI_AI_MODEL" "deepseek-chat")
+    ```
+
+- 切换到本地 LLM
+
+    ```lisp
+    (setenv "SUMIBI_AI_API_KEY" "xxxxxxxx")
+    (setenv "SUMIBI_AI_BASEURL" "http://192.168.56.1:1234/")
+    (setenv "SUMIBI_AI_MODEL" "gemma-3-12b-it-qat")
+    ```
+
+## 与日语版 Sumibi 的并用
+
+Sumibi Chinese 和日语版 Sumibi 可以同时使用，但由于两者都绑定了 C-j 键，建议根据需要修改键绑定：
+
+```lisp
+;; 日语版使用 C-j，中文版使用 C-; 等
+(require 'sumibi)
+(global-sumibi-mode 1)
+
+(require 'sumibi-chinese)
+(define-key sumibi-chinese-mode-map (kbd "C-;") 'sumibi-chinese-trans)
+(global-sumibi-chinese-mode 1)
+```
+
+## 在无法使用 LLM 的环境中
+
+本输入法需要 LLM API 连接。如果无法使用 LLM，建议考虑其他离线中文输入法，如 [pyim](https://github.com/tumashu/pyim)。

@@ -45,6 +45,8 @@ agent-lisp-paren-aid-linux lisp/sumibi.el
 
 **重要**: LLMはLisp括弧を数えるのが苦手なため、自分で数えたり考えたりせず、必ずこのツールを使うようにしてください。
 
+**注意**: `agent-lisp-paren-aid` はフォーマット文字列内の `(%s)` などを括弧として誤検出することがあります。ツールがエラーを報告しても、Emacsの `M-x check-parens` で問題がなければ、誤検出と判断してください。
+
 ### GitHub連携
 
 ghコマンドはインストールされていませんので、issueの内容を確認する時は、以下のようなURLを直接開いてください。
@@ -902,3 +904,93 @@ Sumibiは変換処理にLLM（GPT-5.1やGemini）を使用するため、入力�
 
 この実装により、ファイル名入力やコマンド入力など、ミニバッファでの操作時に自動変換が誤って発動することがなくなり、より快適な操作が可能になりました。
 
+
+## README.zh.md の日本語訳
+
+### Sumibi Chinese
+
+LLM APIを使用したEmacs用中国語ピンイン入力メソッド
+
+### Sumibi Chineseとは
+
+Emacs用の中国語入力システムです。[Sumibi](README.md)（日本語入力メソッド）の中国語版モジュールです。
+
+Sumibi Chineseはモードレスです。中国語入力モードに切り替えることなく中国語を入力できます。
+
+ピンインを入力してCtrl-Jを押すだけで、中国語（簡体字）に変換されます。
+
+### 利用可能なEmacsバージョン
+
+Emacs version 29.x 以上（Windows/Linux/macOS）。Sumibi本体パッケージが必要です。
+
+### インストール
+
+1. OpenAI AIのサブスクリプションを契約します。
+2. 環境変数 `OPENAI_API_KEY` にOpenAI APIキーを登録します。（`SUMIBI_AI_API_KEY` も使用可能です）
+3. MELPAからパッケージ「sumibi」をインストールします。
+4. ~/.emacs.d/init.el に以下のコードを追加します。
+
+```lisp
+(require 'sumibi-chinese)
+(global-sumibi-chinese-mode 1)
+```
+
+Gemini APIを使う場合は、環境変数 `GEMINI_API_KEY` を設定し、init.el に以下を追加します。
+
+```lisp
+(require 'sumibi-chinese)
+(setq sumibi-provider 'gemini)
+(global-sumibi-chinese-mode 1)
+```
+
+### インストールが成功したかどうかの確認方法
+
+Emacsを再起動するとステータスバーに `[中]` が表示されます。
+
+### ピンインから中国語への変換
+
+1. ピンインで書いた文章の最後にカーソルを合わせて、Ctrl-Jを入力すると中国語に変換されます。
+
+   例：
+   ```
+   wo shi zhongguo ren  →  我是中国人
+   ni hao ma            →  你好吗
+   jin tian tian qi hen hao  →  今天天气很好
+   xue xi zhong wen     →  学习中文
+   ```
+
+2. 変換結果が気に入らない場合は、そのままCtrl-Jを入力すると変換候補のポップアップが表示されるので、その中から選択できます。
+
+3. ピンインのテキストをregion選択してからCtrl-Jで変換することもできます。
+
+### Undo
+
+変換結果が気に入らない時は、ESC-u キーを入力することでUndoできます。
+
+または、変換候補の中に「原文」の選択肢がありますので、それを選択して元のピンインに戻すこともできます。
+
+### 利用するAIサービスの切り替え
+
+AIサービスの切り替え方法はSumibi日本語版と同じです。詳しくは [README](README.md) の「利用するAIサービスの切り替え」を参照してください。
+
+- Geminiに切り替える場合（推奨）: `(setq sumibi-provider 'gemini)`
+- DeepSeekに切り替える場合: 環境変数で `SUMIBI_AI_BASEURL` と `SUMIBI_AI_MODEL` を設定
+- ローカルLLMに切り替える場合: 同様に環境変数で設定
+
+### 日本語版Sumibiとの併用
+
+Sumibi Chineseと日本語版Sumibiは同時に使用できますが、両方ともC-jキーにバインドされているため、必要に応じてキーバインドを変更してください。
+
+```lisp
+;; 日本語版はC-j、中国語版はC-;を使用
+(require 'sumibi)
+(global-sumibi-mode 1)
+
+(require 'sumibi-chinese)
+(define-key sumibi-chinese-mode-map (kbd "C-;") 'sumibi-chinese-trans)
+(global-sumibi-chinese-mode 1)
+```
+
+### LLMが使えない環境での利用
+
+本入力メソッドはLLM API接続が必要です。LLMが使えない場合は、オフラインの中国語入力メソッド [pyim](https://github.com/tumashu/pyim) をご検討ください。

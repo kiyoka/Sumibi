@@ -1,6 +1,8 @@
 # Sumibi
 
-Japanese input method powered by ChatGPT API
+Japanese/Chinese input method powered by ChatGPT API
+
+[English](README.en.md) | [中文](README.zh.md)
 
 ![image.png](./images/sumibi_image.jpg)
 

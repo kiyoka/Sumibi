@@ -1,0 +1,109 @@
+# Sumibi Chinese
+
+Chinese Pinyin input method for Emacs powered by LLM API
+
+## What is Sumibi Chinese
+
+A Chinese input system for Emacs. This is the Chinese module of [Sumibi](README.md) (Japanese input method).
+
+Sumibi Chinese is modeless.
+You can type Chinese without switching to a Chinese input mode.
+
+Simply type pinyin and press Ctrl-J to convert it to Chinese (Simplified).
+
+## Supported Emacs Versions
+
+Emacs version 29.x or later (Windows/Linux/macOS). The main Sumibi package is required.
+
+## Installation
+
+1. Subscribe to OpenAI AI.
+
+[https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys)
+
+2. Set your OpenAI API key to the environment variable `OPENAI_API_KEY`. (`SUMIBI_AI_API_KEY` can also be used.)
+3. Install the "sumibi" package from MELPA.
+4. Add the following code to ~/.emacs.d/init.el.
+
+```lisp
+(require 'sumibi-chinese)
+(global-sumibi-chinese-mode 1)
+```
+
+To use Gemini API, set the environment variable `GEMINI_API_KEY` and add the following to init.el:
+
+```lisp
+(require 'sumibi-chinese)
+(setq sumibi-provider 'gemini)
+(global-sumibi-chinese-mode 1)
+```
+
+## Verifying Successful Installation
+
+After restarting Emacs, `[中]` will appear in the status bar.
+
+## Converting Pinyin to Chinese
+
+1. Place the cursor at the end of the pinyin text and press Ctrl-J to convert it to Chinese.
+
+   Examples:
+   ```
+   wo shi zhongguo ren  →  我是中国人
+   ni hao ma            →  你好吗
+   jin tian tian qi hen hao  →  今天天气很好
+   xue xi zhong wen     →  学习中文
+   ```
+
+2. If you are not satisfied with the conversion result, press Ctrl-J again to display a popup of candidates to choose from.
+
+3. You can also select a region of pinyin text and press Ctrl-J to convert it.
+
+## Undo
+
+If you are not satisfied with the conversion result, press ESC-u to undo.
+
+Alternatively, you can select the "原文" (original text) option from the candidate list to restore the original pinyin.
+
+## Switching AI Services
+
+The method for switching AI services is the same as the Japanese version of Sumibi. See the "利用するAIサービスの切り替え" section in [README](README.md) for details.
+
+- Switch to Gemini (recommended)
+
+    ```lisp
+    (setq sumibi-provider 'gemini)
+    ```
+
+- Switch to DeepSeek
+
+    ```lisp
+    (setenv "SUMIBI_AI_API_KEY" "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxx")
+    (setenv "SUMIBI_AI_BASEURL" "https://api.deepseek.com/")
+    (setenv "SUMIBI_AI_MODEL" "deepseek-chat")
+    ```
+
+- Switch to local LLM
+
+    ```lisp
+    (setenv "SUMIBI_AI_API_KEY" "xxxxxxxx")
+    (setenv "SUMIBI_AI_BASEURL" "http://192.168.56.1:1234/")
+    (setenv "SUMIBI_AI_MODEL" "gemma-3-12b-it-qat")
+    ```
+
+## Using Together with Japanese Sumibi
+
+Sumibi Chinese and the Japanese version of Sumibi can be used simultaneously. However, since both bind to the C-j key, you may want to change the keybinding as needed:
+
+```lisp
+;; Japanese version uses C-j, Chinese version uses C-;
+(require 'sumibi)
+(global-sumibi-mode 1)
+
+(require 'sumibi-chinese)
+(define-key sumibi-chinese-mode-map (kbd "C-;") 'sumibi-chinese-trans)
+(global-sumibi-chinese-mode 1)
+```
+
+## Environments Without LLM Access
+
+This input method requires an LLM API connection. If you cannot use an LLM, consider other offline Chinese input methods such as [pyim](https://github.com/tumashu/pyim).
