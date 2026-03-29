@@ -994,3 +994,57 @@ Sumibi Chineseと日本語版Sumibiは同時に使用できますが、両方と
 ### LLMが使えない環境での利用
 
 本入力メソッドはLLM API接続が必要です。LLMが使えない場合は、オフラインの中国語入力メソッド [pyim](https://github.com/tumashu/pyim) をご検討ください。
+
+
+## ピンイン入力テスト用サンプル文章
+
+### 基本的な挨拶
+
+| ピンイン入力 | 期待される変換結果 | 日本語訳 |
+|---|---|---|
+| ni hao | 你好 | こんにちは |
+| xie xie | 谢谢 | ありがとう |
+| zai jian | 再见 | さようなら |
+
+### 短い文
+
+| ピンイン入力 | 期待される変換結果 | 日本語訳 |
+|---|---|---|
+| wo shi zhongguo ren | 我是中国人 | 私は中国人です |
+| ni hao ma | 你好吗 | お元気ですか |
+| jin tian tian qi hen hao | 今天天气很好 | 今日はいい天気です |
+| wo xiang xue xi zhong wen | 我想学习中文 | 中国語を勉強したいです |
+
+### 日常会話
+
+| ピンイン入力 | 期待される変換結果 | 日本語訳 |
+|---|---|---|
+| qing wen xi shou jian zai na li | 请问洗手间在哪里 | すみません、トイレはどこですか |
+| wo xiang he yi bei ka fei | 我想喝一杯咖啡 | コーヒーを一杯飲みたいです |
+| jin tian shi xing qi ji | 今天是星期几 | 今日は何曜日ですか |
+| ming tian jian | 明天见 | また明日 |
+
+### 少し長い文
+
+| ピンイン入力 | 期待される変換結果 | 日本語訳 |
+|---|---|---|
+| zhe shi yi ge hen hao de ji hui | 这是一个很好的机会 | これはとても良い機会です |
+| wo men yi qi qu chi fan ba | 我们一起去吃饭吧 | 一緒にご飯を食べに行きましょう |
+| ta shi wo de hao peng you | 他是我的好朋友 | 彼は私の親友です |
+| zhong guo de li shi hen you yi si | 中国的历史很有意思 | 中国の歴史はとても面白い |
+
+### 数字・日付を含む文
+
+| ピンイン入力 | 期待される変換結果 | 日本語訳 |
+|---|---|---|
+| wo jin nian san shi sui | 我今年三十岁 | 私は今年30歳です |
+| xian zai shi xia wu san dian | 现在是下午三点 | 今は午後3時です |
+
+### ビジネス的な文
+
+| ピンイン入力 | 期待される変換結果 | 日本語訳 |
+|---|---|---|
+| hen gao xing ren shi ni | 很高兴认识你 | お会いできて嬉しいです |
+| fei chang gan xie nin de bang zhu | 非常感谢您的帮助 | ご支援に大変感謝いたします |
+
+
