@@ -77,9 +77,8 @@ The method for switching AI services is the same as the Japanese version of Sumi
 - Switch to DeepSeek
 
     ```lisp
-    (setenv "SUMIBI_AI_API_KEY" "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxx")
-    (setenv "SUMIBI_AI_BASEURL" "https://api.deepseek.com/")
-    (setenv "SUMIBI_AI_MODEL" "deepseek-chat")
+    ;; Set the environment variable DEEPSEEK_API_KEY
+    (setq sumibi-provider 'deepseek)
     ```
 
 - Switch to local LLM

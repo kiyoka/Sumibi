@@ -107,7 +107,7 @@ Sumibiの通常の変換はCtrl+Jで実行しますが、アンビエント変�
 
 ## 利用するAIサービスの切り替え
 
-AIサービスはOpenAI以外にも切り替えられます。Geminiの場合は `sumibi-provider` を設定するだけで、ベースURLやモデル名が自動設定されます。その他のOpenAI互換サービスは環境変数で切り替えることができます。
+AIサービスはOpenAI以外にも切り替えられます。GeminiやDeepSeekの場合は `sumibi-provider` を設定するだけで、ベースURLやモデル名が自動設定されます。その他のOpenAI互換サービスは環境変数で切り替えることができます。
 
 - 向き先をGeminiに切り替える場合（推奨）
 
@@ -126,10 +126,17 @@ AIサービスはOpenAI以外にも切り替えられます。Geminiの場合は
 
 - 向き先をDeepSeekに切り替える場合
 
+    ```lisp
+    ;; 環境変数 DEEPSEEK_API_KEY を設定
+    (setq sumibi-provider 'deepseek)
+    ```
+
+    環境変数による従来の方法も引き続き利用可能です：
+
     ```
     (setenv "SUMIBI_AI_API_KEY" "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxx") ;; DeepSeekのAPIキー
     (setenv "SUMIBI_AI_BASEURL" "https://api.deepseek.com/") ;; DeepSeekのエンドポイントURL
-    (setenv "SUMIBI_AI_MODEL" "deepseek-chat") ;; DeeSeekのチャット用モデル
+    (setenv "SUMIBI_AI_MODEL" "deepseek-chat") ;; DeepSeekのチャット用モデル
     ```
 
 - 向き先をローカルLLMに切り替える場合
@@ -151,9 +158,9 @@ AIサービスはOpenAI以外にも切り替えられます。Geminiの場合は
 |---------|------|
 | ベースURL | `SUMIBI_AI_BASEURL` → `sumibi-provider` のデフォルト |
 | モデル名 | `SUMIBI_AI_MODEL` → `sumibi-switch-model` での選択 → `sumibi-provider` のデフォルト |
-| APIキー | `SUMIBI_AI_API_KEY` → プロバイダー固有の環境変数（`OPENAI_API_KEY` / `GEMINI_API_KEY`） |
+| APIキー | `SUMIBI_AI_API_KEY` → プロバイダー固有の環境変数（`OPENAI_API_KEY` / `GEMINI_API_KEY` / `DEEPSEEK_API_KEY`） |
 
-通常は `sumibi-provider` を設定するだけで十分です。環境変数による上書きは、DeepSeekやローカルLLMなど、プロバイダー定義にないサービスを利用する場合に使用してください。
+通常は `sumibi-provider` を設定するだけで十分です。環境変数による上書きは、ローカルLLMなど、プロバイダー定義にないサービスを利用する場合に使用してください。
 
 ## SUMIBI_AI_API_KEYを環境変数で設定したくない場合
 

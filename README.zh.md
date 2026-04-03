@@ -11,6 +11,8 @@ Sumibi Chinese 是无模式的。
 
 通过输入拼音并按 Ctrl-J，即可将拼音转换为中文（简体字）。
 
+常见问题请参阅 [FAQ](FAQ.zh.md)。
+
 ## 支持的 Emacs 版本
 
 Emacs version 29.x 以上（Windows/Linux/macOS）。需要先安装 Sumibi 主包。
@@ -64,9 +66,17 @@ Emacs version 29.x 以上（Windows/Linux/macOS）。需要先安装 Sumibi 主�
 
 或者，在候选列表中选择「原文」选项，恢复原始拼音。
 
-## 切换 AI 服务
+## 不想将 API Key 设置为环境变量？
 
-AI 服务的切换方式与 Sumibi 日语版相同。请参考 [README (English)](README.en.md) 中的 "Switching AI Services" 部分。
+Sumibi 支持 3 种 API Key 安全管理方式：
+
+1. **环境变量**（默认）- 传统方式
+2. **GPG 加密文件** - 用密码保护的加密文件
+3. **macOS Keychain** - macOS 标准的安全存储
+
+详细配置方法请参阅[安全指南](SECURITY.zh.md)。
+
+## 切换 AI 服务
 
 - 切换到 Gemini（推荐）
 
@@ -77,9 +87,8 @@ AI 服务的切换方式与 Sumibi 日语版相同。请参考 [README (English)
 - 切换到 DeepSeek
 
     ```lisp
-    (setenv "SUMIBI_AI_API_KEY" "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxx")
-    (setenv "SUMIBI_AI_BASEURL" "https://api.deepseek.com/")
-    (setenv "SUMIBI_AI_MODEL" "deepseek-chat")
+    ;; 设置环境变量 DEEPSEEK_API_KEY
+    (setq sumibi-provider 'deepseek)
     ```
 
 - 切换到本地 LLM

@@ -76,9 +76,11 @@
 (defcustom sumibi-provider 'openai
   "使用するAIプロバイダーを指定する。
 - 'openai: OpenAI API（デフォルト）
-- 'gemini: Google Gemini API"
+- 'gemini: Google Gemini API
+- 'deepseek: DeepSeek API"
   :type '(choice (const :tag "OpenAI" openai)
-                 (const :tag "Google Gemini" gemini))
+                 (const :tag "Google Gemini" gemini)
+                 (const :tag "DeepSeek" deepseek))
   :group 'sumibi)
 
 (defconst sumibi-provider-defaults
@@ -91,7 +93,12 @@
      :base-url "https://generativelanguage.googleapis.com/v1beta/openai"
      :model "gemini-2.0-flash"
      :model-list ("gemini-2.0-flash" "gemini-2.0-flash-lite" "gemini-2.5-flash" "gemini-2.5-pro")
-     :api-key-env ("SUMIBI_AI_API_KEY" "GEMINI_API_KEY")))
+     :api-key-env ("SUMIBI_AI_API_KEY" "GEMINI_API_KEY"))
+    (deepseek
+     :base-url "https://api.deepseek.com"
+     :model "deepseek-chat"
+     :model-list ("deepseek-chat" "deepseek-reasoner")
+     :api-key-env ("SUMIBI_AI_API_KEY" "DEEPSEEK_API_KEY")))
   "各プロバイダーのデフォルト設定。")
 
 (defun sumibi-provider-get (key)
