@@ -125,6 +125,20 @@ DEFERRED-FUNC2: 异步调用时的回调函数(2)。
              "周围的文章是「Please help me translate: zhe shi yi ge hen hao de ji hui」"
              "请参考上下文选择合适的词汇。: zhe shi yi ge hen hao de ji hui"))
       (cons "assistant" "这是一个很好的机会")
+      ;; Few-shot 示例 6（声调数字付き）
+      (cons "user"
+            (concat
+             "请将以下拼音转换为中文。"
+             "周围的文章是「ma1 ma2 ma3 ma4」"
+             "请参考上下文选择合适的词汇。: ma1 ma2 ma3 ma4"))
+      (cons "assistant" "妈麻马骂")
+      ;; Few-shot 示例 7（声調数字付き文）
+      (cons "user"
+            (concat
+             "请将以下拼音转换为中文。"
+             "周围的文章是「wo3 xiang3 he1 yi4 bei1 ka1 fei1」"
+             "请参考上下文选择合适的词汇。: wo3 xiang3 he1 yi4 bei1 ka1 fei1"))
+      (cons "assistant" "我想喝一杯咖啡")
       ;; 实际的转换请求
       (cons "user"
             (format

@@ -58,6 +58,27 @@ After restarting Emacs, `[中]` will appear in the status bar.
 
 3. You can also select a region of pinyin text and press Ctrl-J to convert it.
 
+### Tone Number Input
+
+You can append tone numbers after pinyin syllables for improved accuracy, especially when there are many homophones.
+
+| Number | Tone | Example |
+|--------|------|---------|
+| 1 | 1st tone (high level) | mā → `ma1` |
+| 2 | 2nd tone (rising) | má → `ma2` |
+| 3 | 3rd tone (dipping) | mǎ → `ma3` |
+| 4 | 4th tone (falling) | mà → `ma4` |
+
+Examples:
+
+```
+ma1 ma2 ma3 ma4  →  妈麻马骂
+wo3 xiang3 he1 yi4 bei1 ka1 fei1  →  我想喝一杯咖啡
+```
+
+- Tone numbers are optional — pinyin without tones works as before
+- You can mix toned and toneless pinyin (e.g., `wo shi zhongguo2 ren2`)
+
 ## Undo
 
 If you are not satisfied with the conversion result, press ESC-u to undo.
