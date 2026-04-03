@@ -9,7 +9,7 @@ A Chinese input system for Emacs. This is the Chinese module of [Sumibi](README.
 Sumibi Chinese is modeless.
 You can type Chinese without switching to a Chinese input mode.
 
-Simply type pinyin and press Ctrl-J to convert it to Chinese (Simplified).
+Simply type pinyin and press Ctrl-J to convert it to Chinese. Both Simplified and Traditional Chinese are supported.
 
 ## Supported Emacs Versions
 
@@ -30,6 +30,14 @@ Emacs version 29.x or later (Windows/Linux/macOS). The main Sumibi package is re
 (global-sumibi-chinese-mode 1)
 ```
 
+For Traditional Chinese output (used in Taiwan, Hong Kong, etc.), add the following setting:
+
+```lisp
+(require 'sumibi-chinese)
+(setq sumibi-chinese-character-set 'traditional)
+(global-sumibi-chinese-mode 1)
+```
+
 To use Gemini API, set the environment variable `GEMINI_API_KEY` and add the following to init.el:
 
 ```lisp
@@ -40,7 +48,7 @@ To use Gemini API, set the environment variable `GEMINI_API_KEY` and add the fol
 
 ## Verifying Successful Installation
 
-After restarting Emacs, `[中]` will appear in the status bar.
+After restarting Emacs, `[简]` (Simplified) or `[繁]` (Traditional) will appear in the status bar.
 
 ## Converting Pinyin to Chinese
 
@@ -48,10 +56,10 @@ After restarting Emacs, `[中]` will appear in the status bar.
 
    Examples:
    ```
-   wo shi zhongguo ren  →  我是中国人
-   ni hao ma            →  你好吗
-   jin tian tian qi hen hao  →  今天天气很好
-   xue xi zhong wen     →  学习中文
+   wo shi zhongguo ren  →  我是中国人 (Simplified) / 我是中國人 (Traditional)
+   ni hao ma            →  你好吗 (Simplified) / 你好嗎 (Traditional)
+   jin tian tian qi hen hao  →  今天天气很好 (Simplified) / 今天天氣很好 (Traditional)
+   xue xi zhong wen     →  学习中文 (Simplified) / 學習中文 (Traditional)
    ```
 
 2. If you are not satisfied with the conversion result, press Ctrl-J again to display a popup of candidates to choose from.
@@ -78,6 +86,24 @@ wo3 xiang3 he1 yi4 bei1 ka1 fei1  →  我想喝一杯咖啡
 
 - Tone numbers are optional — pinyin without tones works as before
 - You can mix toned and toneless pinyin (e.g., `wo shi zhongguo2 ren2`)
+
+## Simplified / Traditional Chinese
+
+The default output is Simplified Chinese. To switch to Traditional Chinese, add the following to init.el:
+
+```lisp
+;; Traditional Chinese mode
+(setq sumibi-chinese-character-set 'traditional)
+```
+
+To switch back to Simplified Chinese:
+
+```lisp
+;; Simplified Chinese mode (default)
+(setq sumibi-chinese-character-set 'simplified)
+```
+
+You can also use `M-x customize-variable RET sumibi-chinese-character-set` for interactive configuration.
 
 ## Undo
 

@@ -32,6 +32,14 @@ Emacs version 29.x 以上（Windows/Linux/macOS）。需要先安装 Sumibi 主�
 (global-sumibi-chinese-mode 1)
 ```
 
+如果需要输出繁体字（台湾、香港等地区），请添加以下设置：
+
+```lisp
+(require 'sumibi-chinese)
+(setq sumibi-chinese-character-set 'traditional)
+(global-sumibi-chinese-mode 1)
+```
+
 使用 Gemini API 的情况下，设置环境变量 `GEMINI_API_KEY`，并在 init.el 中添加以下内容：
 
 ```lisp
@@ -42,7 +50,7 @@ Emacs version 29.x 以上（Windows/Linux/macOS）。需要先安装 Sumibi 主�
 
 ## 确认安装是否成功
 
-重启 Emacs 后，状态栏会显示 `[中]`。
+重启 Emacs 后，状态栏会显示 `[简]`（简体字模式）或 `[繁]`（繁体字模式）。
 
 ## 将拼音转换为中文
 
@@ -50,10 +58,10 @@ Emacs version 29.x 以上（Windows/Linux/macOS）。需要先安装 Sumibi 主�
 
    例：
    ```
-   wo shi zhongguo ren  →  我是中国人
-   ni hao ma            →  你好吗
-   jin tian tian qi hen hao  →  今天天气很好
-   xue xi zhong wen     →  学习中文
+   wo shi zhongguo ren  →  我是中国人 (简体) / 我是中國人 (繁体)
+   ni hao ma            →  你好吗 (简体) / 你好嗎 (繁体)
+   jin tian tian qi hen hao  →  今天天气很好 (简体) / 今天天氣很好 (繁体)
+   xue xi zhong wen     →  学习中文 (简体) / 學習中文 (繁体)
    ```
 
 2. 如果对转换结果不满意，再次按 Ctrl-J 会弹出候选列表，可以从中选择。
@@ -80,6 +88,24 @@ wo3 xiang3 he1 yi4 bei1 ka1 fei1  →  我想喝一杯咖啡
 
 - 声调数字为可选项，不加声调也可以正常使用
 - 声调数字和无声调的拼音可以混合使用（例：`wo shi zhongguo2 ren2`）
+
+## 简体字/繁体字切换
+
+默认输出简体字。如果需要繁体字输出，请在 init.el 中设置：
+
+```lisp
+;; 繁体字模式
+(setq sumibi-chinese-character-set 'traditional)
+```
+
+切换回简体字：
+
+```lisp
+;; 简体字模式（默认）
+(setq sumibi-chinese-character-set 'simplified)
+```
+
+也可以通过 `M-x customize-variable RET sumibi-chinese-character-set` 进行交互式设置。
 
 ## 撤销
 

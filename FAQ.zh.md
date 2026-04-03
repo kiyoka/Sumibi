@@ -54,6 +54,16 @@ A. 可以。但由于两者都绑定了 C-j 键，建议修改其中一个的键
 (global-sumibi-chinese-mode 1)
 ```
 
+## Q. 可以输出繁体字吗？
+
+A. 可以。在 init.el 中添加以下设置即可切换为繁体字输出：
+
+```lisp
+(setq sumibi-chinese-character-set 'traditional)
+```
+
+设置后状态栏会从 `[简]` 变为 `[繁]`。
+
 ## Q. 不想将 API Key 设置为环境变量，还有其他方法吗？
 
 A. Sumibi 支持 3 种 API Key 管理方式：

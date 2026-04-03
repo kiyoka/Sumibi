@@ -73,3 +73,7 @@ test:
 	      -L lisp \
 	      -l test/sumibi-romaji-to-hiragana-test.el \
 	      -f ert-run-tests-batch-and-exit
+	emacs -batch -Q \
+	      -L lisp \
+	      -l test/sumibi-chinese-test.el \
+	      -f ert-run-tests-batch-and-exit
