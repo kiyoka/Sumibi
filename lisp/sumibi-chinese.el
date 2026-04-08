@@ -403,6 +403,20 @@ E: 区域的结束位置"
                   (e end))
               (sumibi-chinese-henkan-region b e)))))
 
+       ;; 直前が非ASCII（変換済みの中国語）の場合 → 候補選択モードに再入
+       ((not (eq (sumibi-char-charset (preceding-char)) 'ascii))
+        (sumibi-debug-print (format "chinese: non-ascii (%s) => re-select\n" (preceding-char)))
+        (when (sumibi-history-search (point) t)
+          (when (and sumibi-markers
+                     (markerp (car sumibi-markers))
+                     (markerp (cdr sumibi-markers)))
+            (setq sumibi-select-mode t)
+            (sumibi-debug-print "chinese: henkan mode ON\n")
+            (sumibi-display-function
+             (marker-position (car sumibi-markers))
+             (marker-position (cdr sumibi-markers))
+             t))))
+
        (t
         (sumibi-debug-print (format "chinese: <<OTHER>> (%s)\n" (preceding-char))))))))))
 
