@@ -71,7 +71,7 @@
 ;; ------------------------------------------------------------------
 (defun sumibi--annotation-label (_str idx)
   "Return annotation label for STR which is the (IDX+1)-th candidate."
-  (format "候補%d" idx))
+  (format "candidate %d" idx))
 
 (defcustom sumibi-provider 'openai
   "使用するAIプロバイダーを指定する。
@@ -652,14 +652,14 @@ SUMIBI_AI_BASEURL環境変数が設定されていればそれを優先する.
 (defun sumibi-setup-auth-source-for-gpg ()
   "GPG用にauth-sourceを設定する."
   (unless (sumibi-gpg-available-p)
-    (error "gpgコマンドが見つかりません。auth-source-gpgを使用するにはGPGをインストールしてください"))
+    (error "gpg command not found. Please install GPG to use auth-source-gpg"))
   ;; GPGファイルのみをターゲットに
   (setq auth-sources '("~/.authinfo.gpg")))
 
 (defun sumibi-setup-auth-source-for-keychain ()
   "Keychain用にauth-sourceを設定する."
   (unless (sumibi-macos-keychain-available-p)
-    (error "macOS KeychainはmacOSでのみ利用可能です。現在のシステム: %s" system-type))
+    (error "macOS Keychain is only available on macOS. Current system: %s" system-type))
   ;; Keychainのみをターゲットに
   (setq auth-sources '(macos-keychain-internet macos-keychain-generic)))
 
@@ -711,7 +711,7 @@ loginは 'apikey' を想定."
   "API KEYをmacOS Keychainに保存する.
 引数API-KEYには保存するAPIキーの文字列を指定する."
   (unless (sumibi-macos-keychain-available-p)
-    (error "macOS KeychainはmacOSでのみ利用可能です。現在のシステム: %s" system-type))
+    (error "macOS Keychain is only available on macOS. Current system: %s" system-type))
   (let* ((hostname (sumibi-get-hostname-from-baseurl))
          (result (shell-command-to-string
                   (format "security add-internet-password -a apikey -s %s -w %s -U 2>&1"
@@ -719,8 +719,8 @@ loginは 'apikey' を想定."
                           (shell-quote-argument api-key)))))
     ;; -U オプション使用時、成功すると何も出力されない
     (if (string-empty-p (string-trim result))
-        (message "API KeyをKeychainに保存しました (host: %s)" hostname)
-      (error "Keychainへの保存に失敗しました: %s" result))))
+        (message "API Key saved to Keychain (host: %s)" hostname)
+      (error "Failed to save to Keychain: %s" result))))
 
 ;;;###autoload
 (defun sumibi-setup-api-key ()
@@ -731,9 +731,9 @@ loginは 'apikey' を想定."
 - auth-source-gpg: 未実装（手動で ~/.authinfo.gpg を編集してください）
 - environment: 環境変数の設定方法を案内"
   (interactive)
-  (let ((api-key (read-passwd (format "API Keyを入力してください (ホスト: %s): " (sumibi-get-hostname-from-baseurl)))))
+  (let ((api-key (read-passwd (format "Enter API Key (host: %s): " (sumibi-get-hostname-from-baseurl)))))
     (when (or (not api-key) (string-empty-p api-key))
-      (error "API Keyが入力されませんでした"))
+      (error "No API Key entered"))
     (cond
      ;; macOS Keychainに保存
      ((eq sumibi-api-key-source 'auth-source-keychain)
@@ -741,17 +741,17 @@ loginは 'apikey' を想定."
 
      ;; GPGは未実装
      ((eq sumibi-api-key-source 'auth-source-gpg)
-      (message "GPG暗号化ファイルへの自動保存は未実装です。\n手動で ~/.authinfo.gpg を編集してください。\n形式: machine %s login apikey password %s"
+      (message "Auto-save to GPG encrypted file is not yet implemented.\nPlease manually edit ~/.authinfo.gpg.\nFormat: machine %s login apikey password %s"
                (sumibi-get-hostname-from-baseurl)
                api-key))
 
      ;; 環境変数の場合は案内
      ((eq sumibi-api-key-source 'environment)
-      (message "環境変数モードです。以下のいずれかの方法で設定してください:\n1. ~/.bashrc や ~/.zshrc に export SUMIBI_AI_API_KEY=%s を追加\n2. または export OPENAI_API_KEY=%s を追加"
+      (message "Environment variable mode. Please set one of the following:\n1. Add export SUMIBI_AI_API_KEY=%s to ~/.bashrc or ~/.zshrc\n2. Or add export OPENAI_API_KEY=%s"
                api-key api-key))
 
      (t
-      (error "不明な sumibi-api-key-source 設定: %s" sumibi-api-key-source)))))
+      (error "Unknown sumibi-api-key-source setting: %s" sumibi-api-key-source)))))
 
 (defun sumibi-backend-mozc-p ()
   "現在のバックエンドがMozcかどうかを判定する."
@@ -1225,11 +1225,11 @@ space between the marker and the text.  This prevents constructs like
     (cond
      ((not (sumibi-get-api-key))
       (if (and (not noninteractive)
-               (y-or-n-p (format "API Keyが見つかりません (ホスト: %s)。今すぐ保存しますか？" (sumibi-get-hostname-from-baseurl))))
+               (y-or-n-p (format "API Key not found (host: %s). Save now? " (sumibi-get-hostname-from-baseurl))))
           (progn
             (sumibi-setup-api-key)
-            (message "API Keyを保存しました。Emacsを再起動してください。"))
-        (message "API Keyが見つかりません (ホスト: %s)。環境変数 SUMIBI_AI_API_KEY または OPENAI_API_KEY を設定するか、sumibi-api-key-source を適切に設定してください。" (sumibi-get-hostname-from-baseurl))))
+            (message "API Key saved. Please restart Emacs."))
+        (message "API Key not found (host: %s). Please set SUMIBI_AI_API_KEY or OPENAI_API_KEY environment variable, or configure sumibi-api-key-source." (sumibi-get-hostname-from-baseurl))))
      ((and (>= emacs-major-version 28) (>= emacs-minor-version 1))
       ;; 履歴ファイルから履歴を読み込む
       (sumibi-load-history-from-file)
@@ -1273,11 +1273,11 @@ Argument BUF : http response buffer"
             ;; For non-200, return structured error message
             (cond
              ((string= status-code "401")
-              (cons status-code "{\"error\": { \"message\" : \"認証エラー: APIキーが無効または期限切れです\"}}"))
+              (cons status-code "{\"error\": { \"message\" : \"Authentication error: API key is invalid or expired\"}}"))
              ((string= status-code "403")
-              (cons status-code "{\"error\": { \"message\" : \"認可エラー: このAPIキーにはアクセス権限がありません\"}}"))
+              (cons status-code "{\"error\": { \"message\" : \"Authorization error: This API key does not have access\"}}"))
              (t
-              (cons status-code "{\"error\": { \"message\" : \"HTTPエラーが発生しました\"}}")))))))))
+              (cons status-code "{\"error\": { \"message\" : \"HTTP error occurred\"}}")))))))))
 
 ;;
 ;; OpenAI 互換 API にプロンプトを発行する
@@ -2191,17 +2191,17 @@ _ARG: (未使用)"
         (progn
           (cond
            ((eq type 'j)
-            (message "Sumibi: 漢字の候補はありません。"))
+            (message "Sumibi: No kanji candidates available."))
            ((eq type 'h)
-            (message "Sumibi: ひらがなの候補はありません。"))
+            (message "Sumibi: No hiragana candidates available."))
            ((eq type 'k)
-            (message "Sumibi: カタカナの候補はありません。"))
+            (message "Sumibi: No katakana candidates available."))
            ((eq type 'l)
-            (message "Sumibi: 半角の候補はありません。"))
+            (message "Sumibi: No half-width candidates available."))
            ((eq type 'z)
-            (message "Sumibi: 全角の候補はありません。"))
+            (message "Sumibi: No full-width candidates available."))
            ((eq type 'n)
-            (message "Sumibi: 数字混在の候補はありません．")))
+            (message "Sumibi: No mixed-number candidates available.")))
           nil)
       (let ((num   (nth sumibi-id-index kouho)))
         (setq sumibi-cand-cur num)
@@ -2771,7 +2771,7 @@ _ARG: (未使用)"
 現在のプロバイダーのモデルリストから候補を表示する."
   (interactive "P")
   (if (getenv "SUMIBI_AI_MODEL")
-      (message "!! 環境変数SUMIBI_AI_MODELが設定されているときは、モデルを動的にスイッチできません !!")
+      (message "!! Cannot switch models dynamically when SUMIBI_AI_MODEL environment variable is set !!")
     (let* ((models (sumibi-provider-get :model-list))
            (index
 	    (cl-position-if
