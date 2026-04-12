@@ -22,6 +22,7 @@ MODEL_PARAM_SIZES = {
     'gemma-3-27b-it-Q8_0': 27,
     'gemma-3n-e4b-it-mlx': 4,
     'gemma-3n-e2b-it-mlx': 2,
+    'gemma-4-e4b': 4,
     'japanese-stablelm-instruct-gamma-7b': 7,
     'hermes-3-llama-3.2-3b': 3,
     'llama-3-elyza-jp-8b': 8,
@@ -34,29 +35,35 @@ MODEL_PARAM_SIZES = {
     'sarashina2.2-3b-instruct-v0.1': 3,
     'openai/gpt-oss-20b': 20,
     'gpt-oss-20b': 20,
+    'qwen3.5-9b': 9,
 }
 
 # モデルタイプごとのマーカー設定
+# 丸 ('o'): 日本語特化モデル（日本語データで継続学習・ファインチューニングされたもの）
+# 四角 ('s'): 汎用モデル（多言語/英語中心、日本語特化ではないもの）
 MODEL_MARKERS = {
+    # 日本語特化モデル
+    'llm-jp': 'o',              # LLM-JP (日本語研究プロジェクト)
+    'japanese-stablelm': 'o',   # Japanese StableLM
+    'llama-3-elyza': 'o',       # ELYZA (日本企業)
+    'sarashina': 'o',           # Sakana AI (日本企業)
+    'rakutenai': 'o',           # Rakuten AI (日本企業)
+    'stockmark': 'o',           # Stockmark (日本企業)
+    # 汎用モデル
     'gemma': 's',
-    'llm-jp': 'o',
-    'japanese-stablelm': 'o',
-    'hermes': 'o',
-    'llama-3-elyza': 'o',  # 日本語特化型モデル
     'llama': 's',
-    'stockmark': 's',
-    'gpt-oss': 'o',
-    'sarashina': 'o',
-    'openai': 'o',
-    'rakutenai': 'o',
+    'hermes': 's',
+    'gpt-oss': 's',
+    'openai': 's',
+    'qwen': 's',
 }
 
 def get_marker(model_name):
-    """モデル名からマーカーを取得"""
+    """モデル名からマーカーを取得（デフォルト: 汎用モデル=四角）"""
     for key, marker in MODEL_MARKERS.items():
         if model_name.startswith(key):
             return marker
-    return 'o'
+    return 's'
 
 def load_results(json_path):
     """JSONファイルからCERの平均値と平均レスポンス時間を計算"""
@@ -284,7 +291,20 @@ def plot_data(data_romaji_direct_input, data_hiragana_input, data_katakana_input
                                              label=f'{time:.1f}s', alpha=0.7))
 
     if legend_elements:
-        plt.legend(handles=legend_elements, loc='lower right', framealpha=0.9)
+        legend1 = plt.legend(handles=legend_elements, loc='lower right', framealpha=0.9)
+        plt.gca().add_artist(legend1)
+
+    # マーカー形状の凡例（右上）: 丸=日本語特化、四角=汎用
+    shape_legend_elements = [
+        plt.Line2D([0], [0], marker='o', color='w',
+                   markerfacecolor='gray', markeredgecolor='black',
+                   markersize=12, label='Japanese-specialized'),
+        plt.Line2D([0], [0], marker='s', color='w',
+                   markerfacecolor='gray', markeredgecolor='black',
+                   markersize=12, label='General-purpose'),
+    ]
+    plt.legend(handles=shape_legend_elements, loc='upper right',
+               framealpha=0.9, title='Model type')
 
     plt.tight_layout()
 
@@ -332,9 +352,9 @@ def main():
         else:
             zoomed_output = base + '_zoomed' + ext
 
-        # ズーム版をプロット（error rate: 35-110%, parameter size: 0-25）
+        # ズーム版をプロット（error rate: 20-110%, parameter size: 0-25）
         plot_data(data_romaji_direct_input, data_hiragana_input, data_katakana_input,
-                 zoomed_output, figsize=figsize, dpi=args.dpi, ylim=(35, 110), xlim=(0, 25))
+                 zoomed_output, figsize=figsize, dpi=args.dpi, ylim=(20, 110), xlim=(0, 25))
 
 if __name__ == '__main__':
     main()
