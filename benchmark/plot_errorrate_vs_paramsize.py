@@ -23,6 +23,7 @@ MODEL_PARAM_SIZES = {
     'gemma-3n-e4b-it-mlx': 4,
     'gemma-3n-e2b-it-mlx': 2,
     'gemma-4-e4b': 4,
+    'gemma-4-26b-a4b': 4,
     'japanese-stablelm-instruct-gamma-7b': 7,
     'hermes-3-llama-3.2-3b': 3,
     'llama-3-elyza-jp-8b': 8,
@@ -354,7 +355,7 @@ def main():
 
         # ズーム版をプロット（error rate: 20-110%, parameter size: 0-25）
         plot_data(data_romaji_direct_input, data_hiragana_input, data_katakana_input,
-                 zoomed_output, figsize=figsize, dpi=args.dpi, ylim=(20, 110), xlim=(0, 25))
+                 zoomed_output, figsize=figsize, dpi=args.dpi, ylim=(10, 110), xlim=(0, 25))
 
 if __name__ == '__main__':
     main()
