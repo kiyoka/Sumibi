@@ -1107,14 +1107,59 @@ pyim も変換確定後の部分訂正は直接サポートしていない。訂
 3. **LLMベースの部分訂正**: pyim も直接的なサポートはないが、LLMベースの Sumibi なら「この1文字だけ別の候補に」というUIを独自に実装できる可能性がある
 4. **コンテキスト自動切替**: Sumibi の英文判定（`sumibi-is-english-text-p`）に加えて、モードベースの判定（コード編集中は自動変換しない等）も検討に値する
 
+## ベンチマーク候補: MacBook Air 24GB RAMで動くローカルLLMモデル (2026年4月調査)
 
-質問です。
-さきほどの、deepseekのパスコードを保存しますか？という質問はChinese版の時も日本語で質問しますか。？
+現在のベンチマーク結果ではローカルLLMのエラー率は68〜91%と高いが、2026年リリースの新モデルで改善が期待できる。
 
-中国語圏の人が日本語を読めることはまずありません。
-日本語と英語の日本語と英語の両方で表示する可能性がある可能性は、英語にしてください。
+### 最有望候補
 
+#### 1. Qwen3.5-35B-A3B (MoE, 2026年2月リリース)
+- 総パラメータ: 35B、実行時アクティブ: 3Bのみ
+- 必要メモリ: Q4で約20GB（24GBに収まる）
+- 前世代Qwen3-30B-A3Bを超える性能。Qwen3-30B-A3BはQwQ-32Bを上回ると報告
+- 119言語対応、日本語を含むCJK言語に強い
+- MLX対応: `ollama run qwen3.5:35b-a3b`
+- 速度: Apple Silicon MLXで60-70+ tokens/sec (M4 Max)
 
-コミットしてください。
+#### 2. Qwen3.5-9B (Dense, 2026年3月リリース)
+- パラメータ: 9B
+- 必要メモリ: Q4で約5GB、Q8で約10GB
+- 前世代Qwen3-30B（3倍のサイズ）を超える性能
+- マルチモーダル対応（テキスト+画像）
+- MLX対応: `ollama run qwen3.5:9b`
+- 24GBならQ8_0で余裕で動作
+
+#### 3. Gemma 4 E4B (Dense, 2026年4月リリース)
+- パラメータ: 4.5B
+- 必要メモリ: Q4で約5.5GB
+- JGLUEスコアがGemma 2から15ポイント以上改善
+- 日本語の指示追従が前世代から顕著に向上
+- MLX対応、Apache 2.0ライセンス
+- 速度: MacBookで57 tokens/sec (Ollama)
+
+#### 4. Qwen3.5-4B (Dense, 2026年3月リリース)
+- パラメータ: 4B
+- 必要メモリ: Q8でも約4-5GB
+- エッジデバイス向け設計
+- Qwen3-4BでもQwen2.5-72Bに匹敵する性能と報告あり
+- 最も軽量で応答速度が速い
+
+### 試す方法
+
+```bash
+# Ollama でインストール
+ollama pull qwen3.5:35b-a3b
+ollama pull qwen3.5:9b
+ollama pull gemma4:e4b
+
+# MLX (より高速)
+pip install mlx-lm
+mlx_lm.generate --model Qwen/Qwen3.5-9B-MLX-4bit --prompt "..."
+```
+
+### 参考リンク
+- https://github.com/QwenLM/Qwen3.5
+- https://huggingface.co/Qwen/Qwen3.5-35B-A3B
+- https://ai.google.dev/gemma/docs/core
 
 
