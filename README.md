@@ -139,16 +139,29 @@ AIサービスはOpenAI以外にも切り替えられます。GeminiやDeepSeek�
     (setenv "SUMIBI_AI_MODEL" "deepseek-chat") ;; DeepSeekのチャット用モデル
     ```
 
-- 向き先をローカルLLMに切り替える場合
+- 向き先をローカルLLM（LM Studio）に切り替える場合
 
+    ```lisp
+    ;; LM Studio でモデルをロードしてサーバーを起動しておく
+    (setq sumibi-provider 'local)
+    ```
+
+    デフォルトでは `http://127.0.0.1:1234/v1` に接続し、モデル `google/gemma-4-e4b` を使用します。API Keyは不要です。
+
+    環境変数による従来の方法も引き続き利用可能です：
 
     ```
     (setenv "SUMIBI_AI_API_KEY" "xxxxxxxx") ;; ダミーのAPIキー
-    (setenv "SUMIBI_AI_BASEURL" "http://192.168.56.1:1234/") ;; ローカルLLMのエンドポイントURL
-    (setenv "SUMIBI_AI_MODEL" "gemma-3-12b-it-qat") ;; ローカルLLMのモデル名
+    (setenv "SUMIBI_AI_BASEURL" "http://127.0.0.1:1234/") ;; ローカルLLMのエンドポイントURL
+    (setenv "SUMIBI_AI_MODEL" "google/gemma-4-e4b") ;; ローカルLLMのモデル名
     ```
 
-    上記の例は、Windows環境にLLM Studioをインストールし、モデル gemma-3-12b-it-qat をホストしたエンドポイントに接続した一つの例です。
+    LM Studioの「Enable Thinking」設定は、モデルによって推奨値が異なります。
+
+    | モデル | Enable Thinking | 備考 |
+    |--------|----------------|------|
+    | `google/gemma-4-e4b` | ON | Thinkingを有効にすることで変換精度が向上 |
+    | `google/gemma-4-26b-a4b` | OFF | Thinkingなしでも十分な精度があり、応答速度が向上 |
 
 ### 設定の優先順位
 
@@ -160,7 +173,7 @@ AIサービスはOpenAI以外にも切り替えられます。GeminiやDeepSeek�
 | モデル名 | `SUMIBI_AI_MODEL` → `sumibi-switch-model` での選択 → `sumibi-provider` のデフォルト |
 | APIキー | `SUMIBI_AI_API_KEY` → プロバイダー固有の環境変数（`OPENAI_API_KEY` / `GEMINI_API_KEY` / `DEEPSEEK_API_KEY`） |
 
-通常は `sumibi-provider` を設定するだけで十分です。環境変数による上書きは、ローカルLLMなど、プロバイダー定義にないサービスを利用する場合に使用してください。
+通常は `sumibi-provider` を設定するだけで十分です。環境変数による上書きは、プロバイダー定義にないサービスを利用する場合に使用してください。
 
 ## SUMIBI_AI_API_KEYを環境変数で設定したくない場合
 

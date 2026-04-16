@@ -128,12 +128,28 @@ The method for switching AI services is the same as the Japanese version of Sumi
     (setq sumibi-provider 'deepseek)
     ```
 
-- Switch to local LLM
+- Switch to local LLM (LM Studio)
 
     ```lisp
-    (setenv "SUMIBI_AI_API_KEY" "xxxxxxxx")
-    (setenv "SUMIBI_AI_BASEURL" "http://192.168.56.1:1234/")
-    (setenv "SUMIBI_AI_MODEL" "gemma-3-12b-it-qat")
+    ;; Start LM Studio server with a model loaded
+    (setq sumibi-provider 'local)
+    ```
+
+    By default, it connects to `http://127.0.0.1:1234/v1` and uses the model `google/gemma-4-e4b`. No API Key is required.
+
+    The recommended "Enable Thinking" setting in LM Studio varies by model:
+
+    | Model | Enable Thinking | Notes |
+    |-------|----------------|-------|
+    | `google/gemma-4-e4b` | ON | Thinking improves conversion accuracy |
+    | `google/gemma-4-26b-a4b` | OFF | Sufficient accuracy without Thinking, faster response |
+
+    The legacy environment variable method is also available:
+
+    ```
+    (setenv "SUMIBI_AI_API_KEY" "xxxxxxxx") ;; Dummy API key
+    (setenv "SUMIBI_AI_BASEURL" "http://127.0.0.1:1234/") ;; Local LLM endpoint URL
+    (setenv "SUMIBI_AI_MODEL" "google/gemma-4-e4b") ;; Local LLM model name
     ```
 
 ## Using Together with Japanese Sumibi

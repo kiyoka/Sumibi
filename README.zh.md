@@ -138,12 +138,28 @@ Sumibi 支持 3 种 API Key 安全管理方式：
     (setq sumibi-provider 'deepseek)
     ```
 
-- 切换到本地 LLM
+- 切换到本地 LLM（LM Studio）
 
     ```lisp
-    (setenv "SUMIBI_AI_API_KEY" "xxxxxxxx")
-    (setenv "SUMIBI_AI_BASEURL" "http://192.168.56.1:1234/")
-    (setenv "SUMIBI_AI_MODEL" "gemma-3-12b-it-qat")
+    ;; 在 LM Studio 中加载模型并启动服务器
+    (setq sumibi-provider 'local)
+    ```
+
+    默认连接 `http://127.0.0.1:1234/v1`，使用模型 `google/gemma-4-e4b`。无需 API Key。
+
+    LM Studio 的「Enable Thinking」设置因模型而异，推荐如下：
+
+    | 模型 | Enable Thinking | 说明 |
+    |------|----------------|------|
+    | `google/gemma-4-e4b` | ON | 启用 Thinking 可提高转换精度 |
+    | `google/gemma-4-26b-a4b` | OFF | 无需 Thinking 即有足够精度，响应速度更快 |
+
+    也可以使用传统的环境变量方式：
+
+    ```
+    (setenv "SUMIBI_AI_API_KEY" "xxxxxxxx") ;; 虚拟 API Key
+    (setenv "SUMIBI_AI_BASEURL" "http://127.0.0.1:1234/") ;; 本地 LLM 端点 URL
+    (setenv "SUMIBI_AI_MODEL" "google/gemma-4-e4b") ;; 本地 LLM 模型名
     ```
 
 ## 与日语版 Sumibi 的并用
