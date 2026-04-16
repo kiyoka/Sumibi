@@ -77,10 +77,12 @@
   "使用するAIプロバイダーを指定する。
 - 'openai: OpenAI API（デフォルト）
 - 'gemini: Google Gemini API
-- 'deepseek: DeepSeek API"
+- 'deepseek: DeepSeek API
+- 'local: ローカルLLM（Ollama等、OpenAI互換API）"
   :type '(choice (const :tag "OpenAI" openai)
                  (const :tag "Google Gemini" gemini)
-                 (const :tag "DeepSeek" deepseek))
+                 (const :tag "DeepSeek" deepseek)
+                 (const :tag "ローカルLLM" local))
   :group 'sumibi)
 
 (defconst sumibi-provider-defaults
@@ -98,7 +100,12 @@
      :base-url "https://api.deepseek.com"
      :model "deepseek-chat"
      :model-list ("deepseek-chat" "deepseek-reasoner")
-     :api-key-env ("SUMIBI_AI_API_KEY" "DEEPSEEK_API_KEY")))
+     :api-key-env ("SUMIBI_AI_API_KEY" "DEEPSEEK_API_KEY"))
+    (local
+     :base-url "http://127.0.0.1:1234/v1"
+     :model "google/gemma-4-e4b"
+     :model-list ("google/gemma-4-e4b" "google/gemma-4-26b-a4b")
+     :api-key-env ()))
   "各プロバイダーのデフォルト設定。")
 
 (defun sumibi-provider-get (key)
@@ -688,10 +695,19 @@ loginは 'apikey' を想定."
         (funcall secret)
       secret)))
 
+(defun sumibi-local-provider-p ()
+  "現在のプロバイダーがローカルLLMかどうかを判定する."
+  (eq sumibi-provider 'local))
+
 (defun sumibi-get-api-key ()
   "設定に基づいてAPI Keyを取得する.
-各ソースタイプで厳密なチェックを行う."
+各ソースタイプで厳密なチェックを行う.
+ローカルLLMプロバイダーの場合はAPI Key不要のため \"no-key\" を返す."
   (cond
+   ;; ローカルLLMの場合はAPI Key不要
+   ((sumibi-local-provider-p)
+    "no-key")
+
    ;; 環境変数から取得（従来の方法）
    ;; sumibi-provider に応じた環境変数リストを順に探索する
    ((eq sumibi-api-key-source 'environment)
