@@ -1163,3 +1163,18 @@ mlx_lm.generate --model Qwen/Qwen3.5-9B-MLX-4bit --prompt "..."
 - https://ai.google.dev/gemma/docs/core
 
 
+GitHub Issueを作成してください。
+mlx-community/gemma-4-26b-a4b-itのベンチマークを取るということです。
+
+issue 141ブランチを切っていただいてお願いします。
+
+ベンチマーク実施をしてください。
+
+
+gemma-4-26b-a4b.jsonはgoogle/gemma-4-26b-a4bも既にベンチマーク取っています。上書きになりますか?
+
+
+google/gemma-4-26b-a4bを含むすべてのグラフを更新してください。
+
+コミットして、pr作成してください。
+
