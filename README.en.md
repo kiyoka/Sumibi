@@ -143,6 +143,7 @@ The method for switching AI services is the same as the Japanese version of Sumi
     |-------|----------------|-------|
     | `google/gemma-4-e4b` | ON | Thinking improves conversion accuracy |
     | `google/gemma-4-26b-a4b` | OFF | Sufficient accuracy without Thinking, faster response |
+    | `mlx-community/gemma-4-26b-a4b-it` | OFF | MLX-optimized build for Apple Silicon. ~2.5x faster than `google/gemma-4-26b-a4b` (median 2.12s) |
 
     The legacy environment variable method is also available:
 

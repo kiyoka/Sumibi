@@ -153,6 +153,7 @@ Sumibi 支持 3 种 API Key 安全管理方式：
     |------|----------------|------|
     | `google/gemma-4-e4b` | ON | 启用 Thinking 可提高转换精度 |
     | `google/gemma-4-26b-a4b` | OFF | 无需 Thinking 即有足够精度，响应速度更快 |
+    | `mlx-community/gemma-4-26b-a4b-it` | OFF | 面向 Apple Silicon 的 MLX 优化版本。比 `google/gemma-4-26b-a4b` 快约 2.5 倍（中位数 2.12 秒） |
 
     也可以使用传统的环境变量方式：
 

@@ -1162,10 +1162,8 @@ mlx_lm.generate --model Qwen/Qwen3.5-9B-MLX-4bit --prompt "..."
 - https://huggingface.co/Qwen/Qwen3.5-35B-A3B
 - https://ai.google.dev/gemma/docs/core
 
+変換
 
-sumibi-provider 'localに以下のモデルを追加してください。
-mlx-community/gemma-4-26b-a4b-it
+mlx-community/gemma-4-26b-a4b-itのモデルを追加したことを、README.mdにもたしてください。
 
-issue-139-local-llm-providerブランチで作業してほしかったです。
-
-コミット、プッシュに進んでください。
+PRは既存のPRを更新する形で作業します。新しいPRは作りません。

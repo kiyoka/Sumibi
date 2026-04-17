@@ -162,6 +162,7 @@ AIサービスはOpenAI以外にも切り替えられます。GeminiやDeepSeek�
     |--------|----------------|------|
     | `google/gemma-4-e4b` | ON | Thinkingを有効にすることで変換精度が向上 |
     | `google/gemma-4-26b-a4b` | OFF | Thinkingなしでも十分な精度があり、応答速度が向上 |
+    | `mlx-community/gemma-4-26b-a4b-it` | OFF | Apple Silicon向けMLX最適化版。`google/gemma-4-26b-a4b` より約2.5倍高速（中央値 2.12秒） |
 
 ### 設定の優先順位
 
