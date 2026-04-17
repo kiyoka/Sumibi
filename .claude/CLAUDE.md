@@ -1162,8 +1162,5 @@ mlx_lm.generate --model Qwen/Qwen3.5-9B-MLX-4bit --prompt "..."
 - https://huggingface.co/Qwen/Qwen3.5-35B-A3B
 - https://ai.google.dev/gemma/docs/core
 
-変換
 
-mlx-community/gemma-4-26b-a4b-itのモデルを追加したことを、README.mdにもたしてください。
 
-PRは既存のPRを更新する形で作業します。新しいPRは作りません。
