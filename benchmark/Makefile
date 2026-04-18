@@ -118,14 +118,20 @@ CTX_MODEL   := mlx-community/gemma-4-26b-a4b-it
 CTX_BASEURL := http://127.0.0.1:1234/v1
 CTX_APIKEY  := lm-studio
 
-.PHONY: ctx_bench ctx1024 ctx2048 ctx4096 ctx8192 ctx_plot
+.PHONY: ctx_bench ctx512 ctx1024 ctx2048 ctx4096 ctx8192 ctx_plot
 
-ctx_bench: ctx1024 ctx2048 ctx4096 ctx8192
+ctx_bench: ctx512 ctx1024 ctx2048 ctx4096 ctx8192
 
+ctx512: result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx512_hiragana.json
 ctx1024: result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx1024_hiragana.json
 ctx2048: result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx2048_hiragana.json
 ctx4096: result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx4096_hiragana.json
 ctx8192: result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx8192_hiragana.json
+
+result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx512_hiragana.json: $(EVAL) $(SCRIPT)
+	SUMIBI_AI_API_KEY=$(CTX_APIKEY) SUMIBI_AI_BASEURL=$(CTX_BASEURL) SUMIBI_AI_MODEL="$(CTX_MODEL)" SUMIBI_AI_TIMEOUT=120 \
+	  python3 $(SCRIPT) $(EVAL) "$@" hiragana_input
+	$(run_notify)
 
 result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx1024_hiragana.json: $(EVAL) $(SCRIPT)
 	SUMIBI_AI_API_KEY=$(CTX_APIKEY) SUMIBI_AI_BASEURL=$(CTX_BASEURL) SUMIBI_AI_MODEL="$(CTX_MODEL)" SUMIBI_AI_TIMEOUT=120 \
@@ -150,6 +156,7 @@ result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx8192_hiragana.json: $(EVAL) $(SCRIPT)
 ctx_plot: ../images/plot_context_length_vs_response_time.png
 
 ../images/plot_context_length_vs_response_time.png: plot_context_length_vs_response_time.py \
+    result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx512_hiragana.json \
     result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx1024_hiragana.json \
     result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx2048_hiragana.json \
     result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx4096_hiragana.json \

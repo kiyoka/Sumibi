@@ -31,7 +31,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from aggregate_results import summarize
 
 RESULT_DIR = "result_ver2.4.0"
-CTX_LENGTHS = [1024, 2048, 4096, 8192]
+CTX_LENGTHS = [512, 1024, 2048, 4096, 8192]
 
 
 def load_ctx_results() -> dict:
@@ -83,8 +83,8 @@ def main() -> None:
 
     ax1.set_xlabel("Context Length (tokens)")
     ax1.set_ylabel("Response Time (sec)")
-    ax1.set_xticks(ctx_list)
     ax1.set_xscale("log", base=2)
+    ax1.set_xticks(ctx_list)
     ax1.set_xticklabels([str(c) for c in ctx_list])
     ax1.grid(axis="y", linestyle="--", alpha=0.5)
 
