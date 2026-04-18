@@ -349,6 +349,46 @@ make result_ver2.4.0/gpt-4.1_katakana.json
 
 ローカルLLMでもベンチマークデータを取得しました。120B(1200億パラメータ)までのモデルを試し、当初はローマ字入力（従来方式）では実用的に使えるモデルがありませんでした。しかし、**GitHub Issue 96の実験により、ひらがな入力を使用することで劇的にエラー率が改善することが判明しました**。さらに2026年4月、**`google/gemma-4-e4b` により実用レベルに到達**しました（上記参照）。
 
+## Context Length がレスポンス速度に与える影響 (Issue #143)
+
+`mlx-community/gemma-4-26b-a4b-it` を LM Studio で実行した際、Context Length 設定を変えるとレスポンス速度がどう変わるかを調査します。  
+計測モードは **hiragana_input のみ**、AJIMEE-Bench (JWTD_v2, 200件) を使用。
+
+### 計測結果
+
+<!-- ベンチマーク完了後にここへ結果テーブルを追記 -->
+
+| Context Length | CER (%) | 中央値 (sec) | p95 (sec) | 実用基準 (≤2s) |
+|---------------|---------|------------|----------|---------------|
+| 1024          | TBD     | TBD        | TBD      | TBD           |
+| 2048          | TBD     | TBD        | TBD      | TBD           |
+| 4096          | TBD     | TBD        | TBD      | TBD           |
+| 8192          | TBD     | TBD        | TBD      | TBD           |
+
+### グラフ
+
+<!-- 計測完了後に画像を追記 -->
+`make ctx_plot` で `images/plot_context_length_vs_response_time.png` を生成します。
+
+### 計測手順
+
+```bash
+# LM Studio で mlx-community/gemma-4-26b-a4b-it をロードし、
+# Context Length を 1024 に設定してサーバーを起動した後:
+cd benchmark
+make ctx1024
+
+# 同様に 2048, 4096, 8192 と繰り返す
+make ctx2048
+make ctx4096
+make ctx8192
+
+# グラフ生成
+make ctx_plot
+```
+
+---
+
 ## 入力形式による精度の違い（GitHub Issue 96の成果）
 
 3つの入力形式（romaji_direct_input、hiragana_input、katakana_input）で比較実験を実施した結果：

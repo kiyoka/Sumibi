@@ -109,6 +109,54 @@ result_ver2.4.0/google_ime_cgi_hiragana.json: $(EVAL) $(GOOGLE_IME_CGI_SCRIPT)
 	python3 $(GOOGLE_IME_CGI_SCRIPT) $(EVAL) "$@" hiragana_input
 	$(run_notify)
 
+# ---------------------------------------------------------------------------
+# Issue #143: Context Length benchmark (mlx-community/gemma-4-26b-a4b-it, hiragana only)
+# LM Studio で Context Length を変えて計測する
+# 使い方: LM Studio の Context Length を各値に設定してからそれぞれ実行
+# ---------------------------------------------------------------------------
+CTX_MODEL   := mlx-community/gemma-4-26b-a4b-it
+CTX_BASEURL := http://127.0.0.1:1234/v1
+CTX_APIKEY  := lm-studio
+
+.PHONY: ctx_bench ctx1024 ctx2048 ctx4096 ctx8192 ctx_plot
+
+ctx_bench: ctx1024 ctx2048 ctx4096 ctx8192
+
+ctx1024: result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx1024_hiragana.json
+ctx2048: result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx2048_hiragana.json
+ctx4096: result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx4096_hiragana.json
+ctx8192: result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx8192_hiragana.json
+
+result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx1024_hiragana.json: $(EVAL) $(SCRIPT)
+	SUMIBI_AI_API_KEY=$(CTX_APIKEY) SUMIBI_AI_BASEURL=$(CTX_BASEURL) SUMIBI_AI_MODEL="$(CTX_MODEL)" SUMIBI_AI_TIMEOUT=120 \
+	  python3 $(SCRIPT) $(EVAL) "$@" hiragana_input
+	$(run_notify)
+
+result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx2048_hiragana.json: $(EVAL) $(SCRIPT)
+	SUMIBI_AI_API_KEY=$(CTX_APIKEY) SUMIBI_AI_BASEURL=$(CTX_BASEURL) SUMIBI_AI_MODEL="$(CTX_MODEL)" SUMIBI_AI_TIMEOUT=120 \
+	  python3 $(SCRIPT) $(EVAL) "$@" hiragana_input
+	$(run_notify)
+
+result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx4096_hiragana.json: $(EVAL) $(SCRIPT)
+	SUMIBI_AI_API_KEY=$(CTX_APIKEY) SUMIBI_AI_BASEURL=$(CTX_BASEURL) SUMIBI_AI_MODEL="$(CTX_MODEL)" SUMIBI_AI_TIMEOUT=120 \
+	  python3 $(SCRIPT) $(EVAL) "$@" hiragana_input
+	$(run_notify)
+
+result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx8192_hiragana.json: $(EVAL) $(SCRIPT)
+	SUMIBI_AI_API_KEY=$(CTX_APIKEY) SUMIBI_AI_BASEURL=$(CTX_BASEURL) SUMIBI_AI_MODEL="$(CTX_MODEL)" SUMIBI_AI_TIMEOUT=120 \
+	  python3 $(SCRIPT) $(EVAL) "$@" hiragana_input
+	$(run_notify)
+
+ctx_plot: ../images/plot_context_length_vs_response_time.png
+
+../images/plot_context_length_vs_response_time.png: plot_context_length_vs_response_time.py \
+    result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx1024_hiragana.json \
+    result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx2048_hiragana.json \
+    result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx4096_hiragana.json \
+    result_ver2.4.0/gemma-4-26b-a4b-it-mlx_ctx8192_hiragana.json
+	python3 plot_context_length_vs_response_time.py -o $@
+
+# ---------------------------------------------------------------------------
 # Generate plot images in the project's images directory
 plots: ../images/plot_errorrate_vs_cost.png ../images/plot_errorrate_vs_cost_zoomed.png ../images/plot_errorrate_vs_paramsize.png ../images/plot_errorrate_vs_paramsize_zoomed.png ../images/plot_mean_response_time.png ../images/plot_errorrate_vs_inputtype.png ../images/plot_errorrate_vs_inputtype_hiragana.png ../images/plot_errorrate_vs_cost_1000x600.png ../images/plot_errorrate_vs_cost_zoomed_1000x600.png ../images/plot_errorrate_vs_paramsize_1000x600.png ../images/plot_errorrate_vs_paramsize_zoomed_1000x600.png ../images/plot_mean_response_time_1000x1800.png ../images/plot_errorrate_vs_inputtype_1000x600.png ../images/plot_errorrate_vs_inputtype_hiragana_1000x600.png
 
