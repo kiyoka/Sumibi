@@ -104,7 +104,7 @@
     (local
      :base-url "http://127.0.0.1:1234/v1"
      :model "google/gemma-4-e4b"
-     :model-list ("google/gemma-4-e4b" "google/gemma-4-26b-a4b" "mlx-community/gemma-4-26b-a4b-it")
+     :model-list ("google/gemma-4-e4b" "google/gemma-4-26b-a4b" "mlx-community/gemma-4-26b-a4b-it" "gemma-4-12b-it-mlx")
      :api-key-env ()))
   "各プロバイダーのデフォルト設定。")
 
