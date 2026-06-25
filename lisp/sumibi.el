@@ -1565,6 +1565,8 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
            (setq result (mapcar (lambda (s) (concat prefix s)) lst))))
        (lambda (json-str)
 	 (let* ((json-obj (json-parse-string json-str))
+                ;; LLM がエラー/タイムアウトを返したか (Issue #162, 点5)
+                (error-p (gethash "error" json-obj))
 		(lst (mapcar (lambda (s) (concat prefix s))
 			     (sumibi-analyze-openai-json-obj json-obj arg-n))))
            (when (and lst (null deferred-func2))
@@ -1572,7 +1574,11 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
            (when lst
 	     (save-excursion
 	       (goto-char (marker-position saved-marker))
-	       (insert (car lst))
+	       ;; LLM 失敗時に mozc 仮確定があれば、エラー文字列ではなく
+	       ;; 仮確定結果を最終結果として確定する (Issue #162, 点5)。
+	       (insert (if (and error-p sumibi--mozc-provisional-current)
+			   sumibi--mozc-provisional-current
+			 (car lst)))
 	       ;; 見出し `###` 等の直後にスペースが無ければ補完する
 	       (sumibi--ensure-space-after-heading (marker-position saved-marker))
 	       (goto-char (marker-position saved-marker))))))
@@ -1861,7 +1867,12 @@ ROMAN: \"watashi no namae ha nakano desu\" のような文字列
 ARG-N: 候補を何件返すか
 DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
   (let ((lst (sumibi-roman-to-kanji-with-surrounding roman surrounding-text arg-n deferred-func2)))
-    (when (>= 10 (length roman))
+    ;; 補助の読み仮名候補は同期呼び出し時のみ追加する。
+    ;; 非同期呼び出し (deferred-func2 が non-nil) では、本変換と読み仮名変換の
+    ;; 双方が deferred-func2 を呼んで二重に挿入・後始末してしまうため抑止する
+    ;; (Issue #162: 仮確定機能で短文を非同期化した場合の二重発火を防ぐ)。
+    (when (and (null deferred-func2)
+               (>= 10 (length roman)))
       (setq lst
             (append
              lst
@@ -2034,6 +2045,11 @@ Argument INVERSE-FLAG：逆変換かどうか"
         nil))))
 
 
+(defvar sumibi--mozc-provisional-current nil
+  "現在進行中の非同期変換に対する mozc 仮確定文字列 (Issue #162).
+LLM 変換が失敗・タイムアウトした際、この値を最終結果として確定する。
+現状は1変換ずつを前提とした単一値で保持する (複数同時進行の管理は今後の課題)。")
+
 (defun sumibi-mozc-provisional-conversion (romaji)
   "ROMAJI 文字列から mozc による仮確定結果を返す (Issue #162).
 仮確定を行わない場合 (機能無効・mozc 不在・漢字を含む・変換不能等) は nil を返す.
@@ -2069,6 +2085,8 @@ Argument INVERSE-FLAG：逆変換かどうか"
             ;; mozc 仮確定 (Issue #162): LLM 完了までの間、ローカル変換結果を表示する.
             (provisional (and (not inverse-flag)
                               (sumibi-mozc-provisional-conversion yomi))))
+        ;; LLM 失敗時のフォールバック用に保持する (Issue #162, 点5)。
+        (setq sumibi--mozc-provisional-current provisional)
         (if provisional
             (progn
               (overlay-put yomi-overlay 'display provisional)
@@ -2086,17 +2104,37 @@ Argument INVERSE-FLAG：逆変換かどうか"
 	       (delete-region (marker-position saved-b-marker)
 			      (marker-position saved-e-marker))))))))))
 
+(defun sumibi--fixed-kouho-p (text)
+  "TEXT が固定変換キーワード (助詞など) に完全一致するなら non-nil を返す."
+  (cl-some (lambda (x) (string= text (car x)))
+           sumibi-japanese-transliteration-rules))
+
+(defun sumibi--mozc-force-async-p (text inverse-flag)
+  "mozc 仮確定 (Issue #162) のために TEXT の変換を非同期で行うべきか判定する.
+仮確定が適用できる入力 (ローマ字・漢字を含まない・固定変換キーワードでない・
+逆変換でない・mozc 利用可能) のときだけ t を返す.
+固定変換キーワードや漢字入力は HTTP を介さない/仮確定対象外のため、
+これらを非同期化するとオーバーレイの後始末が行われず破綻するので除外する."
+  (and sumibi-mozc-provisional-enable
+       (not inverse-flag)
+       (not (sumibi-string-include-kanji text))
+       (not (sumibi--fixed-kouho-p text))
+       (sumibi-mozc-available-p)))
+
 (defun sumibi-henkan-region (b e inverse-flag)
   "指定された region を漢字変換する.  同期か非同期かはBからEまでの文字数で決定する.
+ただし mozc 仮確定が有効な場合は、対象となる短文も非同期で変換する (Issue #162)。
 Argument B: リージョンの開始位置
 Argument E: リージョンの終了位置
 Argument INVERSE-FLAG：逆変換かどうか"
   (sumibi-init)
   (when sumibi-init
     (when (/= b e)
-      (if (sumibi-determine-sync-p (buffer-substring-no-properties b e))
-          (sumibi-henkan-region-sync b e inverse-flag)
-        (sumibi-henkan-region-async b e inverse-flag)))))
+      (let ((text (buffer-substring-no-properties b e)))
+        (if (and (sumibi-determine-sync-p text)
+                 (not (sumibi--mozc-force-async-p text inverse-flag)))
+            (sumibi-henkan-region-sync b e inverse-flag)
+          (sumibi-henkan-region-async b e inverse-flag))))))
 
 
 (defun sumibi-char-charset (ch)
