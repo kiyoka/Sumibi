@@ -129,6 +129,50 @@
       (should (string= (buffer-string) "test")))))
 
 ;; ------------------------------------------------------------------
+;; 点8: LLM 待ち中の編集で上書きをキャンセル
+;; ------------------------------------------------------------------
+
+(ert-deftest sumibi-mozc-prov-test-cancel-overwrite-on-edit ()
+  "LLM 待ち中に仮確定領域が編集されたら、結果で上書きせずユーザーの編集を残す (点8)。"
+  (with-temp-buffer
+    (let ((sumibi-mozc-provisional-enable t)
+          (captured nil)
+          (sumibi--mozc-cancel-overwrite nil))
+      (cl-letf (((symbol-function 'sumibi-openai-http-post)
+                 (lambda (_m _n _s df df2) (setq captured (cons df df2))))
+                ((symbol-function 'sumibi-mozc-provisional-conversion)
+                 (lambda (_r) "私は")))
+        (insert "watashiha")
+        (sumibi-henkan-region-async 1 10 nil)   ; 領域 [1,10)="watashiha"
+        ;; ユーザーが領域を編集: 末尾 "ha" を削除 → "watashi"
+        (goto-char 10)
+        (delete-char -2)
+        ;; コールバック発火 (cleanup → insert)
+        (funcall (cdr captured))
+        (funcall (car captured)
+                 "{\"choices\":[{\"message\":{\"content\":\"test\"}}]}"))
+      ;; 上書きがキャンセルされ、編集後のテキストが残る
+      (should (string= (buffer-string) "watashi")))))
+
+(ert-deftest sumibi-mozc-prov-test-no-edit-allows-overwrite ()
+  "編集が無ければ通常どおり LLM 結果で上書きされる (点8 の対照)。"
+  (with-temp-buffer
+    (let ((sumibi-mozc-provisional-enable t)
+          (captured nil)
+          (sumibi--mozc-cancel-overwrite nil))
+      (cl-letf (((symbol-function 'sumibi-openai-http-post)
+                 (lambda (_m _n _s df df2) (setq captured (cons df df2))))
+                ((symbol-function 'sumibi-mozc-provisional-conversion)
+                 (lambda (_r) "私は")))
+        (insert "watashiha")
+        (sumibi-henkan-region-async 1 10 nil)
+        ;; 編集せずにコールバック発火
+        (funcall (cdr captured))
+        (funcall (car captured)
+                 "{\"choices\":[{\"message\":{\"content\":\"test\"}}]}"))
+      (should (string= (buffer-string) "test")))))
+
+;; ------------------------------------------------------------------
 ;; #3: 非同期成功後の候補選択状態の構築
 ;; ------------------------------------------------------------------
 

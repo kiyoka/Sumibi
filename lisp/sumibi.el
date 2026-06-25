@@ -1575,7 +1575,8 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 			     (sumibi-analyze-openai-json-obj json-obj arg-n))))
            (when (and lst (null deferred-func2))
 	     (setq result lst))
-           (when lst
+           ;; ユーザーが仮確定領域を編集していたら上書きをスキップする (Issue #162, 点8)。
+           (when (and lst (not sumibi--mozc-cancel-overwrite))
 	     (save-excursion
 	       (goto-char (marker-position saved-marker))
 	       (let ((ins-b (point)))
@@ -2064,6 +2065,12 @@ Argument INVERSE-FLAG：逆変換かどうか"
 LLM 変換が失敗・タイムアウトした際、この値を最終結果として確定する。
 現状は1変換ずつを前提とした単一値で保持する (複数同時進行の管理は今後の課題)。")
 
+(defvar sumibi--mozc-cancel-overwrite nil
+  "非同期変換の LLM 結果による上書きをキャンセルすべきかのフラグ (Issue #162, 点8).
+LLM 待ちの間にユーザーが仮確定領域を編集した場合、cleanup コールバックが t を
+セットし、insert コールバックは結果挿入をスキップしてユーザーの編集を尊重する。
+cleanup と insert は同一 atomic ブロックで連続実行されるため単一値で協調できる。")
+
 (defun sumibi--setup-async-candidates (roman lst b e)
   "非同期確定後に候補選択状態を構築する (Issue #162, #3).
 ROMAN は元のローマ字、LST は確定に使った候補文字列リスト、B/E は確定済み
@@ -2123,6 +2130,8 @@ Argument INVERSE-FLAG：逆変換かどうか"
           (overlay-put yomi-overlay 'sumibi-mozc-inflight t))
         ;; LLM 失敗時のフォールバック用に保持する (Issue #162, 点5)。
         (setq sumibi--mozc-provisional-current provisional)
+        ;; 上書きキャンセルフラグを初期化する (Issue #162, 点8)。
+        (setq sumibi--mozc-cancel-overwrite nil)
         (if provisional
             (progn
               (overlay-put yomi-overlay 'display provisional)
@@ -2139,9 +2148,21 @@ Argument INVERSE-FLAG：逆変換かどうか"
            (when (buffer-live-p cur-buf)
              (with-current-buffer cur-buf
                (save-excursion
-	         (delete-overlay yomi-overlay)
-	         (delete-region (marker-position saved-b-marker)
-			        (marker-position saved-e-marker)))))))))))
+	         ;; 仮確定領域がユーザーに編集されていたら上書きをキャンセルする
+	         ;; (Issue #162, 点8)。元の読みと現在テキストを比較して判定し、
+	         ;; cleanup と insert は同一 atomic ブロックで連続実行されるため
+	         ;; グローバルフラグで安全に協調できる。
+	         (let ((edited (not (string= (buffer-substring-no-properties
+				              (marker-position saved-b-marker)
+				              (marker-position saved-e-marker))
+				             yomi))))
+	           (setq sumibi--mozc-cancel-overwrite edited)
+	           (delete-overlay yomi-overlay)
+	           ;; 編集されていなければ読みを削除する (この後 deferred-func が
+	           ;; 結果を挿入する)。編集されていればユーザーのテキストを残す。
+	           (unless edited
+	             (delete-region (marker-position saved-b-marker)
+				    (marker-position saved-e-marker)))))))))))))
 
 (defun sumibi--mozc-clamp-start (b e)
   "進行中の仮確定オーバーレイと重ならないよう、変換開始位置 B を前方へ詰める (Issue #162, 点6).
