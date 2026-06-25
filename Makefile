@@ -97,3 +97,7 @@ test:
 	      -L lisp \
 	      -l test/sumibi-escape-json-test.el \
 	      -f ert-run-tests-batch-and-exit
+	emacs -batch -Q \
+	      -L lisp \
+	      -l test/sumibi-mozc-test.el \
+	      -f ert-run-tests-batch-and-exit

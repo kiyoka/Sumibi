@@ -45,6 +45,7 @@
 (require 'deferred)
 (require 'sumibi-localdic)
 (require 'sumibi-english-words)
+(require 'sumibi-mozc)
 
 ;; --------------------------------------------------------------
 ;; auth-source for secure API key management
@@ -164,6 +165,20 @@ nil の場合は sumibi-provider のデフォルトモデルが使用される�
 nilの場合は従来通りCtrl+Jでの手動変換のみ。
 non-nilの場合、助詞の後にスペースを入力すると自動的に変換される。"
   :type 'boolean
+  :group 'sumibi)
+
+(defcustom sumibi-mozc-provisional-enable nil
+  "二段階変換 (mozc 仮確定) を有効にするかどうか (Issue #162)。
+non-nil の場合、LLM 変換の完了を待つ間、mozc_emacs_helper による
+ローカルかな漢字変換の結果を「仮確定」としてオーバーレイ表示する。
+LLM 変換が完了するとその結果で上書きされる。
+mozc_emacs_helper が見つからない場合は自動的に無効として扱う。"
+  :type 'boolean
+  :group 'sumibi)
+
+(defface sumibi-mozc-provisional-face
+  '((t (:foreground "gray50" :underline t)))
+  "mozc による仮確定テキストを表示する際の face (Issue #162)。"
   :group 'sumibi)
 
 (defvar sumibi-auto-convert-particles
@@ -2019,6 +2034,20 @@ Argument INVERSE-FLAG：逆変換かどうか"
         nil))))
 
 
+(defun sumibi-mozc-provisional-conversion (romaji)
+  "ROMAJI 文字列から mozc による仮確定結果を返す (Issue #162).
+仮確定を行わない場合 (機能無効・mozc 不在・漢字を含む・変換不能等) は nil を返す.
+ROMAJI はローマ字を想定し、空白を除いてひらがなへ部分変換してから mozc に渡す."
+  (when (and sumibi-mozc-provisional-enable
+             (stringp romaji)
+             (> (length romaji) 0)
+             (not (sumibi-string-include-kanji romaji))
+             (sumibi-mozc-available-p))
+    (let* ((no-space (replace-regexp-in-string "[ \t　]+" "" romaji))
+           (hiragana (sumibi-romaji-to-hiragana-partial no-space)))
+      (when (and (stringp hiragana) (> (length hiragana) 0))
+        (sumibi-mozc-convert hiragana)))))
+
 (defun sumibi-henkan-region-async (b e inverse-flag)
   "リージョンをローマ字漢字変換する(非同期関数バージョン).
 Argument B: リージョンの開始位置
@@ -2036,9 +2065,16 @@ Argument INVERSE-FLAG：逆変換かどうか"
       (goto-char b)
       (setq saved-b-marker (point-marker))
       (goto-char e)
-      (let ((yomi-overlay (make-overlay b e)))
-        (overlay-put yomi-overlay 'display yomi)
-        (overlay-put yomi-overlay 'face '(:foreground "gray"))
+      (let ((yomi-overlay (make-overlay b e))
+            ;; mozc 仮確定 (Issue #162): LLM 完了までの間、ローカル変換結果を表示する.
+            (provisional (and (not inverse-flag)
+                              (sumibi-mozc-provisional-conversion yomi))))
+        (if provisional
+            (progn
+              (overlay-put yomi-overlay 'display provisional)
+              (overlay-put yomi-overlay 'face 'sumibi-mozc-provisional-face))
+          (overlay-put yomi-overlay 'display yomi)
+          (overlay-put yomi-overlay 'face '(:foreground "gray")))
         (sumibi-henkan-request
          yomi
 	 yomi
