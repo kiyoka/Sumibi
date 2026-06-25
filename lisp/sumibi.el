@@ -2063,9 +2063,11 @@ ROMAJI はローマ字を想定し、空白を除いてひらがなへ部分変�
              (> (length romaji) 0)
              (not (sumibi-string-include-kanji romaji))
              (sumibi-mozc-available-p))
-    (let* ((no-space (replace-regexp-in-string "[ \t　]+" "" romaji))
+    ;; 改行・空白を除去する。改行を残すと mozc の改行区切りS式プロトコルが
+    ;; 壊れるため (markdown 段落など複数行領域対策, Issue #162 レビュー指摘)。
+    (let* ((no-space (replace-regexp-in-string "[ \t\r\n　]+" "" romaji))
            (hiragana (sumibi-romaji-to-hiragana-partial no-space)))
-      (when (and (stringp hiragana) (> (length hiragana) 0))
+      (when (> (length hiragana) 0)
         (sumibi-mozc-convert hiragana)))))
 
 (defun sumibi-henkan-region-async (b e inverse-flag)
@@ -2109,11 +2111,14 @@ Argument INVERSE-FLAG：逆変換かどうか"
 	 yomi
          inverse-flag
          (lambda ()
-           (with-current-buffer cur-buf
-             (save-excursion
-	       (delete-overlay yomi-overlay)
-	       (delete-region (marker-position saved-b-marker)
-			      (marker-position saved-e-marker))))))))))
+           ;; LLM 応答までにバッファが kill される場合があるため生存確認する
+           ;; (Issue #162 レビュー指摘)。
+           (when (buffer-live-p cur-buf)
+             (with-current-buffer cur-buf
+               (save-excursion
+	         (delete-overlay yomi-overlay)
+	         (delete-region (marker-position saved-b-marker)
+			        (marker-position saved-e-marker)))))))))))
 
 (defun sumibi--mozc-clamp-start (b e)
   "進行中の仮確定オーバーレイと重ならないよう、変換開始位置 B を前方へ詰める (Issue #162, 点6).
@@ -2151,8 +2156,6 @@ Argument E: リージョンの終了位置
 Argument INVERSE-FLAG：逆変換かどうか"
   (sumibi-init)
   (when sumibi-init
-    ;; 進行中の仮確定領域と重複しないよう開始位置を前方へ詰める (Issue #162, 点6)
-    (setq b (sumibi--mozc-clamp-start b e))
     (when (/= b e)
       (let ((text (buffer-substring-no-properties b e)))
         (if (and (sumibi-determine-sync-p text)
@@ -2767,9 +2770,11 @@ _ARG: (未使用)"
                      ;; それ以外は従来通り
                      (sumibi-skip-chars-backward))))
           (when (/= gap 0)
-            ;; 意味のある入力が見つかったので変換する
+            ;; 意味のある入力が見つかったので変換する。
+            ;; 進行中の仮確定領域 (ambient 連続入力時) と重複しないよう開始位置を
+            ;; 前方へ詰める。region 明示選択経路ではクランプしない (Issue #162, 点6)。
             (let (
-                  (b (+ end gap))
+                  (b (sumibi--mozc-clamp-start (+ end gap) end))
                   (e end))
 	      (sumibi-henkan-region b e nil)))))
        

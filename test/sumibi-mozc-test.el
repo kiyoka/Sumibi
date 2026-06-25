@@ -42,6 +42,17 @@
   "文字列以外の入力は nil を返す。"
   (should (null (sumibi-mozc-convert nil))))
 
+(ert-deftest sumibi-mozc-test-empty-result-returns-nil ()
+  "mozc が空文字を返した場合は nil を返す (Elisp では \"\" は真のため明示的に弾く)。"
+  (cl-letf (((symbol-function 'sumibi-mozc--ensure-process) (lambda () t))
+            ((symbol-function 'process-send-string) (lambda (&rest _) nil))
+            ((symbol-function 'process-live-p) (lambda (&rest _) t))
+            ((symbol-function 'accept-process-output) (lambda (&rest _) nil))
+            ((symbol-function 'sumibi-mozc--extract-result) (lambda () "")))
+    (let ((sumibi-mozc--process 'dummy)
+          (sumibi-mozc--session-id 1))
+      (should (null (sumibi-mozc-convert "あ"))))))
+
 (ert-deftest sumibi-mozc-test-helper-path-override ()
   "`sumibi-mozc-helper-path' に存在しないパスを与えても find-helper は壊れない。"
   (let ((sumibi-mozc-helper-path "/nonexistent/mozc_emacs_helper"))

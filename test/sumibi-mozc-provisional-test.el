@@ -161,7 +161,9 @@
 (ert-deftest sumibi-mozc-prov-test-fallback-is-per-conversion ()
   "別の変換がグローバル値を上書きしても、各変換は自分の仮確定を確定する。"
   (with-temp-buffer
-    (let ((captured nil))
+    ;; グローバル変数はテスト後に復元する (let で束縛)
+    (let ((captured nil)
+          (sumibi--mozc-provisional-current nil))
       (cl-letf (((symbol-function 'sumibi-openai-http-post)
                  (lambda (_m _n _s deferred-func deferred-func2)
                    (setq captured (cons deferred-func deferred-func2)))))

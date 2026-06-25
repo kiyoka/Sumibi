@@ -43,7 +43,6 @@
 ;;; Code:
 
 (require 'cl-lib)
-(require 'seq)
 
 (defgroup sumibi-mozc nil
   "mozc_emacs_helper を使った仮確定変換の設定."
@@ -80,17 +79,23 @@ nil の場合は `sumibi-mozc--helper-candidates' から自動検出する."
   "S式コマンドに付与する単調増加のイベントID.")
 (defvar sumibi-mozc--session-id nil
   "CreateSession で得たセッションID (全変換で使い回す).")
+(defvar sumibi-mozc--helper-path-cache nil
+  "自動検出した mozc_emacs_helper パスのキャッシュ.
+`sumibi-mozc-helper-path' が明示指定された場合はキャッシュを使わず毎回確認する。")
 
 (defun sumibi-mozc-find-helper ()
-  "mozc_emacs_helper の実行パスを返す。見つからなければ nil."
-  (or (and sumibi-mozc-helper-path
-           (file-executable-p sumibi-mozc-helper-path)
+  "mozc_emacs_helper の実行パスを返す。見つからなければ nil.
+明示指定が無い場合の自動検出結果はキャッシュし、変換ごとの executable-find を避ける."
+  (if sumibi-mozc-helper-path
+      (and (file-executable-p sumibi-mozc-helper-path)
            sumibi-mozc-helper-path)
-      (cl-some (lambda (p)
-                 (if (file-name-absolute-p p)
-                     (and (file-executable-p p) p)
-                   (executable-find p)))
-               sumibi-mozc--helper-candidates)))
+    (or sumibi-mozc--helper-path-cache
+        (setq sumibi-mozc--helper-path-cache
+              (cl-some (lambda (p)
+                         (if (file-name-absolute-p p)
+                             (and (file-executable-p p) p)
+                           (executable-find p)))
+                       sumibi-mozc--helper-candidates)))))
 
 (defun sumibi-mozc-available-p ()
   "mozc_emacs_helper が利用可能なら t を返す."
@@ -200,11 +205,14 @@ nil の場合は `sumibi-mozc--helper-candidates' から自動検出する."
                         (< (float-time) deadline)
                         (process-live-p proc))
               (accept-process-output proc 0.05))
-            (if value
-                value
-              ;; タイムアウト時はセッション状態がずれている可能性があるため再起動
-              (sumibi-mozc-shutdown)
-              nil)))
+            (cond
+             ;; 非空の結果が得られた場合のみ成功
+             ((and (stringp value) (> (length value) 0)) value)
+             ;; 空文字が返った場合: 使える結果が無いので nil (Elisp では "" は真の
+             ;; ため、呼び出し側が誤って仮確定として扱わないよう明示的に弾く)
+             (value nil)
+             ;; タイムアウト等で結果なし: セッション状態がずれている可能性があるため再起動
+             (t (sumibi-mozc-shutdown) nil))))
       (error
        (sumibi-mozc-shutdown)
        nil))))
