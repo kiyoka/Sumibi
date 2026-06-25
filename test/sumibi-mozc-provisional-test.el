@@ -129,6 +129,33 @@
       (should (string= (buffer-string) "test")))))
 
 ;; ------------------------------------------------------------------
+;; #3: 非同期成功後の候補選択状態の構築
+;; ------------------------------------------------------------------
+
+(ert-deftest sumibi-mozc-prov-test-async-builds-candidate-state ()
+  "非同期成功後に候補選択状態 (kouho-list/markers) が構築される (#3)。"
+  (with-temp-buffer
+    (let ((sumibi--mozc-provisional-current nil)
+          (sumibi-henkan-kouho-list nil)
+          (sumibi-markers nil)
+          (sumibi-genbun nil)
+          (sumibi-history-stack nil))
+      ;; content は URL-hex エンコードされた UTF-8 「私は」
+      (sumibi-mozc-prov-test--with-stubbed-post
+          "{\"choices\":[{\"message\":{\"content\":\"%E7%A7%81%E3%81%AF\"}}]}"
+        (goto-char (point-min))
+        (sumibi-roman-to-kanji-with-surrounding "watashiha" "watashiha" 1
+                                                (lambda () nil)))
+      (should (string= (buffer-string) "私は"))
+      ;; 候補リストが構築されている (本命 + 原文まま)
+      (should (>= (length sumibi-henkan-kouho-list) 2))
+      ;; 第1候補が確定テキスト
+      (should (string= (car (nth 0 sumibi-henkan-kouho-list)) "私は"))
+      ;; markers が設定されている (確定後の再変換ポップアップに必要)
+      (should (markerp (car sumibi-markers)))
+      (should (markerp (cdr sumibi-markers))))))
+
+;; ------------------------------------------------------------------
 ;; 点6: 進行中領域との重複防止クランプ
 ;; ------------------------------------------------------------------
 

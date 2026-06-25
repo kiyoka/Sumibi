@@ -1578,14 +1578,19 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
            (when lst
 	     (save-excursion
 	       (goto-char (marker-position saved-marker))
-	       ;; LLM 失敗時に mozc 仮確定があれば、エラー文字列ではなく
-	       ;; 仮確定結果を最終結果として確定する (Issue #162, 点5)。
-	       (insert (if (and error-p provisional-fallback)
-			   provisional-fallback
-			 (car lst)))
-	       ;; 見出し `###` 等の直後にスペースが無ければ補完する
-	       (sumibi--ensure-space-after-heading (marker-position saved-marker))
-	       (goto-char (marker-position saved-marker))))))
+	       (let ((ins-b (point)))
+	         ;; LLM 失敗時に mozc 仮確定があれば、エラー文字列ではなく
+	         ;; 仮確定結果を最終結果として確定する (Issue #162, 点5)。
+	         (insert (if (and error-p provisional-fallback)
+			     provisional-fallback
+			   (car lst)))
+	         ;; 見出し `###` 等の直後にスペースが無ければ補完する
+	         (sumibi--ensure-space-after-heading (marker-position saved-marker))
+	         ;; 成功時は候補選択状態を構築し、確定後の再変換ポップアップ・履歴・undo
+	         ;; を同期経路と同様に使えるようにする (Issue #162, #3)。
+	         (unless error-p
+	           (sumibi--setup-async-candidates roman lst ins-b (point)))
+	         (goto-char (marker-position saved-marker)))))))
        deferred-func2)
       result)))
 
@@ -1865,6 +1870,31 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
      (list (list roman "原文まま" 0 'l
 		 (+ (length kouho-lst) (length related-kouho-lst)))))))
 
+(defun sumibi--build-kouho-list (roman lst)
+  "候補文字列リスト LST から注釈付きの henkan-kouho-list を構築する.
+ROMAN は「原文まま」候補に使う元のローマ字文字列。
+各エントリは (word annotation 0 type index) 形式で、末尾に「原文まま」を付ける。
+同期・非同期の両経路で候補選択状態を作るために共用する (Issue #162, #3)."
+  (let ((lst (sumibi-supplement-kouho lst)))
+    (append
+     (-map
+      (lambda (x)
+        (list (car x)
+	      (sumibi--annotation-label (car x) (+ 1 (cdr x)))
+	      0
+	      (sumibi-determine-candidate-type (car x))
+	      (cdr x)))
+      (-zip-pair
+       lst
+       '(
+	 0 1 2 3 4 5 6 7 8 9
+	 10 11 12 13 14 15 16 17 18 19
+	 20 21 22 23 24 25 26 27 28 29
+	 30 31 32 33 34 35 36 37 38 39
+	 40 41 42 43 44 45 46 47 48 49)))
+     (list
+      (list roman "原文まま" 0 'l (length lst))))))
+
 (defun sumibi-alphabet-henkan (roman surrounding-text arg-n deferred-func2)
   "アルファベット(ローマ字or英語の文章)からカナ漢字混じり文へ変換する.
 ROMAN: \"watashi no namae ha nakano desu\" のような文字列
@@ -1881,27 +1911,7 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
             (append
              lst
              (sumibi-roman-to-yomigana roman deferred-func2))))
-    (setq
-     lst
-     (sumibi-supplement-kouho lst))
-    (append
-     (-map
-      (lambda (x)
-        (list (car x)
-	      (sumibi--annotation-label (car x) (+ 1 (cdr x)))
-	      0 
-	      (sumibi-determine-candidate-type (car x))
-	      (cdr x)))
-      (-zip-pair
-       lst
-       '(
-	 0 1 2 3 4 5 6 7 8 9
-	 10 11 12 13 14 15 16 17 18 19
-	 20 21 22 23 24 25 26 27 28 29
-	 30 31 32 33 34 35 36 37 38 39
-	 40 41 42 43 44 45 46 47 48 49)))
-     (list
-      (list roman "原文まま" 0 'l (length lst))))))
+    (sumibi--build-kouho-list roman lst)))
 
 (defun sumibi-hiragana-to-katakana (str)
   "ひらがな文字列をカタカナに変換して返す。もし、ひらがな以外の場合はnilを返す.
@@ -2054,6 +2064,19 @@ Argument INVERSE-FLAG：逆変換かどうか"
 LLM 変換が失敗・タイムアウトした際、この値を最終結果として確定する。
 現状は1変換ずつを前提とした単一値で保持する (複数同時進行の管理は今後の課題)。")
 
+(defun sumibi--setup-async-candidates (roman lst b e)
+  "非同期確定後に候補選択状態を構築する (Issue #162, #3).
+ROMAN は元のローマ字、LST は確定に使った候補文字列リスト、B/E は確定済み
+テキストの範囲。同期経路 (`sumibi-henkan-region-sync') と同じ状態
+(kouho-list・markers・履歴) を作り、確定後の再変換ポップアップ・undo を有効にする。"
+  (let ((henkan-list (sumibi--build-kouho-list roman lst)))
+    (setq sumibi-henkan-kouho-list henkan-list
+          sumibi-cand-cur 0
+          sumibi-cand-len (length henkan-list)
+          sumibi-last-roman roman)
+    (sumibi-display-function b e nil)
+    (sumibi-select-kakutei)))
+
 (defun sumibi-mozc-provisional-conversion (romaji)
   "ROMAJI 文字列から mozc による仮確定結果を返す (Issue #162).
 仮確定を行わない場合 (機能無効・mozc 不在・漢字を含む・変換不能等) は nil を返す.
@@ -2149,8 +2172,9 @@ Argument INVERSE-FLAG：逆変換かどうか"
        (sumibi-mozc-available-p)))
 
 (defun sumibi-henkan-region (b e inverse-flag)
-  "指定された region を漢字変換する.  同期か非同期かはBからEまでの文字数で決定する.
-ただし mozc 仮確定が有効な場合は、対象となる短文も非同期で変換する (Issue #162)。
+  "指定された region を漢字変換する.
+非同期変換は mozc 仮確定 (投機的実行) 専用とし、それ以外は文字数によらず
+すべて同期で変換する (Issue #162: 旧来の長文非同期は廃止)。
 Argument B: リージョンの開始位置
 Argument E: リージョンの終了位置
 Argument INVERSE-FLAG：逆変換かどうか"
@@ -2158,10 +2182,9 @@ Argument INVERSE-FLAG：逆変換かどうか"
   (when sumibi-init
     (when (/= b e)
       (let ((text (buffer-substring-no-properties b e)))
-        (if (and (sumibi-determine-sync-p text)
-                 (not (sumibi--mozc-force-async-p text inverse-flag)))
-            (sumibi-henkan-region-sync b e inverse-flag)
-          (sumibi-henkan-region-async b e inverse-flag))))))
+        (if (sumibi--mozc-force-async-p text inverse-flag)
+            (sumibi-henkan-region-async b e inverse-flag)
+          (sumibi-henkan-region-sync b e inverse-flag))))))
 
 
 (defun sumibi-char-charset (ch)
