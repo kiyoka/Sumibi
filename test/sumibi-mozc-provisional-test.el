@@ -31,6 +31,7 @@
       (dolist (item list) (when (funcall fn item) (push item result)))
       (nreverse result)))
   (defun -map (fn list) (mapcar fn list))
+  (defun -zip-pair (l1 l2) (cl-mapcar #'cons l1 l2))
   (provide 'dash))
 
 (add-to-list 'load-path
@@ -126,6 +127,82 @@
         (sumibi-roman-to-kanji-with-surrounding "watashiha" "watashiha" 1
                                                 (lambda () nil)))
       (should (string= (buffer-string) "test")))))
+
+;; ------------------------------------------------------------------
+;; 点6: 進行中領域との重複防止クランプ
+;; ------------------------------------------------------------------
+
+(ert-deftest sumibi-mozc-prov-test-clamp-no-overlay ()
+  "in-flight オーバーレイが無ければ開始位置は変わらない。"
+  (with-temp-buffer
+    (insert "watashiha")
+    (should (= (sumibi--mozc-clamp-start 1 10) 1))))
+
+(ert-deftest sumibi-mozc-prov-test-clamp-with-inflight ()
+  "in-flight オーバーレイがあれば開始位置をその終端まで前進させる。"
+  (with-temp-buffer
+    (insert "watashihanihonni")
+    (let ((ov (make-overlay 1 10)))
+      (overlay-put ov 'sumibi-mozc-inflight t)
+      ;; [1,10) が in-flight なので [1,17) の変換開始は 10 にクランプされる
+      (should (= (sumibi--mozc-clamp-start 1 17) 10)))))
+
+(ert-deftest sumibi-mozc-prov-test-clamp-ignores-unmarked-overlay ()
+  "印の無いオーバーレイはクランプ対象にしない。"
+  (with-temp-buffer
+    (insert "watashihanihonni")
+    (make-overlay 1 10)  ; sumibi-mozc-inflight 印なし
+    (should (= (sumibi--mozc-clamp-start 1 17) 1))))
+
+;; ------------------------------------------------------------------
+;; 点6: フォールバック値の変換ごとの独立性 (クロージャ捕捉)
+;; ------------------------------------------------------------------
+
+(ert-deftest sumibi-mozc-prov-test-fallback-is-per-conversion ()
+  "別の変換がグローバル値を上書きしても、各変換は自分の仮確定を確定する。"
+  (with-temp-buffer
+    (let ((captured nil))
+      (cl-letf (((symbol-function 'sumibi-openai-http-post)
+                 (lambda (_m _n _s deferred-func deferred-func2)
+                   (setq captured (cons deferred-func deferred-func2)))))
+        ;; 変換A: 仮確定 "私は" を設定して呼ぶ (スタブはコールバックを保留)
+        (setq sumibi--mozc-provisional-current "私は")
+        (goto-char (point-min))
+        (sumibi-roman-to-kanji-with-surrounding "watashiha" "watashiha" 1
+                                                (lambda () nil))
+        ;; 変換Bが始まってグローバルを上書きしたと仮定
+        (setq sumibi--mozc-provisional-current "日本語")
+        ;; ここでAのコールバックがエラーで発火 → Aは自分の "私は" を確定すべき
+        (funcall (cdr captured))
+        (funcall (car captured) "{\"error\":{\"message\":\"X\"}}"))
+      (should (string= (buffer-string) "私は")))))
+
+;; ------------------------------------------------------------------
+;; 点6: 隣接する進行中領域のマーカー境界
+;; ------------------------------------------------------------------
+
+(ert-deftest sumibi-mozc-prov-test-adjacent-inflight-regions ()
+  "隣接する2変換が同時進行しても、先行変換の確定結果を後続が取り込まない。"
+  (with-temp-buffer
+    (let ((sumibi-mozc-provisional-enable t)
+          (captured '())
+          (prov-seq (list "私は" "日本に")))
+      (cl-letf (((symbol-function 'sumibi-openai-http-post)
+                 (lambda (_m _n _s deferred-func deferred-func2)
+                   (setq captured (append captured
+                                          (list (cons deferred-func deferred-func2))))))
+                ((symbol-function 'sumibi-mozc-provisional-conversion)
+                 (lambda (_romaji) (pop prov-seq))))
+        (insert "watashihanihonni")
+        (sumibi-henkan-region-async 1 10 nil)    ; A: [1,10) "watashiha"
+        (sumibi-henkan-region-async 10 17 nil)   ; B: [10,17) "nihonni"
+        (let ((a (nth 0 captured))
+              (b (nth 1 captured))
+              (err "{\"error\":{\"message\":\"X\"}}"))
+          ;; 実際の deferred 順 (後始末 → 挿入) を A, B の順で再現
+          (funcall (cdr a)) (funcall (car a) err)
+          (funcall (cdr b)) (funcall (car b) err)))
+      (should (string= (buffer-string) "私は日本に")))))
 
 (provide 'sumibi-mozc-provisional-test)
 

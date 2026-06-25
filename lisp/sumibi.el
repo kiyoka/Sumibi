@@ -1493,6 +1493,10 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
     (sumibi-debug-print (format "  processed-roman (LLMへ送信): %s\n" processed-roman))
     ;; OpenAI backend ------------------------------------------------
     (let ((saved-marker (point-marker))
+          ;; 失敗時フォールバック用の mozc 仮確定をこの変換専用に捕捉する。
+          ;; グローバル変数は呼び出しと同期的に設定されるため、ここで束縛して
+          ;; おけば複数変換が同時進行しても取り違えない (Issue #162, 点6)。
+          (provisional-fallback sumibi--mozc-provisional-current)
           (result nil))
       (sumibi-openai-http-post
        (list
@@ -1576,8 +1580,8 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 	       (goto-char (marker-position saved-marker))
 	       ;; LLM 失敗時に mozc 仮確定があれば、エラー文字列ではなく
 	       ;; 仮確定結果を最終結果として確定する (Issue #162, 点5)。
-	       (insert (if (and error-p sumibi--mozc-provisional-current)
-			   sumibi--mozc-provisional-current
+	       (insert (if (and error-p provisional-fallback)
+			   provisional-fallback
 			 (car lst)))
 	       ;; 見出し `###` 等の直後にスペースが無ければ補完する
 	       (sumibi--ensure-space-after-heading (marker-position saved-marker))
@@ -2080,11 +2084,18 @@ Argument INVERSE-FLAG：逆変換かどうか"
       (setq saved-e-marker (point-marker))
       (goto-char b)
       (setq saved-b-marker (point-marker))
+      ;; 先行する変換が完了して開始位置に結果を挿入したとき、本変換の開始
+      ;; マーカーがその結果を取り込まないよう前進型にする (Issue #162, 点6)。
+      (set-marker-insertion-type saved-b-marker t)
       (goto-char e)
       (let ((yomi-overlay (make-overlay b e))
             ;; mozc 仮確定 (Issue #162): LLM 完了までの間、ローカル変換結果を表示する.
             (provisional (and (not inverse-flag)
                               (sumibi-mozc-provisional-conversion yomi))))
+        ;; 複数同時進行時に新しい変換が in-flight 領域を再取得しないよう印を付ける
+        ;; (Issue #162, 点6)。機能有効時のみ (無効時は従来の挙動を変えない)。
+        (when sumibi-mozc-provisional-enable
+          (overlay-put yomi-overlay 'sumibi-mozc-inflight t))
         ;; LLM 失敗時のフォールバック用に保持する (Issue #162, 点5)。
         (setq sumibi--mozc-provisional-current provisional)
         (if provisional
@@ -2103,6 +2114,17 @@ Argument INVERSE-FLAG：逆変換かどうか"
 	       (delete-overlay yomi-overlay)
 	       (delete-region (marker-position saved-b-marker)
 			      (marker-position saved-e-marker))))))))))
+
+(defun sumibi--mozc-clamp-start (b e)
+  "進行中の仮確定オーバーレイと重ならないよう、変換開始位置 B を前方へ詰める (Issue #162, 点6).
+オーバーレイ方式ではバッファ実体がローマ字のまま残るため、自動変換 (ambient) で
+連続入力すると、変換中 (in-flight) のローマ字を次のトリガーが再取得して領域が重複し得る。
+[B, E) と重なる in-flight オーバーレイがあれば、その終端まで B を進めた値 (最大 E) を返す。"
+  (let ((clamped b))
+    (dolist (ov (overlays-in b e))
+      (when (overlay-get ov 'sumibi-mozc-inflight)
+        (setq clamped (max clamped (overlay-end ov)))))
+    (min clamped e)))
 
 (defun sumibi--fixed-kouho-p (text)
   "TEXT が固定変換キーワード (助詞など) に完全一致するなら non-nil を返す."
@@ -2129,6 +2151,8 @@ Argument E: リージョンの終了位置
 Argument INVERSE-FLAG：逆変換かどうか"
   (sumibi-init)
   (when sumibi-init
+    ;; 進行中の仮確定領域と重複しないよう開始位置を前方へ詰める (Issue #162, 点6)
+    (setq b (sumibi--mozc-clamp-start b e))
     (when (/= b e)
       (let ((text (buffer-substring-no-properties b e)))
         (if (and (sumibi-determine-sync-p text)
