@@ -340,6 +340,44 @@
       (should (string= (buffer-string) "私は")))))
 
 ;; ------------------------------------------------------------------
+;; 複数同時進行時、先行変換の確定結果を後続オーバーレイが覆わない (表示バグ)
+;; ------------------------------------------------------------------
+
+(ert-deftest sumibi-mozc-prov-test-overlay-does-not-swallow-completed-result ()
+  "A 完了後、後続 B のオーバーレイ (display) が A の確定済みテキストを覆わない。"
+  (with-temp-buffer
+    (let ((sumibi-mozc-provisional-enable t)
+          (capA nil) (capB nil)
+          (provs (list "私は" "日本語"))
+          (sumibi--mozc-cancel-overwrite nil)
+          (sumibi--mozc-provisional-current nil)
+          (sumibi-genbun nil) (sumibi-markers nil)
+          (sumibi-henkan-kouho-list nil) (sumibi-history-stack nil))
+      (cl-letf (((symbol-function 'sumibi-mozc-provisional-conversion)
+                 (lambda (_r) (pop provs)))
+                ((symbol-function 'sumibi-openai-http-post)
+                 (lambda (_m _n _s df df2)
+                   (if capA (setq capB (cons df df2)) (setq capA (cons df df2))))))
+        (insert "watashiha")
+        (sumibi-henkan-region-async 1 10 nil)        ; 変換A [1,10)
+        (goto-char (point-max)) (insert "nihongo")
+        (sumibi-henkan-region-async 10 17 nil)       ; 変換B [10,17)
+        ;; 変換A 完了 ("watashiha" -> "私は")
+        (funcall (cdr capA))
+        (funcall (car capA)
+                 "{\"choices\":[{\"message\":{\"content\":\"%E7%A7%81%E3%81%AF\"}}]}")
+        ;; 残る B のオーバーレイは A の結果「私は」(buffer 1-2) を覆っていないこと
+        (let ((ov (car (overlays-in (point-min) (point-max)))))
+          (should ov)
+          (should (>= (overlay-start ov) 3)))
+        ;; 変換B 完了で全確定・オーバーレイ無し
+        (funcall (cdr capB))
+        (funcall (car capB)
+                 "{\"choices\":[{\"message\":{\"content\":\"%E6%97%A5%E6%9C%AC%E8%AA%9E\"}}]}")
+        (should (string= (buffer-string) "私は日本語"))
+        (should (null (overlays-in (point-min) (point-max))))))))
+
+;; ------------------------------------------------------------------
 ;; 点6: 隣接する進行中領域のマーカー境界
 ;; ------------------------------------------------------------------
 

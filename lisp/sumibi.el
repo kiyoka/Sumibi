@@ -2145,7 +2145,10 @@ Argument INVERSE-FLAG：逆変換かどうか"
       ;; マーカーがその結果を取り込まないよう前進型にする (Issue #162, 点6)。
       (set-marker-insertion-type saved-b-marker t)
       (goto-char e)
-      (let ((yomi-overlay (make-overlay b e))
+      ;; front-advance=t: 先行する変換が完了して本オーバーレイの先頭位置に結果を
+      ;; 挿入したとき、オーバーレイがその確定済みテキストを飲み込んで display で
+      ;; 仮確定表示のまま覆ってしまうのを防ぐ (Issue #162, 複数同時進行の表示バグ)。
+      (let ((yomi-overlay (make-overlay b e nil t nil))
             ;; mozc 仮確定 (Issue #162): LLM 完了までの間、ローカル変換結果を表示する.
             (provisional (and (not inverse-flag)
                               (sumibi-mozc-provisional-conversion yomi))))
