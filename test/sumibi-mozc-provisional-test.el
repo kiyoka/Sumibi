@@ -129,6 +129,56 @@
       (should (string= (buffer-string) "test")))))
 
 ;; ------------------------------------------------------------------
+;; 次のローマ字入力で mozc 仮確定を即確定 (期待動作)
+;; ------------------------------------------------------------------
+
+(defun sumibi-mozc-prov-test--inflight-overlays ()
+  (seq-filter (lambda (o) (overlay-get o 'sumibi-mozc-inflight))
+              (overlays-in (point-min) (point-max))))
+
+(ert-deftest sumibi-mozc-prov-test-commit-on-next-input ()
+  "次のローマ字入力で仮確定が mozc 結果で即確定し、後続 LLM は上書きしない。"
+  (with-temp-buffer
+    (let ((sumibi-mozc-provisional-enable t)
+          (capA nil)
+          (sumibi--mozc-cancel-overwrite nil)
+          (sumibi--mozc-provisional-current nil)
+          (sumibi-genbun nil) (sumibi-markers nil)
+          (sumibi-henkan-kouho-list nil) (sumibi-history-stack nil))
+      (cl-letf (((symbol-function 'sumibi-mozc-provisional-conversion) (lambda (_r) "私は"))
+                ((symbol-function 'sumibi-openai-http-post)
+                 (lambda (_m _n _s df df2) (setq capA (cons df df2)))))
+        (insert "watashiha")
+        (sumibi-henkan-region-async 1 10 nil)
+        ;; 次のローマ字を入力 -> commit フック相当
+        (goto-char (point-max)) (insert "n")
+        (sumibi--mozc-commit-pending-provisionals)
+        (should (string= (buffer-string) "私はn"))
+        (should (null (sumibi-mozc-prov-test--inflight-overlays)))
+        ;; LLM 完了しても上書きされない
+        (funcall (cdr capA))
+        (funcall (car capA) "{\"choices\":[{\"message\":{\"content\":\"test\"}}]}")
+        (should (string= (buffer-string) "私はn"))))))
+
+(ert-deftest sumibi-mozc-prov-test-commit-skips-when-mozc-failed ()
+  "mozc が変換できなかった (灰色ローマ字) 仮確定は次入力で確定せず LLM を待つ。"
+  (with-temp-buffer
+    (let ((sumibi-mozc-provisional-enable t)
+          (capA nil)
+          (sumibi--mozc-cancel-overwrite nil)
+          (sumibi--mozc-provisional-current nil))
+      (cl-letf (((symbol-function 'sumibi-mozc-provisional-conversion) (lambda (_r) nil))
+                ((symbol-function 'sumibi-openai-http-post)
+                 (lambda (_m _n _s df df2) (setq capA (cons df df2)))))
+        (insert "watashiha")
+        (sumibi-henkan-region-async 1 10 nil)
+        (goto-char (point-max)) (insert "n")
+        (sumibi--mozc-commit-pending-provisionals)
+        ;; ローマ字のまま、オーバーレイは残る (LLM 完了待ち)
+        (should (string= (buffer-string) "watashihan"))
+        (should (sumibi-mozc-prov-test--inflight-overlays))))))
+
+;; ------------------------------------------------------------------
 ;; helper 不在時の通知 (機能有効時のみ一度だけ)
 ;; ------------------------------------------------------------------
 

@@ -2163,7 +2163,10 @@ Argument INVERSE-FLAG：逆変換かどうか"
         (if provisional
             (progn
               (overlay-put yomi-overlay 'display provisional)
-              (overlay-put yomi-overlay 'face 'sumibi-mozc-provisional-face))
+              (overlay-put yomi-overlay 'face 'sumibi-mozc-provisional-face)
+              ;; 次のローマ字入力時に mozc 結果で即確定するための印 (Issue #162)。
+              ;; mozc が変換できた仮確定だけを対象にする (灰色ローマ字表示は対象外)。
+              (overlay-put yomi-overlay 'sumibi-mozc-provisional provisional))
           (overlay-put yomi-overlay 'display yomi)
           (overlay-put yomi-overlay 'face '(:foreground "gray")))
         (sumibi-henkan-request
@@ -2202,6 +2205,28 @@ Argument INVERSE-FLAG：逆変換かどうか"
       (when (overlay-get ov 'sumibi-mozc-inflight)
         (setq clamped (max clamped (overlay-end ov)))))
     (min clamped e)))
+
+(defun sumibi--mozc-commit-pending-provisionals ()
+  "保留中の mozc 仮確定をすべて mozc 結果で即確定する (Issue #162).
+次のローマ字を入力した時点で呼ばれ、LLM の完了を待たずに mozc の仮確定文字列を
+実テキストとして確定し、オーバーレイを除去する。LLM が後で完了しても、領域テキストが
+変化しているため既存の編集検出 (点8) により上書きはキャンセルされる。
+mozc が変換できた仮確定 (sumibi-mozc-provisional 印あり) のみが対象で、mozc 失敗時の
+灰色ローマ字表示は対象外 (こちらは従来どおり LLM 完了を待つ)。"
+  (when sumibi-mozc-provisional-enable
+    ;; in-flight オーバーレイは直前の変換領域 = point 付近にある。範囲を限定して走査する。
+    (let ((beg (max (point-min) (- (point) 2000))))
+      (dolist (ov (overlays-in beg (point)))
+        (let ((prov (overlay-get ov 'sumibi-mozc-provisional)))
+          (when (and prov (overlay-buffer ov))
+            (let ((start (overlay-start ov))
+                  (end (overlay-end ov)))
+              (delete-overlay ov)
+              (when (and (stringp prov) (> (length prov) 0) (< start end))
+                (save-excursion
+                  (goto-char start)
+                  (delete-region start end)
+                  (insert prov))))))))))
 
 (defun sumibi--fixed-kouho-p (text)
   "TEXT が固定変換キーワード (助詞など) に完全一致するなら non-nil を返す."
@@ -3229,9 +3254,13 @@ _ARG: (未使用)"
   (if sumibi-mode
       (progn
         (add-hook 'post-self-insert-hook #'sumibi-check-particle-trigger nil t)
+        ;; 次のローマ字入力で保留中の仮確定を即確定する (Issue #162)。
+        ;; check-particle-trigger より先に走るよう後から追加する (add-hook は先頭追加)。
+        (add-hook 'post-self-insert-hook #'sumibi--mozc-commit-pending-provisionals nil t)
         (add-hook 'pre-command-hook #'sumibi--ambient-pre-command-cancel nil t)
         (sumibi-debug-print "sumibi-setup-auto-convert-hook: hook added\n"))
     (remove-hook 'post-self-insert-hook #'sumibi-check-particle-trigger t)
+    (remove-hook 'post-self-insert-hook #'sumibi--mozc-commit-pending-provisionals t)
     (remove-hook 'pre-command-hook #'sumibi--ambient-pre-command-cancel t)
     (sumibi--ambient-cancel-punctuation-timer)
     (sumibi-debug-print "sumibi-setup-auto-convert-hook: hook removed\n")))
