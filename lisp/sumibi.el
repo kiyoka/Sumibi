@@ -1572,26 +1572,33 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
                 ;; LLM がエラー/タイムアウトを返したか (Issue #162, 点5)
                 (error-p (gethash "error" json-obj))
 		(lst (mapcar (lambda (s) (concat prefix s))
-			     (sumibi-analyze-openai-json-obj json-obj arg-n))))
-           (when (and lst (null deferred-func2))
-	     (setq result lst))
-           ;; ユーザーが仮確定領域を編集していたら上書きをスキップする (Issue #162, 点8)。
-           (when (and lst (not sumibi--mozc-cancel-overwrite))
-	     (save-excursion
-	       (goto-char (marker-position saved-marker))
-	       (let ((ins-b (point)))
-	         ;; LLM 失敗時に mozc 仮確定があれば、エラー文字列ではなく
-	         ;; 仮確定結果を最終結果として確定する (Issue #162, 点5)。
-	         (insert (if (and error-p provisional-fallback)
-			     provisional-fallback
-			   (car lst)))
-	         ;; 見出し `###` 等の直後にスペースが無ければ補完する
-	         (sumibi--ensure-space-after-heading (marker-position saved-marker))
-	         ;; 成功時は候補選択状態を構築し、確定後の再変換ポップアップ・履歴・undo
-	         ;; を同期経路と同様に使えるようにする (Issue #162, #3)。
-	         (unless error-p
-	           (sumibi--setup-async-candidates roman lst ins-b (point)))
-	         (goto-char (marker-position saved-marker)))))))
+			     (sumibi-analyze-openai-json-obj json-obj arg-n)))
+                ;; 結果を挿入すべきバッファ (marker から取得)。レビュー指摘:
+                ;; LLM 応答までに別バッファへ切替/ kill される場合があるため、
+                ;; 必ず元バッファに切り替え、生存を確認してから挿入する。
+                (buf (marker-buffer saved-marker)))
+           ;; ユーザーが仮確定領域を編集していたら上書きをスキップ (Issue #162, 点8)。
+           (when (and lst
+                      (not sumibi--mozc-cancel-overwrite)
+                      (buffer-live-p buf))
+             (with-current-buffer buf
+	       (save-excursion
+	         (goto-char (marker-position saved-marker))
+	         (let* ((ins-b (point))
+                        ;; 確定テキスト: 失敗時は mozc 仮確定 (あれば)、無ければエラー文字列
+                        (inserted (if (and error-p provisional-fallback)
+				      provisional-fallback
+				    (car lst))))
+	           (insert inserted)
+	           ;; 見出し `###` 等の直後にスペースが無ければ補完する
+	           (sumibi--ensure-space-after-heading (marker-position saved-marker))
+	           ;; 候補選択状態を構築し、確定後の再変換ポップアップ・履歴・undo を
+	           ;; 同期経路と同様に使えるようにする (Issue #162, #3)。成功時は LLM の
+	           ;; 複数候補、失敗時は確定したテキスト1件を候補にする。
+	           (sumibi--setup-async-candidates roman
+	                                           (if error-p (list inserted) lst)
+	                                           ins-b (point))
+	           (goto-char (marker-position saved-marker))))))))
        deferred-func2)
       result)))
 
@@ -2076,7 +2083,11 @@ cleanup と insert は同一 atomic ブロックで連続実行されるため�
 ROMAN は元のローマ字、LST は確定に使った候補文字列リスト、B/E は確定済み
 テキストの範囲。同期経路 (`sumibi-henkan-region-sync') と同じ状態
 (kouho-list・markers・履歴) を作り、確定後の再変換ポップアップ・undo を有効にする。"
-  (let ((henkan-list (sumibi--build-kouho-list roman lst)))
+  ;; sumibi-genbun はグローバルで、複数同時進行 (ambient) では後続トリガが
+  ;; 上書きするため、この変換専用の値を動的束縛して履歴に正しい原文を残す
+  ;; (Issue #162, 点6 と同じクラスの取り違え対策, レビュー指摘)。
+  (let ((henkan-list (sumibi--build-kouho-list roman lst))
+        (sumibi-genbun roman))
     (setq sumibi-henkan-kouho-list henkan-list
           sumibi-cand-cur 0
           sumibi-cand-len (length henkan-list)

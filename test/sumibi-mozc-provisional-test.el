@@ -173,6 +173,58 @@
       (should (string= (buffer-string) "test")))))
 
 ;; ------------------------------------------------------------------
+;; 非同期挿入のバッファ文脈 (レビュー指摘 #2/#3/#4)
+;; ------------------------------------------------------------------
+
+(ert-deftest sumibi-mozc-prov-test-insert-targets-original-buffer ()
+  "current-buffer が変わっても結果は元バッファに挿入される (#2)。"
+  (let ((buf-a (generate-new-buffer " *sumibi-test-a*"))
+        (buf-b (generate-new-buffer " *sumibi-test-b*"))
+        (captured nil)
+        (sumibi--mozc-cancel-overwrite nil)
+        (sumibi--mozc-provisional-current nil)
+        (sumibi-genbun nil) (sumibi-markers nil)
+        (sumibi-henkan-kouho-list nil) (sumibi-history-stack nil))
+    (unwind-protect
+        (progn
+          (with-current-buffer buf-a (insert "watashiha"))
+          (cl-letf (((symbol-function 'sumibi-openai-http-post)
+                     (lambda (_m _n _s df df2) (setq captured (cons df df2)))))
+            (with-current-buffer buf-a
+              (goto-char (point-min))
+              (sumibi-roman-to-kanji-with-surrounding "watashiha" "watashiha" 1
+                                                      (lambda () nil)))
+            ;; current-buffer を B に切り替えてから挿入コールバックを発火
+            (set-buffer buf-b)
+            (funcall (car captured)
+                     "{\"choices\":[{\"message\":{\"content\":\"test\"}}]}"))
+          ;; 結果は A に挿入され、B は変化しない
+          (should (string= (with-current-buffer buf-a (buffer-string)) "testwatashiha"))
+          (should (string= (with-current-buffer buf-b (buffer-string)) "")))
+      (kill-buffer buf-a)
+      (kill-buffer buf-b))))
+
+(ert-deftest sumibi-mozc-prov-test-insert-handles-killed-buffer ()
+  "元バッファが kill されても挿入コールバックはクラッシュしない (#3)。"
+  (let ((buf-a (generate-new-buffer " *sumibi-test-a*"))
+        (captured nil)
+        (sumibi--mozc-cancel-overwrite nil)
+        (sumibi--mozc-provisional-current nil))
+    (with-current-buffer buf-a (insert "watashiha"))
+    (cl-letf (((symbol-function 'sumibi-openai-http-post)
+               (lambda (_m _n _s df df2) (setq captured (cons df df2)))))
+      (with-current-buffer buf-a
+        (goto-char (point-min))
+        (sumibi-roman-to-kanji-with-surrounding "watashiha" "watashiha" 1
+                                                (lambda () nil)))
+      (kill-buffer buf-a)
+      ;; kill されたバッファのマーカー経由でもエラーにならず素通りする
+      (funcall (car captured)
+               "{\"choices\":[{\"message\":{\"content\":\"test\"}}]}"))
+    ;; ここに到達すればクラッシュしていない
+    (should t)))
+
+;; ------------------------------------------------------------------
 ;; #3: 非同期成功後の候補選択状態の構築
 ;; ------------------------------------------------------------------
 
