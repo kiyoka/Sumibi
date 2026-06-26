@@ -2078,6 +2078,20 @@ LLM 待ちの間にユーザーが仮確定領域を編集した場合、cleanup
 セットし、insert コールバックは結果挿入をスキップしてユーザーの編集を尊重する。
 cleanup と insert は同一 atomic ブロックで連続実行されるため単一値で協調できる。")
 
+(defvar sumibi--mozc-unavailable-warned nil
+  "mozc 仮確定が有効なのに helper が見つからない旨を既に通知したか (Issue #162).
+不必要な繰り返しを避けるため一度だけ message する。helper が見つかれば解除する。")
+
+(defun sumibi--mozc-warn-if-unavailable ()
+  "mozc 仮確定が有効なのに mozc_emacs_helper が見つからない場合、一度だけ通知する.
+helper が利用可能になれば通知フラグを解除し、再度不在になったときに再通知できる。"
+  (when sumibi-mozc-provisional-enable
+    (if (sumibi-mozc-available-p)
+        (setq sumibi--mozc-unavailable-warned nil)
+      (unless sumibi--mozc-unavailable-warned
+        (setq sumibi--mozc-unavailable-warned t)
+        (message "Sumibi: mozc 仮確定 (sumibi-mozc-provisional-enable) は有効ですが mozc_emacs_helper が見つかりません。同期変換で動作します。mozc をインストールするか sumibi-mozc-helper-path を設定してください")))))
+
 (defun sumibi--setup-async-candidates (roman lst b e)
   "非同期確定後に候補選択状態を構築する (Issue #162, #3).
 ROMAN は元のローマ字、LST は確定に使った候補文字列リスト、B/E は確定済み
@@ -2212,6 +2226,8 @@ Argument E: リージョンの終了位置
 Argument INVERSE-FLAG：逆変換かどうか"
   (sumibi-init)
   (when sumibi-init
+    ;; 機能有効時に helper が無ければ一度だけ通知する (同期変換へフォールバック)。
+    (sumibi--mozc-warn-if-unavailable)
     (when (/= b e)
       (let ((text (buffer-substring-no-properties b e)))
         (if (sumibi--mozc-force-async-p text inverse-flag)

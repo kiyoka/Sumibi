@@ -129,6 +129,43 @@
       (should (string= (buffer-string) "test")))))
 
 ;; ------------------------------------------------------------------
+;; helper 不在時の通知 (機能有効時のみ一度だけ)
+;; ------------------------------------------------------------------
+
+(ert-deftest sumibi-mozc-prov-test-warn-when-helper-missing ()
+  "機能有効 + helper 不在のとき一度だけ message する。2回目は出さない。"
+  (let ((sumibi-mozc-provisional-enable t)
+        (sumibi--mozc-unavailable-warned nil)
+        (count 0))
+    (cl-letf (((symbol-function 'sumibi-mozc-available-p) (lambda () nil))
+              ((symbol-function 'message)
+               (lambda (&rest _args) (setq count (1+ count)))))
+      (sumibi--mozc-warn-if-unavailable)
+      (sumibi--mozc-warn-if-unavailable))
+    (should (= count 1))
+    (should sumibi--mozc-unavailable-warned)))
+
+(ert-deftest sumibi-mozc-prov-test-no-warn-when-disabled ()
+  "機能無効なら helper が無くても通知しない。"
+  (let ((sumibi-mozc-provisional-enable nil)
+        (sumibi--mozc-unavailable-warned nil)
+        (count 0))
+    (cl-letf (((symbol-function 'sumibi-mozc-available-p) (lambda () nil))
+              ((symbol-function 'message)
+               (lambda (&rest _args) (setq count (1+ count)))))
+      (sumibi--mozc-warn-if-unavailable))
+    (should (= count 0))
+    (should-not sumibi--mozc-unavailable-warned)))
+
+(ert-deftest sumibi-mozc-prov-test-warn-resets-when-available ()
+  "helper が利用可能になれば通知フラグが解除される。"
+  (let ((sumibi-mozc-provisional-enable t)
+        (sumibi--mozc-unavailable-warned t))
+    (cl-letf (((symbol-function 'sumibi-mozc-available-p) (lambda () t)))
+      (sumibi--mozc-warn-if-unavailable))
+    (should-not sumibi--mozc-unavailable-warned)))
+
+;; ------------------------------------------------------------------
 ;; 点8: LLM 待ち中の編集で上書きをキャンセル
 ;; ------------------------------------------------------------------
 
