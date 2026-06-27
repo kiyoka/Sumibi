@@ -2131,10 +2131,17 @@ Argument B: リージョンの開始位置
 Argument E: リージョンの終了位置
 Argument INVERSE-FLAG：逆変換かどうか"
   (when (/= b e)
-    (let ((yomi (buffer-substring-no-properties b e))
-          (saved-b-marker 0)
-          (saved-e-marker 0)
-          (cur-buf (current-buffer)))
+    (let* ((yomi (buffer-substring-no-properties b e))
+           ;; 先頭の fence '/' があれば変換対象 (削除・オーバーレイ範囲) に含める。
+           ;; mozc/LLM へ渡す読み YOMI には '/' を含めない (同期経路
+           ;; `sumibi-henkan-region-sync' と同じ挙動。Issue #162: 仮確定で
+           ;; fence '/' がバッファに残るバグの修正)。
+           (b (if (eq (char-before b) ?/) (1- b) b))
+           ;; 編集検出 (点8) 用に '/' 込みの元領域テキストを保持する。
+           (orig-region (buffer-substring-no-properties b e))
+           (saved-b-marker 0)
+           (saved-e-marker 0)
+           (cur-buf (current-buffer)))
       (setq sumibi-genbun yomi)
       (deactivate-mark)
       (goto-char e)
@@ -2186,7 +2193,7 @@ Argument INVERSE-FLAG：逆変換かどうか"
 	         (let ((edited (not (string= (buffer-substring-no-properties
 				              (marker-position saved-b-marker)
 				              (marker-position saved-e-marker))
-				             yomi))))
+				             orig-region))))
 	           (setq sumibi--mozc-cancel-overwrite edited)
 	           (delete-overlay yomi-overlay)
 	           ;; 編集されていなければ読みを削除する (この後 deferred-func が

@@ -260,6 +260,57 @@
       (should (string= (buffer-string) "test")))))
 
 ;; ------------------------------------------------------------------
+;; 先頭 fence '/' の除去 (Issue #162: 仮確定で '/' が残るバグ)
+;;   同期経路 `sumibi-henkan-region-sync' は先頭の '/' を変換対象に
+;;   含めて削除するが、非同期 (仮確定) 経路で抜けており '/' が残っていた。
+;; ------------------------------------------------------------------
+
+(ert-deftest sumibi-mozc-prov-test-fence-slash-removed-on-llm ()
+  "先頭 fence '/' は LLM 確定後にバッファへ残らない。"
+  (with-temp-buffer
+    (let ((sumibi-mozc-provisional-enable t)
+          (captured nil)
+          (sumibi--mozc-cancel-overwrite nil)
+          (sumibi--mozc-provisional-current nil)
+          (sumibi-genbun nil) (sumibi-markers nil)
+          (sumibi-henkan-kouho-list nil) (sumibi-history-stack nil))
+      (cl-letf (((symbol-function 'sumibi-openai-http-post)
+                 (lambda (_m _n _s df df2) (setq captured (cons df df2))))
+                ((symbol-function 'sumibi-mozc-provisional-conversion)
+                 (lambda (_r) "私は")))
+        (insert "/watashiha")               ; '/' は pos1、ローマ字は [2,11)
+        (sumibi-henkan-region-async 2 11 nil)
+        (funcall (cdr captured))
+        (funcall (car captured)
+                 "{\"choices\":[{\"message\":{\"content\":\"test\"}}]}"))
+      ;; '/' が残らず "test" のみになる (バグ修正前は "/test")
+      (should (string= (buffer-string) "test")))))
+
+(ert-deftest sumibi-mozc-prov-test-fence-slash-removed-on-commit ()
+  "先頭 fence '/' は仮確定の即確定 (次入力) 後にも残らない。"
+  (with-temp-buffer
+    (let ((sumibi-mozc-provisional-enable t)
+          (capA nil)
+          (sumibi--mozc-cancel-overwrite nil)
+          (sumibi--mozc-provisional-current nil)
+          (sumibi-genbun nil) (sumibi-markers nil)
+          (sumibi-henkan-kouho-list nil) (sumibi-history-stack nil))
+      (cl-letf (((symbol-function 'sumibi-mozc-provisional-conversion) (lambda (_r) "私は"))
+                ((symbol-function 'sumibi-openai-http-post)
+                 (lambda (_m _n _s df df2) (setq capA (cons df df2)))))
+        (insert "/watashiha")
+        (sumibi-henkan-region-async 2 11 nil)
+        (goto-char (point-max)) (insert "n")
+        (sumibi--mozc-commit-pending-provisionals)
+        ;; '/' が残らず "私はn" になる (バグ修正前は "/私はn")
+        (should (string= (buffer-string) "私はn"))
+        (should (null (sumibi-mozc-prov-test--inflight-overlays)))
+        ;; LLM が後で完了しても上書きされない
+        (funcall (cdr capA))
+        (funcall (car capA) "{\"choices\":[{\"message\":{\"content\":\"test\"}}]}")
+        (should (string= (buffer-string) "私はn"))))))
+
+;; ------------------------------------------------------------------
 ;; 非同期挿入のバッファ文脈 (レビュー指摘 #2/#3/#4)
 ;; ------------------------------------------------------------------
 
