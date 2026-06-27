@@ -311,6 +311,57 @@
         (should (string= (buffer-string) "私はn"))))))
 
 ;; ------------------------------------------------------------------
+;; 確定後のカーソル位置 (Issue #162: 仮確定→確定でカーソルが先頭へ飛ぶバグ)
+;; ------------------------------------------------------------------
+
+(ert-deftest sumibi-mozc-prov-test-cursor-at-end-after-confirm ()
+  "仮確定→確定の直後、カーソルは挿入テキストの末尾に置かれる (先頭へ飛ばない)。"
+  (with-temp-buffer
+    (let ((sumibi-mozc-provisional-enable t)
+          (captured nil)
+          (sumibi--mozc-cancel-overwrite nil)
+          (sumibi--mozc-provisional-current nil)
+          (sumibi-genbun nil) (sumibi-markers nil)
+          (sumibi-henkan-kouho-list nil) (sumibi-history-stack nil))
+      (cl-letf (((symbol-function 'sumibi-openai-http-post)
+                 (lambda (_m _n _s df df2) (setq captured (cons df df2))))
+                ((symbol-function 'sumibi-mozc-provisional-conversion)
+                 (lambda (_r) "私は")))
+        (insert "watashiha")           ; 領域 [1,10)、カーソルは末尾 (=10)
+        (sumibi-henkan-region-async 1 10 nil)
+        (funcall (cdr captured))        ; cleanup (領域削除)
+        (funcall (car captured)         ; LLM 確定 "test" を挿入
+                 "{\"choices\":[{\"message\":{\"content\":\"test\"}}]}"))
+      (should (string= (buffer-string) "test"))
+      ;; カーソルは "test" の末尾 (バグ修正前は先頭 =1 に飛んでいた)。
+      (should (= (point) (point-max))))))
+
+(ert-deftest sumibi-mozc-prov-test-cursor-preserved-when-typing-ahead ()
+  "確定時にカーソルが領域外 (ambient 連続入力中) なら元の位置を保つ。"
+  (with-temp-buffer
+    (let ((sumibi-mozc-provisional-enable t)
+          (captured nil)
+          (sumibi--mozc-cancel-overwrite nil)
+          (sumibi--mozc-provisional-current nil)
+          (sumibi-genbun nil) (sumibi-markers nil)
+          (sumibi-henkan-kouho-list nil) (sumibi-history-stack nil))
+      (cl-letf (((symbol-function 'sumibi-openai-http-post)
+                 (lambda (_m _n _s df df2) (setq captured (cons df df2))))
+                ((symbol-function 'sumibi-mozc-provisional-conversion)
+                 (lambda (_r) "私は")))
+        (insert "watashiha")
+        (sumibi-henkan-region-async 1 10 nil)   ; 領域 [1,10)
+        ;; ユーザーは領域の先で入力を続ける
+        (goto-char (point-max)) (insert "X")    ; "watashihaX"、カーソルは X の直後
+        (funcall (cdr captured))                ; cleanup
+        (funcall (car captured)                 ; LLM 確定 "test" を挿入
+                 "{\"choices\":[{\"message\":{\"content\":\"test\"}}]}"))
+      ;; "watashiha"->"test" に置換され、ユーザーの "X" の直後にカーソルが残る
+      (should (string= (buffer-string) "testX"))
+      (should (= (point) (point-max)))
+      (should (= (char-before (point)) ?X)))))
+
+;; ------------------------------------------------------------------
 ;; 非同期挿入のバッファ文脈 (レビュー指摘 #2/#3/#4)
 ;; ------------------------------------------------------------------
 

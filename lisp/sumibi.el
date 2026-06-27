@@ -1582,7 +1582,16 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
                       (not sumibi--mozc-cancel-overwrite)
                       (buffer-live-p buf))
              (with-current-buffer buf
-	       (save-excursion
+	       ;; 確定後のカーソル位置の決定 (Issue #162: 仮確定→確定の直後に
+	       ;; カーソルが変換文字列の先頭へ飛ぶバグの修正):
+	       ;;  - ユーザーのカーソルが変換領域内/末尾にあった場合 (cleanup で領域を
+	       ;;    削除した後の point が saved-marker と一致する) は、確定後に挿入
+	       ;;    テキストの末尾へ置く (同期変換 `sumibi-henkan-region-sync' と同じ)。
+	       ;;  - 領域外の別の場所を編集中 (ambient 連続入力) なら元のカーソルを保つ。
+	       ;; save-excursion は領域削除→再挿入でマーカーが先頭へ潰れるため使わず、
+	       ;; マーカーで明示的に復帰先を管理する。
+	       (let ((at-site (= (point) (marker-position saved-marker)))
+                     (restore (copy-marker (point))))
 	         (goto-char (marker-position saved-marker))
 	         (let* ((ins-b (point))
                         ;; 確定テキスト: 失敗時は mozc 仮確定 (あれば)、無ければエラー文字列
@@ -1590,15 +1599,20 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 				      provisional-fallback
 				    (car lst))))
 	           (insert inserted)
-	           ;; 見出し `###` 等の直後にスペースが無ければ補完する
-	           (sumibi--ensure-space-after-heading (marker-position saved-marker))
-	           ;; 候補選択状態を構築し、確定後の再変換ポップアップ・履歴・undo を
-	           ;; 同期経路と同様に使えるようにする (Issue #162, #3)。成功時は LLM の
-	           ;; 複数候補、失敗時は確定したテキスト1件を候補にする。
-	           (sumibi--setup-async-candidates roman
-	                                           (if error-p (list inserted) lst)
-	                                           ins-b (point))
-	           (goto-char (marker-position saved-marker))))))))
+                   ;; 挿入テキスト末尾 (前方挿入で末尾に留まるよう insertion-type t)。
+                   (let ((end-marker (copy-marker (point) t)))
+	             ;; 見出し `###` 等の直後にスペースが無ければ補完する
+	             (sumibi--ensure-space-after-heading (marker-position saved-marker))
+	             ;; 候補選択状態を構築し、確定後の再変換ポップアップ・履歴・undo を
+	             ;; 同期経路と同様に使えるようにする (Issue #162, #3)。成功時は LLM の
+	             ;; 複数候補、失敗時は確定したテキスト1件を候補にする。
+	             (sumibi--setup-async-candidates roman
+	                                             (if error-p (list inserted) lst)
+	                                             ins-b (point))
+	             ;; カーソルを配置 (領域内なら末尾、領域外なら元の位置)。
+	             (goto-char (if at-site end-marker restore))
+                     (set-marker end-marker nil)))
+                 (set-marker restore nil))))))
        deferred-func2)
       result)))
 
