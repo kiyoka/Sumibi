@@ -556,6 +556,77 @@
           (funcall (cdr b)) (funcall (car b) err)))
       (should (string= (buffer-string) "私は日本に")))))
 
+;; ------------------------------------------------------------------
+;; 仮確定を第二候補に差し込む (Issue #162: 仮確定とLLM候補が揃ったら第二候補へ)
+;; ------------------------------------------------------------------
+
+(ert-deftest sumibi-mozc-prov-test-insert-second-basic ()
+  "PROVISIONAL は第二候補 (index 1) に差し込まれる。"
+  (should (equal (sumibi--insert-provisional-second '("a" "b" "c") "X")
+                 '("a" "X" "b" "c"))))
+
+(ert-deftest sumibi-mozc-prov-test-insert-second-single ()
+  "候補が1件なら、その後ろ (第二候補) に差し込まれる。"
+  (should (equal (sumibi--insert-provisional-second '("a") "X")
+                 '("a" "X"))))
+
+(ert-deftest sumibi-mozc-prov-test-insert-second-empty-list ()
+  "候補が空なら PROVISIONAL のみのリストになる。"
+  (should (equal (sumibi--insert-provisional-second '() "X")
+                 '("X"))))
+
+(ert-deftest sumibi-mozc-prov-test-insert-second-dedup ()
+  "PROVISIONAL が既に候補に含まれていれば差し込まない (重複回避)。"
+  (should (equal (sumibi--insert-provisional-second '("a" "b") "a")
+                 '("a" "b")))
+  (should (equal (sumibi--insert-provisional-second '("a" "b") "b")
+                 '("a" "b"))))
+
+(ert-deftest sumibi-mozc-prov-test-insert-second-nil-or-empty ()
+  "PROVISIONAL が nil や空文字なら差し込まず元のリストを返す。"
+  (should (equal (sumibi--insert-provisional-second '("a" "b") nil)
+                 '("a" "b")))
+  (should (equal (sumibi--insert-provisional-second '("a" "b") "")
+                 '("a" "b"))))
+
+(ert-deftest sumibi-mozc-prov-test-async-second-candidate-is-provisional ()
+  "非同期成功後、第二候補が mozc 仮確定文字列になる (Issue #162)。"
+  (with-temp-buffer
+    (let ((sumibi--mozc-provisional-current "わたしは")  ; LLM 結果と異なる仮確定
+          (sumibi-henkan-kouho-list nil)
+          (sumibi-markers nil)
+          (sumibi-genbun nil)
+          (sumibi-history-stack nil))
+      ;; content は URL-hex エンコードされた UTF-8 「私は」
+      (sumibi-mozc-prov-test--with-stubbed-post
+          "{\"choices\":[{\"message\":{\"content\":\"%E7%A7%81%E3%81%AF\"}}]}"
+        (goto-char (point-min))
+        (sumibi-roman-to-kanji-with-surrounding "watashiha" "watashiha" 1
+                                                (lambda () nil)))
+      ;; 確定テキストは LLM 結果
+      (should (string= (buffer-string) "私は"))
+      ;; 第1候補は LLM 結果、第2候補は mozc 仮確定
+      (should (string= (car (nth 0 sumibi-henkan-kouho-list)) "私は"))
+      (should (string= (car (nth 1 sumibi-henkan-kouho-list)) "わたしは")))))
+
+(ert-deftest sumibi-mozc-prov-test-async-second-candidate-dedup ()
+  "仮確定が LLM 第1候補と同一なら第二候補に重複して差し込まない (Issue #162)。"
+  (with-temp-buffer
+    (let ((sumibi--mozc-provisional-current "私は")  ; LLM 結果と同一
+          (sumibi-henkan-kouho-list nil)
+          (sumibi-markers nil)
+          (sumibi-genbun nil)
+          (sumibi-history-stack nil))
+      (sumibi-mozc-prov-test--with-stubbed-post
+          "{\"choices\":[{\"message\":{\"content\":\"%E7%A7%81%E3%81%AF\"}}]}"
+        (goto-char (point-min))
+        (sumibi-roman-to-kanji-with-surrounding "watashiha" "watashiha" 1
+                                                (lambda () nil)))
+      (should (string= (buffer-string) "私は"))
+      ;; 第1候補は「私は」、その直後 (第2候補) は「原文まま」(仮確定は重複なので入らない)
+      (should (string= (car (nth 0 sumibi-henkan-kouho-list)) "私は"))
+      (should-not (string= (car (nth 1 sumibi-henkan-kouho-list)) "私は")))))
+
 (provide 'sumibi-mozc-provisional-test)
 
 ;;; sumibi-mozc-provisional-test.el ends here

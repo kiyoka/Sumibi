@@ -1606,9 +1606,12 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 	             ;; 候補選択状態を構築し、確定後の再変換ポップアップ・履歴・undo を
 	             ;; 同期経路と同様に使えるようにする (Issue #162, #3)。成功時は LLM の
 	             ;; 複数候補、失敗時は確定したテキスト1件を候補にする。
+	             ;; 仮確定とLLM候補が揃った成功時は mozc 仮確定を第二候補に差し込む
+	             ;; (Issue #162)。失敗時は確定テキスト自体が仮確定なので差し込まない。
 	             (sumibi--setup-async-candidates roman
 	                                             (if error-p (list inserted) lst)
-	                                             ins-b (point))
+	                                             ins-b (point)
+	                                             (unless error-p provisional-fallback))
 	             ;; カーソルを配置 (領域内なら末尾、領域外なら元の位置)。
 	             (goto-char (if at-site end-marker restore))
                      (set-marker end-marker nil)))
@@ -2106,15 +2109,34 @@ helper が利用可能になれば通知フラグを解除し、再度不在に�
         (setq sumibi--mozc-unavailable-warned t)
         (message "Sumibi: mozc 仮確定 (sumibi-mozc-provisional-enable) は有効ですが mozc_emacs_helper が見つかりません。同期変換で動作します。mozc をインストールするか sumibi-mozc-helper-path を設定してください")))))
 
-(defun sumibi--setup-async-candidates (roman lst b e)
+(defun sumibi--insert-provisional-second (lst provisional)
+  "候補文字列リスト LST の2番目に mozc 仮確定 PROVISIONAL を差し込んで返す (Issue #162).
+仮確定とLLM変換候補の両方が揃ったとき、確定後の候補選択モードで第二候補
+(index 1) に仮確定文字列を出すための前処理。差し込みは raw な文字列リストの段階で
+行い、後段の `sumibi--build-kouho-list' に id-index・注釈・タイプを正しく振り直させる。
+PROVISIONAL が文字列でない・空文字、または既に LST に含まれる場合は、重複や無意味な
+候補を避けるため LST をそのまま返す。"
+  (if (and (stringp provisional)
+           (> (length provisional) 0)
+           (not (member provisional lst)))
+      (if lst
+          (cons (car lst) (cons provisional (cdr lst)))
+        (list provisional))
+    lst))
+
+(defun sumibi--setup-async-candidates (roman lst b e &optional provisional)
   "非同期確定後に候補選択状態を構築する (Issue #162, #3).
 ROMAN は元のローマ字、LST は確定に使った候補文字列リスト、B/E は確定済み
 テキストの範囲。同期経路 (`sumibi-henkan-region-sync') と同じ状態
-(kouho-list・markers・履歴) を作り、確定後の再変換ポップアップ・undo を有効にする。"
+(kouho-list・markers・履歴) を作り、確定後の再変換ポップアップ・undo を有効にする。
+PROVISIONAL が非 nil のときは mozc 仮確定文字列とみなし、第二候補として差し込む
+(Issue #162: 仮確定とLLM候補が揃ったら第二候補を仮確定にする)。"
   ;; sumibi-genbun はグローバルで、複数同時進行 (ambient) では後続トリガが
   ;; 上書きするため、この変換専用の値を動的束縛して履歴に正しい原文を残す
   ;; (Issue #162, 点6 と同じクラスの取り違え対策, レビュー指摘)。
-  (let ((henkan-list (sumibi--build-kouho-list roman lst))
+  (let ((henkan-list (sumibi--build-kouho-list
+                      roman
+                      (sumibi--insert-provisional-second lst provisional)))
         (sumibi-genbun roman))
     (setq sumibi-henkan-kouho-list henkan-list
           sumibi-cand-cur 0
