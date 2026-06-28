@@ -179,6 +179,77 @@
         (should (sumibi-mozc-prov-test--inflight-overlays))))))
 
 ;; ------------------------------------------------------------------
+;; 案A (Issue #162): 変換直後の Ctrl-J で確定し、候補選択モードに入らない
+;;   完了レース (仮確定の確定 vs 候補選択モード移行) の無害化。
+;; ------------------------------------------------------------------
+
+(ert-deftest sumibi-mozc-prov-test-async-sets-pending-flag ()
+  "非同期変換の発火で `sumibi--mozc-async-pending' が t になる。"
+  (with-temp-buffer
+    (let ((sumibi-mozc-provisional-enable t)
+          (sumibi--mozc-cancel-overwrite nil)
+          (sumibi--mozc-provisional-current nil))
+      (cl-letf (((symbol-function 'sumibi-mozc-provisional-conversion) (lambda (_r) "私は"))
+                ((symbol-function 'sumibi-openai-http-post)
+                 (lambda (_m _n _s _df _df2) nil)))
+        (insert "watashiha")
+        (setq sumibi--mozc-async-pending nil)
+        (sumibi-henkan-region-async 1 10 nil)
+        (should sumibi--mozc-async-pending)))))
+
+(ert-deftest sumibi-mozc-prov-test-finalize-commits-provisional ()
+  "pending 中の Ctrl-J (`sumibi-rK-trans') は mozc 仮確定を即確定し、
+フラグをクリアし、候補選択モードには入らない。"
+  (with-temp-buffer
+    (let ((sumibi-mozc-provisional-enable t)
+          (sumibi-select-mode nil)
+          (sumibi--mozc-cancel-overwrite nil)
+          (sumibi--mozc-provisional-current nil))
+      (cl-letf (((symbol-function 'sumibi-mozc-provisional-conversion) (lambda (_r) "私は"))
+                ((symbol-function 'sumibi-openai-http-post)
+                 (lambda (_m _n _s _df _df2) nil)))
+        (insert "watashiha")
+        (sumibi-henkan-region-async 1 10 nil)
+        (should sumibi--mozc-async-pending)
+        (goto-char (point-max))
+        (sumibi-rK-trans)
+        (should (string= (buffer-string) "私は"))
+        ;; カーソルは確定テキストの末尾 (先頭に飛ばない)。
+        (should (= (point) (point-max)))
+        (should (null sumibi--mozc-async-pending))
+        (should (null (sumibi-mozc-prov-test--inflight-overlays)))
+        (should-not sumibi-select-mode)))))
+
+(ert-deftest sumibi-mozc-prov-test-finalize-after-completion-no-select-mode ()
+  "完了でオーバーレイが消えた後 (フラグは残る) の Ctrl-J は、候補選択モードに
+入らずフラグだけをクリアする (完了レースの無害化)。"
+  (with-temp-buffer
+    (let ((sumibi-mozc-provisional-enable t)
+          (sumibi-select-mode nil))
+      (insert "私は")
+      (setq sumibi--mozc-async-pending t)
+      (goto-char (point-max))
+      (sumibi-rK-trans)
+      (should (null sumibi--mozc-async-pending))
+      (should-not sumibi-select-mode)
+      (should (string= (buffer-string) "私は")))))
+
+(ert-deftest sumibi-mozc-prov-test-pending-cleared-by-other-command ()
+  "`sumibi-rK-trans' 以外のコマンド直前で投機確定フラグがクリアされ、
+`sumibi-rK-trans' 直前では保持される。"
+  (with-temp-buffer
+    ;; 他コマンド (カーソル移動など) -> クリア
+    (setq sumibi--mozc-async-pending t)
+    (let ((this-command 'next-line))
+      (sumibi--ambient-pre-command-cancel))
+    (should (null sumibi--mozc-async-pending))
+    ;; sumibi-rK-trans -> 保持 (確定動作のため残す)
+    (setq sumibi--mozc-async-pending t)
+    (let ((this-command 'sumibi-rK-trans))
+      (sumibi--ambient-pre-command-cancel))
+    (should sumibi--mozc-async-pending)))
+
+;; ------------------------------------------------------------------
 ;; helper 不在時の通知 (機能有効時のみ一度だけ)
 ;; ------------------------------------------------------------------
 

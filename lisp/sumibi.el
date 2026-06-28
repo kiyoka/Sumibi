@@ -2099,6 +2099,15 @@ cleanup と insert は同一 atomic ブロックで連続実行されるため�
   "mozc 仮確定が有効なのに helper が見つからない旨を既に通知したか (Issue #162).
 不必要な繰り返しを避けるため一度だけ message する。helper が見つかれば解除する。")
 
+(defvar sumibi--mozc-async-pending nil
+  "直前の非同期変換 (mozc 仮確定/LLM) がまだ「確定待ち」状態かを表すフラグ (Issue #162, 案A).
+`sumibi-henkan-region-async' 発火時に t になり、LLM 完了後もクリアしない。
+変換直後の Ctrl-J (`sumibi-rK-trans') 1回だけを「いま確定する (候補選択に入らない)」
+動作に割り当て、完了レース (仮確定の確定 vs 候補選択モード移行) を無害化するために使う。
+`sumibi-rK-trans' 以外のコマンド (カーソル移動・文字入力など) が走るとクリアされ、
+以後の Ctrl-J は従来どおり候補選択モードに入る。")
+(make-variable-buffer-local 'sumibi--mozc-async-pending)
+
 (defun sumibi--mozc-warn-if-unavailable ()
   "mozc 仮確定が有効なのに mozc_emacs_helper が見つからない場合、一度だけ通知する.
 helper が利用可能になれば通知フラグを解除し、再度不在になったときに再通知できる。"
@@ -2179,6 +2188,10 @@ Argument INVERSE-FLAG：逆変換かどうか"
            (saved-e-marker 0)
            (cur-buf (current-buffer)))
       (setq sumibi-genbun yomi)
+      ;; 案A (Issue #162): 変換直後の Ctrl-J を「確定」に割り当てるための投機状態。
+      ;; LLM 完了後もクリアしないことで、完了が先に届いても Ctrl-J が候補選択へ
+      ;; 化けない (完了レースの無害化)。`sumibi-rK-trans' 以外のコマンドでクリアされる。
+      (setq sumibi--mozc-async-pending t)
       (deactivate-mark)
       (goto-char e)
       (setq saved-e-marker (point-marker))
@@ -2266,10 +2279,21 @@ mozc が変換できた仮確定 (sumibi-mozc-provisional 印あり) のみが�
                   (end (overlay-end ov)))
               (delete-overlay ov)
               (when (and (stringp prov) (> (length prov) 0) (< start end))
-                (save-excursion
+                ;; カーソル位置の決定:
+                ;;  - 領域の内側/末尾にカーソルがある (案A の Ctrl-J 確定など、この
+                ;;    変換を明示的に確定しようとしている) 場合は、確定後に挿入テキストの
+                ;;    末尾へ置く (同期変換 `sumibi-henkan-region-sync' と同じ挙動)。
+                ;;    `save-excursion' だと末尾位置が delete-region で先頭へ潰れてしまう。
+                ;;  - 領域より後ろにカーソルがある (次の文字を既に打っている
+                ;;    post-self-insert 経路など) 場合は元のカーソル位置を保つ。
+                (let ((at-site (<= start (point) end))
+                      (restore (copy-marker (point))))
                   (goto-char start)
                   (delete-region start end)
-                  (insert prov))))))))))
+                  (insert prov)
+                  (unless at-site
+                    (goto-char (marker-position restore)))
+                  (set-marker restore nil))))))))))
 
 (defun sumibi--fixed-kouho-p (text)
   "TEXT が固定変換キーワード (助詞など) に完全一致するなら non-nil を返す."
@@ -2867,6 +2891,18 @@ _ARG: (未使用)"
   (sumibi-debug-print "sumibi-rK-trans()")
 
   (cond
+   ;; 案A (Issue #162): 直前に非同期変換 (mozc 仮確定) を行った直後の Ctrl-J は
+   ;; 「いま確定する」動作に割り当てる。pending(仮確定中)なら mozc 結果で即確定し、
+   ;; LLM が既に完了済みならそのまま確定状態を保つ (いずれも候補選択モードには
+   ;; 入らない)。これにより「Ctrl-J を押した瞬間に LLM 完了が滑り込む」レースで、
+   ;; 仮確定の確定と候補選択モード移行が意図と異なって発動する問題を無害化する。
+   ((and sumibi-mozc-provisional-enable
+         sumibi--mozc-async-pending
+         (not (region-active-p)))
+    (sumibi-debug-print "<<async-pending finalize>>\n")
+    (setq sumibi--mozc-async-pending nil)
+    (sumibi--mozc-commit-pending-provisionals))
+
    ;; 直前が全角句読点の場合は半角に戻す
    ((and (not (region-active-p))
          (memq (preceding-char) '(?。 ?、 ?？)))
@@ -3143,8 +3179,15 @@ _ARG: (未使用)"
 (defun sumibi--ambient-pre-command-cancel ()
   "`pre-command-hook' 用: 次のコマンドが実行される前にタイマーをキャンセルする。
 これにより、ユーザーが句読点入力直後にすぐ次のキーを打った場合は
-自動変換を発動させない（debounce 動作）。"
-  (sumibi--ambient-cancel-punctuation-timer))
+自動変換を発動させない（debounce 動作）。
+あわせて案A (Issue #162) の投機確定フラグ `sumibi--mozc-async-pending' を、
+`sumibi-rK-trans' 以外のコマンド (カーソル移動・文字入力など) が走るときに
+クリアする。これにより「変換直後の Ctrl-J」だけが確定動作になり、間に他の
+操作を挟むと以後の Ctrl-J は通常どおり候補選択モードに入る。"
+  (sumibi--ambient-cancel-punctuation-timer)
+  (when (and sumibi--mozc-async-pending
+             (not (eq this-command 'sumibi-rK-trans)))
+    (setq sumibi--mozc-async-pending nil)))
 
 (defun sumibi--ambient-punctuation-timer-fire (char buffer)
   "遅延タイマー満了時に呼ばれ、BUFFER で CHAR の自動変換を実行する。
