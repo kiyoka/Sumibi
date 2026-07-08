@@ -85,6 +85,18 @@
   (should (string= "みょうじ" (sumibi-romaji-to-hiragana "myouji")))
   (should (string= "りょこう" (sumibi-romaji-to-hiragana "ryokou"))))
 
+(ert-deftest test-romaji-to-hiragana-kunrei-youon ()
+  "Test kunrei-shiki youon (sy/zy digraphs) conversion.
+Regression test: \"tyakusyu\" was previously left partially
+unconverted (\"s\" fell through literally) because \"sya/syu/sye/syo\"
+were missing from the table, which caused mozc provisional
+conversion to produce a broken result like \"着s湯\" instead of
+\"着手\" (Issue #162)."
+  (should (string= "ちゃくしゅ" (sumibi-romaji-to-hiragana "tyakusyu")))
+  (should (string= "しゃしん" (sumibi-romaji-to-hiragana "syasin")))
+  (should (string= "じょしき" (sumibi-romaji-to-hiragana "zyosiki")))
+  (should (string= "かんじょう" (sumibi-romaji-to-hiragana "kanzyou"))))
+
 (ert-deftest test-romaji-to-hiragana-sokuon ()
   "Test sokuon (geminate consonants) conversion."
   (should (string= "きって" (sumibi-romaji-to-hiragana "kitte")))
