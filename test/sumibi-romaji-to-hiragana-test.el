@@ -258,14 +258,15 @@ the dh*/th*/wh* series) were missing from the romaji table
   ;; Without preserve-english, should try to convert
   ;; "test" -> "てst" but 's' cannot convert, so entire string preserved
   (should (string= "test" (sumibi-romaji-to-hiragana "test" nil)))
-  ;; "hello" -> "へっlo" but 'l' cannot convert, so entire string preserved
-  (should (string= "hello" (sumibi-romaji-to-hiragana "hello" nil))))
+  ;; "hello" -> "へっろ" ('l' is treated as 'r' row, B-table unified)
+  (should (string= "へっろ" (sumibi-romaji-to-hiragana "hello" nil))))
 
 (ert-deftest test-romaji-to-hiragana-non-dictionary-words ()
   "Test words not in dictionary are handled correctly."
   ;; Words not in dictionary but convertible as romaji
   ;; "wikipedia" is not in dictionary, but all characters are convertible
-  (should (string= "うぃきぺぢあ" (sumibi-romaji-to-hiragana "wikipedia" t)))
+  ;; "wi" -> "ゐ" (B-table unified)
+  (should (string= "ゐきぺぢあ" (sumibi-romaji-to-hiragana "wikipedia" t)))
   ;; Short words not in basic dictionary and not convertible
   (should (string= "xyz" (sumibi-romaji-to-hiragana "xyz" t))))
 
