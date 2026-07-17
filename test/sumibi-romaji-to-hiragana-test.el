@@ -97,6 +97,18 @@ conversion to produce a broken result like \"着s湯\" instead of
   (should (string= "じょしき" (sumibi-romaji-to-hiragana "zyosiki")))
   (should (string= "かんじょう" (sumibi-romaji-to-hiragana "kanzyou"))))
 
+(ert-deftest test-romaji-to-hiragana-foreign-dh-th-wh ()
+  "Test foreign-sound digraphs (dh/th/wh) conversion.
+Regression test: \"dhisutoribyu-syon\" was previously left with a
+literal \"d\" prefix (\"dヒストリビューション\") because \"dhi\" (and
+the dh*/th*/wh* series) were missing from the romaji table
+(Issue #162)."
+  (should (string= "でぃすとりびゅーしょん"
+                   (sumibi-romaji-to-hiragana "dhisutoribyu-syon")))
+  (should (string= "でぃ" (sumibi-romaji-to-hiragana "dhi")))
+  (should (string= "てぃーむ" (sumibi-romaji-to-hiragana "thi-mu")))
+  (should (string= "うぃすきー" (sumibi-romaji-to-hiragana "whisuki-"))))
+
 (ert-deftest test-romaji-to-hiragana-sokuon ()
   "Test sokuon (geminate consonants) conversion."
   (should (string= "きって" (sumibi-romaji-to-hiragana "kitte")))
