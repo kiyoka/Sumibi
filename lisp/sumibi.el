@@ -5,7 +5,7 @@
 ;; Copyright (C) 2023 Kiyoka Nishiyama
 ;;
 ;; Author: Kiyoka Nishiyama <kiyoka@sumibi.org>
-;; Version: 6.1.0
+;; Version: 6.2.0
 ;; Keywords: lisp, ime, japanese
 ;; Package-Requires: ((emacs "29.0") (popup "0.5.9") (unicode-escape "1.1") (deferred "0.5.1") (markdown-mode "2.0"))
 ;; URL: https://github.com/kiyoka/Sumibi
@@ -89,8 +89,8 @@
 (defconst sumibi-provider-defaults
   '((openai
      :base-url "https://api.openai.com/v1"
-     :model "gpt-5.4"
-     :model-list ("gpt-5.4" "gpt-5.2" "gpt-5.1" "gpt-5" "gpt-5-mini" "gpt-4.1" "gpt-4.1-mini" "gpt-4o" "gpt-4o-mini")
+     :model "gpt-5.6-terra"
+     :model-list ("gpt-5.6-terra" "gpt-5.6-luna" "gpt-5.4" "gpt-5.2" "gpt-5.1")
      :api-key-env ("SUMIBI_AI_API_KEY" "OPENAI_API_KEY"))
     (gemini
      :base-url "https://generativelanguage.googleapis.com/v1beta/openai"
@@ -823,11 +823,13 @@ loginは 'apikey' を想定."
          (string-match-p "\\`gpt-5" model))))
 
 (defun sumibi-gpt51-p ()
-  "現在のモデルがGPT-5.1/5.2/5.4かどうかを判定する.
-これらのモデルはreasoning_effort=noneを使用する."
+  "現在のモデルがGPT-5.1/5.2/5.4/5.6-terra/5.6-luna かどうかを判定する.
+これらのモデルはreasoning_effort=noneを使用する
+(gpt-5.6-terra/luna は `minimal' 非対応)."
   (let ((model (sumibi-ai-model)))
     (and (stringp model)
-         (string-match-p "\\`gpt-5\\.[124]\\'" model))))
+         (or (string-match-p "\\`gpt-5\\.[124]\\'" model)
+             (string-match-p "\\`gpt-5\\.6-" model)))))
 
 (defun sumibi-modeline-string ()
   "利用するモデル名を表示する."
@@ -3604,7 +3606,7 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
                                   (length sumibi-history-stack) file-path)))))
 
 (defconst sumibi-version
-  "6.1.0" ;;SUMIBI-VERSION
+  "6.2.0" ;;SUMIBI-VERSION
   )
 (defun sumibi-version (&optional _arg)
   "Sumibiのバージョン番号をミニバッファに表示する.

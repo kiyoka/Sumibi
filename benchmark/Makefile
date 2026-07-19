@@ -27,7 +27,10 @@ RESULTS := gpt-3.5-turbe.json gpt-4.1-mini.json gpt-4.1.json gpt-4o-mini.json gp
            qwen3-vl-8b-instruct-mlx.json \
            gemini-3.1-flash-lite-preview.json \
            gpt-5.4.json \
-           gpt-5.5.json
+           gpt-5.5.json \
+           gpt-5.6.json \
+           gpt-5.6-terra.json \
+           gpt-5.6-luna.json
 
 # Google IME benchmark results (hiragana input only)
 GOOGLE_IME_NATIVE_RESULTS := google_ime_native.json

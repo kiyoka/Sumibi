@@ -3,9 +3,9 @@
 ;; Copyright (C) 2026 Kiyoka Nishiyama
 ;;
 ;; Author: Kiyoka Nishiyama <kiyoka@sumibi.org>
-;; Version: 6.1.0
+;; Version: 6.2.0
 ;; Keywords: lisp, ime, chinese, pinyin
-;; Package-Requires: ((emacs "29.0") (sumibi "6.1.0"))
+;; Package-Requires: ((emacs "29.0") (sumibi "6.2.0"))
 ;; URL: https://github.com/kiyoka/Sumibi
 ;;
 ;; This file is part of Sumibi

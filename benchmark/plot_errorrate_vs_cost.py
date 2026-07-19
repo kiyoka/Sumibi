@@ -13,10 +13,11 @@ v2.4.0 ベンチマーク結果を散布図で表示する。
 from __future__ import annotations
 
 import argparse
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+from adjustText import adjust_text
 
 # ---------------------------------------------------------------------------
 # マスタ情報 (コスト & 色)
@@ -53,6 +54,8 @@ MASTER_COST: Dict[str, float] = {
     "gpt-5.2": 0.003675,  # $1.75 input + $14 output → (500×1.75 + 200×14)/1M = $3.675/1K (GPT-5.1より40%高い)
     "gpt-5.4": 0.004250,  # $2.50 input + $15 output → (500×2.50 + 200×15)/1M = $4.250/1K
     "gpt-5.5": 0.008500,  # $5.00 input + $30 output → (500×5.00 + 200×30)/1M = $8.500/1K
+    "gpt-5.6-terra": 0.004250,  # $2.50 input + $15 output → (500×2.50 + 200×15)/1M = $4.250/1K
+    "gpt-5.6-luna": 0.001700,   # $1.00 input + $6.00 output → (500×1.00 + 200×6.00)/1M = $1.700/1K
     "gpt-oss-120b(low)": 0.00196,
     "llm-jp-3.1-13b-instruct4": 0.0001,
     "llm-jp-3.1-8x13b-instruct4": 0.0002,
@@ -91,6 +94,8 @@ COLOR_MAP: Dict[str, str] = {
     "gpt-5.2": "chartreuse",
     "gpt-5.4": "lime",
     "gpt-5.5": "yellow",
+    "gpt-5.6-terra": "gold",
+    "gpt-5.6-luna": "khaki",
     "gpt-oss-120b(low)": "olive",
     "llm-jp-3.1-13b-instruct4": "coral",
     "llm-jp-3.1-8x13b-instruct4": "salmon",
@@ -132,6 +137,8 @@ DATA_V24: Dict[str, Dict[str, float]] = {
     "gpt-5.2": {"cer": 0.106882, "elapsed": 1.071368},
     "gpt-5.4": {"cer": 0.076598, "elapsed": 2.215574},
     "gpt-5.5": {"cer": 0.026855, "elapsed": 4.234000},
+    "gpt-5.6-terra": {"cer": 0.073874, "elapsed": 0.985698},
+    "gpt-5.6-luna": {"cer": 0.150871, "elapsed": 0.933539},
     "gpt-oss-120b(low)": {"cer": 0.591938, "elapsed": 17.565630},
     "llm-jp-3.1-13b-instruct4": {"cer": 0.914891, "elapsed": 2.577443},
     "llm-jp-3.1-8x13b-instruct4": {"cer": 0.735276, "elapsed": 12.738874},
@@ -155,11 +162,20 @@ def plot_version(
     face_filled: bool,
     zorder: int,
     annotate: bool = True,
+    x_range: Tuple[float, float] = None,
+    y_range: Tuple[float, float] = None,
 ):
     """一つのバージョンの散布図を描く
 
     annotate が True のときのみモデル名ラベルを表示する。
+    x_range / y_range を指定すると、範囲外の点はラベルを付けない
+    （散布図マーカー自体はプロットするが、adjustText の対象から外す）。
+    ラベルは adjustText で重なりを回避する。
+    戻り値: (texts, label_info) — label_info は [(text, marker_x, marker_y, color), ...] で、
+    adjust_text 後にマーカーとラベルを結ぶ接続線をモデル色で描画するために使う。
     """
+    texts: List = []
+    label_info: List = []
     for model, metrics in data.items():
         cost = MASTER_COST.get(model)
         if cost is None:
@@ -194,18 +210,47 @@ def plot_version(
                 zorder=zorder,
             )
 
-        # モデル名の注釈
+        # モデル名の注釈（adjustText で後で位置調整するため、Text オブジェクトを蓄積）
+        # 表示範囲外の点はラベルを付けない
+        # ラベル色は円と同色にし、adjustText 後に描く接続線もモデル色にすることで
+        # どのラベルがどの円に対応するか一目でわかるようにする
         if annotate:
-            plt.annotate(
-                model,
-                xy=(cost, cer_pct),
-                xytext=(5, 5),
-                textcoords="offset points",
-                ha="left",
-                va="bottom",
-                clip_on=False,
-                fontsize=8,
-            )
+            in_range = True
+            if x_range is not None and not (x_range[0] <= cost <= x_range[1]):
+                in_range = False
+            if y_range is not None and not (y_range[0] <= cer_pct <= y_range[1]):
+                in_range = False
+            if in_range:
+                text_color = _darken_for_readability(color)
+                t = plt.text(cost, cer_pct, model, fontsize=8, color=text_color, clip_on=False)
+                texts.append(t)
+                label_info.append((t, cost, cer_pct, text_color))
+
+    return texts, label_info
+
+
+# ---------------------------------------------------------------------------
+# 色ヘルパー
+# ---------------------------------------------------------------------------
+def _darken_for_readability(color_name: str) -> str:
+    """白背景で読みやすくするため、明るすぎる色は暗めの同系色に置き換える。"""
+    override = {
+        "palegreen": "darkgreen",
+        "lightgreen": "green",
+        "mediumspringgreen": "darkgreen",
+        "springgreen": "darkgreen",
+        "lightgray": "dimgray",
+        "silver": "dimgray",
+        "yellow": "darkgoldenrod",
+        "gold": "darkgoldenrod",
+        "khaki": "olive",
+        "lime": "darkgreen",
+        "chartreuse": "darkgreen",
+        "cyan": "darkcyan",
+        "pink": "deeppink",
+        "wheat": "saddlebrown",
+    }
+    return override.get(color_name, color_name)
 
 
 
@@ -249,27 +294,37 @@ def main():
 
     plt.figure(figsize=(8, 6))
 
+    # 軸範囲を先に決定してラベル配置に反映
+    if args.range == 1:
+        x_range = (0.0, 0.010)
+        y_range = (0.0, 40.0)
+    else:
+        x_range = None  # 自動
+        y_range = (0.0, 70.0)
+
     # v2.4.0 — 濃い塗りつぶし円（ラベルあり）
-    plot_version(
+    texts, label_info = plot_version(
         DATA_V24,
         "v2.4.0",
         alpha=1.0,
         face_filled=True,
         zorder=3,
         annotate=True,
+        x_range=x_range,
+        y_range=y_range,
     )
 
 
     # 軸設定
     plt.xlabel("Cost Per Request ($)")
     plt.ylabel("Error Rate (%)")
-    
+
     # タイトル設定
     if args.range == 1:
         plt.title("Error Rate vs Cost of LLM Model (v2.4.0) - Zoomed")
     else:
         plt.title("Error Rate vs Cost of LLM Model (v2.4.0)")
-    
+
     plt.grid(True, which="both", linestyle=":", linewidth=0.5)
 
     # 軸範囲設定
@@ -286,6 +341,36 @@ def main():
 
     # 凡例
     build_legend()
+
+    # ラベルの重なりを adjustText で回避
+    # 軸範囲を確定してから呼ぶ必要があるため、この位置で実行
+    # adjustText の arrowprops は全ラベル共通なので使わず、後で自前で色付き接続線を描画する
+    adjust_text(
+        texts,
+        expand_points=(1.4, 1.4),
+        expand_text=(1.2, 1.2),
+        force_text=(0.5, 0.5),
+        force_points=(0.3, 0.3),
+    )
+
+    # マーカーと移動後のラベルを結ぶ接続線をモデル色で描画
+    # （どのラベルがどの円に対応するか一目で分かるようにするため）
+    ax = plt.gca()
+    for t, marker_x, marker_y, color in label_info:
+        text_x, text_y = t.get_position()
+        # ラベルとマーカーの位置がほぼ同じなら線は不要
+        # データ座標での距離ではなく、matplotlib の座標系で判定するのは複雑なので
+        # データ座標での差分で十分（重ならないラベルは adjustText が離すはず）
+        if abs(text_x - marker_x) < 1e-9 and abs(text_y - marker_y) < 1e-9:
+            continue
+        ax.plot(
+            [marker_x, text_x],
+            [marker_y, text_y],
+            color=color,
+            lw=0.6,
+            alpha=0.7,
+            zorder=2,
+        )
 
     plt.tight_layout()
 
