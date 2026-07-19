@@ -89,7 +89,7 @@
   '((openai
      :base-url "https://api.openai.com/v1"
      :model "gpt-5.6-terra"
-     :model-list ("gpt-5.6-terra" "gpt-5.6-luna" "gpt-5.4" "gpt-5.2" "gpt-5.1" "gpt-5" "gpt-5-mini" "gpt-4.1" "gpt-4.1-mini" "gpt-4o" "gpt-4o-mini")
+     :model-list ("gpt-5.6-terra" "gpt-5.6-luna" "gpt-5.4" "gpt-5.2" "gpt-5.1")
      :api-key-env ("SUMIBI_AI_API_KEY" "OPENAI_API_KEY"))
     (gemini
      :base-url "https://generativelanguage.googleapis.com/v1beta/openai"
