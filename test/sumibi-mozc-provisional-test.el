@@ -698,6 +698,134 @@
       (should (string= (car (nth 0 sumibi-henkan-kouho-list)) "私は"))
       (should-not (string= (car (nth 1 sumibi-henkan-kouho-list)) "私は")))))
 
+;; ------------------------------------------------------------------
+;; 早期確定後の候補選択 (Issue #162)
+;;   type-ahead / Ctrl-J で仮確定を早期確定した後に LLM が完了したら、
+;;   本文は上書きせず「mozc確定 → LLM結果 → 原文」の候補選択状態を構築する。
+;; ------------------------------------------------------------------
+
+(ert-deftest sumibi-mozc-prov-test-early-commit-builds-candidates ()
+  "早期確定後に LLM が完了すると、mozc確定を第1候補・LLM結果を第2候補とする
+候補選択状態が構築され、本文は mozc 確定のまま上書きされない。"
+  (with-temp-buffer
+    (let ((sumibi-mozc-provisional-enable t)
+          (capA nil)
+          (sumibi--mozc-cancel-overwrite nil)
+          (sumibi--mozc-early-commit-region nil)
+          (sumibi--mozc-provisional-current nil)
+          (sumibi-genbun nil) (sumibi-markers nil)
+          (sumibi-henkan-kouho-list nil) (sumibi-history-stack nil))
+      (cl-letf (((symbol-function 'sumibi-mozc-provisional-conversion)
+                 (lambda (_r) "ディストリビュー村"))
+                ((symbol-function 'sumibi-openai-http-post)
+                 (lambda (_m _n _s df df2) (setq capA (cons df df2)))))
+        (insert "dhisutoribyu-son")
+        (sumibi-henkan-region-async 1 17 nil)
+        ;; type-ahead: 次のキー入力で早期確定
+        (goto-char (point-max)) (insert " ")
+        (sumibi--mozc-commit-pending-provisionals)
+        (should (string= (buffer-string) "ディストリビュー村 "))
+        ;; LLM 完了 (cleanup → insert)。結果は「ディストリビューション」
+        (funcall (cdr capA))
+        (funcall (car capA)
+                 "{\"choices\":[{\"message\":{\"content\":\"%E3%83%87%E3%82%A3%E3%82%B9%E3%83%88%E3%83%AA%E3%83%93%E3%83%A5%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3\"}}]}")
+        ;; 本文は mozc 確定のまま (LLM 結果で上書きされない)
+        (should (string= (buffer-string) "ディストリビュー村 "))
+        ;; 候補: 第1候補 = mozc 確定、第2候補 = LLM 結果、末尾 = 原文まま
+        (should (string= (car (nth 0 sumibi-henkan-kouho-list)) "ディストリビュー村"))
+        (should (string= (car (nth 1 sumibi-henkan-kouho-list)) "ディストリビューション"))
+        (should (equal (nth 1 (car (last sumibi-henkan-kouho-list))) "原文まま"))
+        ;; 確定文字列上にカーソルを置くと履歴から候補状態を発見できる
+        ;; (Ctrl-J の再変換で使われる)。`sumibi-history-search' は引数では
+        ;; なく現在の point を参照するため、カーソルを移動して確認する。
+        (save-excursion
+          (goto-char 2)
+          (should (sumibi-history-search 2 nil)))
+        ;; 受け渡し用のグローバルは消費後にクリアされる
+        (should (null sumibi--mozc-early-commit-region))))))
+
+(ert-deftest sumibi-mozc-prov-test-early-commit-candidates-dedup ()
+  "LLM 結果が mozc 確定と同一なら候補に重複して並べない。"
+  (with-temp-buffer
+    (let ((sumibi-mozc-provisional-enable t)
+          (capA nil)
+          (sumibi--mozc-cancel-overwrite nil)
+          (sumibi--mozc-early-commit-region nil)
+          (sumibi--mozc-provisional-current nil)
+          (sumibi-genbun nil) (sumibi-markers nil)
+          (sumibi-henkan-kouho-list nil) (sumibi-history-stack nil))
+      (cl-letf (((symbol-function 'sumibi-mozc-provisional-conversion)
+                 (lambda (_r) "私は"))
+                ((symbol-function 'sumibi-openai-http-post)
+                 (lambda (_m _n _s df df2) (setq capA (cons df df2)))))
+        (insert "watashiha")
+        (sumibi-henkan-region-async 1 10 nil)
+        (goto-char (point-max)) (insert "n")
+        (sumibi--mozc-commit-pending-provisionals)
+        (should (string= (buffer-string) "私はn"))
+        ;; LLM 完了。結果は mozc 確定と同じ「私は」
+        (funcall (cdr capA))
+        (funcall (car capA)
+                 "{\"choices\":[{\"message\":{\"content\":\"%E7%A7%81%E3%81%AF\"}}]}")
+        (should (string= (buffer-string) "私はn"))
+        ;; 第1候補は「私は」、第2候補に重複の「私は」は入らない
+        (should (string= (car (nth 0 sumibi-henkan-kouho-list)) "私は"))
+        (should-not (string= (car (nth 1 sumibi-henkan-kouho-list)) "私は"))))))
+
+(ert-deftest sumibi-mozc-prov-test-early-commit-llm-error-no-candidates ()
+  "早期確定後に LLM が失敗した場合は候補状態を作らず、本文も変えない。"
+  (with-temp-buffer
+    (let ((sumibi-mozc-provisional-enable t)
+          (capA nil)
+          (sumibi--mozc-cancel-overwrite nil)
+          (sumibi--mozc-early-commit-region nil)
+          (sumibi--mozc-provisional-current nil)
+          (sumibi-genbun nil) (sumibi-markers nil)
+          (sumibi-henkan-kouho-list nil) (sumibi-history-stack nil))
+      (cl-letf (((symbol-function 'sumibi-mozc-provisional-conversion)
+                 (lambda (_r) "私は"))
+                ((symbol-function 'sumibi-openai-http-post)
+                 (lambda (_m _n _s df df2) (setq capA (cons df df2)))))
+        (insert "watashiha")
+        (sumibi-henkan-region-async 1 10 nil)
+        (goto-char (point-max)) (insert "n")
+        (sumibi--mozc-commit-pending-provisionals)
+        (should (string= (buffer-string) "私はn"))
+        ;; LLM 失敗
+        (funcall (cdr capA))
+        (funcall (car capA) "{\"error\":{\"message\":\"TIMEOUT ERROR\"}}")
+        ;; 本文は mozc 確定のまま、候補状態は構築されない
+        (should (string= (buffer-string) "私はn"))
+        (should (null sumibi-henkan-kouho-list))
+        (should (null sumibi--mozc-early-commit-region))))))
+
+(ert-deftest sumibi-mozc-prov-test-user-edit-no-early-commit-state ()
+  "ユーザーが仮確定領域を手で編集した場合は早期確定扱いにならない
+(候補状態を構築しない)。"
+  (with-temp-buffer
+    (let ((sumibi-mozc-provisional-enable t)
+          (capA nil)
+          (sumibi--mozc-cancel-overwrite nil)
+          (sumibi--mozc-early-commit-region nil)
+          (sumibi--mozc-provisional-current nil)
+          (sumibi-genbun nil) (sumibi-markers nil)
+          (sumibi-henkan-kouho-list nil) (sumibi-history-stack nil))
+      (cl-letf (((symbol-function 'sumibi-mozc-provisional-conversion)
+                 (lambda (_r) "私は"))
+                ((symbol-function 'sumibi-openai-http-post)
+                 (lambda (_m _n _s df df2) (setq capA (cons df df2)))))
+        (insert "watashiha")
+        (sumibi-henkan-region-async 1 10 nil)
+        ;; ユーザーが領域を編集 (早期確定ではない)
+        (goto-char 10) (delete-char -2)
+        (funcall (cdr capA))
+        (funcall (car capA)
+                 "{\"choices\":[{\"message\":{\"content\":\"%E7%A7%81%E3%81%AF\"}}]}")
+        ;; 編集が尊重され、候補状態は構築されない
+        (should (string= (buffer-string) "watashi"))
+        (should (null sumibi-henkan-kouho-list))
+        (should (null sumibi--mozc-early-commit-region))))))
+
 (provide 'sumibi-mozc-provisional-test)
 
 ;;; sumibi-mozc-provisional-test.el ends here

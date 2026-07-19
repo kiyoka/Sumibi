@@ -1627,7 +1627,31 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 	             ;; カーソルを配置 (領域内なら末尾、領域外なら元の位置)。
 	             (goto-char (if at-site end-marker restore))
                      (set-marker end-marker nil)))
-                 (set-marker restore nil))))))
+                 (set-marker restore nil))))
+           ;; 早期確定済みの場合 (Issue #162): 本文は書き換えず、mozc 確定を
+           ;; 第1候補・LLM 結果を後続候補とする候補選択状態を構築する。これに
+           ;; より確定文字列上の Ctrl-J で「mozc確定 → LLM結果 → 原文」から
+           ;; 選び直せる。失敗時 (error-p) は LLM 候補が無いため何もしない
+           ;; (本文は既に mozc 結果で確定済み)。
+           (when (and lst
+                      sumibi--mozc-early-commit-region
+                      provisional-fallback
+                      (not error-p)
+                      (buffer-live-p buf))
+             (with-current-buffer buf
+               ;; 候補状態の構築中に display 関数が point を動かすため、
+               ;; type-ahead 中のユーザーのカーソル位置をマーカーで保全する。
+               (let ((restore (copy-marker (point)))
+                     (cb (car sumibi--mozc-early-commit-region))
+                     (ce (cdr sumibi--mozc-early-commit-region)))
+                 (sumibi--setup-async-candidates
+                  roman
+                  (cons provisional-fallback
+                        (cl-remove provisional-fallback lst :test #'string=))
+                  cb ce nil)
+                 (goto-char (marker-position restore))
+                 (set-marker restore nil))))
+           (setq sumibi--mozc-early-commit-region nil)))
        deferred-func2)
       result)))
 
@@ -2107,6 +2131,15 @@ LLM 待ちの間にユーザーが仮確定領域を編集した場合、cleanup
 セットし、insert コールバックは結果挿入をスキップしてユーザーの編集を尊重する。
 cleanup と insert は同一 atomic ブロックで連続実行されるため単一値で協調できる。")
 
+(defvar sumibi--mozc-early-commit-region nil
+  "早期確定 (type-ahead / 変換直後の Ctrl-J) された仮確定領域 (B . E) (Issue #162).
+LLM 待ちの間に仮確定が mozc 結果で早期確定された場合、cleanup コールバックが
+確定済みテキストの範囲をセットする。insert コールバックは本文を上書きする
+代わりに、mozc 確定を第1候補・LLM 結果を後続候補とする候補選択状態を構築し、
+確定文字列上の Ctrl-J で「mozc確定 → LLM結果 → 原文」から選び直せるようにする。
+`sumibi--mozc-cancel-overwrite' と同様、cleanup と insert は連続実行されるため
+単一値で協調できる。")
+
 (defvar sumibi--mozc-unavailable-warned nil
   "mozc 仮確定が有効なのに helper が見つからない旨を既に通知したか (Issue #162).
 不必要な繰り返しを避けるため一度だけ message する。helper が見つかれば解除する。")
@@ -2251,17 +2284,30 @@ Argument INVERSE-FLAG：逆変換かどうか"
 	         ;; (Issue #162, 点8)。元の読みと現在テキストを比較して判定し、
 	         ;; cleanup と insert は同一 atomic ブロックで連続実行されるため
 	         ;; グローバルフラグで安全に協調できる。
-	         (let ((edited (not (string= (buffer-substring-no-properties
-				              (marker-position saved-b-marker)
-				              (marker-position saved-e-marker))
-				             orig-region))))
+	         (let* ((bpos (marker-position saved-b-marker))
+	                (epos (marker-position saved-e-marker))
+	                ;; 早期確定 (`sumibi--mozc-commit-pending-provisionals') は
+	                ;; delete-region + insert により b-marker (前進型) と
+	                ;; e-marker の位置が入れ替わるため min/max で正規化する。
+	                (lo (min bpos epos))
+	                (hi (max bpos epos))
+	                (cur-text (buffer-substring-no-properties lo hi))
+	                (edited (not (string= cur-text orig-region))))
 	           (setq sumibi--mozc-cancel-overwrite edited)
+	           ;; 領域がこの変換の mozc 仮確定文字列そのものに置き換わっている
+	           ;; 場合は、ユーザー編集ではなく type-ahead / Ctrl-J による早期確定
+	           ;; (Issue #162)。本文は上書きしないが、insert コールバックで
+	           ;; mozc確定+LLM結果の候補選択状態を構築できるよう範囲を知らせる。
+	           (setq sumibi--mozc-early-commit-region
+	                 (when (and edited
+	                            (stringp provisional)
+	                            (string= cur-text provisional))
+	                   (cons lo hi)))
 	           (delete-overlay yomi-overlay)
 	           ;; 編集されていなければ読みを削除する (この後 deferred-func が
 	           ;; 結果を挿入する)。編集されていればユーザーのテキストを残す。
 	           (unless edited
-	             (delete-region (marker-position saved-b-marker)
-				    (marker-position saved-e-marker)))))))))))))
+	             (delete-region lo hi))))))))))))
 
 (defun sumibi--mozc-clamp-start (b e)
   "進行中の仮確定オーバーレイと重ならないよう、変換開始位置 B を前方へ詰める (Issue #162, 点6).
