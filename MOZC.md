@@ -16,6 +16,30 @@ mozc仮確定は、この待ち時間を体感的に解消する二段階変換�
                  └─ 完了 → 仮確定をLLMの結果で置き換え
 ```
 
+シーケンス図で見ると次のようになります。赤い枠内だけキー入力がブロックされます（mozcはローカル変換のため数ms）。枠の外はいつでも入力を続けられ、LLM完了前に入力すると仮確定はmozc結果で確定し、LLM結果は候補に回ります。
+
+```mermaid
+sequenceDiagram
+    actor U as ユーザー
+    participant S as Sumibi
+    participant M as mozc
+    participant L as LLM
+
+    rect rgba(224, 96, 96, 0.14)
+        Note over U: ⛔ 入力ブロック
+        U->>S: Ctrl-J (ローマ字)
+        S->>M: 変換依頼
+        M-->>S: 変換結果 (即時)
+        S-->>U: 仮確定を表示
+    end
+    S-)L: 変換依頼 (非同期)
+    L-->>S: 変換結果
+    S-->>U: LLM結果で上書き
+    Note over S: 候補リスト = LLM結果 + mozc結果 + 原文
+    U->>S: Ctrl-J
+    S-->>U: 候補ポップアップ (由来付き)
+```
+
 ## 動作イメージ
 
 1. `honjitsuhaseitennari` と入力して `Ctrl+J`
