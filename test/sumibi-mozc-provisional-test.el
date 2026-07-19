@@ -632,19 +632,19 @@
 ;; ------------------------------------------------------------------
 
 (ert-deftest sumibi-mozc-prov-test-insert-second-basic ()
-  "PROVISIONAL は第二候補 (index 1) に差し込まれる。"
+  "PROVISIONAL は由来 \"mozc\" 付きで第二候補 (index 1) に差し込まれる。"
   (should (equal (sumibi--insert-provisional-second '("a" "b" "c") "X")
-                 '("a" "X" "b" "c"))))
+                 '("a" ("X" . "mozc") "b" "c"))))
 
 (ert-deftest sumibi-mozc-prov-test-insert-second-single ()
   "候補が1件なら、その後ろ (第二候補) に差し込まれる。"
   (should (equal (sumibi--insert-provisional-second '("a") "X")
-                 '("a" "X"))))
+                 '("a" ("X" . "mozc")))))
 
 (ert-deftest sumibi-mozc-prov-test-insert-second-empty-list ()
   "候補が空なら PROVISIONAL のみのリストになる。"
   (should (equal (sumibi--insert-provisional-second '() "X")
-                 '("X"))))
+                 '(("X" . "mozc")))))
 
 (ert-deftest sumibi-mozc-prov-test-insert-second-dedup ()
   "PROVISIONAL が既に候補に含まれていれば差し込まない (重複回避)。"
@@ -678,7 +678,10 @@
       (should (string= (buffer-string) "私は"))
       ;; 第1候補は LLM 結果、第2候補は mozc 仮確定
       (should (string= (car (nth 0 sumibi-henkan-kouho-list)) "私は"))
-      (should (string= (car (nth 1 sumibi-henkan-kouho-list)) "わたしは")))))
+      (should (string= (car (nth 1 sumibi-henkan-kouho-list)) "わたしは"))
+      ;; 注釈に由来 (LLM / mozc) が表示される (Issue #162)
+      (should (string-prefix-p "LLM" (nth 1 (nth 0 sumibi-henkan-kouho-list))))
+      (should (string-prefix-p "mozc" (nth 1 (nth 1 sumibi-henkan-kouho-list)))))))
 
 (ert-deftest sumibi-mozc-prov-test-async-second-candidate-dedup ()
   "仮確定が LLM 第1候補と同一なら第二候補に重複して差し込まない (Issue #162)。"
@@ -735,6 +738,9 @@
         (should (string= (car (nth 0 sumibi-henkan-kouho-list)) "ディストリビュー村"))
         (should (string= (car (nth 1 sumibi-henkan-kouho-list)) "ディストリビューション"))
         (should (equal (nth 1 (car (last sumibi-henkan-kouho-list))) "原文まま"))
+        ;; 注釈に由来 (mozc / LLM) が表示される (Issue #162)
+        (should (string-prefix-p "mozc" (nth 1 (nth 0 sumibi-henkan-kouho-list))))
+        (should (string-prefix-p "LLM" (nth 1 (nth 1 sumibi-henkan-kouho-list))))
         ;; 確定文字列上にカーソルを置くと履歴から候補状態を発見できる
         ;; (Ctrl-J の再変換で使われる)。`sumibi-history-search' は引数では
         ;; なく現在の point を参照するため、カーソルを移動して確認する。

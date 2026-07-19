@@ -70,9 +70,11 @@
 ;; ------------------------------------------------------------------
 ;; Utility: decide annotation label for a candidate string
 ;; ------------------------------------------------------------------
-(defun sumibi--annotation-label (_str idx)
-  "Return annotation label for STR which is the (IDX+1)-th candidate."
-  (format "candidate %d" idx))
+(defun sumibi--annotation-label (_str idx &optional origin)
+  "Return annotation label for STR which is the (IDX+1)-th candidate.
+ORIGIN で候補の由来 (\"LLM\" \"mozc\" \"ローカル辞書\" 等) を指定できる。
+省略時は LLM 由来とみなす (Issue #162: 候補の由来表示)。"
+  (format "%s candidate %d" (or origin "LLM") idx))
 
 (defcustom sumibi-provider 'openai
   "使用するAIプロバイダーを指定する。
@@ -1619,9 +1621,14 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
 	             ;; 同期経路と同様に使えるようにする (Issue #162, #3)。成功時は LLM の
 	             ;; 複数候補、失敗時は確定したテキスト1件を候補にする。
 	             ;; 仮確定とLLM候補が揃った成功時は mozc 仮確定を第二候補に差し込む
-	             ;; (Issue #162)。失敗時は確定テキスト自体が仮確定なので差し込まない。
+	             ;; (Issue #162)。失敗時は確定テキスト自体が仮確定なので差し込まない
+	             ;; (mozc フォールバックで確定した場合は由来 "mozc" を付ける)。
 	             (sumibi--setup-async-candidates roman
-	                                             (if error-p (list inserted) lst)
+	                                             (if error-p
+	                                                 (list (if provisional-fallback
+	                                                           (cons inserted "mozc")
+	                                                         inserted))
+	                                               lst)
 	                                             ins-b (point)
 	                                             (unless error-p provisional-fallback))
 	             ;; カーソルを配置 (領域内なら末尾、領域外なら元の位置)。
@@ -1646,7 +1653,8 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
                      (ce (cdr sumibi--mozc-early-commit-region)))
                  (sumibi--setup-async-candidates
                   roman
-                  (cons provisional-fallback
+                  ;; 第1候補 = mozc 確定 (由来 "mozc")、以降は LLM 結果。
+                  (cons (cons provisional-fallback "mozc")
                         (cl-remove provisional-fallback lst :test #'string=))
                   cb ce nil)
                  (goto-char (marker-position restore))
@@ -1932,21 +1940,32 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2)."
 		 (+ (length kouho-lst) (length related-kouho-lst)))))))
 
 (defun sumibi--build-kouho-list (roman lst)
-  "候補文字列リスト LST から注釈付きの henkan-kouho-list を構築する.
+  "候補リスト LST から注釈付きの henkan-kouho-list を構築する.
+LST の各要素は候補文字列、または (候補文字列 . 由来ラベル) のコンスセル。
+由来ラベルは注釈として「%s candidate N」の形式で表示され、省略時は
+\"LLM\" になる (Issue #162: mozc/LLM の由来表示)。
 ROMAN は「原文まま」候補に使う元のローマ字文字列。
 各エントリは (word annotation 0 type index) 形式で、末尾に「原文まま」を付ける。
 同期・非同期の両経路で候補選択状態を作るために共用する (Issue #162, #3)."
-  (let ((lst (sumibi-supplement-kouho lst)))
+  (let* ((pairs (mapcar (lambda (x) (if (consp x) x (cons x nil))) lst))
+         ;; ローカル辞書による補完は語のリストに対して行い、追加分には
+         ;; 「ローカル辞書」の由来を付ける。
+         (words (mapcar #'car pairs))
+         (supplemented (sumibi-supplement-kouho words))
+         (extra (nthcdr (length words) supplemented))
+         (pairs (append pairs (mapcar (lambda (w) (cons w "ローカル辞書")) extra))))
     (append
      (-map
       (lambda (x)
-        (list (car x)
-	      (sumibi--annotation-label (car x) (+ 1 (cdr x)))
-	      0
-	      (sumibi-determine-candidate-type (car x))
-	      (cdr x)))
+        (let ((word (car (car x)))
+              (origin (cdr (car x))))
+          (list word
+	        (sumibi--annotation-label word (+ 1 (cdr x)) origin)
+	        0
+	        (sumibi-determine-candidate-type word)
+	        (cdr x))))
       (-zip-pair
-       lst
+       pairs
        '(
 	 0 1 2 3 4 5 6 7 8 9
 	 10 11 12 13 14 15 16 17 18 19
@@ -1954,7 +1973,7 @@ ROMAN は「原文まま」候補に使う元のローマ字文字列。
 	 30 31 32 33 34 35 36 37 38 39
 	 40 41 42 43 44 45 46 47 48 49)))
      (list
-      (list roman "原文まま" 0 'l (length lst))))))
+      (list roman "原文まま" 0 'l (length pairs))))))
 
 (defun sumibi-alphabet-henkan (roman surrounding-text arg-n deferred-func2)
   "アルファベット(ローマ字or英語の文章)からカナ漢字混じり文へ変換する.
@@ -2166,16 +2185,17 @@ helper が利用可能になれば通知フラグを解除し、再度不在に�
 (defun sumibi--insert-provisional-second (lst provisional)
   "候補文字列リスト LST の2番目に mozc 仮確定 PROVISIONAL を差し込んで返す (Issue #162).
 仮確定とLLM変換候補の両方が揃ったとき、確定後の候補選択モードで第二候補
-(index 1) に仮確定文字列を出すための前処理。差し込みは raw な文字列リストの段階で
-行い、後段の `sumibi--build-kouho-list' に id-index・注釈・タイプを正しく振り直させる。
+(index 1) に仮確定文字列を出すための前処理。差し込む要素は由来表示のため
+\(PROVISIONAL . \"mozc\") のコンスセルとし、後段の `sumibi--build-kouho-list' に
+id-index・注釈・タイプを正しく振り直させる。
 PROVISIONAL が文字列でない・空文字、または既に LST に含まれる場合は、重複や無意味な
 候補を避けるため LST をそのまま返す。"
   (if (and (stringp provisional)
            (> (length provisional) 0)
            (not (member provisional lst)))
       (if lst
-          (cons (car lst) (cons provisional (cdr lst)))
-        (list provisional))
+          (cons (car lst) (cons (cons provisional "mozc") (cdr lst)))
+        (list (cons provisional "mozc")))
     lst))
 
 (defun sumibi--setup-async-candidates (roman lst b e &optional provisional)
