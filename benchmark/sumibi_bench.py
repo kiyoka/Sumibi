@@ -23,6 +23,15 @@ ajimee_utils = SourceFileLoader("ajimee_utils", utils_path).load_module()
 # flash-lite is excluded because it was measured without an explicit thinking level.
 GEMINI3_DOTTED_FLASH_RE = re.compile(r"^gemini-3\.\d+-flash(?!-lite)")
 
+# Lowest thinking level each model actually accepts. The generations are mutually
+# inconsistent -- 3.6 rejects "none" and 3.7 rejects "minimal" -- so this cannot be
+# derived from the version number and has to be verified per model.
+GEMINI3_DOTTED_FLASH_THINKING = {
+    "gemini-3.5-flash": "none",
+    "gemini-3.6-flash": "minimal",
+    "gemini-3.7-flash": "none",
+}
+
 class SumibiBench:
     """
     Benchmarks sumibi romaji->kana->kanji conversion using
@@ -61,10 +70,8 @@ class SumibiBench:
             reasoning_effort = "low"
         elif model.startswith("gemini-3-flash"):
             reasoning_effort = "low"  # Maps to thinking_level: "low" for gemini-3-flash models
-        elif GEMINI3_DOTTED_FLASH_RE.match(model):
-            # gemini-3.7-flash rejects "minimal" ("Thinking level MINIMAL is not
-            # supported for this model") but accepts "none" to disable thinking.
-            reasoning_effort = "none"
+        elif model in GEMINI3_DOTTED_FLASH_THINKING:
+            reasoning_effort = GEMINI3_DOTTED_FLASH_THINKING[model]
         else:
             reasoning_effort = None
 
