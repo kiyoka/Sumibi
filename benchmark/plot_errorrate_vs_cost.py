@@ -160,6 +160,15 @@ DATA_V24: Dict[str, Dict[str, float]] = {
 # 適用する円のサイズスケール
 SCALE = 50  # size = elapsed * SCALE
 
+# モデル名ラベルの文字色（円の色とは独立させ、白背景での可読性を確保する）
+LABEL_INK = "#1a1a1a"
+
+# 円の大きさの上限（秒）。
+# 応答時間は 0.9秒〜78.9秒 と 88倍の開きがあり、面積で素直に表すと
+# 最も遅いモデルの円が周囲のモデルを覆い隠してしまう（Issue #175）。
+# 凡例も 10秒 までしか示していないため、それを超えた分は頭打ちにする。
+SIZE_CAP_SEC = 15.0
+
 
 def plot_version(
     data: Dict[str, Dict[str, float]],
@@ -177,31 +186,49 @@ def plot_version(
     x_range / y_range を指定すると、範囲外の点はラベルを付けない
     （散布図マーカー自体はプロットするが、adjustText の対象から外す）。
     ラベルは adjustText で重なりを回避する。
-    戻り値: (texts, label_info) — label_info は [(text, marker_x, marker_y, color), ...] で、
-    adjust_text 後にマーカーとラベルを結ぶ接続線をモデル色で描画するために使う。
+    戻り値: (texts, label_info, marker_xy)
+      label_info: [(text, marker_x, marker_y, color), ...]
+        adjust_text 後にマーカーとラベルを結ぶ接続線をモデル色で描画するために使う。
+      marker_xy: [(x, y), ...] 描画した全マーカーの座標。
+        adjust_text に渡してラベルが円の上に乗らないようにする。
     """
     texts: List = []
     label_info: List = []
-    for model, metrics in data.items():
-        cost = MASTER_COST.get(model)
-        if cost is None:
-            # コスト情報が無ければ描かない
-            continue
+    marker_xy: List = []
+
+    # 応答時間が長い（＝円が大きい）モデルから先に描く。
+    # 後から描いた小さい円が前面に来るので、大きい円に飲み込まれて消えなくなる。
+    plottable = [
+        (model, metrics)
+        for model, metrics in data.items()
+        if MASTER_COST.get(model) is not None
+    ]
+    plottable.sort(key=lambda kv: kv[1]["elapsed"], reverse=True)
+
+    for idx, (model, metrics) in enumerate(plottable):
+        cost = MASTER_COST[model]
 
         cer_pct = metrics["cer"] * 100  # 0.25 -> 25%
-        size = metrics["elapsed"] * SCALE
+        size = min(metrics["elapsed"], SIZE_CAP_SEC) * SCALE
         color = COLOR_MAP.get(model, "blue")
+        marker_xy.append((cost, cer_pct))
+        # 大きい円ほど下に敷く（同一 zorder 帯の中で重なり順を細かく制御する）
+        z = zorder + idx / (len(plottable) + 1)
 
         if face_filled:
-            # v2.4.0 (濃い塗りつぶし)
+            # v2.4.0 (塗りつぶし)
+            # 塗りは半透明にして重なった円も透けて見えるようにし、
+            # 白いリングで隣接する円との境界を分離する（塗り自体の色は保つ）。
             plt.scatter(
                 cost,
                 cer_pct,
                 s=size,
-                color=color,
+                facecolors=color,
+                edgecolors="white",
+                linewidths=1.2,
                 alpha=alpha,
-                label=version_label if model == next(iter(data)) else None,  # 最初の一度だけ凡例
-                zorder=zorder,
+                label=version_label if idx == 0 else None,  # 最初の一度だけ凡例
+                zorder=z,
             )
         else:
             # v2.3.0 (薄い枠線のみ or塗り無し)
@@ -212,8 +239,8 @@ def plot_version(
                 facecolors="none",
                 edgecolors=color,
                 alpha=alpha,
-                label=version_label if model == next(iter(data)) else None,
-                zorder=zorder,
+                label=version_label if idx == 0 else None,
+                zorder=z,
             )
 
         # モデル名の注釈（adjustText で後で位置調整するため、Text オブジェクトを蓄積）
@@ -227,12 +254,14 @@ def plot_version(
             if y_range is not None and not (y_range[0] <= cer_pct <= y_range[1]):
                 in_range = False
             if in_range:
-                text_color = _darken_for_readability(color)
-                t = plt.text(cost, cer_pct, model, fontsize=8, color=text_color, clip_on=False)
+                # ラベル本文は一律の濃いインク色にする。
+                # 明るいモデル色をそのまま文字に使うと白背景で読めなくなるため、
+                # 円との対応付けは下で引く「モデル色の接続線」に任せる。
+                t = plt.text(cost, cer_pct, model, fontsize=8, color=LABEL_INK, clip_on=False)
                 texts.append(t)
-                label_info.append((t, cost, cer_pct, text_color))
+                label_info.append((t, cost, cer_pct, _darken_for_readability(color)))
 
-    return texts, label_info
+    return texts, label_info, marker_xy
 
 
 # ---------------------------------------------------------------------------
@@ -265,10 +294,12 @@ def build_legend():
     """平均応答時間の凡例を描画"""
 
     # 平均応答時間凡例（円サイズ）
-    seconds_legend = [1, 5, 10]
+    # 最後の項目は頭打ちであることを明示する（Issue #175 でサイズ上限を導入したため）
+    seconds_legend = [1, 5, 10, SIZE_CAP_SEC]
     legend_size_handles: List[Line2D] = []
     for sec in seconds_legend:
         size = sec * SCALE
+        capped = sec >= SIZE_CAP_SEC
         legend_size_handles.append(
             Line2D(
                 [],
@@ -277,7 +308,7 @@ def build_legend():
                 color="gray",
                 linestyle="None",
                 markersize=size ** 0.5,  # matplotlib は points 単位。scatter の s は points^2
-                label=f"{sec} sec",
+                label=f"{sec:.0f}+ sec" if capped else f"{sec:.0f} sec",
             )
         )
 
@@ -309,10 +340,10 @@ def main():
         y_range = (0.0, 70.0)
 
     # v2.4.0 — 濃い塗りつぶし円（ラベルあり）
-    texts, label_info = plot_version(
+    texts, label_info, marker_xy = plot_version(
         DATA_V24,
         "v2.4.0",
-        alpha=1.0,
+        alpha=0.75,
         face_filled=True,
         zorder=3,
         annotate=True,
@@ -351,12 +382,19 @@ def main():
     # ラベルの重なりを adjustText で回避
     # 軸範囲を確定してから呼ぶ必要があるため、この位置で実行
     # adjustText の arrowprops は全ラベル共通なので使わず、後で自前で色付き接続線を描画する
+    # x / y にマーカー座標を渡すと、ラベルはテキスト同士だけでなく円も避ける。
+    # （adjustText 1.x で expand_points / force_points は廃止されており、
+    #   旧パラメータ名を渡しても無視されてラベルが円に重なっていた）
     adjust_text(
         texts,
-        expand_points=(1.4, 1.4),
-        expand_text=(1.2, 1.2),
-        force_text=(0.5, 0.5),
-        force_points=(0.3, 0.3),
+        x=[p[0] for p in marker_xy],
+        y=[p[1] for p in marker_xy],
+        force_text=(0.4, 0.6),
+        force_static=(0.3, 0.5),
+        expand=(1.25, 1.5),
+        max_move=(40, 40),
+        min_arrow_len=0,
+        time_lim=15,
     )
 
     # マーカーと移動後のラベルを結ぶ接続線をモデル色で描画
@@ -369,12 +407,13 @@ def main():
         # データ座標での差分で十分（重ならないラベルは adjustText が離すはず）
         if abs(text_x - marker_x) < 1e-9 and abs(text_y - marker_y) < 1e-9:
             continue
+        # 接続線がラベルの識別チャネルになるので、細すぎると色が判別できない
         ax.plot(
             [marker_x, text_x],
             [marker_y, text_y],
             color=color,
-            lw=0.6,
-            alpha=0.7,
+            lw=1.0,
+            alpha=0.9,
             zorder=2,
         )
 
