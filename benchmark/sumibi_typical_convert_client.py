@@ -4,6 +4,7 @@ sumibi.elの性能評価プログラムの一部です。
 """
 import os
 import re
+import sys
 from openai import OpenAI
 
 def remove_reasoning_tags(text):
@@ -131,8 +132,19 @@ class SumibiTypicalConvertClient:
             api_params["verbosity"] = self.verbosity
 
         response = self.client.chat.completions.create(**api_params)
-        content = response.choices[0].message.content
-        
+        choice = response.choices[0]
+
+        # Some providers (e.g. Gemini) can return a choice without a message when
+        # the response is blocked or the output token budget is exhausted.
+        # Treat it as an empty conversion instead of raising AttributeError.
+        message = getattr(choice, "message", None)
+        content = message.content if message is not None else None
+        if content is None:
+            print(
+                f"  => WARNING: no content in response (finish_reason={choice.finish_reason!r})",
+                file=sys.stderr,
+            )
+
         # Remove <reasoning>...</reasoning> tags from the response
         return remove_reasoning_tags(content)
 

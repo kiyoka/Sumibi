@@ -7,6 +7,7 @@ sumibiのローマ字仮名漢字変換のベンチマークを実行して、�
 import sys
 import os
 import json
+import re
 import time
 from openai import APITimeoutError
 from katakana_to_romaji_converter import KatakanaToRomajiConverter
@@ -17,6 +18,10 @@ from importlib.machinery import SourceFileLoader
 script_dir = os.path.dirname(os.path.abspath(__file__))
 utils_path = os.path.join(script_dir, "AJIMEE-Bench", "utils.py")
 ajimee_utils = SourceFileLoader("ajimee_utils", utils_path).load_module()
+
+# Gemini 3 flash models with a dotted version (gemini-3.7-flash, ...).
+# flash-lite is excluded because it was measured without an explicit thinking level.
+GEMINI3_DOTTED_FLASH_RE = re.compile(r"^gemini-3\.\d+-flash(?!-lite)")
 
 class SumibiBench:
     """
@@ -38,8 +43,8 @@ class SumibiBench:
         # Supported gemini-3 models: gemini-3-flash, gemini-3-flash-preview
         model = os.getenv("SUMIBI_AI_MODEL", "gpt-4.1")
 
-        # Set temperature=1.0 for gpt-5 and gemini-3-flash models
-        if model.startswith("gpt-5") or model.startswith("gemini-3-flash"):
+        # Set temperature=1.0 for gpt-5 and gemini-3 flash models
+        if model.startswith("gpt-5") or model.startswith("gemini-3-flash") or GEMINI3_DOTTED_FLASH_RE.match(model):
             temperature = 1.0
         else:
             temperature = None
@@ -56,6 +61,10 @@ class SumibiBench:
             reasoning_effort = "low"
         elif model.startswith("gemini-3-flash"):
             reasoning_effort = "low"  # Maps to thinking_level: "low" for gemini-3-flash models
+        elif GEMINI3_DOTTED_FLASH_RE.match(model):
+            # gemini-3.7-flash rejects "minimal" ("Thinking level MINIMAL is not
+            # supported for this model") but accepts "none" to disable thinking.
+            reasoning_effort = "none"
         else:
             reasoning_effort = None
 

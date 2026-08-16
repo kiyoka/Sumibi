@@ -146,6 +146,9 @@ python3 sumibi_bench.py evaluation_items.json output_katakana.json katakana_inpu
   - gpt-5.1, gpt-5.2, gpt-5.4, gpt-5.5はreasoning_effortがnone固定です。(sumibi.elでもnoneを利用)
   - `(low)`というサフィックスが付いているモデルは、reasoning_effortをlow指定したケースを指します。
   - gpt-5.6-terra, gpt-5.6-lunaはreasoning_effortがnone固定です（`minimal` は非対応。thinking無効化のため `none` を明示指定）。
+  - gemini-3.7-flashもreasoning_effortがnone固定です（`minimal` は 400 エラーで拒否されるため `none` を指定。公式ドキュメントの「Gemini 3系はthinkingを無効化できない」という記述とは実挙動が異なります）。
+
+※1 `gemini-3.7-flash` は200件中10件（5%）が Gemini 側のセーフティフィルタ（`content_filter: PROHIBITED_CONTENT`）で応答を返さず、CER 1.0 として算入されています。ブロックされたのは「、読売テレビ」「を通る道路沿いに住宅地が」といった無害な日本語であり、誤検知と考えられます。このブロックは**非決定的**で、同一入力を8回試行したところブロック率は0/8〜8/8とばらつきました（Issue #171）。ブロック分を除いた190件でのCERは 2.8% です。
 
 ### エラー率 vs コスト（全体表示）
 ![plot1](../images/plot_errorrate_vs_cost_1000x600.png)
@@ -176,6 +179,7 @@ python3 sumibi_bench.py evaluation_items.json output_katakana.json katakana_inpu
 | `gpt-4.1` | 1.28 s | 11.7 % | $0.0065 | 高精度だが高コスト |
 | `gpt-5-mini` | 1.28 s | 35.9 % | $0.000525 | 低コストで中程度精度 |
 | `gemini-3.1-flash-lite-preview` | 1.60 s | 13.3 % | $0.000425 | 低コストで高精度。**コスパ最優秀** |
+| `gemini-3.7-flash` | 1.80 s | 7.6 % | $0.001125 | **実用速度で最高精度クラス**。thinking off (`reasoning_effort=none`) で計測。※1 |
 | `gpt-5` | 1.86 s | 12.8 % | $0.002625 | 高精度で中程度コスト。2秒以内ギリギリ |
 
 ### 実用性に課題があるモデル（応答時間2秒超）
@@ -198,6 +202,7 @@ python3 sumibi_bench.py evaluation_items.json output_katakana.json katakana_inpu
 
 1. **最優秀バランス**: `gemini-2.0-flash`（0.74s / CER 21.2% / $0.00013）─ 速度・精度・コストのバランスが最も優秀
 2. **高精度重視**: `gpt-5.4`（1.21s / CER 7.7% / $0.004250）─ 実用速度で最高精度。精度と速度・コストのバランスでは現時点で実用上の最適解
+   - `gemini-3.7-flash`（1.80s / CER 7.6% / $0.001125）も同等精度を約1/4のコストで実現。ただしセーフティフィルタの誤検知（5%）が実用上の懸念（※1）
 3. **コスパ最優秀**: `gemini-3.1-flash-lite-preview`（1.60s / CER 13.3% / $0.000425）─ gemini-2.0-flash-liteの後継。CER 33.1%→13.3%と大幅改善しつつ低価格
 4. **バランス重視**: `gpt-5`（1.86s / CER 12.8% / $0.002625）─ 高精度を適度なコストで実現
 5. **超高速**: `gemini-2.0-flash-lite`（0.66s / CER 33.1% / $0.0000975）─ 最速かつ最安だが精度は劣る
