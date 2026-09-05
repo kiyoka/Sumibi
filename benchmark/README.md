@@ -145,7 +145,7 @@ python3 sumibi_bench.py evaluation_items.json output_katakana.json katakana_inpu
   - gpt-5, gpt-5-mini, gpt-5-nanoはreasoning_effortがminimal固定です。(sumibi.elでもminimalを利用)
   - gpt-5.1, gpt-5.2, gpt-5.4, gpt-5.5はreasoning_effortがnone固定です。(sumibi.elでもnoneを利用)
   - `(low)`というサフィックスが付いているモデルは、reasoning_effortをlow指定したケースを指します。
-  - gpt-5.6-terra, gpt-5.6-lunaはreasoning_effortがnone固定です（`minimal` は非対応。thinking無効化のため `none` を明示指定）。
+  - gpt-5.6-terra, gpt-5.6-luna, gpt-5.6-solはreasoning_effortがnone固定です（`minimal` は非対応。thinking無効化のため `none` を明示指定）。
   - gemini-3.7-flashもreasoning_effortがnone固定です（`minimal` は 400 エラーで拒否されるため `none` を指定。公式ドキュメントの「Gemini 3系はthinkingを無効化できない」という記述とは実挙動が異なります）。
 
 ※2 `gemini-3.6-flash` は `gemini-3.7-flash` と同価格ながら、精度・速度の全項目で上回り、※1のセーフティフィルタ誤検知も発生しません（3モード計600件でブロック0件）。誤検知は 3.7 世代から導入されたもので、3.6以前には存在しません（Issue #173）。**IME用途では 3.7 より 3.6 を推奨します。**
@@ -181,6 +181,7 @@ python3 sumibi_bench.py evaluation_items.json output_katakana.json katakana_inpu
 | `gemini-3.6-flash` | 1.23 s | 4.8 % | $0.001125 | **クラウドLLMで最良のバランス**。高速・高精度・低コストを同時に満たす。※2 |
 | `gpt-4.1` | 1.28 s | 11.7 % | $0.0065 | 高精度だが高コスト |
 | `gpt-5-mini` | 1.28 s | 35.9 % | $0.000525 | 低コストで中程度精度 |
+| `gpt-5.6-sol` | 1.42 s | 4.7 % | $0.006000 | **GPT-5.6系で最高精度**。ただしコストはterraの約1.4倍、luna比では約3.5倍 |
 | `gemini-3.1-flash-lite-preview` | 1.60 s | 13.3 % | $0.000425 | 低コストで高精度。**コスパ最優秀** |
 | `gemini-3.7-flash` | 1.80 s | 7.6 % | $0.001125 | **実用速度で最高精度クラス**。thinking off (`reasoning_effort=none`) で計測。※1 |
 | `gpt-5` | 1.86 s | 12.8 % | $0.002625 | 高精度で中程度コスト。2秒以内ギリギリ |
@@ -216,6 +217,7 @@ python3 sumibi_bench.py evaluation_items.json output_katakana.json katakana_inpu
 GPT-5.6系の新モデルは実用速度で有望：
 - `gpt-5.6-terra`（1.05s / CER 7.4% / $0.004250）─ gpt-5.4と同精度・同価格を維持しつつ応答時間を約20%短縮。GPT-5系の実用モデルの新たな候補
 - `gpt-5.6-luna`（0.99s / CER 15.1% / $0.00170）─ GPT-5.6系で最速かつ低コスト。ひらがな入力では CER 3.8% と大幅改善するため、次節も参照
+- `gpt-5.6-sol`（1.42s / CER 4.7% / $0.006000）─ GPT-5.6系で最高精度。`gemini-3.6-flash`（CER 4.8%）に匹敵する精度をGPT系で実現するが、コストはterraの約1.4倍・lunaの約3.5倍と高め
 
 # 入力形式による精度の違い（GitHub Issue #96 の成果）
 
@@ -229,6 +231,7 @@ GPT-5.6系の新モデルは実用速度で有望：
 | gemini-2.5-pro | 5.9% | 4.0% | **2.2%** | **63%削減** |
 | gpt-5.5 | **2.7%** | **2.6%** | 2.8% | +4%増加 |
 | gemini-3.6-flash | 4.8% | 4.6% | **2.7%** | **43%削減** |
+| gpt-5.6-sol | 4.7% | 2.9% | **1.7%** | **64%削減** |
 | gpt-5.6-terra | 7.4% | 6.5% | **3.0%** | **60%削減** |
 | gemini-3.7-flash | 7.6% | 6.9% | **3.1%** | **59%削減** |
 | gpt-5.6-luna | 15.1% | 10.0% | **3.8%** | **75%削減** |
@@ -270,6 +273,7 @@ GPT-5.6系の新モデルは実用速度で有望：
 7. **gemini-3.6-flash ひらがな入力が現時点の最適解**: CER 2.7% を応答時間1.18秒・$0.001125/リクエストで実現。`gemini-2.5-pro`（CER 2.2%）に迫る精度を約16倍の速度で達成し、セーフティフィルタの誤検知も無い
 8. **gemini-3.7-flash は 3.6 の下位互換**: 同価格ながら CER 3.1% / 1.60秒と精度・速度で劣り、さらに※1のセーフティフィルタ誤検知がある
 8. **セーフティフィルタの誤検知も入力形式に依存**: `gemini-3.7-flash` のブロック件数はローマ字10件 → カタカナ4件 → ひらがな1件と減少。ローマ字の羅列が誤検知を誘発しやすいと考えられ、ひらがな入力はこの面でも有利
+9. **gpt-5.6-sol ひらがな入力の高精度**: CER 1.7% を応答時間1.28秒で達成し、`gemini-2.5-pro`（2.2%）を上回る。ただしコストは`gemini-3.6-flash`の約5倍高い（$0.006 vs $0.001125）
 
 ![入力形式別エラー率比較](../images/plot_errorrate_vs_inputtype_1000x600.png)
 
