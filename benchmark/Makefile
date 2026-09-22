@@ -39,6 +39,22 @@ RESULTS := gpt-3.5-turbe.json gpt-4.1-mini.json gpt-4.1.json gpt-4o-mini.json gp
 GOOGLE_IME_NATIVE_RESULTS := google_ime_native.json
 GOOGLE_IME_CGI_RESULTS := google_ime_cgi.json
 
+# プロットの前提条件にする結果ディレクトリ (Issue #180)
+#
+# 以前はプロットのターゲットが .py にしか依存しておらず、結果JSONを追加しても
+# make が再生成せず "Nothing to be done" を返していた。
+#
+# ここで個々のJSONファイルを前提条件にすると、result_ver%.json のパターンルールが
+# 発火し「sumibi_bench.py より古い結果JSON」を軒並み再計測しようとする
+# （API課金と数時間を伴う）。ディレクトリを前提条件にすればパターンルールに
+# マッチしないため、その誤発火なしにJSONの増減を検知できる。
+#
+# 制約: ディレクトリのmtimeはファイルの追加・削除で更新されるが、既存JSONの
+# 内容を上書きしただけでは変わらない。再計測でJSONを差し替えた場合は
+# `make -B plots` で強制再生成すること。
+RESULT_DIR_V23 := result_ver2.3.0
+RESULT_DIR_V24 := result_ver2.4.0
+
 # Notification script to run after benchmark completion
 define run_notify
 	@if [ -n "$$NOTIFY_SCRIPT" ]; then \
@@ -188,24 +204,26 @@ ctx_plot: ../images/plot_context_length_vs_response_time.png
 # Generate plot images in the project's images directory
 plots: ../images/plot_errorrate_vs_cost.png ../images/plot_errorrate_vs_cost_zoomed.png ../images/plot_errorrate_vs_paramsize.png ../images/plot_errorrate_vs_paramsize_zoomed.png ../images/plot_mean_response_time.png ../images/plot_errorrate_vs_inputtype.png ../images/plot_errorrate_vs_inputtype_hiragana.png ../images/plot_errorrate_vs_cost_1000x600.png ../images/plot_errorrate_vs_cost_zoomed_1000x600.png ../images/plot_errorrate_vs_paramsize_1000x600.png ../images/plot_errorrate_vs_paramsize_zoomed_1000x600.png ../images/plot_mean_response_time_1000x1800.png ../images/plot_errorrate_vs_inputtype_1000x600.png ../images/plot_errorrate_vs_inputtype_hiragana_1000x600.png
 
+# plot_errorrate_vs_cost.py はスクリプト内の DATA_V24 に数値をハードコードしており
+# 結果JSONを読まないため、result JSON への依存は持たせない
 ../images/plot_errorrate_vs_cost.png: plot_errorrate_vs_cost.py
 	python3 $< --range 0 -o $@
 
 ../images/plot_errorrate_vs_cost_zoomed.png: plot_errorrate_vs_cost.py
 	python3 $< --range 1 -o $@
 
-../images/plot_errorrate_vs_paramsize.png: plot_errorrate_vs_paramsize.py
+../images/plot_errorrate_vs_paramsize.png: plot_errorrate_vs_paramsize.py $(RESULT_DIR_V23) $(RESULT_DIR_V24)
 	python3 $< -o $@
 
 ../images/plot_errorrate_vs_paramsize_zoomed.png: ../images/plot_errorrate_vs_paramsize.png
 
-../images/plot_mean_response_time.png: plot_mean_response_time.py
+../images/plot_mean_response_time.png: plot_mean_response_time.py $(RESULT_DIR_V24)
 	python3 $< -o $@
 
-../images/plot_errorrate_vs_inputtype.png: plot_errorrate_vs_inputtype.py
+../images/plot_errorrate_vs_inputtype.png: plot_errorrate_vs_inputtype.py $(RESULT_DIR_V24)
 	python3 $< -o $@
 
-../images/plot_errorrate_vs_inputtype_hiragana.png: plot_errorrate_vs_inputtype_hiragana.py
+../images/plot_errorrate_vs_inputtype_hiragana.png: plot_errorrate_vs_inputtype_hiragana.py $(RESULT_DIR_V24)
 	python3 $< -o $@
 
 ../images/plot_errorrate_vs_cost_1000x600.png: ../images/plot_errorrate_vs_cost.png

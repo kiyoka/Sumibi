@@ -98,6 +98,15 @@ python3 sumibi_bench.py evaluation_items.json output_katakana.json katakana_inpu
    pip install --upgrade openai
    ```
 
+4. グラフを生成する場合は、追加で以下が必要
+
+   ```bash
+   pip install matplotlib numpy adjustText
+   brew install imagemagick    # make plots のリサイズに convert を使う
+   ```
+
+   `adjustText` は「エラー率 vs コスト」のラベル配置にのみ使います。
+
 ### 実行手順
 
 1. LLMベンチマーク実行（Googleのgemini-2.0-flashの例）
