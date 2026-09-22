@@ -32,7 +32,8 @@ RESULTS := gpt-3.5-turbe.json gpt-4.1-mini.json gpt-4.1.json gpt-4o-mini.json gp
            gpt-5.6.json \
            gpt-5.6-terra.json \
            gpt-5.6-luna.json \
-           gpt-5.6-sol.json
+           gpt-5.6-sol.json \
+           afm-3-core-advanced.json
 
 # Google IME benchmark results (hiragana input only)
 GOOGLE_IME_NATIVE_RESULTS := google_ime_native.json
@@ -55,6 +56,8 @@ help:
 	@echo "  all       generate all result JSONs"
 	@echo "  google_ime_native  generate Google IME (native) benchmark results"
 	@echo "  google_ime_cgi    generate Google IME (CGI API) benchmark results"
+	@echo "  afm_bridge     build the Apple Foundation Models bridge (macOS 27+)"
+	@echo "  afm_bridge_run run the bridge on port 8765"
 	@echo "  aggregate perform aggregation on all result JSONs"
 	@echo "  clean     remove result JSONs"
 	@echo "  plots     generate plot PNG images"
@@ -90,6 +93,18 @@ result_ver2.3.0/%_katakana.json: $(EVAL) $(SCRIPT)
 result_ver2.4.0/%_katakana.json: $(EVAL) $(SCRIPT)
 	python3 $(SCRIPT) $(EVAL) "$@" katakana_input
 	$(run_notify)
+
+# Apple Foundation Models (AFM) bridge targets (Issue #180)
+# macOS 27 以降でのみビルド可能。SUMIBI_AI_BASEURL をこのブリッジに向けて計測する。
+.PHONY: afm_bridge afm_bridge_run
+
+afm_bridge: afm_bridge/afm_bridge
+
+afm_bridge/afm_bridge: afm_bridge/main.swift
+	cd afm_bridge && swiftc -target arm64-apple-macos27.0 -swift-version 5 -O main.swift -o afm_bridge
+
+afm_bridge_run: afm_bridge/afm_bridge
+	./afm_bridge/afm_bridge --port 8765
 
 # Google IME (native / mozc_emacs_helper) benchmark targets
 .PHONY: google_ime_native google_ime_cgi
