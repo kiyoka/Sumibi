@@ -18,3 +18,4 @@ lisp/sumibi.el.backup.txt
 .DS_Store
 .\#CLAUDE.md
 japanese-input-method-sumibi-16.md
+benchmark/afm_bridge/afm_bridge
