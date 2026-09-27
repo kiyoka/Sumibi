@@ -33,6 +33,8 @@ RESULTS := gpt-3.5-turbe.json gpt-4.1-mini.json gpt-4.1.json gpt-4o-mini.json gp
            gpt-5.6-terra.json \
            gpt-5.6-luna.json \
            gpt-5.6-sol.json \
+           gpt-6-sol.json \
+           gpt-6-luna.json \
            afm-3-core-advanced.json
 
 # Google IME benchmark results (hiragana input only)
