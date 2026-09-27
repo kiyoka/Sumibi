@@ -86,14 +86,6 @@ aggregate:
 	python3 aggregate_results.py result_ver2.3.0/*.json
 	python3 aggregate_results.py result_ver2.4.0/*.json
 
-result_ver2.3.0/%.json: $(EVAL) $(SCRIPT)
-	python3 $(SCRIPT) $(EVAL) "$@" romaji_direct_input
-	$(run_notify)
-
-result_ver2.4.0/%.json: $(EVAL) $(SCRIPT)
-	python3 $(SCRIPT) $(EVAL) "$@" romaji_direct_input
-	$(run_notify)
-
 # Hiragana input mode targets
 result_ver2.3.0/%_hiragana.json: $(EVAL) $(SCRIPT)
 	python3 $(SCRIPT) $(EVAL) "$@" hiragana_input
@@ -110,6 +102,20 @@ result_ver2.3.0/%_katakana.json: $(EVAL) $(SCRIPT)
 
 result_ver2.4.0/%_katakana.json: $(EVAL) $(SCRIPT)
 	python3 $(SCRIPT) $(EVAL) "$@" katakana_input
+	$(run_notify)
+
+# Romaji input mode targets
+#
+# 汎用の %.json ルールは必ず _hiragana / _katakana ルールの後に置くこと (Issue #182)。
+# macOS 標準の GNU Make 3.81 は複数のパターンルールがマッチすると「最初に書かれたもの」を
+# 採用する（3.82 以降は最短ステムのルールを採用）。%.json が先にあると
+# gpt-6-sol_hiragana.json なども romaji_direct_input で計測されてしまう。
+result_ver2.3.0/%.json: $(EVAL) $(SCRIPT)
+	python3 $(SCRIPT) $(EVAL) "$@" romaji_direct_input
+	$(run_notify)
+
+result_ver2.4.0/%.json: $(EVAL) $(SCRIPT)
+	python3 $(SCRIPT) $(EVAL) "$@" romaji_direct_input
 	$(run_notify)
 
 # Apple Foundation Models (AFM) bridge targets (Issue #180)
