@@ -118,10 +118,12 @@ class SumibiTypicalConvertClient:
         # Create API call parameters
         api_params = {
             "model": self.model,
-            "temperature": self.temperature,
             "n": 1,
             "messages": messages
         }
+
+        if self.temperature is not None:
+            api_params["temperature"] = self.temperature
         
         # Add reasoning_effort if specified
         if self.reasoning_effort is not None:

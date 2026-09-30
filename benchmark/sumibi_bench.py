@@ -53,7 +53,10 @@ class SumibiBench:
         model = os.getenv("SUMIBI_AI_MODEL", "gpt-4.1")
 
         # Set temperature=1.0 for gpt-5 / gpt-6 and gemini-3 flash models
-        if model.startswith("gpt-5") or model.startswith("gpt-6") or model.startswith("gemini-3-flash") or GEMINI3_DOTTED_FLASH_RE.match(model):
+        if model == "gpt-6.1-sol":
+            # Reasoning is mandatory for this model; temperature is unsupported.
+            temperature = None
+        elif model.startswith("gpt-5") or model.startswith("gpt-6") or model.startswith("gemini-3-flash") or GEMINI3_DOTTED_FLASH_RE.match(model):
             temperature = 1.0
         else:
             temperature = None
@@ -64,6 +67,8 @@ class SumibiBench:
             reasoning_effort = None  # gpt-5.1, gpt-5.2, gpt-5.4, gpt-5.5, gpt-5.6 use reasoning_effort=none
         elif model.startswith("gpt-5.6-"):
             reasoning_effort = "none"  # gpt-5.6-terra / gpt-5.6-luna: 'none' disables thinking (they reject 'minimal')
+        elif model == "gpt-6.1-sol":
+            reasoning_effort = "low"  # GPT-6.1 Sol rejects none and minimal.
         elif model.startswith("gpt-6"):
             reasoning_effort = "none"  # gpt-6-sol / gpt-6-luna: disable thinking to match gpt-5.6 conditions (Issue #182)
         elif model.startswith("gpt-5"):
