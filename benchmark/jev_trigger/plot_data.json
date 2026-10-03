@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-03",
+  "model": "jev-1.13.0",
+  "keystrokes": 627,
+  "preferred_total": 14,
+  "methods": [
+    {"label": "現行ルール近似", "preferred": 12, "acceptable_early": 8, "wait_preferred": 9, "english_triggers": 7, "english_affected": 5},
+    {"label": "Jev・閾値0.8", "preferred": 14, "acceptable_early": 6, "wait_preferred": 5, "english_triggers": 0, "english_affected": 0},
+    {"label": "Jev・閾値0.9", "preferred": 12, "acceptable_early": 0, "wait_preferred": 0, "english_triggers": 0, "english_affected": 0}
+  ],
+  "english_keystrokes": 240,
+  "english_cases": 10,
+  "api_calls": 595,
+  "input_tokens": 303039,
+  "estimated_usd": 0.01272764,
+  "latency_p50_ms": 217.1,
+  "latency_p95_ms": 306.4
+}

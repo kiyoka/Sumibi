@@ -1,0 +1,12 @@
+[
+  {"id":"weather_rain","group":"sentence","context":"plain","keys":"ashitawa ame desu.","japanese":"明日は雨です。","trigger_after":[18],"acceptable_after":[9],"pause_after_ms":{"18":700}},
+  {"id":"use_pen","group":"sentence","context":"plain","keys":"kono penwo tsukaimasu.","japanese":"このペンを使います。","trigger_after":[22],"acceptable_after":[11],"pause_after_ms":{"22":700}},
+  {"id":"what_time","group":"question","context":"plain","keys":"ima nanji desuka?","japanese":"今何時ですか？","trigger_after":[17],"pause_after_ms":{"17":700}},
+  {"id":"ask_repeat","group":"request","context":"plain","keys":"sumimasen, mouichido onegaishimasu.","japanese":"すみません、もう一度お願いします。","trigger_after":[35],"pause_after_ms":{"10":100,"35":700}},
+  {"id":"greeting_regards","group":"greeting","context":"plain","keys":"yoroshiku onegaishimasu.","japanese":"よろしくお願いします。","trigger_after":[24],"pause_after_ms":{"24":700}},
+  {"id":"thanks_past","group":"greeting","context":"plain","keys":"arigatou gozaimashita.","japanese":"ありがとうございました。","trigger_after":[22],"pause_after_ms":{"22":700}},
+  {"id":"meeting_today","group":"sentence","context":"plain","keys":"kyouwa kaigi ga arimasu.","japanese":"今日は会議があります。","trigger_after":[24],"acceptable_after":[7,16],"pause_after_ms":{"24":700}},
+  {"id":"english_data","group":"english","context":"plain","keys":"this is the data.","trigger_after":[],"pause_after_ms":{"17":700}},
+  {"id":"code_filename","group":"code","context":"code","keys":"file.py ","trigger_after":[]},
+  {"id":"decimal_number","group":"number","context":"plain","keys":"4.2","trigger_after":[],"pause_after_ms":{"2":100}}
+]

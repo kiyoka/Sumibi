@@ -1,0 +1,14 @@
+[
+  {"id":"short_wa","group":"romanized","context":"plain","keys":"sorewa ","trigger_after":[7]},
+  {"id":"short_ha","group":"romanized","context":"plain","keys":"kinouha ","trigger_after":[8]},
+  {"id":"long_particle","group":"romanized","context":"plain","keys":"ashitakarawa ","trigger_after":[13]},
+  {"id":"polite_ending","group":"romanized","context":"plain","keys":"daijoubudesu ","trigger_after":[13]},
+  {"id":"full_greeting","group":"romanized","context":"plain","keys":"arigatou gozaimasu ","trigger_after":[19],"acceptable_after":[9]},
+  {"id":"punctuation_pause","group":"punctuation","context":"plain","keys":"konbanwa?","trigger_after":[9],"pause_after_ms":{"9":700}},
+  {"id":"comma_continuation","group":"punctuation","context":"plain","keys":"iya,sonna","trigger_after":[],"pause_after_ms":{"4":100}},
+  {"id":"english_period","group":"english","context":"plain","keys":"this is the data. ","trigger_after":[],"pause_after_ms":{"17":700}},
+  {"id":"english_wa_suffix","group":"english","context":"plain","keys":"Iowa ","trigger_after":[]},
+  {"id":"code_filename","group":"code","context":"code","keys":"file.py ","trigger_after":[]},
+  {"id":"number_decimal","group":"number","context":"plain","keys":"4.2","trigger_after":[],"pause_after_ms":{"2":100}},
+  {"id":"mixed_particle","group":"mixed","context":"plain","keys":"今日はashitawa ","trigger_after":[12]}
+]

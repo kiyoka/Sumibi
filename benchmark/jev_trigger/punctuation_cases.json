@@ -1,0 +1,11 @@
+[
+  {"id":"jp_period","group":"punctuation_explicit","context":"plain","keys":"kyouwa hare desu.","japanese":"今日は晴れです。","trigger_after":[17],"pause_after_ms":{"17":700}},
+  {"id":"jp_comma","group":"punctuation_explicit","context":"plain","keys":"hai, wakarimashita.","japanese":"はい、わかりました。","trigger_after":[4,19],"pause_after_ms":{"4":700,"19":700}},
+  {"id":"jp_exclamation","group":"punctuation_explicit","context":"plain","keys":"yatta!","japanese":"やった！","trigger_after":[6],"pause_after_ms":{"6":700}},
+  {"id":"jp_question","group":"punctuation_explicit","context":"plain","keys":"ashitamo ikimasuka?","japanese":"明日も行きますか？","trigger_after":[19],"pause_after_ms":{"19":700}},
+  {"id":"jp_fullwidth_period","group":"punctuation_explicit","context":"plain","keys":"kyouwa hare desu。","japanese":"今日は晴れです。","trigger_after":[17],"pause_after_ms":{"17":700}},
+  {"id":"jp_fullwidth_comma","group":"punctuation_explicit","context":"plain","keys":"hai、wakarimashita。","japanese":"はい、わかりました。","trigger_after":[4,18],"pause_after_ms":{"4":700,"18":700}},
+  {"id":"jp_fullwidth_exclamation","group":"punctuation_explicit","context":"plain","keys":"yatta！","japanese":"やった！","trigger_after":[6],"pause_after_ms":{"6":700}},
+  {"id":"jp_fullwidth_question","group":"punctuation_explicit","context":"plain","keys":"ashitamo ikimasuka？","japanese":"明日も行きますか？","trigger_after":[19],"pause_after_ms":{"19":700}},
+  {"id":"jp_punctuation_sequence","group":"punctuation_explicit","context":"plain","keys":"hai, wakarimashita. yatta! ashitamo ikimasuka?","japanese":"はい、わかりました。やった！明日も行きますか？","trigger_after":[4,19,26,46],"pause_after_ms":{"4":700,"19":700,"26":700,"46":700}}
+]
