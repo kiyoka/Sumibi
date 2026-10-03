@@ -1,0 +1,371 @@
+{
+  "backend": "jev",
+  "dataset": "dev",
+  "prompt_version": "v2",
+  "start_row": 1,
+  "threshold": 0.8,
+  "complete_dataset": false,
+  "total_keystrokes": 197,
+  "overall": {
+    "n": 19,
+    "tp": 1,
+    "fp": 1,
+    "fn": 0,
+    "tn": 17,
+    "precision": 0.5,
+    "recall": 1.0,
+    "f1": 0.6667
+  },
+  "preference_summary": {
+    "preferred_detected": 1,
+    "preferred_total": 1,
+    "preferred_recall": 1.0,
+    "acceptable_but_nonpreferred": 1,
+    "unwanted_triggers": 0,
+    "acceptable_precision": 1.0
+  },
+  "english_safety": {
+    "keystrokes": 0,
+    "cases": 0,
+    "false_triggers": 0,
+    "cases_with_trigger": 0,
+    "false_triggers_per_1000_keystrokes": 0.0,
+    "affected_cases": []
+  },
+  "threshold_sweep": {
+    "0.5": {
+      "n": 19,
+      "tp": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 17,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6667
+    },
+    "0.6": {
+      "n": 19,
+      "tp": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 17,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6667
+    },
+    "0.7": {
+      "n": 19,
+      "tp": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 17,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6667
+    },
+    "0.8": {
+      "n": 19,
+      "tp": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 17,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6667
+    },
+    "0.9": {
+      "n": 19,
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "tn": 18,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    }
+  },
+  "positive_scores": {
+    "greeting_thanks@19": 0.84
+  },
+  "acceptable_scores": {
+    "greeting_thanks@9": 0.85
+  },
+  "top_negative_scores": [
+    {
+      "position": "greeting_thanks@18",
+      "score": 0.42
+    },
+    {
+      "position": "greeting_thanks@15",
+      "score": 0.27
+    },
+    {
+      "position": "greeting_thanks@10",
+      "score": 0.24
+    },
+    {
+      "position": "greeting_thanks@17",
+      "score": 0.22
+    },
+    {
+      "position": "greeting_thanks@16",
+      "score": 0.21
+    }
+  ],
+  "by_group": {
+    "greeting": {
+      "n": 19,
+      "tp": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 17,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6667
+    }
+  },
+  "acceptable_but_nonpreferred": [
+    "greeting_thanks@9"
+  ],
+  "unwanted_triggers": [],
+  "misses": [],
+  "api_calls": 19,
+  "model_versions": [
+    "jev-1.13.0"
+  ],
+  "input_tokens": 9682,
+  "estimated_usd": 0.00040664,
+  "estimated_usd_per_1000_keystrokes": 0.021402,
+  "latency_p50_ms": 220.4,
+  "latency_p95_ms": 260.6,
+  "rows": [
+    {
+      "id": "greeting_thanks",
+      "group": "greeting",
+      "context": "plain",
+      "index": 1,
+      "key": "a",
+      "buffer": "a",
+      "pause_ms": 0,
+      "gold": false,
+      "acceptable": false,
+      "score": 0.09
+    },
+    {
+      "id": "greeting_thanks",
+      "group": "greeting",
+      "context": "plain",
+      "index": 2,
+      "key": "r",
+      "buffer": "ar",
+      "pause_ms": 0,
+      "gold": false,
+      "acceptable": false,
+      "score": 0.15
+    },
+    {
+      "id": "greeting_thanks",
+      "group": "greeting",
+      "context": "plain",
+      "index": 3,
+      "key": "i",
+      "buffer": "ari",
+      "pause_ms": 0,
+      "gold": false,
+      "acceptable": false,
+      "score": 0.19
+    },
+    {
+      "id": "greeting_thanks",
+      "group": "greeting",
+      "context": "plain",
+      "index": 4,
+      "key": "g",
+      "buffer": "arig",
+      "pause_ms": 0,
+      "gold": false,
+      "acceptable": false,
+      "score": 0.08
+    },
+    {
+      "id": "greeting_thanks",
+      "group": "greeting",
+      "context": "plain",
+      "index": 5,
+      "key": "a",
+      "buffer": "ariga",
+      "pause_ms": 0,
+      "gold": false,
+      "acceptable": false,
+      "score": 0.11
+    },
+    {
+      "id": "greeting_thanks",
+      "group": "greeting",
+      "context": "plain",
+      "index": 6,
+      "key": "t",
+      "buffer": "arigat",
+      "pause_ms": 0,
+      "gold": false,
+      "acceptable": false,
+      "score": 0.13
+    },
+    {
+      "id": "greeting_thanks",
+      "group": "greeting",
+      "context": "plain",
+      "index": 7,
+      "key": "o",
+      "buffer": "arigato",
+      "pause_ms": 0,
+      "gold": false,
+      "acceptable": false,
+      "score": 0.19
+    },
+    {
+      "id": "greeting_thanks",
+      "group": "greeting",
+      "context": "plain",
+      "index": 8,
+      "key": "u",
+      "buffer": "arigatou",
+      "pause_ms": 0,
+      "gold": false,
+      "acceptable": false,
+      "score": 0.16
+    },
+    {
+      "id": "greeting_thanks",
+      "group": "greeting",
+      "context": "plain",
+      "index": 9,
+      "key": " ",
+      "buffer": "arigatou ",
+      "pause_ms": 0,
+      "gold": false,
+      "acceptable": true,
+      "score": 0.85
+    },
+    {
+      "id": "greeting_thanks",
+      "group": "greeting",
+      "context": "plain",
+      "index": 10,
+      "key": "g",
+      "buffer": "arigatou g",
+      "pause_ms": 0,
+      "gold": false,
+      "acceptable": false,
+      "score": 0.24
+    },
+    {
+      "id": "greeting_thanks",
+      "group": "greeting",
+      "context": "plain",
+      "index": 11,
+      "key": "o",
+      "buffer": "arigatou go",
+      "pause_ms": 0,
+      "gold": false,
+      "acceptable": false,
+      "score": 0.19
+    },
+    {
+      "id": "greeting_thanks",
+      "group": "greeting",
+      "context": "plain",
+      "index": 12,
+      "key": "z",
+      "buffer": "arigatou goz",
+      "pause_ms": 0,
+      "gold": false,
+      "acceptable": false,
+      "score": 0.14
+    },
+    {
+      "id": "greeting_thanks",
+      "group": "greeting",
+      "context": "plain",
+      "index": 13,
+      "key": "a",
+      "buffer": "arigatou goza",
+      "pause_ms": 0,
+      "gold": false,
+      "acceptable": false,
+      "score": 0.15
+    },
+    {
+      "id": "greeting_thanks",
+      "group": "greeting",
+      "context": "plain",
+      "index": 14,
+      "key": "i",
+      "buffer": "arigatou gozai",
+      "pause_ms": 0,
+      "gold": false,
+      "acceptable": false,
+      "score": 0.16
+    },
+    {
+      "id": "greeting_thanks",
+      "group": "greeting",
+      "context": "plain",
+      "index": 15,
+      "key": "m",
+      "buffer": "arigatou gozaim",
+      "pause_ms": 0,
+      "gold": false,
+      "acceptable": false,
+      "score": 0.27
+    },
+    {
+      "id": "greeting_thanks",
+      "group": "greeting",
+      "context": "plain",
+      "index": 16,
+      "key": "a",
+      "buffer": "arigatou gozaima",
+      "pause_ms": 0,
+      "gold": false,
+      "acceptable": false,
+      "score": 0.21
+    },
+    {
+      "id": "greeting_thanks",
+      "group": "greeting",
+      "context": "plain",
+      "index": 17,
+      "key": "s",
+      "buffer": "arigatou gozaimas",
+      "pause_ms": 0,
+      "gold": false,
+      "acceptable": false,
+      "score": 0.22
+    },
+    {
+      "id": "greeting_thanks",
+      "group": "greeting",
+      "context": "plain",
+      "index": 18,
+      "key": "u",
+      "buffer": "arigatou gozaimasu",
+      "pause_ms": 0,
+      "gold": false,
+      "acceptable": false,
+      "score": 0.42
+    },
+    {
+      "id": "greeting_thanks",
+      "group": "greeting",
+      "context": "plain",
+      "index": 19,
+      "key": " ",
+      "buffer": "arigatou gozaimasu ",
+      "pause_ms": 0,
+      "gold": true,
+      "acceptable": true,
+      "score": 0.84
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+[
+  {"id":"english_iowa_sentence","group":"english_sentence","context":"plain","keys":"Iowa is a state in the US.","trigger_after":[],"pause_after_ms":{"26":700}},
+  {"id":"english_no_to","group":"english_sentence","context":"plain","keys":"I said no to the offer.","trigger_after":[],"pause_after_ms":{"23":700}},
+  {"id":"english_data_ready","group":"english_sentence","context":"plain","keys":"The data is ready.","trigger_after":[],"pause_after_ms":{"18":700}},
+  {"id":"english_question","group":"english_sentence","context":"plain","keys":"Could you send the report tomorrow?","trigger_after":[],"pause_after_ms":{"35":700}},
+  {"id":"english_two_sentences","group":"english_sentence","context":"plain","keys":"I sent the file. Please check it.","trigger_after":[],"pause_after_ms":{"16":700,"33":700}},
+  {"id":"english_comma_pause","group":"english_sentence","context":"plain","keys":"Please wait, I will check.","trigger_after":[],"pause_after_ms":{"12":700,"26":700}},
+  {"id":"english_decimal","group":"english_sentence","context":"plain","keys":"The value is 3.14.","trigger_after":[],"pause_after_ms":{"15":100,"18":700}},
+  {"id":"english_contraction","group":"english_sentence","context":"plain","keys":"I'm working on it.","trigger_after":[],"pause_after_ms":{"18":700}},
+  {"id":"english_technical","group":"english_sentence","context":"plain","keys":"We use Python and Emacs.","trigger_after":[],"pause_after_ms":{"24":700}},
+  {"id":"english_greeting","group":"english_sentence","context":"plain","keys":"Hello, how are you?","trigger_after":[],"pause_after_ms":{"6":100,"19":700}},
+  {"id":"english_long_report","group":"english_sentence","context":"plain","keys":"I will review the report tonight. Please send me your comments before the meeting tomorrow.","trigger_after":[],"pause_after_ms":{"33":700,"91":700}},
+  {"id":"english_long_review","group":"english_sentence","context":"plain","keys":"Could you check the latest changes and let me know if anything needs to be updated?","trigger_after":[],"pause_after_ms":{"83":700}},
+  {"id":"english_long_work","group":"english_sentence","context":"plain","keys":"The train was delayed this morning, so I worked from home and joined the meeting online.","trigger_after":[],"pause_after_ms":{"35":700,"88":700}},
+  {"id":"english_long_software","group":"english_sentence","context":"plain","keys":"We tested the new version on Monday. It worked well, but the documentation still needs work.","trigger_after":[],"pause_after_ms":{"36":700,"52":700,"92":700}},
+  {"id":"english_long_travel","group":"english_sentence","context":"plain","keys":"I am planning a trip to Iowa next month. Do you know a good place to stay near the station?","trigger_after":[],"pause_after_ms":{"40":700,"91":700}}
+]

@@ -1,0 +1,15 @@
+[
+  {"id":"greeting_thanks","group":"greeting","context":"plain","keys":"arigatou gozaimasu ","japanese":"ありがとうございます","trigger_after":[19],"acceptable_after":[9]},
+  {"id":"greeting_morning","group":"greeting","context":"plain","keys":"ohayou gozaimasu ","japanese":"おはようございます","trigger_after":[17]},
+  {"id":"question_are_you_ok","group":"question","context":"plain","keys":"daijoubu desuka?","japanese":"大丈夫ですか？","trigger_after":[16],"pause_after_ms":{"16":700}},
+  {"id":"weather_sunny","group":"sentence","context":"plain","keys":"kyouwa hare desu.","japanese":"今日は晴れです。","trigger_after":[17],"acceptable_after":[7],"pause_after_ms":{"17":700}},
+  {"id":"read_book","group":"sentence","context":"plain","keys":"honwo yomimashita.","japanese":"本を読みました。","trigger_after":[18],"acceptable_after":[6],"pause_after_ms":{"18":700}},
+  {"id":"acknowledge","group":"punctuation","context":"plain","keys":"hai, wakarimashita.","japanese":"はい、わかりました。","trigger_after":[19],"pause_after_ms":{"4":100,"19":700}},
+  {"id":"return_at_three","group":"sentence","context":"plain","keys":"kyouwa 3ji ni kaerimasu.","japanese":"今日は3時に帰ります。","trigger_after":[24],"acceptable_after":[7,14],"pause_after_ms":{"24":700}},
+  {"id":"english_iowa","group":"english","context":"plain","keys":"Iowa ","trigger_after":[]},
+  {"id":"decimal_pi","group":"number","context":"plain","keys":"3.14","trigger_after":[],"pause_after_ms":{"2":100}},
+  {"id":"shell_status","group":"code","context":"shell","keys":"git status ","trigger_after":[]},
+  {"id":"private_note","group":"sensitive","context":"gpg","keys":"himitsu no memo desu.","japanese":"秘密のメモです。","trigger_after":[],"pause_after_ms":{"21":700}},
+  {"id":"english_test","group":"english","context":"plain","keys":"this is a test.","trigger_after":[],"pause_after_ms":{"15":700}},
+  {"id":"code_number","group":"code","context":"code","keys":"data = 3.14","trigger_after":[]}
+]

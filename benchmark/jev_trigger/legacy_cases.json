@@ -1,0 +1,20 @@
+[
+  {"id":"particle_wa","group":"romanized","context":"plain","keys":"watashiwa ","trigger_after":[10]},
+  {"id":"particle_ga","group":"romanized","context":"plain","keys":"korega ","trigger_after":[7]},
+  {"id":"particle_wo","group":"romanized","context":"plain","keys":"honwo ","trigger_after":[6]},
+  {"id":"particle_desu","group":"romanized","context":"plain","keys":"kyouhaseiten desu ","trigger_after":[18]},
+  {"id":"unfinished_word","group":"romanized","context":"plain","keys":"dhisutoribyu-son","trigger_after":[]},
+  {"id":"normal_space","group":"romanized","context":"plain","keys":"ohayou gozaimasu ","trigger_after":[17]},
+  {"id":"punctuation_period","group":"punctuation","context":"plain","keys":"arigatou.","trigger_after":[9],"pause_after_ms":{"9":700}},
+  {"id":"punctuation_question","group":"punctuation","context":"plain","keys":"daijoubu?","trigger_after":[9],"pause_after_ms":{"9":700}},
+  {"id":"fast_comma","group":"punctuation","context":"plain","keys":"hai,sorede","trigger_after":[],"pause_after_ms":{"4":100}},
+  {"id":"decimal","group":"number","context":"plain","keys":"3.14","trigger_after":[],"pause_after_ms":{"2":100}},
+  {"id":"english_sentence","group":"english","context":"plain","keys":"this is a test. ","trigger_after":[],"pause_after_ms":{"15":700}},
+  {"id":"english_particle_suffix","group":"english","context":"plain","keys":"the data ","trigger_after":[]},
+  {"id":"code_assignment","group":"code","context":"code","keys":"data = 3.14","trigger_after":[]},
+  {"id":"shell_command","group":"code","context":"shell","keys":"git status ","trigger_after":[]},
+  {"id":"gpg_file","group":"sensitive","context":"gpg","keys":"himitsuwa ","trigger_after":[]},
+  {"id":"backspace_correction","group":"editing","context":"plain","keys":"watashiwx\ba ","trigger_after":[12]},
+  {"id":"backspace_after_boundary","group":"editing","context":"plain","keys":"watashiwa \b","trigger_after":[10]},
+  {"id":"japanese_mixed","group":"mixed","context":"plain","keys":"今日はashita ","trigger_after":[10]}
+]
