@@ -15,11 +15,63 @@ Sumibiで文章を入力しているときに、TypeSafeのJevを使って「い
 
 評価値に閾値（暫定値は0.8）を適用して期待する位置と比較し、1例文につき1枚のグラフで入力中の変化を可視化します。各時点は独立に評価するため、途中で実際に変換した後の文字列やカーソルの変化は再現していません。
 
+## 結論のサマリー
+
+**Jevは今回のデータでは英語入力中の変換を抑制し、日本語の区切りを概ね検出できました。変換する基準は評価値0.8以上を暫定値とし、Sumibiへの採用に向けた検証を続けます。**
+
+最新の全件測定は47ケース・1239打鍵、API呼び出し1207回です（2026-10-03、`jev-1.13.0`、質問文 `v2`）。shell・gpgの32打鍵はAPI未送信です。
+
+- **英語の抑制**：英文15ケース・685打鍵で発動0回。長文5件や句読点後の待機も含みます。
+- **日本語の変換タイミング**：好ましい28位置中25位置を検出。見逃しは半角 `!` の2位置と `ohayou gozaimasu ` の最後の空白（0.79）です。`!` は利用頻度を踏まえて対応を見送りますが、測定時のラベルは保持しています。
+- **早めの変換**：許容できる早めの発動8回、ラベル上は待ちたい位置での発動10回。`arigatou ` のように、変換してもよいが後まで待つほうが好ましい区切りを扱うには、固定閾値だけでは限界があります。
+- **応答時間・費用**：応答時間の中央値229.4 ms、95%点359.0 ms、全1207回の費用概算は約0.026米ドル。入力を止めない非同期処理が必要です。
+
+この結果は今回の入力例を独立に判定したものです。全ての英文での抑制や、実際に変換した後の入力操作は保証しません。採用判断には実際のEmacs上での操作性と、早めの発動の扱いを検証する必要があります。製品への組み込みはまだ行っていません。
+
+詳しい解釈は [VISUAL_REPORT.md](VISUAL_REPORT.md)、最新の全例文のグラフは [INDEX.md](keystroke_graphs/INDEX.md)、実測値は [all_scores.json](all_scores.json) を参照してください。
+
+## 計測環境の構成
+
+ローカルのPythonスクリプトでキー入力を再現し、JevにHTTPリクエストを逐次送信します。EmacsやSumibi本体を動かした計測ではありません。
+
+```mermaid
+flowchart TD
+    subgraph local["ローカル環境：macOS / Python"]
+        data["テストデータ JSON<br/>日本語・英語・記号・対照例"]
+        bench["bench.py<br/>1打鍵ごとの状態を生成"]
+        key["環境変数<br/>TYPESAFE_API_KEY"]
+        excluded["shell / gpg はローカル除外<br/>API未送信・評価値0"]
+        proxy["rule-proxy<br/>現行ルールの近似・API不要"]
+        result["判定結果と集計<br/>all_scores.json"]
+        plots["Matplotlib<br/>plot_all_keystrokes.py"]
+        gallery["各例文のPNG・SVG<br/>keystroke_graphs/INDEX.md"]
+    end
+    subgraph cloud["TypeSafe API"]
+        jev["Jev：model = jev-latest<br/>POST https://api.typesafe.ai/v1/systemone"]
+    end
+    data --> bench
+    key -. "Bearer認証" .-> bench
+    bench -->|"通常のJev測定：入力状態・質問文"| jev
+    jev -->|"評価値・使用トークン数・モデル名"| bench
+    bench -->|"送信除外"| excluded
+    bench -->|"比較用の別実行"| proxy
+    excluded --> result
+    proxy --> result
+    bench -->|"評価値・応答時間・期待位置との比較"| result
+    result --> plots
+    plots --> gallery
+```
+
+接続先はベンチマーク内の固定エンドポイント `https://api.typesafe.ai/v1/systemone` です。Sumibiの `SUMIBI_AI_BASEURL` や `SUMIBI_AI_API_KEY` は使用せず、`TYPESAFE_API_KEY` で認証します。リクエストでは `jev-latest` を指定し、応答で返る実際のモデル名を記録します（今回の測定では `jev-1.13.0`）。
+
+期待する変換位置のラベルはローカルの集計にのみ使い、APIには送りません。APIの使用トークン数から概算費用を算出します。`rule-proxy` は別の比較実行で、上図のJSONファイル名は全件Jev測定の保存例です。グラフ生成は保存済みJSONを読むだけで、追加のAPI呼び出しはありません。
+
 ## まず読む資料
 
 このREADMEは検証の入口と実行手順です。結果を見る場合は、**[グラフ付き結果資料（VISUAL_REPORT.md）](VISUAL_REPORT.md)** を開いてください。
 
 - **結果をグラフで見る** → [VISUAL_REPORT.md](VISUAL_REPORT.md)：全体比較、日本語・英語の1文字ごとの評価値、閾値0.8という暫定判断。
+- **全例文の打鍵グラフを見る** → [グラフ一覧（INDEX.md）](keystroke_graphs/INDEX.md)：全47例の1文字ごとの評価値を、1例文1グラフで掲載。
 - **要点だけ読む** → [SUMMARY.md](SUMMARY.md)：調査結果の短いサマリー。
 - **検証を再実行する** → このREADMEの「[実行手順](#実行手順)」：APIキーの設定、測定、グラフ生成。
 - **集計の詳細を確認する** → [NATURAL_RESULTS.md](NATURAL_RESULTS.md)：最初の自然文セットの実測記録。
@@ -99,7 +151,7 @@ python3 benchmark/jev_trigger/bench.py --backend jev --prompt-version v2 --datas
 python3 benchmark/jev_trigger/plot_all_keystrokes.py benchmark/jev_trigger/all_scores.json
 ```
 
-結果は `keystroke_graphs/INDEX.md` から閲覧できます。描画コマンドはAPIを呼び出しません。shell/gpgの2ケースはAPI送信を避け、グラフにも「ローカル除外・API未測定」と表示します。
+結果は [グラフ一覧（keystroke_graphs/INDEX.md）](keystroke_graphs/INDEX.md) から閲覧できます。描画コマンドはAPIを呼び出しません。shell/gpgの2ケースはAPI送信を避け、グラフにも「ローカル除外・API未測定」と表示します。
 
 ### 作業終了時
 
