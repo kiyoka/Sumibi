@@ -22,6 +22,15 @@ emacs -batch -Q \
 
 ### テストファイル
 - `test/sumibi-romaji-to-hiragana-test.el` - ローマ字→ひらがな変換のテスト
+- `test/sumibi-jev-test.el` - Jev非同期判定、古い応答の破棄、除外条件、候補・履歴・Undo、HTTPキャンセル・タイムアウトのテスト（APIキー不要・通信なし）
+
+### Jev方式のテスト
+
+```sh
+emacs -batch -Q -L lisp -l test/sumibi-jev-test.el -f ert-run-tests-batch-and-exit
+```
+
+実APIを使うEmacs上の操作確認は [AMBIENT.md](AMBIENT.md#検証と制約) を参照してください。モックテストの通過だけでは実API・実操作の確認完了とはみなしません。
 
 ### テストカテゴリ
 1. **ローマ字変換テスト** - ローマ字からひらがなへの変換

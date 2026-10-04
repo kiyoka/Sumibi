@@ -87,6 +87,10 @@ test:
 	      -f ert-run-tests-batch-and-exit
 	emacs -batch -Q \
 	      -L lisp \
+	      -l test/sumibi-jev-test.el \
+	      -f ert-run-tests-batch-and-exit
+	emacs -batch -Q \
+	      -L lisp \
 	      -l test/sumibi-http-retry-test.el \
 	      -f ert-run-tests-batch-and-exit
 	emacs -batch -Q \

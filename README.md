@@ -98,6 +98,8 @@ Sumibiの通常の変換はCtrl+Jで実行しますが、アンビエント変�
 
 新機能のアンビエント変換についてはこちら。[AMBIENT](AMBIENT.md)
 
+既定の助詞・句読点ルールに加え、`sumibi-ambient-backend` を `jev` にするとJevによる非同期判定を利用できます。Jev専用の `TYPESAFE_API_KEY` と、従来の漢字変換用API設定が必要です。設定・送信範囲・費用上限は [Jev方式の説明](AMBIENT.md#jev方式を有効にする) を参照してください。
+
 ## Undo
 
 変換結果が気に入らない時は、ESC-u キーを入力することでUndoできます。

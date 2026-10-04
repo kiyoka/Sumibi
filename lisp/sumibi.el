@@ -166,6 +166,11 @@ non-nilの場合、助詞の後にスペースを入力すると自動的に変�
   :type 'boolean
   :group 'sumibi)
 
+(defcustom sumibi-ambient-backend 'rules
+  "アンビエント変換の判定方式。rules は従来ルール、jev は非同期API判定。"
+  :type '(choice (const rules) (const jev))
+  :group 'sumibi)
+
 (defvar sumibi-auto-convert-particles
   '("wa" "ha" "ga" "wo" "ni" "de" "to" "kara" "made" "he" "mo" "no" "ya" "desu")
   "自動変換のトリガーとなる助詞のリスト。
@@ -1366,16 +1371,21 @@ Argument BUF : http response buffer"
                                 arg-n
                                 sync-func
                                 deferred-func
-                                deferred-func2)
+                                deferred-func2
+                                &optional async-handler)
   "OpenAI 互換 ChatCompletions API を呼び出します。
 Argument MESSAGE-LST : ChatCompletions API に渡す role と content のリスト。
 Argument ARG-N : ChatCompletions API の引数 n の値。
 Argument SYNC-FUNC : 同期呼び出し時のコールバック関数。非同期呼び出しの場合は nil を指定します。
 Argument DEFERRED-FUNC : 非同期呼び出し時のコールバック関数 (1)。
-Argument DEFERRED-FUNC2 : 非同期呼び出し時のコールバック関数 (2)。"
+Argument DEFERRED-FUNC2 : 非同期呼び出し時のコールバック関数 (2)。
+ASYNC-HANDLER : 任意の安全な非同期ハンドラ。JSON本文とエラーを受け取る。"
   (sumibi-debug-print (format "sumibi-openai-http-post()\n"))
   (let* ((base (sumibi-ai-base-url))
-         (url (concat base "/chat/completions")))
+         (url (concat base "/chat/completions"))
+         (url-request-method nil)
+         (url-request-extra-headers nil)
+         (url-request-data nil))
     (setq url-request-method "POST")
     (setq url-http-version "1.1")
     (setq url-request-extra-headers
@@ -1407,6 +1417,9 @@ Argument DEFERRED-FUNC2 : 非同期呼び出し時のコールバック関数 (2
            "  ] "
            "}"))
     (cond
+     (async-handler
+      (sumibi--jev-http-post url url-request-extra-headers url-request-data
+                            sumibi-api-timeout async-handler))
      ((not deferred-func2) ;; 同期バージョン
       (let ((status-and-body (sumibi--http-retrieve-synchronously url)))
         (funcall sync-func (cdr status-and-body))))
@@ -1456,7 +1469,8 @@ Argument DEFERRED-FUNC2 : 非同期呼び出し時のコールバック関数 (2
         (setq count (1+ count)))
       result))))
 
-(defun sumibi-roman-to-kanji-with-surrounding (roman surrounding arg-n deferred-func2)
+(defun sumibi-roman-to-kanji-with-surrounding (roman surrounding arg-n deferred-func2
+                                                     &optional async-results)
   "ローマ字で書かれた文章を **OpenAI 互換** サーバーを使って変換し、
 結果を文字列で返します。変換対象の文章の周辺の文章も受け取ります。
 
@@ -1467,6 +1481,7 @@ ROMAN: 変換対象のローマ字文字列 (行頭のプレフィックス込�
 SURROUNDING: 変換対象周辺の文章
 ARG-N: 候補を何件返すか
 DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
+ASYNC-RESULTS: 任意のハンドラ。候補文字列リストとエラーを受け取り、挿入は行わない。
 戻り値: (\"1番目の文章の文字列\" \"2番目の文章の文字列\" \"3番目の文章の文字列\" ...)"
   ;; プレフィックスを抽出して保持 ----------------------------------
   (sumibi-debug-print (format "sumibi-roman-to-kanji-with-surrounding()\n"))
@@ -1481,90 +1496,104 @@ DEFERRED-FUNC2: 非同期呼び出し時のコールバック関数(2).
     ;; OpenAI backend ------------------------------------------------
     (let ((saved-marker (point-marker))
           (result nil))
-      (sumibi-openai-http-post
-       (list
-	(cons "system"
-	      (concat
-	       "あなたはローマ字とひらがなを日本語に変換するアシスタントです。"
-	       "ローマ字の 「nn」 は 「ん」と読んでください。"
-	       "[](URL)のようなmarkdown構文は維持してください。"
-	       "# や ## や ### や #### のようなmarkdown構文は維持してください。"
-	       "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
-	       "ローマ字の字面をそのままひらがなや漢字にするだけで、元のローマ字にない文章を作り出さないでください。"
-	       "出力は変換後の一文のみ。注釈や説明は一切付けないください。"
-	       "もし、入力された文章が英語の文章と判断できた場合は、日本語に翻訳してください。"))
-	(cons "user"
-	      (concat
-	       "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
-	       " 周辺の文章は、「こんにちは、中野です。watashi no namae ha nakano desu . どうぞよろしくお願いします。」"
-	       "のような文章になっています。"
-	       "周辺の文脈を見てそれに合った語彙を選んでください。: watashi no namae ha nakano desu ."))
-	(cons "assistant"
-	      "私の名前は中野です。")
-	(cons "user"
-	      (concat
-	       "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
-	       "周辺の文章は、「説明はここまでです。それ以外はikano toori desu .」"
-	       "のような文章になっています。"
-	       "周辺の文脈を見てそれに合った語彙を選んでください。: ikano toori desu ."))
-	(cons "assistant"
-	      "以下の通りです。")
-	(cons "user"
-	      (concat
-	       "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
-	       "周辺の文章は、「開始位置から終了位置までをhannishitei shimasuそれでは続いて、」"
-	       "のような文章になっています。"
-	       "周辺の文脈を見てそれに合った語彙を選んでください。: hannishitei shimasu"))
-	(cons "assistant"
-	      "範囲指定します")
-	(cons "user"
-	      (concat
-	       "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
-	       "周辺の文章は、「見てください!We succeeded in taking a photo like this:\n![example](https://www.example.com/dir1/dir2/example.png)、"
-	       "リアルな写真だと思いませんか？」"
-	       "のような文章になっています。"
-	       "周辺の文脈を見てそれに合った語彙を選んでください。: We succeeded in taking a photo like this:\n![example](https://www.example.com/dir1/dir2/example.png)"))
-	(cons "assistant"
-	      "このような写真を撮ることに成功しました：\n![例](https://www.example.com/dir1/dir2/example.png)")
-	(cons "user"
-	      (concat
-	       "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
-	       "周辺の文章は、「ここまでが前半の説明です。\n"
-	       "## this is markdown section\n"
-	       "\n"
-	       "」"
-	       "のような文章になっています。"
-	       "周辺の文脈を見てそれに合った語彙を選んでください。: ## this is markdown section"))
-	(cons "assistant"
-	      "## これはMarkdownのセクションです。")
-	(cons "user"
-	      (format
-	       (concat
-		"ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
-		"周辺の文章は、「%s」"
-		"のような文章になっています。"
-		"周辺の文脈を見てそれに合った語彙を選んでください。: %s")
-	       surrounding processed-roman)))
-       arg-n
-       (lambda (json-str)
-	 (let* ((json-obj (json-parse-string json-str))
-                (lst (sumibi-analyze-openai-json-obj json-obj arg-n)))
-           (setq result (mapcar (lambda (s) (concat prefix s)) lst))))
-       (lambda (json-str)
-	 (let* ((json-obj (json-parse-string json-str))
-		(lst (mapcar (lambda (s) (concat prefix s))
-			     (sumibi-analyze-openai-json-obj json-obj arg-n))))
-           (when (and lst (null deferred-func2))
-	     (setq result lst))
-           (when lst
-	     (save-excursion
-	       (goto-char (marker-position saved-marker))
-	       (insert (car lst))
-	       ;; 見出し `###` 等の直後にスペースが無ければ補完する
-	       (sumibi--ensure-space-after-heading (marker-position saved-marker))
-	       (goto-char (marker-position saved-marker))))))
-       deferred-func2)
-      result)))
+      (let ((request
+             (sumibi-openai-http-post
+              (list
+	       (cons "system"
+	             (concat
+	              "あなたはローマ字とひらがなを日本語に変換するアシスタントです。"
+	              "ローマ字の 「nn」 は 「ん」と読んでください。"
+	              "[](URL)のようなmarkdown構文は維持してください。"
+	              "# や ## や ### や #### のようなmarkdown構文は維持してください。"
+	              "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
+	              "ローマ字の字面をそのままひらがなや漢字にするだけで、元のローマ字にない文章を作り出さないでください。"
+	              "出力は変換後の一文のみ。注釈や説明は一切付けないください。"
+	              "もし、入力された文章が英語の文章と判断できた場合は、日本語に翻訳してください。"))
+	       (cons "user"
+	             (concat
+	              "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
+	              " 周辺の文章は、「こんにちは、中野です。watashi no namae ha nakano desu . どうぞよろしくお願いします。」"
+	              "のような文章になっています。"
+	              "周辺の文脈を見てそれに合った語彙を選んでください。: watashi no namae ha nakano desu ."))
+	       (cons "assistant"
+	             "私の名前は中野です。")
+	       (cons "user"
+	             (concat
+	              "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
+	              "周辺の文章は、「説明はここまでです。それ以外はikano toori desu .」"
+	              "のような文章になっています。"
+	              "周辺の文脈を見てそれに合った語彙を選んでください。: ikano toori desu ."))
+	       (cons "assistant"
+	             "以下の通りです。")
+	       (cons "user"
+	             (concat
+	              "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
+	              "周辺の文章は、「開始位置から終了位置までをhannishitei shimasuそれでは続いて、」"
+	              "のような文章になっています。"
+	              "周辺の文脈を見てそれに合った語彙を選んでください。: hannishitei shimasu"))
+	       (cons "assistant"
+	             "範囲指定します")
+	       (cons "user"
+	             (concat
+	              "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
+	              "周辺の文章は、「見てください!We succeeded in taking a photo like this:\n![example](https://www.example.com/dir1/dir2/example.png)、"
+	              "リアルな写真だと思いませんか？」"
+	              "のような文章になっています。"
+	              "周辺の文脈を見てそれに合った語彙を選んでください。: We succeeded in taking a photo like this:\n![example](https://www.example.com/dir1/dir2/example.png)"))
+	       (cons "assistant"
+	             "このような写真を撮ることに成功しました：\n![例](https://www.example.com/dir1/dir2/example.png)")
+	       (cons "user"
+	             (concat
+	              "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
+	              "周辺の文章は、「ここまでが前半の説明です。\n"
+	              "## this is markdown section\n"
+	              "\n"
+	              "」"
+	              "のような文章になっています。"
+	              "周辺の文脈を見てそれに合った語彙を選んでください。: ## this is markdown section"))
+	       (cons "assistant"
+	             "## これはMarkdownのセクションです。")
+	       (cons "user"
+	             (format
+	              (concat
+		       "ローマ字とひらがなの文を漢字仮名混じり文にしてください。"
+		       "周辺の文章は、「%s」"
+		       "のような文章になっています。"
+		       "周辺の文脈を見てそれに合った語彙を選んでください。: %s")
+	              surrounding processed-roman)))
+              arg-n
+              (lambda (json-str)
+	        (let* ((json-obj (json-parse-string json-str))
+                       (lst (sumibi-analyze-openai-json-obj json-obj arg-n)))
+                  (setq result (mapcar (lambda (s) (concat prefix s)) lst))))
+              (lambda (json-str)
+	        (let* ((json-obj (json-parse-string json-str))
+		       (lst (mapcar (lambda (s) (concat prefix s))
+			            (sumibi-analyze-openai-json-obj json-obj arg-n))))
+                  (when (and lst (null deferred-func2))
+	            (setq result lst))
+                  (when lst
+	            (save-excursion
+	              (goto-char (marker-position saved-marker))
+	              (insert (car lst))
+	              ;; 見出し `###` 等の直後にスペースが無ければ補完する
+	              (sumibi--ensure-space-after-heading (marker-position saved-marker))
+	              (goto-char (marker-position saved-marker))))))
+              deferred-func2
+              (when async-results
+                (lambda (json-str error)
+                  (if error
+                      (funcall async-results nil error)
+                    (condition-case nil
+                        (let* ((obj (json-parse-string json-str))
+                               (lst (unless (gethash "error" obj)
+                                      (sumibi-analyze-openai-json-obj obj arg-n))))
+                          (if (and lst (cl-every (lambda (s) (and (stringp s) (> (length s) 0))) lst))
+                              (funcall async-results
+                                       (mapcar (lambda (s) (concat prefix s)) lst) nil)
+                            (funcall async-results nil 'invalid-response)))
+                      (error (funcall async-results nil 'invalid-response)))))))))
+        (if async-results request result)))))
 
 (defun sumibi-roman-to-yomigana (roman deferred-func2)
   "ローマ字で書かれた文章を **OpenAI 互換** サーバーを使って読み仮名を返します。
@@ -2901,7 +2930,8 @@ _ARG: (未使用)"
   "`pre-command-hook' 用: 次のコマンドが実行される前にタイマーをキャンセルする。
 これにより、ユーザーが句読点入力直後にすぐ次のキーを打った場合は
 自動変換を発動させない（debounce 動作）。"
-  (sumibi--ambient-cancel-punctuation-timer))
+  (sumibi--ambient-cancel-punctuation-timer)
+  (sumibi--jev-pre-command))
 
 (defun sumibi--ambient-punctuation-timer-fire (char buffer)
   "遅延タイマー満了時に呼ばれ、BUFFER で CHAR の自動変換を実行する。
@@ -2929,6 +2959,12 @@ _ARG: (未使用)"
      (member extension sumibi-ambient-exclude-file-extensions))))
 
 (defun sumibi-check-particle-trigger ()
+  "入力後に選択したアンビエント変換方式を実行する。"
+  (if (eq sumibi-ambient-backend 'jev)
+      (sumibi--jev-post-self-insert)
+    (sumibi--rule-particle-trigger)))
+
+(defun sumibi--rule-particle-trigger ()
   "スペースまたは句読点入力時、直前が助詞で終わっているかチェックし、条件を満たせば自動変換を実行する。"
   (sumibi-debug-print (format "sumibi-check-particle-trigger: enable=%s mode=%s select-mode=%s char-before=%s\n"
                               sumibi-ambient-enable
@@ -3055,9 +3091,18 @@ _ARG: (未使用)"
       (progn
         (add-hook 'post-self-insert-hook #'sumibi-check-particle-trigger nil t)
         (add-hook 'pre-command-hook #'sumibi--ambient-pre-command-cancel nil t)
+        (add-hook 'after-change-functions #'sumibi--jev-after-change nil t)
+        (add-hook 'post-command-hook #'sumibi--jev-post-command nil t)
+        (add-hook 'kill-buffer-hook #'sumibi--jev-stop nil t)
+        (add-hook 'change-major-mode-hook #'sumibi--jev-stop nil t)
         (sumibi-debug-print "sumibi-setup-auto-convert-hook: hook added\n"))
     (remove-hook 'post-self-insert-hook #'sumibi-check-particle-trigger t)
     (remove-hook 'pre-command-hook #'sumibi--ambient-pre-command-cancel t)
+    (remove-hook 'after-change-functions #'sumibi--jev-after-change t)
+    (remove-hook 'post-command-hook #'sumibi--jev-post-command t)
+    (remove-hook 'kill-buffer-hook #'sumibi--jev-stop t)
+    (remove-hook 'change-major-mode-hook #'sumibi--jev-stop t)
+    (sumibi--jev-stop)
     (sumibi--ambient-cancel-punctuation-timer)
     (sumibi-debug-print "sumibi-setup-auto-convert-hook: hook removed\n")))
 
@@ -3146,7 +3191,9 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
           (remove-hook 'after-change-major-mode-hook #'sumibi-auto-convert-hook-function)))
     (setq sumibi-mode (if (null arg) (not sumibi-mode)
                         (> (prefix-numeric-value arg) 0))))
-  (when sumibi-mode (run-hooks 'sumibi-mode-hook))
+  (if sumibi-mode
+      (run-hooks 'sumibi-mode-hook)
+    (sumibi-setup-auto-convert-hook))
 
   (sumibi-debug-print "sumibi-mode-internal :2\n"))
 
@@ -3154,11 +3201,10 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
 
 (defun sumibi-kill-sumibi-mode ()
   "バッファローカルな `sumibi-mode` を削除する."
-  (let ((buf (buffer-list)))
-    (while buf
-      (set-buffer (car buf))
+  (dolist (buf (buffer-list))
+    (with-current-buffer buf
       (kill-local-variable 'sumibi-mode)
-      (setq buf (cdr buf)))))
+      (sumibi-setup-auto-convert-hook))))
 
 
 (defun sumibi-mode-line-function ()
@@ -3194,7 +3240,8 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
         (setq sumibi-mode t))
     (progn
       (setq deactivate-current-input-method-function nil)
-      (setq sumibi-mode nil))))
+      (setq sumibi-mode nil)))
+  (sumibi-setup-auto-convert-hook))
 
 ;; input method 対応
 (defun sumibi-activate (&rest _arg)
@@ -3314,6 +3361,8 @@ point から行頭方向に同種の文字列が続く間を漢字変換しま�
 
 ;; Emacs終了時のフック設定
 (add-hook 'kill-emacs-hook 'sumibi-save-history-to-file)
+
+(require 'sumibi-jev)
 
 (provide 'sumibi)
 
