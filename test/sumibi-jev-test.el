@@ -23,6 +23,7 @@
          (sumibi-ambient-punctuation-delay 0.5)
          (sumibi-history-stack nil) (sumibi-use-fence nil)
          (sumibi-debug nil) (sumibi-henkan-kouho-list nil)
+         (sumibi-jev-debug nil)
          (sumibi-init t)
          (sumibi-jev-max-calls-per-buffer 1000)
          (process-environment (copy-sequence process-environment))
@@ -47,6 +48,84 @@
 
 (ert-deftest sumibi-jev-default-remains-rules ()
   (should (eq (default-value 'sumibi-ambient-backend) 'rules)))
+
+(ert-deftest sumibi-jev-programming-comments-and-strings-are-prose ()
+  (dolist (example '((emacs-lisp-mode ";;;arigatou gozaimasu " ";;;")
+                     (emacs-lisp-mode "(message \"arigatou gozaimasu " "(message \"")
+                     (python-mode "#arigatou gozaimasu " "#")
+                     (python-mode "message = 'arigatou gozaimasu " "message = '")
+                     (python-mode "message = \"\"\"arigatou gozaimasu " "message = \"\"\"")
+                     (c-mode "/*arigatou gozaimasu " "/*")
+                     (c-mode "//arigatou gozaimasu " "//")))
+    (sumibi-test--jev-buffer
+      (funcall (nth 0 example))
+      (insert (nth 1 example))
+      (let ((snapshot (sumibi--jev-snapshot 0)))
+        (should (equal (plist-get snapshot :context) "plain"))
+        (should (equal (plist-get snapshot :text) "arigatou gozaimasu "))
+        (sumibi--jev-submit snapshot)
+        (sumibi-test--jev-answer (car requests) 0.85)
+        (funcall (nth 4 (car conversions)) '("ありがとうございます") nil)
+        (should (equal (buffer-string) (concat (nth 2 example) "ありがとうございます")))))))
+
+(ert-deftest sumibi-jev-programming-code-remains-code ()
+  (sumibi-test--jev-buffer
+    (emacs-lisp-mode)
+    (insert "(setq arigatou ")
+    (let* ((snapshot (sumibi--jev-snapshot 0))
+           (payload (json-parse-string
+                     (decode-coding-string (sumibi--jev-payload snapshot) 'utf-8))))
+      (should (equal (gethash "context" (gethash "state" payload)) "code")))))
+
+(ert-deftest sumibi-jev-english-string-waits-and-preserves-delimiters ()
+  (sumibi-test--jev-buffer
+    (emacs-lisp-mode)
+    (insert "(message \"Please review the report ")
+    (save-excursion (insert "\")"))
+    (sumibi-check-particle-trigger)
+    (sumibi-test--jev-answer (car requests) 0.1)
+    (should-not conversions)
+    (should (equal (buffer-string) "(message \"Please review the report \")"))))
+
+(ert-deftest sumibi-jev-multiline-string-preserves-opening-and-closing-code ()
+  (sumibi-test--jev-buffer
+    (emacs-lisp-mode)
+    (insert "(message \"first line\narigatou gozaimasu ")
+    (save-excursion (insert "\")"))
+    (sumibi-check-particle-trigger)
+    (sumibi-test--jev-answer (car requests) 0.85)
+    (funcall (nth 4 (car conversions)) '("ありがとうございます") nil)
+    (should (equal (buffer-string) "(message \"first line\nありがとうございます\")"))))
+
+(ert-deftest sumibi-jev-safe-event-logging ()
+  (let ((log-buffer (generate-new-buffer " *jev-test-log*"))
+        (create-buffer (symbol-function 'get-buffer-create)))
+    (unwind-protect
+        (sumibi-test--jev-buffer
+          (let ((sumibi-jev-debug t))
+            (cl-letf (((symbol-function 'get-buffer-create)
+                       (lambda (name &optional inhibit-buffer-hooks)
+                         (if (equal name "*sumibi-debug*") log-buffer
+                           (funcall create-buffer name inhibit-buffer-hooks)))))
+              (insert "arigatou gozaimasu ")
+              (sumibi-check-particle-trigger)
+              (sumibi-test--jev-answer (car requests) 0.85)
+              (funcall (nth 4 (car conversions)) '("ありがとうございます") nil)
+              (sumibi--jev-notice 'timeout))
+            (with-current-buffer log-buffer
+              (let ((log (buffer-string)))
+                (should (string-match-p "\\[Jev\\] request=1" log))
+                (should (string-match-p "score=0.850 threshold=0.800 action=convert" log))
+                (should (string-match-p "conversion applying" log))
+                (should (string-match-p "error=timeout" log))
+                (should-not (string-match-p "arigatou\\|ありがとうございます\\|test-key\\|test-conversion-key" log))))))
+      (kill-buffer log-buffer))))
+
+(ert-deftest sumibi-jev-logging-can-be-disabled ()
+  (let ((sumibi-jev-debug nil))
+    (cl-letf (((symbol-function 'get-buffer-create)
+               (lambda (_) (ert-fail "disabled logging created a buffer"))))
+      (sumibi--jev-log "request=%d" 1))))
 
 (ert-deftest sumibi-jev-input-payload-and-negative-decision ()
   (sumibi-test--jev-buffer

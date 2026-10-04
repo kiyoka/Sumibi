@@ -19,6 +19,9 @@
 (defcustom sumibi-jev-threshold 0.8
   "Jev評価値がこの値以上なら変換する。"
   :type 'number :group 'sumibi)
+(defcustom sumibi-jev-debug t
+  "Jevの動作ログを*sumibi-debug*に出力する。入力本文やAPIキーは記録しない。"
+  :type 'boolean :group 'sumibi)
 (defcustom sumibi-jev-model "jev-latest"
   "Jev判定に使用するモデル名。"
   :type 'string :group 'sumibi)
@@ -49,6 +52,27 @@
 (defvar-local sumibi--jev-last-error nil)
 (defvar-local sumibi--jev-pre-command-tick nil)
 (defvar-local sumibi--jev-observed-generation nil)
+
+(defun sumibi--jev-log (format-string &rest args)
+  "Log a sanitized Jev event using FORMAT-STRING and ARGS."
+  (when sumibi-jev-debug
+    (let ((line (concat (format-time-string "%H:%M:%S ") "[Jev] "
+                        (apply #'format format-string args) "\n")))
+      (with-current-buffer (get-buffer-create "*sumibi-debug*")
+        (let ((inhibit-read-only t) (inhibit-modification-hooks t))
+          (save-excursion (goto-char (point-max)) (insert line)))))))
+
+(defun sumibi-jev-status ()
+  "Show current buffer's Jev state without exposing credentials or input."
+  (interactive)
+  (let ((key (getenv "TYPESAFE_API_KEY")))
+    (message "Jev: mode=%s enabled=%s backend=%s allowed=%s key-set=%s calls=%d/%d phase=%s pending=%s timer=%s error=%s"
+             sumibi-mode sumibi-ambient-enable sumibi-ambient-backend
+             (sumibi--jev-allowed-p) (and key (not (string-empty-p key)))
+             sumibi--jev-call-count sumibi-jev-max-calls-per-buffer
+             (plist-get sumibi--jev-inflight :phase)
+             (not (null sumibi--jev-pending)) (not (null sumibi--jev-timer))
+             sumibi--jev-last-error)))
 
 (defun sumibi--jev-http-post (url headers body timeout callback)
   "POST URL asynchronously with HEADERS and BODY; return a cancellation function.
@@ -164,16 +188,47 @@ TIMEOUT includes the entire operation.  Cancellation does not invoke CALLBACK."
 (defun sumibi--jev-notice (error)
   "Report ERROR once per distinct failure without keys, input, or response bodies."
   (unless (eq error sumibi--jev-last-error)
+    (sumibi--jev-log "error=%s; input unchanged" error)
     (setq sumibi--jev-last-error error)
     (message "Sumibi Jev: %s; input unchanged (Ctrl+J remains available)" error)))
+
+(defun sumibi--jev-input-context (end)
+  "Return (CONTEXT . LOWER-BOUND) at END, respecting syntax delimiters.
+Comments and string contents are prose; other programming text is code.
+Use the major mode's syntax parser, including syntax properties."
+  (save-excursion
+    (if (not (derived-mode-p 'prog-mode))
+        (cons "plain" (line-beginning-position))
+      (let* ((state (syntax-ppss end))
+             (string (nth 3 state))
+             (comment (nth 4 state))
+             (origin (nth 8 state)))
+        (if (not (or string comment))
+            (cons "code" (line-beginning-position))
+          (let ((start (max (line-beginning-position) origin)))
+            ;; Find the first position inside the construct, not its opener.
+            ;; This handles multi-character comment/string delimiters too.
+            (while (and (< start end)
+                        (let ((parsed (syntax-ppss start)))
+                          (not (and (equal (nth 8 parsed) origin)
+                                    (if string (nth 3 parsed) (nth 4 parsed))))))
+              (setq start (1+ start)))
+            ;; Preserve decorated prefixes such as Lisp's ";;;" as well.
+            (when (and comment (>= origin (line-beginning-position))
+                       (stringp comment-start-skip))
+              (goto-char origin)
+              (when (looking-at comment-start-skip)
+                (setq start (max start (min end (match-end 0))))))
+            (cons "plain" start)))))))
 
 (defun sumibi--jev-snapshot (pause-ms)
   "Capture a bounded input observation after PAUSE-MS milliseconds."
   (when (sumibi--jev-allowed-p)
     (let* ((end (point))
+           (context (sumibi--jev-input-context end))
            (start (save-excursion
                     (skip-chars-backward (concat sumibi-skip-chars "。、？")
-                                         (line-beginning-position))
+                                         (cdr context))
                     (point)))
            (text (buffer-substring-no-properties start end)))
       (when (and (<= (length text) sumibi-jev-max-context-length)
@@ -185,6 +240,7 @@ TIMEOUT includes the entire operation.  Cancellation does not invoke CALLBACK."
         (list :buffer (current-buffer) :generation sumibi--jev-generation
               :tick (buffer-chars-modified-tick) :point end :start start
               :text text :key (char-to-string (char-before)) :pause pause-ms
+              :context (car context)
               :settings (sumibi--jev-settings))))))
 
 (defun sumibi--jev-valid-p (snapshot)
@@ -207,7 +263,7 @@ TIMEOUT includes the entire operation.  Cancellation does not invoke CALLBACK."
     `((state . ((task . "Japanese romaji input method automatic-conversion trigger")
                 (buffer_before_cursor . ,(plist-get snapshot :text))
                 (latest_key . ,(plist-get snapshot :key))
-                (context . ,(if (derived-mode-p 'prog-mode) "code" "plain"))
+                (context . ,(plist-get snapshot :context))
                 (pause_after_latest_key_ms . ,(plist-get snapshot :pause))))
       (model . ,sumibi-jev-model)
       (questions . ((convert_now . ,sumibi--jev-question)))))
@@ -224,7 +280,10 @@ TIMEOUT includes the entire operation.  Cancellation does not invoke CALLBACK."
 (defun sumibi--jev-submit (snapshot)
   "Submit SNAPSHOT or replace the queued observation when already busy."
   (if sumibi--jev-inflight
-      (setq sumibi--jev-pending snapshot)
+      (progn
+        (sumibi--jev-log "queued generation=%d (latest input only)"
+                         (plist-get snapshot :generation))
+        (setq sumibi--jev-pending snapshot))
     (let ((key (getenv "TYPESAFE_API_KEY")))
       (cond
        ((not (and key (not (string-empty-p key)))) (sumibi--jev-notice 'missing-api-key))
@@ -239,6 +298,10 @@ TIMEOUT includes the entire operation.  Cancellation does not invoke CALLBACK."
         (setq sumibi--jev-inflight snapshot)
         (plist-put snapshot :phase 'decision)
         (cl-incf sumibi--jev-call-count)
+        (sumibi--jev-log "request=%d generation=%d chars=%d pause=%dms context=%s"
+                         sumibi--jev-call-count (plist-get snapshot :generation)
+                         (length (plist-get snapshot :text)) (plist-get snapshot :pause)
+                         (plist-get snapshot :context))
         (let ((cancel
                (sumibi--jev-http-post
                 sumibi-jev-endpoint
@@ -256,7 +319,10 @@ TIMEOUT includes the entire operation.  Cancellation does not invoke CALLBACK."
     (with-current-buffer (plist-get snapshot :buffer)
       (when (eq snapshot sumibi--jev-inflight)
         (if (not (sumibi--jev-valid-p snapshot))
-            (sumibi--jev-finish snapshot)
+            (progn
+              (sumibi--jev-log "decision discarded: stale generation=%d"
+                               (plist-get snapshot :generation))
+              (sumibi--jev-finish snapshot))
           (let (score)
             (unless failure
               (condition-case nil
@@ -265,6 +331,11 @@ TIMEOUT includes the entire operation.  Cancellation does not invoke CALLBACK."
                 (error (setq failure 'invalid-response)))
               (unless (and (numberp score) (<= 0 score 1))
                 (setq failure 'invalid-response)))
+            (unless failure
+              (sumibi--jev-log "score=%.3f threshold=%.3f action=%s generation=%d"
+                               score sumibi-jev-threshold
+                               (if (>= score sumibi-jev-threshold) "convert" "wait")
+                               (plist-get snapshot :generation)))
             (cond
              (failure (sumibi--jev-notice failure) (sumibi--jev-finish snapshot))
              ((>= score sumibi-jev-threshold)
@@ -275,6 +346,7 @@ TIMEOUT includes the entire operation.  Cancellation does not invoke CALLBACK."
 (defun sumibi--jev-convert (snapshot)
   "Request kanji conversion without deleting or blocking the input."
   (plist-put snapshot :phase 'conversion)
+  (sumibi--jev-log "conversion started generation=%d" (plist-get snapshot :generation))
   (let* ((raw (plist-get snapshot :text))
          (trimmed (string-trim-right raw))
          (last (and (> (length trimmed) 0) (substring trimmed -1)))
@@ -288,11 +360,13 @@ TIMEOUT includes the entire operation.  Cancellation does not invoke CALLBACK."
             (when (buffer-live-p (plist-get snapshot :buffer))
               (with-current-buffer (plist-get snapshot :buffer)
                 (when (eq snapshot sumibi--jev-inflight)
-                  (when (sumibi--jev-valid-p snapshot)
+                  (if (sumibi--jev-valid-p snapshot)
                     (if error
                         (sumibi--jev-notice error)
                       (sumibi--jev-apply snapshot roman suffix strings
-                                        (if fixed "固定文字列" "LLM"))))
+                                        (if fixed "固定文字列" "LLM")))
+                    (sumibi--jev-log "conversion discarded: stale generation=%d"
+                                     (plist-get snapshot :generation)))
                   (sumibi--jev-finish snapshot)))))))
     (condition-case nil
         (if (not (sumibi-get-api-key))
@@ -332,6 +406,8 @@ TIMEOUT includes the entire operation.  Cancellation does not invoke CALLBACK."
          (start (plist-get snapshot :start))
          (end (plist-get snapshot :point)))
     (when candidates
+      (sumibi--jev-log "conversion applying generation=%d candidates=%d"
+                       (plist-get snapshot :generation) (length candidates))
       (undo-boundary)
       (atomic-change-group
         (setq sumibi-genbun roman sumibi-last-roman (plist-get snapshot :text)
@@ -341,7 +417,8 @@ TIMEOUT includes the entire operation.  Cancellation does not invoke CALLBACK."
         (delete-region start end)
         (goto-char start)
         (insert (sumibi-get-display-string))
-        (sumibi--ensure-space-after-heading start)
+        (unless (derived-mode-p 'prog-mode)
+          (sumibi--ensure-space-after-heading start))
         (sumibi-display-function start (point) nil)
         (sumibi-select-kakutei))
       (undo-boundary))))
