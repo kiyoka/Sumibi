@@ -1,0 +1,414 @@
+{
+  "total_keystrokes": 1239,
+  "tuning_case_ids": [
+    "acknowledge",
+    "code_number",
+    "decimal_pi",
+    "english_iowa",
+    "english_test",
+    "greeting_morning",
+    "greeting_thanks",
+    "private_note",
+    "question_are_you_ok",
+    "read_book",
+    "return_at_three",
+    "shell_status",
+    "weather_sunny"
+  ],
+  "backends": {
+    "decisions": {
+      "at_common_threshold_0.8": {
+        "measured_keystrokes": 1207,
+        "locally_excluded_keystrokes": 32,
+        "failed_keystrokes": 0,
+        "errors": {},
+        "attempt_errors": {
+          "network_or_timeout": 1
+        },
+        "overall": {
+          "n": 1207,
+          "tp": 12,
+          "fp": 25,
+          "fn": 16,
+          "tn": 1154,
+          "precision": 0.3243,
+          "recall": 0.4286,
+          "f1": 0.3692
+        },
+        "preference_summary": {
+          "preferred_detected": 12,
+          "preferred_total": 28,
+          "preferred_recall": 0.4286,
+          "acceptable_but_nonpreferred": 9,
+          "unwanted_triggers": 16,
+          "acceptable_precision": 0.5676
+        },
+        "english_safety": {
+          "keystrokes": 685,
+          "cases": 15,
+          "false_triggers": 0,
+          "cases_with_trigger": 0,
+          "false_triggers_per_1000_keystrokes": 0.0,
+          "affected_cases": []
+        },
+        "threshold_sweep": {
+          "0.5": {
+            "preferred_detected": 28,
+            "preferred_total": 28,
+            "preferred_recall": 1.0,
+            "acceptable_but_nonpreferred": 9,
+            "unwanted_triggers": 47,
+            "acceptable_precision": 0.4405
+          },
+          "0.6": {
+            "preferred_detected": 27,
+            "preferred_total": 28,
+            "preferred_recall": 0.9643,
+            "acceptable_but_nonpreferred": 9,
+            "unwanted_triggers": 30,
+            "acceptable_precision": 0.5455
+          },
+          "0.7": {
+            "preferred_detected": 22,
+            "preferred_total": 28,
+            "preferred_recall": 0.7857,
+            "acceptable_but_nonpreferred": 9,
+            "unwanted_triggers": 24,
+            "acceptable_precision": 0.5636
+          },
+          "0.8": {
+            "preferred_detected": 12,
+            "preferred_total": 28,
+            "preferred_recall": 0.4286,
+            "acceptable_but_nonpreferred": 9,
+            "unwanted_triggers": 16,
+            "acceptable_precision": 0.5676
+          },
+          "0.9": {
+            "preferred_detected": 2,
+            "preferred_total": 28,
+            "preferred_recall": 0.0714,
+            "acceptable_but_nonpreferred": 6,
+            "unwanted_triggers": 4,
+            "acceptable_precision": 0.6667
+          },
+          "0.95": {
+            "preferred_detected": 0,
+            "preferred_total": 28,
+            "preferred_recall": 0.0,
+            "acceptable_but_nonpreferred": 0,
+            "unwanted_triggers": 0,
+            "acceptable_precision": 0.0
+          }
+        },
+        "latency_ms": {
+          "p50": 300.99,
+          "p95": 435.493,
+          "p99": 694.46
+        },
+        "latency_scope": "all completed API attempts including failures"
+      },
+      "dev_selected_threshold": 0.9,
+      "heldout_at_selected_threshold": {
+        "measured_keystrokes": 1042,
+        "locally_excluded_keystrokes": 0,
+        "failed_keystrokes": 0,
+        "errors": {},
+        "attempt_errors": {
+          "network_or_timeout": 1
+        },
+        "overall": {
+          "n": 1042,
+          "tp": 1,
+          "fp": 7,
+          "fn": 20,
+          "tn": 1014,
+          "precision": 0.125,
+          "recall": 0.0476,
+          "f1": 0.069
+        },
+        "preference_summary": {
+          "preferred_detected": 1,
+          "preferred_total": 21,
+          "preferred_recall": 0.0476,
+          "acceptable_but_nonpreferred": 3,
+          "unwanted_triggers": 4,
+          "acceptable_precision": 0.5
+        },
+        "english_safety": {
+          "keystrokes": 685,
+          "cases": 15,
+          "false_triggers": 0,
+          "cases_with_trigger": 0,
+          "false_triggers_per_1000_keystrokes": 0.0,
+          "affected_cases": []
+        },
+        "threshold_sweep": {
+          "0.5": {
+            "preferred_detected": 21,
+            "preferred_total": 21,
+            "preferred_recall": 1.0,
+            "acceptable_but_nonpreferred": 4,
+            "unwanted_triggers": 35,
+            "acceptable_precision": 0.4167
+          },
+          "0.6": {
+            "preferred_detected": 20,
+            "preferred_total": 21,
+            "preferred_recall": 0.9524,
+            "acceptable_but_nonpreferred": 4,
+            "unwanted_triggers": 24,
+            "acceptable_precision": 0.5
+          },
+          "0.7": {
+            "preferred_detected": 15,
+            "preferred_total": 21,
+            "preferred_recall": 0.7143,
+            "acceptable_but_nonpreferred": 4,
+            "unwanted_triggers": 19,
+            "acceptable_precision": 0.5
+          },
+          "0.8": {
+            "preferred_detected": 7,
+            "preferred_total": 21,
+            "preferred_recall": 0.3333,
+            "acceptable_but_nonpreferred": 4,
+            "unwanted_triggers": 12,
+            "acceptable_precision": 0.4783
+          },
+          "0.9": {
+            "preferred_detected": 1,
+            "preferred_total": 21,
+            "preferred_recall": 0.0476,
+            "acceptable_but_nonpreferred": 3,
+            "unwanted_triggers": 4,
+            "acceptable_precision": 0.5
+          },
+          "0.95": {
+            "preferred_detected": 0,
+            "preferred_total": 21,
+            "preferred_recall": 0.0,
+            "acceptable_but_nonpreferred": 0,
+            "unwanted_triggers": 0,
+            "acceptable_precision": 0.0
+          }
+        },
+        "latency_ms": {
+          "p50": 300.862,
+          "p95": 441.111,
+          "p99": 694.46
+        },
+        "latency_scope": "all completed API attempts including failures"
+      },
+      "model_versions": [
+        "gpt-6-luna"
+      ],
+      "started_at": "2026-10-06T22:52:16.124546+00:00",
+      "latency_p50_ms": 300.99,
+      "latency_p95_ms": 435.493,
+      "latency_p99_ms": 694.46,
+      "api_calls": 1208,
+      "input_tokens": 445510,
+      "estimated_usd": 0.044551,
+      "estimated_usd_per_1000_keystrokes": 0.035957,
+      "unknown_usage_attempts": 1,
+      "attempt_errors": {
+        "network_or_timeout": 1
+      }
+    },
+    "jev": {
+      "at_common_threshold_0.8": {
+        "measured_keystrokes": 1207,
+        "locally_excluded_keystrokes": 32,
+        "failed_keystrokes": 0,
+        "errors": {},
+        "attempt_errors": {},
+        "overall": {
+          "n": 1207,
+          "tp": 25,
+          "fp": 18,
+          "fn": 3,
+          "tn": 1161,
+          "precision": 0.5814,
+          "recall": 0.8929,
+          "f1": 0.7042
+        },
+        "preference_summary": {
+          "preferred_detected": 25,
+          "preferred_total": 28,
+          "preferred_recall": 0.8929,
+          "acceptable_but_nonpreferred": 8,
+          "unwanted_triggers": 10,
+          "acceptable_precision": 0.7674
+        },
+        "english_safety": {
+          "keystrokes": 685,
+          "cases": 15,
+          "false_triggers": 0,
+          "cases_with_trigger": 0,
+          "false_triggers_per_1000_keystrokes": 0.0,
+          "affected_cases": []
+        },
+        "threshold_sweep": {
+          "0.5": {
+            "preferred_detected": 28,
+            "preferred_total": 28,
+            "preferred_recall": 1.0,
+            "acceptable_but_nonpreferred": 9,
+            "unwanted_triggers": 57,
+            "acceptable_precision": 0.3936
+          },
+          "0.6": {
+            "preferred_detected": 28,
+            "preferred_total": 28,
+            "preferred_recall": 1.0,
+            "acceptable_but_nonpreferred": 9,
+            "unwanted_triggers": 38,
+            "acceptable_precision": 0.4933
+          },
+          "0.7": {
+            "preferred_detected": 28,
+            "preferred_total": 28,
+            "preferred_recall": 1.0,
+            "acceptable_but_nonpreferred": 9,
+            "unwanted_triggers": 17,
+            "acceptable_precision": 0.6852
+          },
+          "0.8": {
+            "preferred_detected": 25,
+            "preferred_total": 28,
+            "preferred_recall": 0.8929,
+            "acceptable_but_nonpreferred": 8,
+            "unwanted_triggers": 10,
+            "acceptable_precision": 0.7674
+          },
+          "0.9": {
+            "preferred_detected": 19,
+            "preferred_total": 28,
+            "preferred_recall": 0.6786,
+            "acceptable_but_nonpreferred": 0,
+            "unwanted_triggers": 0,
+            "acceptable_precision": 1.0
+          },
+          "0.95": {
+            "preferred_detected": 2,
+            "preferred_total": 28,
+            "preferred_recall": 0.0714,
+            "acceptable_but_nonpreferred": 0,
+            "unwanted_triggers": 0,
+            "acceptable_precision": 1.0
+          }
+        },
+        "latency_ms": {
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "latency_scope": "all completed API attempts including failures"
+      },
+      "dev_selected_threshold": 0.9,
+      "heldout_at_selected_threshold": {
+        "measured_keystrokes": 1042,
+        "locally_excluded_keystrokes": 0,
+        "failed_keystrokes": 0,
+        "errors": {},
+        "attempt_errors": {},
+        "overall": {
+          "n": 1042,
+          "tp": 14,
+          "fp": 0,
+          "fn": 7,
+          "tn": 1021,
+          "precision": 1.0,
+          "recall": 0.6667,
+          "f1": 0.8
+        },
+        "preference_summary": {
+          "preferred_detected": 14,
+          "preferred_total": 21,
+          "preferred_recall": 0.6667,
+          "acceptable_but_nonpreferred": 0,
+          "unwanted_triggers": 0,
+          "acceptable_precision": 1.0
+        },
+        "english_safety": {
+          "keystrokes": 685,
+          "cases": 15,
+          "false_triggers": 0,
+          "cases_with_trigger": 0,
+          "false_triggers_per_1000_keystrokes": 0.0,
+          "affected_cases": []
+        },
+        "threshold_sweep": {
+          "0.5": {
+            "preferred_detected": 21,
+            "preferred_total": 21,
+            "preferred_recall": 1.0,
+            "acceptable_but_nonpreferred": 4,
+            "unwanted_triggers": 42,
+            "acceptable_precision": 0.3731
+          },
+          "0.6": {
+            "preferred_detected": 21,
+            "preferred_total": 21,
+            "preferred_recall": 1.0,
+            "acceptable_but_nonpreferred": 4,
+            "unwanted_triggers": 28,
+            "acceptable_precision": 0.4717
+          },
+          "0.7": {
+            "preferred_detected": 21,
+            "preferred_total": 21,
+            "preferred_recall": 1.0,
+            "acceptable_but_nonpreferred": 4,
+            "unwanted_triggers": 12,
+            "acceptable_precision": 0.6757
+          },
+          "0.8": {
+            "preferred_detected": 19,
+            "preferred_total": 21,
+            "preferred_recall": 0.9048,
+            "acceptable_but_nonpreferred": 4,
+            "unwanted_triggers": 7,
+            "acceptable_precision": 0.7667
+          },
+          "0.9": {
+            "preferred_detected": 14,
+            "preferred_total": 21,
+            "preferred_recall": 0.6667,
+            "acceptable_but_nonpreferred": 0,
+            "unwanted_triggers": 0,
+            "acceptable_precision": 1.0
+          },
+          "0.95": {
+            "preferred_detected": 1,
+            "preferred_total": 21,
+            "preferred_recall": 0.0476,
+            "acceptable_but_nonpreferred": 0,
+            "unwanted_triggers": 0,
+            "acceptable_precision": 1.0
+          }
+        },
+        "latency_ms": {
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "latency_scope": "all completed API attempts including failures"
+      },
+      "model_versions": [
+        "jev-1.13.0"
+      ],
+      "started_at": "historical: see Jev VISUAL_REPORT",
+      "latency_p50_ms": 229.4,
+      "latency_p95_ms": 359.0,
+      "latency_p99_ms": null,
+      "api_calls": 1207,
+      "input_tokens": 617520,
+      "estimated_usd": 0.02593584,
+      "estimated_usd_per_1000_keystrokes": 0.020933,
+      "unknown_usage_attempts": 0,
+      "attempt_errors": {}
+    }
+  }
+}
