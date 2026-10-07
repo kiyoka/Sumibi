@@ -7,6 +7,15 @@ from pathlib import Path
 
 from run import DATASETS, THRESHOLDS, bench, load_rows, summarize
 
+GRAPH_GUIDE = [
+    "### 折れ線グラフの読み方", "",
+    "折れ線は各APIの変換評価値です。黄色・緑の帯は、テストデータにあらかじめ付けた期待する変換タイミングを示し、APIの評価値や実際に変換が起きた位置ではありません。", "",
+    "- 緑の帯：変換するのが好ましい打鍵位置（`trigger_after`）。",
+    "- 黄色の帯：変換してもよいが、もう少し待つ方が好ましい打鍵位置（`acceptable_after`）。",
+    "- 帯なし：今回のラベルでは、まだ変換せず待ってほしい打鍵位置。", "",
+    "例えば `arigatou␣gozaimasu␣` では、最初の空白が黄色、最後の空白が緑です。`␣` は空白を表します。帯は評価の基準であり、普遍的な唯一の正解を意味しません。", "",
+]
+
 
 def validated_rows(data, expected, backend):
     if data.get("backend") != backend or not data.get("complete_dataset") or data.get("prompt_version") != "v2":
@@ -155,7 +164,10 @@ def generate(args):
             report.extend([f"  途中の失敗試行：{item['attempt_errors']}。再試行後の評価値で品質を集計し、遅延は失敗試行も含めます。", ""])
         if item["unknown_usage_attempts"]:
             report.extend([f"  使用量不明の試行が{item['unknown_usage_attempts']}件あります。料金は判明分だけで、請求総額ではありません。", ""])
-    report.extend(["## 判断", "", "この集計だけでは採用を確定しません。新しい未見例文、繰り返し測定、コメント・文字列の追加データ、連続入力での間引き・古い応答破棄を含む実Emacs相当の評価が必要です。", "", "## 全例文：1例文1グラフ", ""])
+    report.extend(["## 判断", "",
+                   "数値でいうと、今回の共通閾値0.8ではJevが優位です。一方、SumibiですでにOpenAIのアクセスキーを利用する運用なら、別サービスの契約・キー管理を増やさずに使えるDecisions APIも総合評価では有力な選択肢です。グラフの共通した挙動を踏まえ、閾値・発動条件の調整と実操作での検証によって代替可能性を評価します。", "",
+                   "この集計だけでは採用を確定しません。新しい未見例文、繰り返し測定、コメント・文字列の追加データ、連続入力での間引き・古い応答破棄を含む実Emacs相当の評価が必要です。", "", "## 全例文：1例文1グラフ", ""])
+    report.extend(GRAPH_GUIDE)
     for case_id in dict.fromkeys(r["id"] for r in rows["decisions"]):
         series = {n: [r for r in rows[n] if r["id"] == case_id] for n in names}
         reference = series["decisions"]
