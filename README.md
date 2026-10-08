@@ -197,3 +197,13 @@ APIの費用が気になる方は小さい数字に、変換精度を上げた�
 
 LLMが使えない環境向けには、別プロジェクト「mozc-modeless」をご利用ください。
 [mozc-modeless](https://github.com/kiyoka/mozc-modeless)
+
+## JevとDecisions APIの比較検証
+
+キー入力ごとに「いま日本語変換を開始するか」をJevとOpenAI Decisions APIに判定させ、日本語の区切りでの発動、英語入力中の発動抑制、応答時間・費用を比較しました。漢字変換そのものの品質を評価したものではありません。
+
+数値でいうと、今回の条件・共通閾値0.8ではJevが優勢で、好ましい位置の検出はJev 25/28、Decisions 12/28でした。英語685打鍵では両者とも発動0件です。一方、SumibiですでにOpenAIのアクセスキーを使う運用なら、別サービスの契約・キー管理を増やさずに使えるDecisions APIも総合評価では有力な選択肢です。今回のDecisions実測と保存済みJev結果の比較であり、代替する際にはAPIごとの閾値・発動条件の調整と実操作での検証が必要です。
+
+- [比較検証の概要・実行手順](benchmark/decisions_trigger/README.md)
+- [結論サマリー](benchmark/decisions_trigger/SUMMARY.md)
+- [グラフ付き比較資料](benchmark/decisions_trigger/report/REPORT.md)
