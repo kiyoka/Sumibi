@@ -25,8 +25,9 @@
   :type 'natnum :group 'sumibi)
 (defconst sumibi--decisions-batch-size 32
   "Maximum observations per request, bounding shared input and questions.")
-(defcustom sumibi-decisions-debug t
-  "Decisionsの動作ログを*sumibi-debug*に出力する。入力本文やAPIキーは記録しない。"
+(defcustom sumibi-decisions-debug nil
+  "非nilならDecisionsの動作ログを*sumibi-debug*に出力する。
+通常は無効。原因調査中だけ有効にする。入力本文やAPIキーは記録しない。"
   :type 'boolean :group 'sumibi)
 (defcustom sumibi-decisions-debug-trace nil
   "Log individual typed characters and detailed state transitions.

@@ -48,9 +48,9 @@ init.elに以下を追加してください。
 
 動作確認には、入力しているバッファで `M-x sumibi-decisions-status` を実行します。有効状態、APIキー設定の有無（キー本文は非表示）、送信回数、処理段階、直近のエラーを表示します。
 
-Decisions専用ログは既定で `*sumibi-debug*` に出力します。時刻は `22:16:37.123` のようにミリ秒3桁付きで表示します。送信、評価値と閾値、変換開始・適用、古くなった結果の破棄、エラーを記録します。APIキー、入力本文、変換結果は記録しません。`(setq sumibi-decisions-debug nil)` で停止できます。既存の `sumibi-debug` を有効にする必要はありません（既存の汎用ログには本文が含まれる場合があります）。
+Decisions専用ログは既定で無効です。原因調査中だけ `(setq sumibi-decisions-debug t)` で有効にすると `*sumibi-debug*` に出力します。時刻は `22:16:37.123` のようにミリ秒3桁付きで表示します。送信、評価値と閾値、変換開始・適用、古くなった結果の破棄、エラーを記録します。APIキー、入力本文、変換結果は記録しません。`(setq sumibi-decisions-debug nil sumibi-decisions-debug-trace nil)` で通常ログ・詳細ログを停止できます。既存の `sumibi-debug` を有効にする必要はありません（既存の汎用ログには本文が含まれる場合があります）。エラー時の利用者向けメッセージはログ無効時も表示します。
 
-原因調査中だけ `(setq sumibi-decisions-debug-trace t)` を有効にすると、打鍵した1文字、コマンド名、`pre-command` / `after-change` / `post-self-insert` ごとの `generation=旧->新`、文字内容の更新番号 `char-tick=旧->新`、変更範囲・文字数、カーソル位置、待機キューの件数を記録します。応答時の `trace check` は送信時と現在の世代番号・更新番号・カーソル位置を比較し、`text-same`（本文一致）、`eligible`（自動変換可能）、`selected`（対象が選択中）、`settings-same`（設定一致）、`readonly` も表示します。
+原因調査中だけ `(setq sumibi-decisions-debug t sumibi-decisions-debug-trace t)` を有効にすると、打鍵した1文字、コマンド名、`pre-command` / `after-change` / `post-self-insert` ごとの `generation=旧->新`、文字内容の更新番号 `char-tick=旧->新`、変更範囲・文字数、カーソル位置、待機キューの件数を記録します。応答時の `trace check` は送信時と現在の世代番号・更新番号・カーソル位置を比較し、`text-same`（本文一致）、`eligible`（自動変換可能）、`selected`（対象が選択中）、`settings-same`（設定一致）、`readonly` も表示します。`sumibi-decisions-debug` がnilなら、詳細ログの設定がtでも出力しません。
 
 世代番号・更新番号は診断情報であり、番号が変わっただけでは応答を破棄しません。応答時には変換対象を取り直し、`start=旧->新` と `target-same`（開始・終了位置および本文の一致）も表示します。補完表示による一時的な挿入・削除で番号が増えても、対象が元に戻って `target-same=t` なら結果を使えます。詳細ログは既定で無効です。文章全体・API認証キー・応答本文は出しませんが、打鍵列から入力を復元できるため機密入力には使わず、共有前に確認してください。除外対象のバッファでは詳細ログも出しません。調査後は `(setq sumibi-decisions-debug-trace nil)` に戻してください。
 

@@ -520,6 +520,19 @@
                (lambda (_) (ert-fail "disabled logging created a buffer"))))
              (sumibi--decisions-log "request=%d" 1))))
 
+(ert-deftest sumibi-decisions-logging-is-disabled-by-default ()
+  (should-not (default-value 'sumibi-decisions-debug))
+  (should-not (default-value 'sumibi-decisions-debug-trace)))
+
+(ert-deftest sumibi-decisions-debug-off-also-suppresses-opted-in-trace ()
+  (sumibi-test--decisions-buffer
+   (let ((sumibi-decisions-debug nil) (sumibi-decisions-debug-trace t))
+     (cl-letf (((symbol-function 'get-buffer-create)
+                (lambda (&rest _) (ert-fail "disabled logging created a buffer"))))
+       (sumibi--decisions-log "request=%d" 1)
+       (sumibi--decisions-trace "command=%s" 'self-insert-command)
+       (sumibi--decisions-invalidate 'pre-command)))))
+
 (ert-deftest sumibi-decisions-trace-exposes-property-only-invalidation ()
   (sumibi-test--decisions-buffer
    (let ((sumibi-decisions-debug t) (sumibi-decisions-debug-trace t) events)
