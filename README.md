@@ -98,6 +98,8 @@ Sumibiの通常の変換はCtrl+Jで実行しますが、アンビエント変�
 
 新機能のアンビエント変換についてはこちら。[AMBIENT](AMBIENT.md)
 
+既定の助詞・句読点ルールに加え、`sumibi-ambient-backend` を `decisions` にするとOpenAI Decisions APIによる非同期判定を利用できます。`M-x customize-group RET sumibi RET` の「アンビエント変換方式」からも選択できます。既存のOpenAIキー（環境変数またはキーチェーン等）を利用し、漢字変換には従来のモデル設定を使います。Decisions方式ではOpenAIプロバイダーと公式OpenAI接続先が必要です。他社・ローカルの接続先ではエラーを表示し、送信しません。設定・送信範囲・費用上限は [Decisions方式の説明](AMBIENT.md#decisions方式を有効にする) を参照してください。
+
 ## Undo
 
 変換結果が気に入らない時は、ESC-u キーを入力することでUndoできます。
