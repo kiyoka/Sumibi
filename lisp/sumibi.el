@@ -168,12 +168,12 @@ non-nilの場合、`sumibi-ambient-backend' で選んだ方式で自動変換す
 
 (defcustom sumibi-ambient-backend 'rules
   "アンビエント変換の判定方式。
-rules は従来の助詞・句読点ルール、decisions は非同期API判定。
+rules はLispによるロジック（助詞・句読点）、decisions は非同期API判定。
 Decisions方式はOpenAIプロバイダーと公式接続先が必要。
 自動変換を使うには `sumibi-ambient-enable' も有効にする。"
-  :type '(choice (const :tag "従来ルール（助詞・句読点）" rules)
-                 (const :tag "OpenAI Decisions API（非同期判定）" decisions))
-  :tag "アンビエント変換方式"
+  :type '(choice (const :tag "Lisp logic (particles and punctuation)" rules)
+                 (const :tag "OpenAI Decisions API (asynchronous evaluation)" decisions))
+  :tag "Ambient conversion method"
   :group 'sumibi)
 
 (defvar sumibi-auto-convert-particles
@@ -2091,6 +2091,9 @@ Argument INVERSE-FLAG：逆変換かどうか"
 Argument B: リージョンの開始位置
 Argument E: リージョンの終了位置
 Argument INVERSE-FLAG：逆変換かどうか"
+  (when (eq sumibi-ambient-backend 'decisions)
+    (unless (sumibi--decisions-openai-connection-p)
+      (user-error "%s" sumibi--decisions-connection-error)))
   (sumibi-init)
   (when sumibi-init
     (when (/= b e)

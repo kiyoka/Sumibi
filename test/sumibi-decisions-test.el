@@ -24,6 +24,7 @@
          (sumibi-history-stack nil) (sumibi-use-fence nil)
          (sumibi-debug nil) (sumibi-henkan-kouho-list nil)
          (sumibi-decisions-debug nil)
+         (sumibi-decisions-threshold 0.8)
          (sumibi-decisions-batch-window-ms 0)
          (sumibi-api-key-source 'environment)
          (sumibi-provider 'openai)
@@ -329,6 +330,29 @@
          (should (string-match-p "OpenAI以外" (car messages)))
          (should (eq sumibi--decisions-last-error 'unsupported-provider)))))))
 
+(ert-deftest sumibi-decisions-endpoint-derived-from-conversion-base ()
+  (sumibi-test--decisions-buffer
+   (dolist (base '(nil "https://api.openai.com" "https://api.openai.com/v1"
+                  "https://api.openai.com/v1/" "https://api.openai.com:443/v1"))
+     (setenv "SUMIBI_AI_BASEURL" base)
+     (should (equal (sumibi--decisions-endpoint)
+                    (concat (sumibi-ai-base-url) "/decisions"))))
+   (setenv "SUMIBI_AI_BASEURL" "https://example.invalid/v1")
+   (should-error (sumibi--decisions-endpoint) :type 'user-error)))
+
+(ert-deftest sumibi-decisions-manual-conversion-rejects-non-openai ()
+  (sumibi-test--decisions-buffer
+   (setenv "SUMIBI_AI_BASEURL" "https://example.invalid/v1")
+   (insert "nihongo")
+   (cl-letf (((symbol-function 'sumibi-init)
+              (lambda () (ert-fail "Invalid connection initialized conversion"))))
+     (let ((error (should-error (sumibi-henkan-region (point-min) (point-max) nil)
+                               :type 'user-error)))
+       (should (string-match-p "OpenAI以外" (error-message-string error)))))
+   (should (equal (buffer-string) "nihongo"))
+   (should-not requests)
+   (should-not conversions)))
+
 (ert-deftest sumibi-decisions-connection-change-cancels-and-preserves-input ()
   (sumibi-test--decisions-buffer
    (insert "nihongo.") (sumibi-check-particle-trigger)
@@ -444,7 +468,7 @@
                      (python-mode "message = 'arigatou gozaimasu " "message = '")
                      (python-mode "message = \"\"\"arigatou gozaimasu " "message = \"\"\"")
                      (c-mode "/*arigatou gozaimasu " "/*")
-                     (c-mode "//arigatou gozaimasu " "//")))
+                     (c-mode "//arigatou gozaimasu " "/")))
     (sumibi-test--decisions-buffer
      (funcall (nth 0 example))
      (insert (nth 1 example))
@@ -613,7 +637,7 @@
    (let* ((request (car requests))
           (payload (json-parse-string (decode-coding-string (nth 2 request) 'utf-8)))
           (input (gethash "input" payload)))
-     (should (equal (car request) sumibi-decisions-endpoint))
+     (should (equal (car request) (sumibi--decisions-endpoint)))
      (should (equal (gethash "model" payload) "gpt-6-luna"))
      (let ((question (aref (gethash "questions" payload) 0)))
        (should (equal (gethash "type" question) "predicate"))
@@ -624,6 +648,16 @@
      (should-not conversions)
      (should-not sumibi--decisions-inflight)
      (should (equal (buffer-string) "I will review the report ")))))
+
+(ert-deftest sumibi-decisions-default-threshold ()
+  (should (= sumibi-decisions-threshold 0.5))
+  (dolist (score '(0.49 0.5))
+    (sumibi-test--decisions-buffer
+     (let ((sumibi-decisions-threshold 0.5))
+       (insert "nihongo")
+       (sumibi-check-particle-trigger)
+       (sumibi-test--decisions-answer (car requests) score)
+       (should (eq (not (null conversions)) (>= score 0.5)))))))
 
 (ert-deftest sumibi-decisions-threshold-and-asynchronous-conversion ()
   (sumibi-test--decisions-buffer
@@ -791,6 +825,42 @@
    (save-excursion (insert " popup text") (delete-region (- (point) 11) (point)))
    (funcall (nth 4 (car conversions)) '("日本語") nil)
    (should (equal (buffer-string) "日本語。"))))
+
+(ert-deftest sumibi-decisions-consumes-manual-slash-prefix-and-undo-restores-it ()
+  (sumibi-test--decisions-buffer
+   (buffer-enable-undo)
+   (insert "kokoha /henkan shimasen.")
+   (sumibi-check-particle-trigger)
+   (should (equal (plist-get sumibi--decisions-inflight :text) "henkan shimasen."))
+   (sumibi-test--decisions-answer (car requests) 0.95)
+   (should (equal (caar conversions) "henkan shimasen"))
+   (should (equal (buffer-string) "kokoha /henkan shimasen."))
+   (funcall (nth 4 (car conversions)) '("変換しません") nil)
+   (should (equal (buffer-string) "kokoha 変換しません。"))
+   (should (equal sumibi-last-roman "/henkan shimasen."))
+   (should (equal (caar (last sumibi-henkan-kouho-list)) "/henkan shimasen."))
+   (undo-only 1)
+   (should (equal (buffer-string) "kokoha /henkan shimasen."))))
+
+(ert-deftest sumibi-decisions-slash-prefix-change-invalidates-conversion ()
+  (sumibi-test--decisions-buffer
+   (insert "kokoha /henkan shimasen.")
+   (sumibi-check-particle-trigger)
+   (sumibi-test--decisions-answer (car requests) 0.95)
+   (save-excursion
+     (goto-char (plist-get sumibi--decisions-inflight :replace-start))
+     (delete-char 1) (insert ">"))
+   (funcall (nth 4 (car conversions)) '("変換しません") nil)
+   (should (equal (buffer-string) "kokoha >henkan shimasen."))))
+
+(ert-deftest sumibi-decisions-consumes-one-comment-slash-like-manual-conversion ()
+  (sumibi-test--decisions-buffer
+   (c-mode)
+   (insert "//henkan shimasen.")
+   (sumibi-check-particle-trigger)
+   (sumibi-test--decisions-answer (car requests) 0.95)
+   (funcall (nth 4 (car conversions)) '("変換しません") nil)
+   (should (equal (buffer-string) "/変換しません。"))))
 
 (ert-deftest sumibi-decisions-range-must-match-even-with-identical-text ()
   (sumibi-test--decisions-buffer
