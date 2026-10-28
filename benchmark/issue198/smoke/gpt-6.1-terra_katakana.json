@@ -1,0 +1,14 @@
+[
+  {
+    "surrounding_text": "男性青年誌で描くことが多いが、男性seinennshidekakukotonoriyuutoshite,dannseiseinennshiniokerudannseiyuuinoseiishiki(",
+    "henkan_text": "seinennshidekakukotonoriyuutoshite,dannseiseinennshiniokerudannseiyuuinoseiishiki(",
+    "expect": [
+      "青年誌で描くことの理由として、男性青年誌における男性優位の性意識（",
+      "青年誌で書くことの理由として、男性青年誌における男性優位の性意識（"
+    ],
+    "result": "青年誌で描くことの理由として、男性青年誌における男性優位の性意識（",
+    "cer": 0.0,
+    "at1": 1,
+    "elapsed_sec": 1.661718209
+  }
+]

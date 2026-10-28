@@ -26,7 +26,7 @@ class SumibiTypicalConvertClient:
     このライブラリは、sumibi.elのsumibi-roman-to-kanji-with-surrounding()関数と同じプロンプトで、
     LLMプロバイダーのchat.completion APIを呼び出すためのものです。
     """
-    def __init__(self, api_key=None, base_url=None, model=None, temperature=0.8, reasoning_effort=None, verbosity=None, timeout=None):
+    def __init__(self, api_key=None, base_url=None, model=None, temperature=0.8, reasoning_effort=None, verbosity=None, timeout=None, max_retries=None, service_tier=None):
         """
         Initialize the SumibiTypicalConvertClient.
 
@@ -58,7 +58,10 @@ class SumibiTypicalConvertClient:
         else:
             timeout_env = os.getenv("SUMIBI_AI_TIMEOUT")
             self.timeout = float(timeout_env) if timeout_env else 120.0
-        self.client = OpenAI(api_key=self.api_key, base_url=self.base_url, timeout=self.timeout)
+        options = {} if max_retries is None else {"max_retries": max_retries}
+        self.client = OpenAI(api_key=self.api_key, base_url=self.base_url, timeout=self.timeout, **options)
+        self.service_tier = service_tier
+        self.last_response_metadata = {}
 
     def convert(self, surrounding_text, text):
         """
@@ -133,7 +136,18 @@ class SumibiTypicalConvertClient:
         if self.verbosity is not None:
             api_params["verbosity"] = self.verbosity
 
+        if self.service_tier is not None:
+            api_params["service_tier"] = self.service_tier
+        self.last_response_metadata = {}
         response = self.client.chat.completions.create(**api_params)
+        usage = getattr(response, "usage", None)
+        self.last_response_metadata = {
+            "model": getattr(response, "model", None),
+            "service_tier": getattr(response, "service_tier", None),
+            "usage": usage.model_dump() if usage is not None else None,
+            "finish_reason": response.choices[0].finish_reason
+            if hasattr(response.choices[0], "finish_reason") else None,
+        }
         choice = response.choices[0]
 
         # Some providers (e.g. Gemini) can return a choice without a message when

@@ -133,6 +133,13 @@ python3 sumibi_bench.py evaluation_items.json output_katakana.json katakana_inpu
         result_ver2.4.0/gpt-6.1-sol_katakana.json
    ```
 
+   GPT-6.1 Terraの計測は [Issue #198の再現手順](issue198/README.md) を参照してください。`run_gpt_6_1_terra.py` はOpenAIキーをキーチェーンから読み込み、`reasoning_effort=none`・Standardで3方式各200件を計測し、使用トークン・費用・途中結果も保存します。
+
+   ```sh
+   # リポジトリルートから実行。出力先は未使用のディレクトリを指定。
+   python3 benchmark/run_gpt_6_1_terra.py --key-source keychain --output-dir /tmp/terra-new-run
+   ```
+
 2. Google日本語入力 (native) ベンチマーク実行
 
    ```bash
@@ -167,6 +174,7 @@ python3 sumibi_bench.py evaluation_items.json output_katakana.json katakana_inpu
   - `(low)`というサフィックスが付いているモデルは、reasoning_effortをlow指定したケースを指します。
   - gpt-5.6-terra, gpt-5.6-luna, gpt-5.6-solはreasoning_effortがnone固定です（`minimal` は非対応。thinking無効化のため `none` を明示指定）。
   - gpt-6.1-solは`reasoning_effort=low`、`verbosity=low`で計測します。[モデル仕様](https://developers.openai.com/api/docs/models/gpt-6.1-sol)では`none`と`minimal`は非対応で、推論を有効にしたリクエストでは`temperature`を指定しません。既存のgpt-6-solは`none`で計測しているため、精度・応答時間の比較には推論条件の差があります。コスト欄は入力500・出力200トークンの概算で、推論トークンを含む実際の請求額とは異なります。
+  - gpt-6.1-terraは`reasoning_effort=none`、`verbosity=low`、`temperature=1.0`、Standardで計測します。詳細な全件平均・中央値・p95・使用トークン・費用は [Issue #198の計測資料](issue198/README.md) を参照してください。
   - gemini-3.7-flashもreasoning_effortがnone固定です（`minimal` は 400 エラーで拒否されるため `none` を指定。公式ドキュメントの「Gemini 3系はthinkingを無効化できない」という記述とは実挙動が異なります）。
 
 ※2 `gemini-3.6-flash` は `gemini-3.7-flash` と同価格ながら、精度・速度の全項目で上回り、※1のセーフティフィルタ誤検知も発生しません（3モード計600件でブロック0件）。誤検知は 3.7 世代から導入されたもので、3.6以前には存在しません（Issue #173）。**IME用途では 3.7 より 3.6 を推奨します。**
@@ -205,6 +213,7 @@ python3 sumibi_bench.py evaluation_items.json output_katakana.json katakana_inpu
 | `gpt-5-mini` | 1.28 s | 35.9 % | $0.000525 | 低コストで中程度精度 |
 | `gpt-6-sol` | 1.32 s | 5.1 % | $0.003000 | gpt-5.6-solとほぼ同精度で**コスト半額・やや高速**。※3 |
 | `gpt-5.6-sol` | 1.42 s | 4.7 % | $0.006000 | **GPT-5.6系で最高精度**。ただしコストはterraの約1.8倍、luna比では約18倍 |
+| `gpt-6.1-terra` | 1.46 s | 3.7 % | $0.001500 | 推論オフで計測。GPT-6 Solよりローマ字入力のCERが低く、固定トークン数での概算費用は半額。ひらがなは CER 2.2% / 1.41秒（Issue #198） |
 | `gemini-3.1-flash-lite-preview` | 1.60 s | 13.3 % | $0.000425 | 低コストで高精度。**コスパ最優秀** |
 | `gemini-3.7-flash` | 1.80 s | 7.6 % | $0.001125 | **実用速度で最高精度クラス**。thinking off (`reasoning_effort=none`) で計測。※1 |
 | `gpt-5` | 1.86 s | 12.8 % | $0.002625 | 高精度で中程度コスト。2秒以内ギリギリ |
@@ -252,6 +261,8 @@ GPT-6系（Issue #182）は、GPT-5.6系の同名モデルと精度・速度が�
 
 **GPT-6.1 Sol（Issue #184）** はローマ字入力で CER 2.4% / 2.08秒、ひらがな入力で CER 0.6% / 1.66秒。GPT-6 Sol（ローマ字 CER 5.1% / 1.32秒、ひらがな CER 2.0% / 1.31秒）および GPT-5.6 Sol（ローマ字 CER 4.7% / 1.42秒、ひらがな CER 1.7% / 1.28秒）より高精度だが、ローマ字では2秒を少し超える。GPT-6.1 Sol は `reasoning_effort=none` に非対応で `low` を使用しているため、この差には推論設定の違いも含まれる。表の約$0.003000は固定トークン数で計算した概算で、実際には推論トークン分が加算される可能性がある。
 
+**GPT-6.1 Terra（Issue #198、2026-10-29）** は推論オフで3方式各200件を取得済みです。ローマ字は CER 3.7% / 1.46秒、ひらがなは CER 2.2% / 1.41秒、カタカナは CER 3.7% / 1.46秒（ここでの時間は従来どおりp95以下の平均）。全件平均は順に1.49 / 1.46 / 1.53秒です。GPT-6.1 Solより高速・低価格ですがCERは高く、ひらがなではGPT-6 SolよりCERと速度がやや劣る一方、完全一致率は88%でGPT-6 Solの83.5%を上回りました。通常料金・固定500入力/200出力トークンではSolの半額です。本計測606回の実使用量による参考費用は$0.374324（疎通確認9回を含め$0.380534）でした。[結果・条件・比較の詳細](issue198/README.md) / [集計JSON](issue198/summary.json)。同時期の再測定ではなく、Solとの推論条件差も含む参考比較です。
+
 # 入力形式による精度の違い（GitHub Issue #96 の成果）
 
 異なる入力形式（ローマ字、ひらがな、カタカナ）がLLMの変換精度に与える影響を調査しました。その結果、**ローカルLLMだけでなく、各種フロンティアモデルにおいても、ひらがな入力に変更することで劇的に変換精度が改善する**ことが実証されました。
@@ -263,6 +274,7 @@ GPT-6系（Issue #182）は、GPT-5.6系の同名モデルと精度・速度が�
 | gpt-6.1-sol | 2.4% | 1.0% | **0.6%** | **77%削減** |
 | gemini-3-pro-preview | **1.6%** | 2.1% | 1.9% | +19%増加 |
 | gemini-2.5-pro | 5.9% | 4.0% | **2.2%** | **63%削減** |
+| gpt-6.1-terra | 3.7% | 3.7% | **2.2%** | **40%削減** |
 | gpt-5.5 | **2.7%** | **2.6%** | 2.8% | +4%増加 |
 | gemini-3.6-flash | 4.8% | 4.6% | **2.7%** | **43%削減** |
 | gpt-5.6-sol | 4.7% | 2.9% | **1.7%** | **64%削減** |

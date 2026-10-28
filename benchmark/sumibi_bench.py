@@ -87,7 +87,11 @@ class SumibiBench:
         if model.startswith("gpt-5") or model.startswith("gpt-6"):
             verbosity = "low"  # Fixed to low for all gpt-5 / gpt-6 models
 
-        self.client = SumibiTypicalConvertClient(model=model, temperature=temperature, reasoning_effort=reasoning_effort, verbosity=verbosity)
+        options = {}
+        if model == "gpt-6.1-terra":
+            # Keep paid attempts explicit and use Standard latency, not Fast/Flex.
+            options = {"max_retries": 0, "service_tier": "default"}
+        self.client = SumibiTypicalConvertClient(model=model, temperature=temperature, reasoning_effort=reasoning_effort, verbosity=verbosity, **options)
         # collect conversion results
         self.result_arr = []
 

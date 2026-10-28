@@ -61,6 +61,7 @@ MASTER_COST: Dict[str, float] = {
     "gpt-5.6-sol": 0.006000,    # $4.00 input + $20.00 output → (500×4.00 + 200×20.00)/1M = $6.000/1K
     "gpt-6-sol": 0.003000,      # $2.00 input + $10.00 output → (500×2.00 + 200×10.00)/1M = $3.000/1K
     "gpt-6.1-sol": 0.003000,    # $2.00 input + $10.00 output → (500×2.00 + 200×10.00)/1M = $3.000/1K
+    "gpt-6.1-terra": 0.001500,  # $1 input + $5 output, 2026-10-29 Standard; fixed 500/200 tokens
     "gpt-6-luna": 0.000150,     # $0.10 input + $0.50 output → (500×0.10 + 200×0.50)/1M = $0.150/1K
     "gpt-oss-120b(low)": 0.00196,
     "llm-jp-3.1-13b-instruct4": 0.0001,
@@ -107,6 +108,7 @@ COLOR_MAP: Dict[str, str] = {
     "gpt-5.6-sol": "goldenrod",
     "gpt-6-sol": "dodgerblue",
     "gpt-6.1-sol": "mediumblue",
+    "gpt-6.1-terra": "teal",
     "gpt-6-luna": "lightskyblue",
     "gpt-oss-120b(low)": "olive",
     "llm-jp-3.1-13b-instruct4": "coral",
@@ -156,6 +158,7 @@ DATA_V24: Dict[str, Dict[str, float]] = {
     "gpt-5.6-sol": {"cer": 0.046670, "elapsed": 1.422057},
     "gpt-6-sol": {"cer": 0.051131, "elapsed": 1.322753},
     "gpt-6.1-sol": {"cer": 0.023608, "elapsed": 2.081238},
+    "gpt-6.1-terra": {"cer": 0.036960, "elapsed": 1.464286},
     "gpt-6-luna": {"cer": 0.157288, "elapsed": 0.942027},
     "gpt-oss-120b(low)": {"cer": 0.591938, "elapsed": 17.565630},
     "llm-jp-3.1-13b-instruct4": {"cer": 0.914891, "elapsed": 2.577443},

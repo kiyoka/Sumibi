@@ -1,0 +1,153 @@
+{
+  "models": {
+    "gpt-6.1-terra": {
+      "romaji": {
+        "n": 200,
+        "cer": 0.03696009597346714,
+        "at1": 0.73,
+        "mean_all_seconds": 1.4891491029200006,
+        "mean_below_p95_seconds": 1.4642856723736846,
+        "median_seconds": 1.4789172710000065,
+        "p95_seconds": 1.8723835041500052,
+        "empty_results": 0
+      },
+      "hiragana": {
+        "n": 200,
+        "cer": 0.02200597610500356,
+        "at1": 0.88,
+        "mean_all_seconds": 1.4593935277049996,
+        "mean_below_p95_seconds": 1.4075337736789466,
+        "median_seconds": 1.4149398954999697,
+        "p95_seconds": 1.9863119083500407,
+        "empty_results": 0
+      },
+      "katakana": {
+        "n": 200,
+        "cer": 0.03681622463919584,
+        "at1": 0.79,
+        "mean_all_seconds": 1.5345731433249983,
+        "mean_below_p95_seconds": 1.4613380692894715,
+        "median_seconds": 1.4661717920000115,
+        "p95_seconds": 2.120564755649974,
+        "empty_results": 0
+      }
+    },
+    "gpt-6.1-sol": {
+      "romaji": {
+        "n": 200,
+        "cer": 0.023608194915825262,
+        "at1": 0.785,
+        "mean_all_seconds": 2.2012922515050004,
+        "mean_below_p95_seconds": 2.0812378040052635,
+        "median_seconds": 1.9935858959999777,
+        "p95_seconds": 3.8459840728999963,
+        "empty_results": 0
+      },
+      "hiragana": {
+        "n": 200,
+        "cer": 0.00552032352752167,
+        "at1": 0.95,
+        "mean_all_seconds": 1.7552567052650003,
+        "mean_below_p95_seconds": 1.6624392774736838,
+        "median_seconds": 1.628829479499995,
+        "p95_seconds": 2.7332601333499977,
+        "empty_results": 0
+      },
+      "katakana": {
+        "n": 200,
+        "cer": 0.0099546635339205,
+        "at1": 0.935,
+        "mean_all_seconds": 1.9361143287349996,
+        "mean_below_p95_seconds": 1.820378386605262,
+        "median_seconds": 1.7545482499999991,
+        "p95_seconds": 3.1627027205000027,
+        "empty_results": 0
+      }
+    },
+    "gpt-6-sol": {
+      "romaji": {
+        "n": 200,
+        "cer": 0.05113096398139022,
+        "at1": 0.62,
+        "mean_all_seconds": 1.3605453787349993,
+        "mean_below_p95_seconds": 1.3227530554789468,
+        "median_seconds": 1.3162093125000105,
+        "p95_seconds": 1.8569798222999807,
+        "empty_results": 0
+      },
+      "hiragana": {
+        "n": 200,
+        "cer": 0.02010996574281673,
+        "at1": 0.835,
+        "mean_all_seconds": 1.3422172933300005,
+        "mean_below_p95_seconds": 1.3061262552631583,
+        "median_seconds": 1.3201994164999888,
+        "p95_seconds": 1.7913324399000288,
+        "empty_results": 0
+      },
+      "katakana": {
+        "n": 200,
+        "cer": 0.035183419928809606,
+        "at1": 0.83,
+        "mean_all_seconds": 1.2945701812400003,
+        "mean_below_p95_seconds": 1.2522391078842103,
+        "median_seconds": 1.2403702914999997,
+        "p95_seconds": 1.840451014899995,
+        "empty_results": 0
+      }
+    },
+    "gpt-5.6-terra": {
+      "romaji": {
+        "n": 200,
+        "cer": 0.0738743282095512,
+        "at1": 0.58,
+        "mean_all_seconds": 1.0447680314999956,
+        "mean_below_p95_seconds": 0.9856980905263084,
+        "median_seconds": 1.0026714999999058,
+        "p95_seconds": 1.552949339999941,
+        "empty_results": 0
+      },
+      "hiragana": {
+        "n": 200,
+        "cer": 0.029923151545767513,
+        "at1": 0.785,
+        "mean_all_seconds": 1.0549658575000012,
+        "mean_below_p95_seconds": 1.0055890426315848,
+        "median_seconds": 0.986455400000068,
+        "p95_seconds": 1.7296624499999325,
+        "empty_results": 0
+      },
+      "katakana": {
+        "n": 200,
+        "cer": 0.06516209957891181,
+        "at1": 0.705,
+        "mean_all_seconds": 1.038482906000013,
+        "mean_below_p95_seconds": 0.9637939236842278,
+        "median_seconds": 0.9473121000000901,
+        "p95_seconds": 1.8343473300001734,
+        "empty_results": 0
+      }
+    }
+  },
+  "measurement": {
+    "started_at": "2026-10-28T22:17:33.198859+00:00",
+    "finished_at": "2026-10-28T22:32:52.141785+00:00",
+    "calls": 606,
+    "errors": 0,
+    "finish_reasons": [
+      "stop"
+    ],
+    "response_models": [
+      "gpt-6.1-terra"
+    ],
+    "input_tokens": 309869,
+    "cached_input_tokens": 0,
+    "output_tokens": 12891,
+    "reasoning_tokens": 0,
+    "estimated_usd_including_warmup": 0.37432400000000005,
+    "estimated_usd_excluding_warmup": 0.370184,
+    "smoke_calls": 9,
+    "smoke_estimated_usd": 0.00621,
+    "all_estimated_usd": 0.38053400000000004
+  }
+}
