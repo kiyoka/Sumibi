@@ -23,7 +23,7 @@ BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
 PRICES = {"input": 0.75, "cached_input": 0.075, "output": 3.75}
 
 
-def reference_cost(usage):
+def reference_cost(usage, prices=None):
     """Paid Standard reference, not the project's actual billed amount.
 
 Use the compatible API's completion_tokens as reported (do not double-count
@@ -31,12 +31,23 @@ reasoning_tokens). Missing usage is unknown, never a zero-cost request.
 """
     if not isinstance(usage, dict):
         return None
+    prices = PRICES if prices is None else prices
     prompt, completion = usage.get("prompt_tokens"), usage.get("completion_tokens")
     cached = (usage.get("prompt_tokens_details") or {}).get("cached_tokens", 0)
     if not all(type(n) is int and n >= 0 for n in (prompt, completion, cached)) or cached > prompt:
         return None
-    return ((prompt - cached) * PRICES["input"] + cached * PRICES["cached_input"]
-            + completion * PRICES["output"]) / 1_000_000
+    return ((prompt - cached) * prices["input"] + cached * prices["cached_input"]
+            + completion * prices["output"]) / 1_000_000
+
+
+def unitemized_tokens(usage):
+    """Return the reported token gap, not a claim about its billing category."""
+    if not isinstance(usage, dict):
+        return None
+    counts = [usage.get(k) for k in ("total_tokens", "prompt_tokens", "completion_tokens")]
+    if not all(type(n) is int and n >= 0 for n in counts):
+        return None
+    return counts[0] - counts[1] - counts[2]
 
 
 def response_status(metadata):
@@ -48,8 +59,12 @@ def response_status(metadata):
     return "ok"
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+def main(*, model=None, prices=None, reasoning_effort="low", temperature=1.0,
+         pricing_valid_through=date(2026, 12, 31), description=None):
+    """Shared Google-only runner; defaults preserve the Issue #197 settings."""
+    model = MODEL if model is None else model
+    prices = PRICES if prices is None else prices
+    parser = argparse.ArgumentParser(description=description or __doc__)
     parser.add_argument("--mode", choices=tuple(MODES) + ("all",), default="all")
     parser.add_argument("--limit", type=int, default=200)
     parser.add_argument("--output-dir", type=Path, required=True)
@@ -58,31 +73,32 @@ def main():
     key = os.getenv("SUMIBI_AI_API_KEY")
     if not key or not key.strip():
         parser.error("Set SUMIBI_AI_API_KEY to your Gemini key in this same shell first")
-    if datetime.now(timezone.utc).date() > date(2026, 12, 31):
+    if datetime.now(timezone.utc).date() > pricing_valid_through:
         parser.error("Reference prices have expired; verify official pricing before running")
     dataset = ROOT / "AJIMEE-Bench/JWTD_v2/v1/evaluation_items.json"
     entries = json.loads(dataset.read_text(encoding="utf-8"))
     if not 1 <= args.limit <= min(200, len(entries)):
         parser.error("limit must be within 1..200 and the dataset size")
     modes = list(MODES) if args.mode == "all" else [args.mode]
-    targets = [args.output_dir / (MODEL + MODES[m] + ".json") for m in modes]
-    audit_path = args.output_dir / (MODEL + "_run.json")
+    targets = [args.output_dir / (model + MODES[m] + ".json") for m in modes]
+    audit_path = args.output_dir / (model + "_run.json")
     if any(path.exists() for path in targets + [audit_path]):
         parser.error("Output exists; choose an unused directory (no implicit reruns)")
     # The user explicitly selected this key. Never fall back to OPENAI_API_KEY,
     # keychain, inherited proxy base URLs, or another model.
     os.environ["SUMIBI_AI_BASEURL"] = BASE_URL
-    os.environ["SUMIBI_AI_MODEL"] = MODEL
+    os.environ["SUMIBI_AI_MODEL"] = model
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    audit = {"model": MODEL, "started_at": datetime.now(timezone.utc).isoformat(),
-             "endpoint": BASE_URL + "chat/completions", "reasoning_effort": "low",
-             "temperature": 1.0, "verbosity": None, "sdk_retries": 0,
+    audit = {"model": model, "started_at": datetime.now(timezone.utc).isoformat(),
+             "endpoint": BASE_URL + "chat/completions", "reasoning_effort": reasoning_effort,
+             "temperature": temperature, "verbosity": None, "sdk_retries": 0,
              "key_source": "SUMIBI_AI_API_KEY", "limit_per_mode": args.limit,
              "dataset_sha256": hashlib.sha256(dataset.read_bytes()).hexdigest(),
              "client_sha256": hashlib.sha256((ROOT / "sumibi_typical_convert_client.py").read_bytes()).hexdigest(),
              "benchmark_sha256": hashlib.sha256((ROOT / "sumibi_bench.py").read_bytes()).hexdigest(),
-             "python": platform.python_version(), "price_usd_per_million": PRICES,
-             "pricing_valid_through": "2026-12-31", "complete": False, "attempts": []}
+             "runner_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+             "python": platform.python_version(), "price_usd_per_million": prices,
+             "pricing_valid_through": pricing_valid_through.isoformat(), "complete": False, "attempts": []}
     save(audit_path, audit)
     for mode, output in zip(modes, targets):
         bench = SumibiBench(mode)
@@ -98,7 +114,8 @@ def main():
                                  entry["input"], context, skip_save=index == 0)
                 attempt.update(bench.client.last_response_metadata)
                 attempt["status"] = response_status(attempt)
-                attempt["reference_usd"] = reference_cost(attempt.get("usage"))
+                attempt["reference_usd"] = reference_cost(attempt.get("usage"), prices)
+                attempt["unitemized_tokens"] = unitemized_tokens(attempt.get("usage"))
             except Exception as exc:
                 attempt.update(status="error", error=type(exc).__name__,
                                http_status=getattr(exc, "status_code", None))
@@ -116,9 +133,12 @@ def main():
     audit["blocked_calls"] = sum(a["status"] == "blocked" for a in audit["attempts"])
     audit["usage_unknown_calls"] = sum(a.get("reference_usd") is None for a in audit["attempts"])
     audit["reference_usd_known_usage_only"] = sum(a.get("reference_usd") or 0 for a in audit["attempts"])
+    audit["unitemized_token_gap"] = sum(a.get("unitemized_tokens") or 0 for a in audit["attempts"])
+    audit["token_gap_unknown_calls"] = sum(a.get("unitemized_tokens") is None for a in audit["attempts"])
     save(audit_path, audit)
     print(f"Complete: blocked={audit['blocked_calls']}, unknown usage={audit['usage_unknown_calls']}, "
-          f"paid-tier reference USD={audit['reference_usd_known_usage_only']:.6f}")
+          f"paid-tier reference USD={audit['reference_usd_known_usage_only']:.6f}, "
+          f"unitemized tokens={audit['unitemized_token_gap']}, unknown token gaps={audit['token_gap_unknown_calls']}")
 
 
 if __name__ == "__main__":
