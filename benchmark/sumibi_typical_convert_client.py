@@ -141,14 +141,20 @@ class SumibiTypicalConvertClient:
         self.last_response_metadata = {}
         response = self.client.chat.completions.create(**api_params)
         usage = getattr(response, "usage", None)
+        choice = response.choices[0] if response.choices else None
+        extra = getattr(response, "model_extra", None)
+        feedback = (extra.get("prompt_feedback", extra.get("promptFeedback", {}))
+                    if isinstance(extra, dict) else {})
+        block_reason = (feedback.get("block_reason", feedback.get("blockReason"))
+                        if isinstance(feedback, dict) else None)
         self.last_response_metadata = {
             "model": getattr(response, "model", None),
             "service_tier": getattr(response, "service_tier", None),
             "usage": usage.model_dump() if usage is not None else None,
-            "finish_reason": response.choices[0].finish_reason
-            if hasattr(response.choices[0], "finish_reason") else None,
+            "finish_reason": getattr(choice, "finish_reason", None),
+            "empty_choices": choice is None,
+            "block_reason": block_reason if isinstance(block_reason, str) else None,
         }
-        choice = response.choices[0]
 
         # Some providers (e.g. Gemini) can return a choice without a message when
         # the response is blocked or the output token budget is exhausted.
@@ -157,7 +163,7 @@ class SumibiTypicalConvertClient:
         content = message.content if message is not None else None
         if content is None:
             print(
-                f"  => WARNING: no content in response (finish_reason={choice.finish_reason!r})",
+                f"  => WARNING: no content in response (finish_reason={getattr(choice, 'finish_reason', None)!r})",
                 file=sys.stderr,
             )
 

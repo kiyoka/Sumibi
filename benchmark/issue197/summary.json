@@ -1,0 +1,138 @@
+{
+  "measurement": {
+    "started_at": "2026-10-31T07:28:53.565433+00:00",
+    "finished_at": "2026-10-31T07:50:51.783666+00:00",
+    "calls": 606,
+    "request_errors": 0,
+    "blocked_calls_recomputed": 2,
+    "blocked_calls_original_runner": 0,
+    "blocked_positions": [
+      {
+        "mode": "romaji_direct_input",
+        "index": 69,
+        "reason": "content_filter: OTHER"
+      },
+      {
+        "mode": "romaji_direct_input",
+        "index": 174,
+        "reason": "content_filter: OTHER"
+      }
+    ],
+    "finish_reasons": {
+      "stop": 604,
+      "content_filter: OTHER": 2
+    },
+    "response_models": [
+      "gemini-3.8-flash"
+    ],
+    "input_tokens": 233664,
+    "reported_completion_tokens": 9241,
+    "reported_total_tokens": 246104,
+    "unitemized_token_gap": 3199,
+    "calls_with_unitemized_gap": 31,
+    "reasoning_token_details": "not_reported",
+    "reference_usd_reported_usage": 0.2099017500000005,
+    "reference_usd_if_gap_is_billed_output": 0.22189800000000048,
+    "smoke_calls": 9,
+    "smoke_reference_usd": 0.0034965000000000005,
+    "combined_reference_usd_reported_usage": 0.2133982500000005
+  },
+  "models": {
+    "gemini-3.8-flash": {
+      "romaji": {
+        "n": 200,
+        "cer": 0.036695487835916384,
+        "at1": 0.755,
+        "mean_all_seconds": 2.1470163462700005,
+        "mean_below_p95_seconds": 2.023743754405264,
+        "median_seconds": 1.9398324790000174,
+        "p95_seconds": 3.5532183913500064,
+        "empty_results": 2
+      },
+      "hiragana": {
+        "n": 200,
+        "cer": 0.015681412135767268,
+        "at1": 0.87,
+        "mean_all_seconds": 2.113108742064995,
+        "mean_below_p95_seconds": 2.0184177116052577,
+        "median_seconds": 1.978673353999966,
+        "p95_seconds": 3.2070464017500284,
+        "empty_results": 0
+      },
+      "katakana": {
+        "n": 200,
+        "cer": 0.03541723105452404,
+        "at1": 0.85,
+        "mean_all_seconds": 2.213021617265005,
+        "mean_below_p95_seconds": 2.0459374243052695,
+        "median_seconds": 2.014435624999976,
+        "p95_seconds": 3.5502040041499923,
+        "empty_results": 0
+      }
+    },
+    "gemini-3.7-flash": {
+      "romaji": {
+        "n": 200,
+        "cer": 0.07633258667407469,
+        "at1": 0.725,
+        "mean_all_seconds": 1.9159543834990473,
+        "mean_below_p95_seconds": 1.8010818336836039,
+        "median_seconds": 1.7927493999886792,
+        "p95_seconds": 3.00285501004837,
+        "empty_results": 10
+      },
+      "hiragana": {
+        "n": 200,
+        "cer": 0.0305872174765605,
+        "at1": 0.865,
+        "mean_all_seconds": 1.7486866120022022,
+        "mean_below_p95_seconds": 1.5970076078965671,
+        "median_seconds": 1.578541650029365,
+        "p95_seconds": 2.7125907800131244,
+        "empty_results": 1
+      },
+      "katakana": {
+        "n": 200,
+        "cer": 0.06918482784847871,
+        "at1": 0.77,
+        "mean_all_seconds": 1.7182471465013804,
+        "mean_below_p95_seconds": 1.6354860178963895,
+        "median_seconds": 1.599469200038584,
+        "p95_seconds": 2.7107480449718424,
+        "empty_results": 4
+      }
+    },
+    "gemini-3.6-flash": {
+      "romaji": {
+        "n": 200,
+        "cer": 0.04821060620984765,
+        "at1": 0.63,
+        "mean_all_seconds": 1.26098130149825,
+        "mean_below_p95_seconds": 1.2267254784197767,
+        "median_seconds": 1.1782202500035055,
+        "p95_seconds": 1.8033525999839184,
+        "empty_results": 0
+      },
+      "hiragana": {
+        "n": 200,
+        "cer": 0.027319387771485352,
+        "at1": 0.745,
+        "mean_all_seconds": 1.209865835502278,
+        "mean_below_p95_seconds": 1.1802212621066965,
+        "median_seconds": 1.192000300012296,
+        "p95_seconds": 1.7013424949953333,
+        "empty_results": 0
+      },
+      "katakana": {
+        "n": 200,
+        "cer": 0.04619854002459639,
+        "at1": 0.675,
+        "mean_all_seconds": 1.3494773619991611,
+        "mean_below_p95_seconds": 1.3092365715784438,
+        "median_seconds": 1.265600800019456,
+        "p95_seconds": 1.9918603700003588,
+        "empty_results": 0
+      }
+    }
+  }
+}
