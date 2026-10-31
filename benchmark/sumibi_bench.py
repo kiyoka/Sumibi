@@ -54,8 +54,8 @@ class SumibiBench:
         model = os.getenv("SUMIBI_AI_MODEL", "gpt-4.1")
 
         # Set temperature=1.0 for gpt-5 / gpt-6 and gemini-3 flash models
-        if model == "gpt-6.1-sol":
-            # Reasoning is mandatory for this model; temperature is unsupported.
+        if model in ("gpt-6.1-sol", "gemini-3.5-flash-lite"):
+            # Sol requires reasoning; Flash-Lite deprecates sampling controls.
             temperature = None
         elif model.startswith("gpt-5") or model.startswith("gpt-6") or model.startswith("gemini-3-flash") or GEMINI3_DOTTED_FLASH_RE.match(model):
             temperature = 1.0
@@ -78,6 +78,8 @@ class SumibiBench:
             reasoning_effort = "low"
         elif model.startswith("gemini-3-flash"):
             reasoning_effort = "low"  # Maps to thinking_level: "low" for gemini-3-flash models
+        elif model == "gemini-3.5-flash-lite":
+            reasoning_effort = "minimal"
         elif model in GEMINI3_DOTTED_FLASH_THINKING:
             reasoning_effort = GEMINI3_DOTTED_FLASH_THINKING[model]
         else:
@@ -92,7 +94,7 @@ class SumibiBench:
         if model == "gpt-6.1-terra":
             # Keep paid attempts explicit and use Standard latency, not Fast/Flex.
             options = {"max_retries": 0, "service_tier": "default"}
-        elif model == "gemini-3.8-flash":
+        elif model in ("gemini-3.8-flash", "gemini-3.5-flash-lite"):
             options = {"max_retries": 0}
         self.client = SumibiTypicalConvertClient(model=model, temperature=temperature, reasoning_effort=reasoning_effort, verbosity=verbosity, **options)
         # collect conversion results

@@ -45,6 +45,7 @@ MASTER_COST: Dict[str, float] = {
     "gemini-3.6-flash": 0.001125,  # $0.75 input + $3.75 output → (500×0.75 + 200×3.75)/1M = $1.125/1K
     "gemini-3.7-flash": 0.001125,  # $0.75 input + $3.75 output → (500×0.75 + 200×3.75)/1M = $1.125/1K
     "gemini-3.8-flash": 0.001125,  # Standard introductory price through 2026-12-31; fixed 500/200 tokens
+    "gemini-3.5-flash-lite": 0.000650,  # Standard $0.30 input / $2.50 output per 1M; fixed 500/200 tokens
     "gemma-3-12b-it-qat": 0.0001,
     "claude-opus-4-1-20250805": 0.0225,
     "claude-opus-4-20250514": 0.0225,
@@ -93,6 +94,7 @@ COLOR_MAP: Dict[str, str] = {
     "gemini-3.6-flash": "royalblue",
     "gemini-3.7-flash": "cornflowerblue",
     "gemini-3.8-flash": "darkviolet",
+    "gemini-3.5-flash-lite": "darkcyan",
     "gemma-3-12b-it-qat": "wheat",
     "claude-opus-4-1-20250805": "mediumpurple",
     "claude-opus-4-20250514": "blueviolet",
@@ -132,11 +134,12 @@ DATA_V24: Dict[str, Dict[str, float]] = {
     "gemini-2.5-pro": {"cer": 0.048225, "elapsed": 78.868088},
     "gemini-3-pro-preview": {"cer": 0.016123, "elapsed": 43.236321},
     "gemini-3-flash-preview": {"cer": 0.041088, "elapsed": 9.291274},
-    "gemini-3.1-flash-lite-preview": {"cer": 0.132824, "elapsed": 3.103779},
+    "gemini-3.1-flash-lite-preview": {"cer": 0.132824, "elapsed": 1.601886},
     # Same p95-trimmed mean as aggregate_results.py, not the p95 itself.
     "gemini-3.6-flash": {"cer": 0.048211, "elapsed": 1.226725},
     "gemini-3.7-flash": {"cer": 0.076333, "elapsed": 1.801082},
     "gemini-3.8-flash": {"cer": 0.036695, "elapsed": 2.023744},
+    "gemini-3.5-flash-lite": {"cer": 0.128534, "elapsed": 0.899951},
     "gemma-3-12b-it-qat": {"cer": 0.730364, "elapsed": 2.018562},
     "gpt-4.1-mini": {"cer": 0.308427, "elapsed": 1.597734},
     "gpt-4.1": {"cer": 0.117064, "elapsed": 2.704047},
