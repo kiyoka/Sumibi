@@ -88,6 +88,8 @@ def get_color_for_model(model_name: str) -> str:
         return "gray"
     elif model_name.startswith("gemini-3.1-flash-lite"):
         return "lightsteelblue"
+    elif model_name.startswith("gemini-4-argon"):
+        return "firebrick"
     elif model_name.startswith("gemini-3-flash-preview"):
         return "steelblue"
     elif model_name.startswith("gemma"):

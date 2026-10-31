@@ -9,6 +9,7 @@ from datetime import date, datetime, timezone
 import hashlib
 import io
 import json
+import math
 import os
 from pathlib import Path
 import platform
@@ -75,6 +76,12 @@ def main(*, model=None, prices=None, reasoning_effort="low", temperature=1.0,
         parser.error("Set SUMIBI_AI_API_KEY to your Gemini key in this same shell first")
     if datetime.now(timezone.utc).date() > pricing_valid_through:
         parser.error("Reference prices have expired; verify official pricing before running")
+    try:
+        timeout = float(os.getenv("SUMIBI_AI_TIMEOUT", "120"))
+    except ValueError:
+        parser.error("SUMIBI_AI_TIMEOUT must be a positive finite number")
+    if not math.isfinite(timeout) or timeout <= 0:
+        parser.error("SUMIBI_AI_TIMEOUT must be a positive finite number")
     dataset = ROOT / "AJIMEE-Bench/JWTD_v2/v1/evaluation_items.json"
     entries = json.loads(dataset.read_text(encoding="utf-8"))
     if not 1 <= args.limit <= min(200, len(entries)):
@@ -92,6 +99,7 @@ def main(*, model=None, prices=None, reasoning_effort="low", temperature=1.0,
     audit = {"model": model, "started_at": datetime.now(timezone.utc).isoformat(),
              "endpoint": BASE_URL + "chat/completions", "reasoning_effort": reasoning_effort,
              "temperature": temperature, "verbosity": None, "sdk_retries": 0,
+             "timeout_seconds": timeout,
              "key_source": "SUMIBI_AI_API_KEY", "limit_per_mode": args.limit,
              "dataset_sha256": hashlib.sha256(dataset.read_bytes()).hexdigest(),
              "client_sha256": hashlib.sha256((ROOT / "sumibi_typical_convert_client.py").read_bytes()).hexdigest(),
