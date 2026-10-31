@@ -46,6 +46,7 @@ MASTER_COST: Dict[str, float] = {
     "gemini-3.7-flash": 0.001125,  # $0.75 input + $3.75 output → (500×0.75 + 200×3.75)/1M = $1.125/1K
     "gemini-3.8-flash": 0.001125,  # Standard introductory price through 2026-12-31; fixed 500/200 tokens
     "gemini-3.5-flash-lite": 0.000650,  # Standard $0.30 input / $2.50 output per 1M; fixed 500/200 tokens
+    "gemini-4-argon": 0.003000,  # Standard introductory $2 input / $10 output per 1M through 2026-11-30
     "gemma-3-12b-it-qat": 0.0001,
     "claude-opus-4-1-20250805": 0.0225,
     "claude-opus-4-20250514": 0.0225,
@@ -95,6 +96,7 @@ COLOR_MAP: Dict[str, str] = {
     "gemini-3.7-flash": "cornflowerblue",
     "gemini-3.8-flash": "darkviolet",
     "gemini-3.5-flash-lite": "darkcyan",
+    "gemini-4-argon": "firebrick",
     "gemma-3-12b-it-qat": "wheat",
     "claude-opus-4-1-20250805": "mediumpurple",
     "claude-opus-4-20250514": "blueviolet",
@@ -140,6 +142,7 @@ DATA_V24: Dict[str, Dict[str, float]] = {
     "gemini-3.7-flash": {"cer": 0.076333, "elapsed": 1.801082},
     "gemini-3.8-flash": {"cer": 0.036695, "elapsed": 2.023744},
     "gemini-3.5-flash-lite": {"cer": 0.128534, "elapsed": 0.899951},
+    "gemini-4-argon": {"cer": 0.027495, "elapsed": 3.386980},
     "gemma-3-12b-it-qat": {"cer": 0.730364, "elapsed": 2.018562},
     "gpt-4.1-mini": {"cer": 0.308427, "elapsed": 1.597734},
     "gpt-4.1": {"cer": 0.117064, "elapsed": 2.704047},
