@@ -1,0 +1,217 @@
+{
+  "model": "gemini-3.8-flash",
+  "started_at": "2026-10-31T07:26:33.750427+00:00",
+  "endpoint": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
+  "reasoning_effort": "low",
+  "temperature": 1.0,
+  "verbosity": null,
+  "sdk_retries": 0,
+  "key_source": "SUMIBI_AI_API_KEY",
+  "limit_per_mode": 1,
+  "dataset_sha256": "e9eb668fd6aa14b1e26436f429b5550108af0a1dfd443b8cea0bcb3ab3028fca",
+  "client_sha256": "8e21cfe1d23ef7f4a2c8e997386806e88fd93202ec824ff8414d6bc4a7608259",
+  "benchmark_sha256": "9b68bdc6bd4414663887f32d38886ff6b73b15183a452348f86eadcc6f8756dc",
+  "python": "3.9.6",
+  "price_usd_per_million": {
+    "input": 0.75,
+    "cached_input": 0.075,
+    "output": 3.75
+  },
+  "pricing_valid_through": "2026-12-31",
+  "complete": true,
+  "attempts": [
+    {
+      "mode": "romaji_direct_input",
+      "index": 0,
+      "warmup": true,
+      "started_at": "2026-10-31T07:26:33.785079+00:00",
+      "model": "gemini-3.8-flash",
+      "service_tier": null,
+      "usage": {
+        "completion_tokens": 21,
+        "prompt_tokens": 411,
+        "total_tokens": 432,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "finish_reason": "stop",
+      "empty_choices": false,
+      "block_reason": null,
+      "status": "ok",
+      "reference_usd": 0.000387,
+      "elapsed_sec": 2.697469625
+    },
+    {
+      "mode": "romaji_direct_input",
+      "index": 0,
+      "warmup": true,
+      "started_at": "2026-10-31T07:26:36.483772+00:00",
+      "model": "gemini-3.8-flash",
+      "service_tier": null,
+      "usage": {
+        "completion_tokens": 21,
+        "prompt_tokens": 411,
+        "total_tokens": 432,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "finish_reason": "stop",
+      "empty_choices": false,
+      "block_reason": null,
+      "status": "ok",
+      "reference_usd": 0.000387,
+      "elapsed_sec": 1.6124128749999995
+    },
+    {
+      "mode": "romaji_direct_input",
+      "index": 1,
+      "warmup": false,
+      "started_at": "2026-10-31T07:26:38.098364+00:00",
+      "model": "gemini-3.8-flash",
+      "service_tier": null,
+      "usage": {
+        "completion_tokens": 21,
+        "prompt_tokens": 411,
+        "total_tokens": 432,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "finish_reason": "stop",
+      "empty_choices": false,
+      "block_reason": null,
+      "status": "ok",
+      "reference_usd": 0.000387,
+      "elapsed_sec": 2.178975584
+    },
+    {
+      "mode": "hiragana_input",
+      "index": 0,
+      "warmup": true,
+      "started_at": "2026-10-31T07:26:40.285870+00:00",
+      "model": "gemini-3.8-flash",
+      "service_tier": null,
+      "usage": {
+        "completion_tokens": 21,
+        "prompt_tokens": 410,
+        "total_tokens": 431,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "finish_reason": "stop",
+      "empty_choices": false,
+      "block_reason": null,
+      "status": "ok",
+      "reference_usd": 0.00038625,
+      "elapsed_sec": 2.6135108330000003
+    },
+    {
+      "mode": "hiragana_input",
+      "index": 0,
+      "warmup": true,
+      "started_at": "2026-10-31T07:26:42.902297+00:00",
+      "model": "gemini-3.8-flash",
+      "service_tier": null,
+      "usage": {
+        "completion_tokens": 21,
+        "prompt_tokens": 410,
+        "total_tokens": 431,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "finish_reason": "stop",
+      "empty_choices": false,
+      "block_reason": null,
+      "status": "ok",
+      "reference_usd": 0.00038625,
+      "elapsed_sec": 1.6143420830000004
+    },
+    {
+      "mode": "hiragana_input",
+      "index": 1,
+      "warmup": false,
+      "started_at": "2026-10-31T07:26:44.519670+00:00",
+      "model": "gemini-3.8-flash",
+      "service_tier": null,
+      "usage": {
+        "completion_tokens": 21,
+        "prompt_tokens": 410,
+        "total_tokens": 431,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "finish_reason": "stop",
+      "empty_choices": false,
+      "block_reason": null,
+      "status": "ok",
+      "reference_usd": 0.00038625,
+      "elapsed_sec": 1.9125419580000003
+    },
+    {
+      "mode": "katakana_input",
+      "index": 0,
+      "warmup": true,
+      "started_at": "2026-10-31T07:26:46.441809+00:00",
+      "model": "gemini-3.8-flash",
+      "service_tier": null,
+      "usage": {
+        "completion_tokens": 21,
+        "prompt_tokens": 418,
+        "total_tokens": 439,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "finish_reason": "stop",
+      "empty_choices": false,
+      "block_reason": null,
+      "status": "ok",
+      "reference_usd": 0.00039225,
+      "elapsed_sec": 3.9701453750000013
+    },
+    {
+      "mode": "katakana_input",
+      "index": 0,
+      "warmup": true,
+      "started_at": "2026-10-31T07:26:50.415086+00:00",
+      "model": "gemini-3.8-flash",
+      "service_tier": null,
+      "usage": {
+        "completion_tokens": 21,
+        "prompt_tokens": 418,
+        "total_tokens": 439,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "finish_reason": "stop",
+      "empty_choices": false,
+      "block_reason": null,
+      "status": "ok",
+      "reference_usd": 0.00039225,
+      "elapsed_sec": 3.0242174580000025
+    },
+    {
+      "mode": "katakana_input",
+      "index": 1,
+      "warmup": false,
+      "started_at": "2026-10-31T07:26:53.442111+00:00",
+      "model": "gemini-3.8-flash",
+      "service_tier": null,
+      "usage": {
+        "completion_tokens": 21,
+        "prompt_tokens": 418,
+        "total_tokens": 439,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "finish_reason": "stop",
+      "empty_choices": false,
+      "block_reason": null,
+      "status": "ok",
+      "reference_usd": 0.00039225,
+      "elapsed_sec": 2.420580625000003
+    }
+  ],
+  "finished_at": "2026-10-31T07:26:55.865488+00:00",
+  "blocked_calls": 0,
+  "usage_unknown_calls": 0,
+  "reference_usd_known_usage_only": 0.0034965000000000005
+}

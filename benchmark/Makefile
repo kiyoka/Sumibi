@@ -27,6 +27,7 @@ RESULTS := gpt-3.5-turbe.json gpt-4.1-mini.json gpt-4.1.json gpt-4o-mini.json gp
            qwen3-vl-8b-instruct-mlx.json \
            gemini-3.1-flash-lite-preview.json \
            gemini-3.7-flash.json \
+           gemini-3.8-flash.json \
            gpt-5.4.json \
            gpt-5.5.json \
            gpt-5.6.json \
