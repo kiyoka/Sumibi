@@ -27,6 +27,8 @@ MASTER_COST: Dict[str, float] = {
     "gemini-3.6-flash": 0.001125,       # $0.75 input + $3.75 output → (500×0.75 + 200×3.75)/1M = $1.125/1K
     "gemini-3.8-flash": 0.001125,       # Standard introductory price through 2026-12-31; fixed 500/200 tokens
     "gemini-4-argon": 0.003000,         # Standard introductory $2 input / $10 output per 1M through 2026-11-30
+    "gpt-6.1-terra": 0.001500,          # Standard $1 input / $5 output per 1M; fixed 500/200 tokens
+    "gpt-6.1-sol": 0.003000,            # Standard $2 input / $10 output per 1M; fixed 500/200 tokens
 }
 
 COLOR_MAP: Dict[str, str] = {
@@ -34,6 +36,8 @@ COLOR_MAP: Dict[str, str] = {
     "gemini-3.6-flash": "royalblue",
     "gemini-3.8-flash": "darkviolet",
     "gemini-4-argon": "firebrick",
+    "gpt-6.1-terra": "teal",
+    "gpt-6.1-sol": "mediumblue",
 }
 
 # ---------------------------------------------------------------------------
@@ -44,6 +48,8 @@ DATA_JWTD_V2: Dict[str, Dict[str, float]] = {
     "gemini-3.6-flash":      {"cer": 0.0595, "elapsed": 1.106},
     "gemini-3.8-flash":      {"cer": 0.0851, "elapsed": 2.068},
     "gemini-4-argon":        {"cer": 0.0312, "elapsed": 3.321},
+    "gpt-6.1-terra":         {"cer": 0.0463, "elapsed": 1.305},
+    "gpt-6.1-sol":           {"cer": 0.0368, "elapsed": 1.602},
 }
 
 SCALE = 50  # size = elapsed * SCALE
@@ -126,6 +132,8 @@ def main():
         "gemini-3.8-flash":      (0.001125 + 0.0005, 8.51 + 1.2),
         "gemini-3.6-flash":      (0.001125 - 0.0008, 5.95 - 2.5),
         "gemini-4-argon":        (0.003000 + 0.0006, 3.12 + 2.5),
+        "gpt-6.1-terra":         (0.001500 + 0.0005, 4.63 + 1.5),
+        "gpt-6.1-sol":           (0.003000 + 0.0006, 3.68 - 2.5),
     }
 
     ax = plt.gca()

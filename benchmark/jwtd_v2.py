@@ -27,7 +27,9 @@ FILES = {
 IDENTITY = {"repository": REPOSITORY, "revision": REVISION,
             "path": DATA_PATH, "sha256": DATA_HASH, "count": 628}
 MODES = ("romaji_direct_input", "hiragana_input", "katakana_input")
-BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
+GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
+OPENAI_BASE_URL = "https://api.openai.com/v1/"
+BASE_URL = GEMINI_BASE_URL
 # Standard short-context prices, checked 2026-10-31. No guessed preview prices.
 # Values: reasoning_effort, temperature, input/cached/output USD per million.
 MODELS = {
@@ -39,7 +41,16 @@ MODELS = {
     "gemini-3.7-flash": ("low", 1.0, (.75, .075, 3.75)),
     "gemini-3.8-flash": ("low", 1.0, (.75, .075, 3.75)),
     "gemini-4-argon": ("low", None, (2, .10, 10)),
+    "gpt-6.1-terra": ("none", 1.0, (1.0, 0.05, 5.0)),
+    "gpt-6.1-sol": ("low", None, (2.0, 0.10, 10.0)),
 }
+
+
+def base_url_for_model(model):
+    if model.startswith("gpt-"):
+        return OPENAI_BASE_URL
+    return GEMINI_BASE_URL
+
 SKIPPED = {
     "gemini-2.0-flash": "shutdown 2026-06-01",
     "gemini-2.0-flash-lite": "shutdown 2026-06-01",
@@ -74,9 +85,10 @@ def resume_audit(path, model, limit, jobs, timeout):
         raise ValueError("Resume input must be in issue205/results")
     a = json.loads(path.read_text())
     reasoning, temperature, prices = MODELS[model]
+    base_url = base_url_for_model(model)
     expected = {"schema": "sumibi-jwtd-v2-run-1", "dataset": IDENTITY,
                 "scoring": SCORING, "model": model, "limit": limit, "complete": False,
-                "endpoint": BASE_URL + "chat/completions", "sdk_retries": 0,
+                "endpoint": base_url + "chat/completions", "sdk_retries": 0,
                 "reasoning_effort": reasoning, "temperature": temperature,
                 "timeout_seconds": timeout, "prices": list(prices),
                 "pricing_valid_through": "2026-11-30" if model == "gemini-4-argon" else "2026-12-31",
@@ -206,24 +218,36 @@ def run(model, limit, output, resume_from=None):
                   "hiragana_input": KatakanaToHiraganaConverter().convert,
                   "katakana_input": lambda x: x}
     jobs = schedule(entries, limit, converters)
+    base_url = base_url_for_model(model)
     audit = {"schema": "sumibi-jwtd-v2-run-1", "dataset": IDENTITY,
              "scoring": SCORING, "model": model, "limit": limit,
              "alias_only": model == "gemini-3.7-flash", "alias_target":
              "gemini-3.8-flash" if model == "gemini-3.7-flash" else None,
              "reasoning_effort": reasoning, "temperature": temperature,
              "timeout_seconds": timeout, "sdk_retries": 0,
-             "endpoint": BASE_URL + "chat/completions", "prices": prices,
+             "endpoint": base_url + "chat/completions", "prices": prices,
              "pricing_valid_through": expiry, "started_at": datetime.now(timezone.utc).isoformat(),
              "source_sha256": {name: digest(ROOT / name) for name in
                   ("jwtd_v2.py", "sumibi_typical_convert_client.py", "katakana_to_romaji_converter.py",
                    "katakana_to_hiragana_converter.py")}, "complete": False, "rows": []}
     if resume_from is not None:
         audit = resume_audit(resume_from, model, limit, jobs, timeout)
-    key = os.getenv("SUMIBI_AI_API_KEY", "").strip()
-    if not key:
-        raise ValueError("Set SUMIBI_AI_API_KEY in this shell first")
-    client = SumibiTypicalConvertClient(api_key=key, base_url=BASE_URL, model=model,
-             reasoning_effort=reasoning, temperature=temperature, max_retries=0, timeout=timeout)
+    if model.startswith("gpt-"):
+        key = os.getenv("OPENAI_API_KEY", "").strip() or os.getenv("SUMIBI_AI_API_KEY", "").strip()
+        if not key:
+            raise ValueError("Set OPENAI_API_KEY (or SUMIBI_AI_API_KEY) in this shell first")
+    else:
+        key = os.getenv("SUMIBI_AI_API_KEY", "").strip()
+        if not key:
+            raise ValueError("Set SUMIBI_AI_API_KEY in this shell first")
+    client_kwargs = dict(api_key=key, base_url=base_url, model=model,
+                         reasoning_effort=reasoning, temperature=temperature, max_retries=0, timeout=timeout)
+    if model == "gpt-6.1-terra":
+        client_kwargs["verbosity"] = "low"
+        client_kwargs["service_tier"] = "default"
+    elif model == "gpt-6.1-sol":
+        client_kwargs["verbosity"] = "low"
+    client = SumibiTypicalConvertClient(**client_kwargs)
     # Reserve the filename exclusively, including against concurrent invocations.
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open("x", encoding="utf-8") as stream:
@@ -248,8 +272,12 @@ def run(model, limit, output, resume_from=None):
             if (row.get("empty_choices") or not reason) and row["status"] != "blocked":
                 raise ValueError("Missing response choice")
             returned = row.get("model")
-            if not returned or not returned.startswith("gemini-"):
+            if not returned:
+                raise ValueError("Missing returned model")
+            if model.startswith("gemini-") and not returned.startswith("gemini-"):
                 raise ValueError("Missing or non-Gemini returned model")
+            if model.startswith("gpt-") and not returned.startswith("gpt-"):
+                raise ValueError("Missing or non-GPT returned model")
             # Known 3.7 alias is permitted, other silent substitutions stop the run.
             accepted = (model, audit["alias_target"]) if audit["alias_only"] else (model,)
             if returned not in accepted:

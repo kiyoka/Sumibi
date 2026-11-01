@@ -12,8 +12,8 @@ def plot(summary, directory):
             or summary.get("dataset") != IDENTITY or summary.get("scoring") != SCORING):
         raise ValueError("Not the pinned JWTD_v2/v2 summary")
     models = summary["models"]
-    if not models or any(not m.startswith("gemini-") or m == "gemini-3.7-flash" for m in models):
-        raise ValueError("Only independently measured Gemini models may be plotted")
+    if not models or any(not (m.startswith("gemini-") or m.startswith("gpt-")) or m == "gemini-3.7-flash" for m in models):
+        raise ValueError("Only independently measured Gemini or GPT models may be plotted")
     if directory.exists():
         raise ValueError("Choose a fresh plot directory; no overwrites")
     import matplotlib

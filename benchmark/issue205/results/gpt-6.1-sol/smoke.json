@@ -1,0 +1,341 @@
+{
+  "schema": "sumibi-jwtd-v2-run-1",
+  "dataset": {
+    "repository": "https://github.com/nyanko3141592/AJIMEE-Bench",
+    "revision": "c0783bba1ec6b9a9e06d07fa52ce3e23d0a7dfe1",
+    "path": "JWTD_v2/v2/evaluation_items.json",
+    "sha256": "69a0dde4c1f67b3d06268c761ee3a7b7d38680a4f1c81360cc2d4f0f120e731f",
+    "count": 628
+  },
+  "scoring": {
+    "primary": "raw_MinCER",
+    "secondary": "raw_accuracy@1",
+    "width_normalized_accuracy": true,
+    "right_context": false,
+    "prompt": "sumibi_typical_convert_client",
+    "n": 1
+  },
+  "model": "gpt-6.1-sol",
+  "limit": 1,
+  "alias_only": false,
+  "alias_target": null,
+  "reasoning_effort": "low",
+  "temperature": null,
+  "timeout_seconds": 120.0,
+  "sdk_retries": 0,
+  "endpoint": "https://api.openai.com/v1/chat/completions",
+  "prices": [
+    2.0,
+    0.1,
+    10.0
+  ],
+  "pricing_valid_through": "2026-12-31",
+  "started_at": "2026-11-01T06:39:40.529799+00:00",
+  "source_sha256": {
+    "jwtd_v2.py": "3664197f42e4fc97d4a2998458efd5db1885111be6962131275715b5a88ce8db",
+    "sumibi_typical_convert_client.py": "8e21cfe1d23ef7f4a2c8e997386806e88fd93202ec824ff8414d6bc4a7608259",
+    "katakana_to_romaji_converter.py": "ab6031c559687cb59e05654acc7aed3ea1617653edd5ecf337769131b6718314",
+    "katakana_to_hiragana_converter.py": "e9cf7017e6af8fd28d34e8fd511fb6c8d9ccecf9498e251242412d2431a414a5"
+  },
+  "complete": true,
+  "rows": [
+    {
+      "mode": "romaji_direct_input",
+      "position": 0,
+      "index": "7",
+      "warmup": true,
+      "input_text": "seinennshidekakukotonoriyuutoshite,dannseiseinennshiniokerudannseiyuuinoseiishiki(",
+      "hypothesis": "青年誌で描くことの理由として、男性青年誌における男性優位の性意識(",
+      "model": "gpt-6.1-sol",
+      "service_tier": "default",
+      "usage": {
+        "completion_tokens": 68,
+        "prompt_tokens": 537,
+        "total_tokens": 605,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 34,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        }
+      },
+      "finish_reason": "stop",
+      "empty_choices": false,
+      "block_reason": null,
+      "status": "ok",
+      "reference_usd": 0.001754,
+      "unitemized_tokens": 0,
+      "elapsed_sec": 1.96507875
+    },
+    {
+      "mode": "romaji_direct_input",
+      "position": 0,
+      "index": "7",
+      "warmup": true,
+      "input_text": "seinennshidekakukotonoriyuutoshite,dannseiseinennshiniokerudannseiyuuinoseiishiki(",
+      "hypothesis": "青年誌で描くことの理由として、男性青年誌における男性優位の性意識(",
+      "model": "gpt-6.1-sol",
+      "service_tier": "default",
+      "usage": {
+        "completion_tokens": 53,
+        "prompt_tokens": 537,
+        "total_tokens": 590,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 19,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        }
+      },
+      "finish_reason": "stop",
+      "empty_choices": false,
+      "block_reason": null,
+      "status": "ok",
+      "reference_usd": 0.001604,
+      "unitemized_tokens": 0,
+      "elapsed_sec": 1.754200709
+    },
+    {
+      "mode": "romaji_direct_input",
+      "position": 1,
+      "index": "7",
+      "warmup": false,
+      "input_text": "seinennshidekakukotonoriyuutoshite,dannseiseinennshiniokerudannseiyuuinoseiishiki(",
+      "hypothesis": "青年誌で描くことの理由として、男性青年誌における男性優位の性意識（",
+      "model": "gpt-6.1-sol",
+      "service_tier": "default",
+      "usage": {
+        "completion_tokens": 94,
+        "prompt_tokens": 537,
+        "total_tokens": 631,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 60,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        }
+      },
+      "finish_reason": "stop",
+      "empty_choices": false,
+      "block_reason": null,
+      "status": "ok",
+      "reference_usd": 0.002014,
+      "unitemized_tokens": 0,
+      "elapsed_sec": 2.628897417
+    },
+    {
+      "mode": "hiragana_input",
+      "position": 0,
+      "index": "7",
+      "warmup": true,
+      "input_text": "せいねんしでかくことのりゆうとして、だんせいせいねんしにおけるだんせいゆういのせいいしき（",
+      "hypothesis": "青年誌で描くことの理由として、男性青年誌における男性優位の性意識（",
+      "model": "gpt-6.1-sol",
+      "service_tier": "default",
+      "usage": {
+        "completion_tokens": 28,
+        "prompt_tokens": 554,
+        "total_tokens": 582,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        }
+      },
+      "finish_reason": "stop",
+      "empty_choices": false,
+      "block_reason": null,
+      "status": "ok",
+      "reference_usd": 0.001388,
+      "unitemized_tokens": 0,
+      "elapsed_sec": 1.1285703749999998
+    },
+    {
+      "mode": "hiragana_input",
+      "position": 0,
+      "index": "7",
+      "warmup": true,
+      "input_text": "せいねんしでかくことのりゆうとして、だんせいせいねんしにおけるだんせいゆういのせいいしき（",
+      "hypothesis": "青年誌で描くことの理由として、男性青年誌における男性優位の性意識（",
+      "model": "gpt-6.1-sol",
+      "service_tier": "default",
+      "usage": {
+        "completion_tokens": 28,
+        "prompt_tokens": 554,
+        "total_tokens": 582,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        }
+      },
+      "finish_reason": "stop",
+      "empty_choices": false,
+      "block_reason": null,
+      "status": "ok",
+      "reference_usd": 0.001388,
+      "unitemized_tokens": 0,
+      "elapsed_sec": 1.5346569160000003
+    },
+    {
+      "mode": "hiragana_input",
+      "position": 1,
+      "index": "7",
+      "warmup": false,
+      "input_text": "せいねんしでかくことのりゆうとして、だんせいせいねんしにおけるだんせいゆういのせいいしき（",
+      "hypothesis": "青年誌で描くことの理由として、男性青年誌における男性優位の性意識（",
+      "model": "gpt-6.1-sol",
+      "service_tier": "default",
+      "usage": {
+        "completion_tokens": 28,
+        "prompt_tokens": 554,
+        "total_tokens": 582,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        }
+      },
+      "finish_reason": "stop",
+      "empty_choices": false,
+      "block_reason": null,
+      "status": "ok",
+      "reference_usd": 0.001388,
+      "unitemized_tokens": 0,
+      "elapsed_sec": 0.9944993330000003
+    },
+    {
+      "mode": "katakana_input",
+      "position": 0,
+      "index": "7",
+      "warmup": true,
+      "input_text": "セイネンシデカクコトノリユウトシテ、ダンセイセイネンシニオケルダンセイユウイノセイイシキ（",
+      "hypothesis": "青年誌で描くことの理由として、男性青年誌における男性優位の性意識（",
+      "model": "gpt-6.1-sol",
+      "service_tier": "default",
+      "usage": {
+        "completion_tokens": 28,
+        "prompt_tokens": 559,
+        "total_tokens": 587,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        }
+      },
+      "finish_reason": "stop",
+      "empty_choices": false,
+      "block_reason": null,
+      "status": "ok",
+      "reference_usd": 0.001398,
+      "unitemized_tokens": 0,
+      "elapsed_sec": 1.2923117919999996
+    },
+    {
+      "mode": "katakana_input",
+      "position": 0,
+      "index": "7",
+      "warmup": true,
+      "input_text": "セイネンシデカクコトノリユウトシテ、ダンセイセイネンシニオケルダンセイユウイノセイイシキ（",
+      "hypothesis": "青年誌で描くことの理由として、男性青年誌における男性優位の性意識（",
+      "model": "gpt-6.1-sol",
+      "service_tier": "default",
+      "usage": {
+        "completion_tokens": 28,
+        "prompt_tokens": 559,
+        "total_tokens": 587,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        }
+      },
+      "finish_reason": "stop",
+      "empty_choices": false,
+      "block_reason": null,
+      "status": "ok",
+      "reference_usd": 0.001398,
+      "unitemized_tokens": 0,
+      "elapsed_sec": 1.3902814160000005
+    },
+    {
+      "mode": "katakana_input",
+      "position": 1,
+      "index": "7",
+      "warmup": false,
+      "input_text": "セイネンシデカクコトノリユウトシテ、ダンセイセイネンシニオケルダンセイユウイノセイイシキ（",
+      "hypothesis": "青年誌で描くことの理由として、男性青年誌における男性優位の性意識（",
+      "model": "gpt-6.1-sol",
+      "service_tier": "default",
+      "usage": {
+        "completion_tokens": 28,
+        "prompt_tokens": 559,
+        "total_tokens": 587,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        }
+      },
+      "finish_reason": "stop",
+      "empty_choices": false,
+      "block_reason": null,
+      "status": "ok",
+      "reference_usd": 0.001398,
+      "unitemized_tokens": 0,
+      "elapsed_sec": 1.1157565829999996
+    }
+  ],
+  "finished_at": "2026-11-01T06:39:54.386888+00:00"
+}

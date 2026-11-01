@@ -102,12 +102,14 @@ class JWTDV2Test(unittest.TestCase):
         self.assertEqual(sum(e["source"] == "v2-add" for e in entries), 428)
 
     def test_model_scope_and_alias(self):
-        self.assertEqual(len(v2.MODELS), 8)
+        self.assertEqual(len(v2.MODELS), 10)
         self.assertEqual(len(v2.SKIPPED), 4)
         p = v2.plan()
         self.assertEqual(p["calls_per_model"], 1890)
         self.assertTrue(p["models"]["gemini-3.7-flash"]["alias_only"])
         self.assertAlmostEqual(p["models"]["gemini-4-argon"]["fixed_500_input_200_output_usd"], 5.67)
+        self.assertAlmostEqual(p["models"]["gpt-6.1-terra"]["fixed_500_input_200_output_usd"], 2.835)
+        self.assertAlmostEqual(p["models"]["gpt-6.1-sol"]["fixed_500_input_200_output_usd"], 5.67)
 
     def test_reject_v1_or_foreign_data(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -202,6 +204,56 @@ class JWTDV2Test(unittest.TestCase):
                 path.write_text(json.dumps(audit))
                 with self.assertRaises(ValueError):
                     v2.summarize([path])
+
+    def test_gpt_models_use_openai_endpoint_and_keys(self):
+        entries, utils = v2.load_dataset()
+        metadata = {"model": "gpt-6.1-terra", "finish_reason": "stop",
+                    "empty_choices": False, "usage": {"prompt_tokens": 500,
+                    "completion_tokens": 200, "total_tokens": 700}}
+        with tempfile.TemporaryDirectory() as temp, patch.object(v2, "ISSUE_DIR", Path(temp)):
+            output = Path(temp) / "results/smoke_gpt.json"
+            with patch.object(v2, "load_dataset", return_value=(entries, utils)), patch.dict(os.environ,
+                 {"OPENAI_API_KEY": "fake-openai-key", "SUMIBI_AI_TIMEOUT": "120"}, clear=True):
+                with patch("sumibi_typical_convert_client.SumibiTypicalConvertClient") as client:
+                    client.return_value.convert.return_value = "日本語"
+                    client.return_value.last_response_metadata = metadata
+                    with patch.object(v2, "datetime", wraps=datetime) as clock, contextlib.redirect_stdout(io.StringIO()):
+                        clock.now.return_value = datetime(2026, 11, 1, tzinfo=timezone.utc)
+                        v2.run("gpt-6.1-terra", 1, output)
+                    self.assertEqual(client.call_args.kwargs["base_url"], v2.OPENAI_BASE_URL)
+                    self.assertEqual(client.call_args.kwargs["model"], "gpt-6.1-terra")
+                    self.assertEqual(client.call_args.kwargs["verbosity"], "low")
+                    self.assertEqual(client.call_args.kwargs["service_tier"], "default")
+                    self.assertNotIn("fake-openai-key", output.read_text())
+                    a = json.loads(output.read_text())
+                    self.assertTrue(a["complete"])
+                    self.assertEqual(len(a["rows"]), 9)
+                    self.assertEqual(a["endpoint"], "https://api.openai.com/v1/chat/completions")
+
+    def test_gpt_6_1_sol_settings(self):
+        entries, utils = v2.load_dataset()
+        metadata = {"model": "gpt-6.1-sol", "finish_reason": "stop",
+                    "empty_choices": False, "usage": {"prompt_tokens": 500,
+                    "completion_tokens": 200, "total_tokens": 700}}
+        with tempfile.TemporaryDirectory() as temp, patch.object(v2, "ISSUE_DIR", Path(temp)):
+            output = Path(temp) / "results/smoke_gpt_sol.json"
+            with patch.object(v2, "load_dataset", return_value=(entries, utils)), patch.dict(os.environ,
+                 {"OPENAI_API_KEY": "fake-openai-key", "SUMIBI_AI_TIMEOUT": "120"}, clear=True):
+                with patch("sumibi_typical_convert_client.SumibiTypicalConvertClient") as client:
+                    client.return_value.convert.return_value = "日本語"
+                    client.return_value.last_response_metadata = metadata
+                    with patch.object(v2, "datetime", wraps=datetime) as clock, contextlib.redirect_stdout(io.StringIO()):
+                        clock.now.return_value = datetime(2026, 11, 1, tzinfo=timezone.utc)
+                        v2.run("gpt-6.1-sol", 1, output)
+                    self.assertEqual(client.call_args.kwargs["base_url"], v2.OPENAI_BASE_URL)
+                    self.assertEqual(client.call_args.kwargs["model"], "gpt-6.1-sol")
+                    self.assertIsNone(client.call_args.kwargs["temperature"])
+                    self.assertEqual(client.call_args.kwargs["reasoning_effort"], "low")
+                    self.assertEqual(client.call_args.kwargs["verbosity"], "low")
+                    self.assertNotIn("service_tier", client.call_args.kwargs)
+                    a = json.loads(output.read_text())
+                    self.assertTrue(a["complete"])
+                    self.assertEqual(len(a["rows"]), 9)
 
 
 if __name__ == "__main__":

@@ -16,7 +16,7 @@ benchmark ディレクトリの README
 | **データ出典** | [AJIMEE-Bench](https://github.com/nyanko3141592/AJIMEE-Bench) | [AJIMEE-Bench](https://github.com/nyanko3141592/AJIMEE-Bench) commit `c0783bba1ec6b9a9e06d07fa52ce3e23d0a7dfe1` |
 | **使用データパス** | `JWTD_v2/v1/evaluation_items.json` | `JWTD_v2/v2/evaluation_items.json` |
 | **SHA-256** | - | `69a0dde4c1f67b3d06268c761ee3a7b7d38680a4f1c81360cc2d4f0f120e731f` |
-| **評価モデル** | GPT-4o, Claude 3.5, Gemini 2.x/3.x, ローカルIME 等 | Gemini 4モデル（3.5 Flash-Lite, 3.6 Flash, 3.8 Flash, 4 Argon） |
+| **評価モデル** | GPT-4o, Claude 3.5, Gemini 2.x/3.x, ローカルIME 等 | Gemini 4モデル（3.5 Flash-Lite, 3.6 Flash, 3.8 Flash, 4 Argon）および OpenAI 2モデル（GPT-6.1 Terra, GPT-6.1 Sol） |
 | **入力方式** | 主にローマ字入力 | ローマ字直接入力、ひらがな入力、カタカナ入力の3方式 |
 | **資料リンク** | 本README以下のセクション・既存グラフ（`result_ver2.4.0` 等はプロンプト版でありデータセット版ではない） | [Issue #205 専用資料](issue205/README.md)／[結果レポートとグラフ](issue205/REPORT.md) |
 
