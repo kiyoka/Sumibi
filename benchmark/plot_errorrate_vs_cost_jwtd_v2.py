@@ -78,9 +78,12 @@ def _darken_for_readability(color_name: str) -> str:
     return override.get(color_name, color_name)
 
 
-def build_legend():
+def build_legend(range_mode: int = 0):
     """平均応答時間の凡例を描画"""
-    seconds_legend = [1, 5, 10, SIZE_CAP_SEC]
+    if range_mode == 1:
+        seconds_legend = [1, 2, 3, 5]
+    else:
+        seconds_legend = [1, 5, 10, SIZE_CAP_SEC]
     legend_size_handles: List[Line2D] = []
     for sec in seconds_legend:
         size = sec * SCALE
@@ -114,7 +117,7 @@ def main():
         type=int,
         default=0,
         choices=[0, 1],
-        help="Axis range mode: 0=default (0-70%%, auto x), 1=zoomed (0-40%%, 0-0.010$)",
+        help="Axis range mode: 0=default (0-70%%, auto x), 1=zoomed (1.5-14.5%%, 0.0003-0.0038$)",
     )
     args = parser.parse_args()
 
@@ -127,14 +130,24 @@ def main():
     ]
     plottable.sort(key=lambda kv: kv[1]["elapsed"], reverse=True)
 
-    label_positions = {
-        "gemini-3.5-flash-lite": (0.000650 + 0.0005, 12.82 + 1.2),
-        "gemini-3.8-flash":      (0.001125 + 0.0005, 8.51 + 1.2),
-        "gemini-3.6-flash":      (0.001125 - 0.0008, 5.95 - 2.5),
-        "gemini-4-argon":        (0.003000 + 0.0006, 3.12 + 2.5),
-        "gpt-6.1-terra":         (0.001500 + 0.0005, 4.63 + 1.5),
-        "gpt-6.1-sol":           (0.003000 + 0.0006, 3.68 - 2.5),
-    }
+    if args.range == 0:
+        label_positions = {
+            "gemini-3.5-flash-lite": (0.000650 + 0.0005, 12.82 + 1.2),
+            "gemini-3.8-flash":      (0.001125 + 0.0005, 8.51 + 1.2),
+            "gemini-3.6-flash":      (0.001125 - 0.0008, 5.95 - 2.5),
+            "gemini-4-argon":        (0.003000 + 0.0006, 3.12 + 2.5),
+            "gpt-6.1-terra":         (0.001500 + 0.0005, 4.63 + 1.5),
+            "gpt-6.1-sol":           (0.003000 + 0.0006, 3.68 - 2.5),
+        }
+    else:
+        label_positions = {
+            "gemini-3.5-flash-lite": (0.000650 + 0.00015, 12.82 + 0.6),
+            "gemini-3.8-flash":      (0.001125 + 0.00015, 8.51 + 0.6),
+            "gemini-3.6-flash":      (0.001125 - 0.00045, 5.95 - 0.5),
+            "gpt-6.1-terra":         (0.001500 + 0.00015, 4.63 + 0.8),
+            "gpt-6.1-sol":           (0.003000 + 0.00015, 3.68 + 0.8),
+            "gemini-4-argon":        (0.003000 + 0.00015, 3.12 - 0.9),
+        }
 
     ax = plt.gca()
 
@@ -185,10 +198,10 @@ def main():
         plt.ylim(0, 70)
         plt.xlim(-0.0005, 0.024)  # v1 と同じX軸スケール感
     elif args.range == 1:
-        plt.ylim(0, 40)
-        plt.xlim(0, 0.010)
+        plt.ylim(1.5, 14.5)
+        plt.xlim(0.0003, 0.0038)
 
-    build_legend()
+    build_legend(args.range)
 
     plt.tight_layout()
 
