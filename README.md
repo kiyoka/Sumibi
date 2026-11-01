@@ -17,7 +17,9 @@ Sumibiはモードレスです。
 
 よくある質問はこちら。[FAQ](FAQ.md)
 
-Sumibiが利用している各種LLMのベンチマーク結果はこちら。[benchmarkのREADME](benchmark/README.md)
+Sumibiが利用している各種LLMのベンチマーク結果はこちら：
+- **旧版ベンチマーク (`JWTD_v2/v1` 200件)**: 各種LLM総合比較（GPT-4o, Claude 3.5, Gemini等） → [benchmarkのREADME](benchmark/README.md)
+- **新版ベンチマーク (`JWTD_v2/v2` 628件)**: Gemini最新モデル（4 Argon, 3.8 Flash, 3.6 Flash, 3.5 Flash-Lite）の拡張データセット再計測 → [Issue #205 結果レポート](benchmark/issue205/REPORT.md)（データ出典: [AJIMEE-Bench `JWTD_v2/v2`](https://github.com/nyanko3141592/AJIMEE-Bench)）
 
 ## 利用可能なEmacsバージョン
 

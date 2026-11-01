@@ -179,6 +179,15 @@ MinCERのブートストラップ95%信頼区間（seed=42、1,000リサンプ�
 
 現在は取得済み4モデルの比較図。旧v1の画像には反映しない。前段階の単モデル・2モデル・3モデル画像も別フォルダーに保持している。
 
+### エラー率 vs コスト（1000x600 バブルチャート）
+v1の `images/plot_errorrate_vs_cost_1000x600.png` と同様の形式（X軸: コスト、Y軸: エラー率/MinCER、円サイズ: 平均応答時間）で描画したグラフです。
+
+![Error Rate vs Cost of LLM Model (JWTD_v2)](figures-4models/plot_errorrate_vs_cost_jwtd_v2_1000x600.png)
+
+![Error Rate vs Cost of LLM Model (JWTD_v2) - Zoomed](figures-4models/plot_errorrate_vs_cost_jwtd_v2_zoomed_1000x600.png)
+
+### 入力方式別のMinCER・平均応答時間
+
 ![JWTD_v2/v2・628件・Geminiのみ：ひらがな](figures-4models/hiragana_input.png)
 
 ![JWTD_v2/v2・628件・Geminiのみ：ローマ字](figures-4models/romaji_direct_input.png)

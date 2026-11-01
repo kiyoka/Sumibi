@@ -5,10 +5,22 @@ benchmark ディレクトリの README
 
 # ベンチマーク結果まとめ (計測時期 2025年8月〜2026年4月)
 
-## データセット別の資料（混在させない）
+## データセット別の資料（v1とv2の違い）
 
-- **既存の旧版 `JWTD_v2/v1`・200件**: このREADME以下の結果・既存グラフ。`result_ver2.4.0`等の番号はプロンプト版であり、データセット版ではない。
-- **新版 `JWTD_v2/v2`・628件、Geminiのみ**: [Issue #205の専用資料](issue205/README.md)／[結果とグラフ](issue205/REPORT.md)（3.5 Flash-Lite・3.6 Flash・3.8 Flash・4 Argonの4モデル計測完了、旧世代モデルは除外）。生結果・集計・グラフは旧版と別管理し、異なるデータセットの数値を同じ順位表に混ぜない。
+本リポジトリには、評価件数および対象モデルが異なる2つのベンチマーク結果が含まれています。**データセットの評価件数が異なる（200件 vs 628件）ため、v1とv2のスコア（CERや完全一致率）を直接比較したり、同じ順位表・グラフに混ぜることはできません。**
+
+| 項目 | 旧版 (v1) | 新版 (v2 / Issue #205) |
+|---|---|---|
+| **データセット** | `JWTD_v2/v1` | `JWTD_v2/v2` |
+| **評価件数** | **200件** | **628件**（旧版由来200件＋新規追加428件） |
+| **データ出典** | [AJIMEE-Bench](https://github.com/nyanko3141592/AJIMEE-Bench) | [AJIMEE-Bench](https://github.com/nyanko3141592/AJIMEE-Bench) commit `c0783bba1ec6b9a9e06d07fa52ce3e23d0a7dfe1` |
+| **使用データパス** | `JWTD_v2/v1/evaluation_items.json` | `JWTD_v2/v2/evaluation_items.json` |
+| **SHA-256** | - | `69a0dde4c1f67b3d06268c761ee3a7b7d38680a4f1c81360cc2d4f0f120e731f` |
+| **評価モデル** | GPT-4o, Claude 3.5, Gemini 2.x/3.x, ローカルIME 等 | Gemini 4モデル（3.5 Flash-Lite, 3.6 Flash, 3.8 Flash, 4 Argon） |
+| **入力方式** | 主にローマ字入力 | ローマ字直接入力、ひらがな入力、カタカナ入力の3方式 |
+| **資料リンク** | 本README以下のセクション・既存グラフ（`result_ver2.4.0` 等はプロンプト版でありデータセット版ではない） | [Issue #205 専用資料](issue205/README.md)／[結果レポートとグラフ](issue205/REPORT.md) |
+
+※ 新版 v2 のデータセット詳細は [benchmark/issue205/dataset.json](issue205/dataset.json) および [benchmark/issue205/upstream/README.md](issue205/upstream/README.md) にも固定・保存されています。モデル入力には左文脈のみを使用し、右文脈や正解はモデルへ渡していません。ライセンスはWikipedia/JWTD由来部分がCC-BY-SA 3.0、創作例文・評価コードがCC0 1.0です。
 
 このディレクトリには、Sumibi クライアントを用いて取得した各モデルの応答時間および文字誤り率（CER: Character Error Rate）を集計・可視化するスクリプトと測定結果が含まれています。
 
