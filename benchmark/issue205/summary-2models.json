@@ -1,0 +1,2873 @@
+{
+  "schema": "sumibi-jwtd-v2-summary-1",
+  "dataset": {
+    "repository": "https://github.com/nyanko3141592/AJIMEE-Bench",
+    "revision": "c0783bba1ec6b9a9e06d07fa52ce3e23d0a7dfe1",
+    "path": "JWTD_v2/v2/evaluation_items.json",
+    "sha256": "69a0dde4c1f67b3d06268c761ee3a7b7d38680a4f1c81360cc2d4f0f120e731f",
+    "count": 628
+  },
+  "scoring": {
+    "primary": "raw_MinCER",
+    "secondary": "raw_accuracy@1",
+    "width_normalized_accuracy": true,
+    "right_context": false,
+    "prompt": "sumibi_typical_convert_client",
+    "n": 1
+  },
+  "models": {
+    "gemini-3.5-flash-lite": {
+      "modes": {
+        "romaji_direct_input": {
+          "quality": {
+            "primary_metric": "MinCER",
+            "overall": {
+              "n": 628,
+              "accuracy@1": 0.37420382165605093,
+              "accuracy@1_ci": [
+                0.3375796178343949,
+                0.4140127388535032
+              ],
+              "MinCER": 0.12824627792908233,
+              "MinCER_ci": [
+                0.11333545844467409,
+                0.14274131781257532
+              ]
+            },
+            "by_tag": {
+              "colloquial-form": {
+                "n": 47,
+                "accuracy@1": 0.46808510638297873,
+                "MinCER": 0.06105662226433288
+              },
+              "context-dependent": {
+                "n": 78,
+                "accuracy@1": 0.5128205128205128,
+                "MinCER": 0.08663289857032166
+              },
+              "functional-word": {
+                "n": 60,
+                "accuracy@1": 0.45,
+                "MinCER": 0.08630443174020362
+              },
+              "general": {
+                "n": 37,
+                "accuracy@1": 0.2972972972972973,
+                "MinCER": 0.17019396540213627
+              },
+              "homophone": {
+                "n": 510,
+                "accuracy@1": 0.3862745098039216,
+                "MinCER": 0.12339854746659118
+              },
+              "number-notation": {
+                "n": 89,
+                "accuracy@1": 0.21348314606741572,
+                "MinCER": 0.15661281897205515
+              },
+              "orthographic-variant": {
+                "n": 69,
+                "accuracy@1": 0.3333333333333333,
+                "MinCER": 0.12642087362854754
+              },
+              "proper-noun": {
+                "n": 60,
+                "accuracy@1": 0.16666666666666666,
+                "MinCER": 0.19555171669188018
+              },
+              "unpredictable-name": {
+                "n": 23,
+                "accuracy@1": 0.13043478260869565,
+                "MinCER": 0.1796642539713822
+              }
+            },
+            "width_normalized_accuracy@1": 0.40445859872611467
+          },
+          "by_source": {
+            "v1": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 200,
+                "accuracy@1": 0.38,
+                "accuracy@1_ci": [
+                  0.31,
+                  0.45
+                ],
+                "MinCER": 0.14265237425864544,
+                "MinCER_ci": [
+                  0.11477937653463133,
+                  0.17341218152190432
+                ]
+              },
+              "by_tag": {
+                "context-dependent": {
+                  "n": 6,
+                  "accuracy@1": 0.16666666666666666,
+                  "MinCER": 0.18008611758611756
+                },
+                "functional-word": {
+                  "n": 25,
+                  "accuracy@1": 0.4,
+                  "MinCER": 0.11582737478491953
+                },
+                "general": {
+                  "n": 37,
+                  "accuracy@1": 0.2972972972972973,
+                  "MinCER": 0.17019396540213627
+                },
+                "homophone": {
+                  "n": 93,
+                  "accuracy@1": 0.41935483870967744,
+                  "MinCER": 0.1467220654006425
+                },
+                "number-notation": {
+                  "n": 18,
+                  "accuracy@1": 0.3888888888888889,
+                  "MinCER": 0.15048510382554467
+                },
+                "orthographic-variant": {
+                  "n": 49,
+                  "accuracy@1": 0.3673469387755102,
+                  "MinCER": 0.11945689132625537
+                },
+                "proper-noun": {
+                  "n": 18,
+                  "accuracy@1": 0.2777777777777778,
+                  "MinCER": 0.10670408636564407
+                },
+                "unpredictable-name": {
+                  "n": 11,
+                  "accuracy@1": 0.2727272727272727,
+                  "MinCER": 0.09543231522556006
+                }
+              },
+              "width_normalized_accuracy@1": 0.4
+            },
+            "v2-add": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 428,
+                "accuracy@1": 0.37149532710280375,
+                "accuracy@1_ci": [
+                  0.32710280373831774,
+                  0.4158878504672897
+                ],
+                "MinCER": 0.1215144572143331,
+                "MinCER_ci": [
+                  0.10578190997928942,
+                  0.139803103690989
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 47,
+                  "accuracy@1": 0.46808510638297873,
+                  "MinCER": 0.06105662226433288
+                },
+                "context-dependent": {
+                  "n": 72,
+                  "accuracy@1": 0.5416666666666666,
+                  "MinCER": 0.07884513031900535
+                },
+                "functional-word": {
+                  "n": 35,
+                  "accuracy@1": 0.4857142857142857,
+                  "MinCER": 0.06521661527969223
+                },
+                "homophone": {
+                  "n": 417,
+                  "accuracy@1": 0.37889688249400477,
+                  "MinCER": 0.11819689958201862
+                },
+                "number-notation": {
+                  "n": 71,
+                  "accuracy@1": 0.16901408450704225,
+                  "MinCER": 0.15816632422046625
+                },
+                "orthographic-variant": {
+                  "n": 20,
+                  "accuracy@1": 0.25,
+                  "MinCER": 0.14348263026916347
+                },
+                "proper-noun": {
+                  "n": 42,
+                  "accuracy@1": 0.11904761904761904,
+                  "MinCER": 0.2336292725459814
+                },
+                "unpredictable-name": {
+                  "n": 12,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.2568768644883857
+                }
+              },
+              "width_normalized_accuracy@1": 0.40654205607476634
+            }
+          },
+          "by_domain": {
+            "": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 482,
+                "accuracy@1": 0.2966804979253112,
+                "accuracy@1_ci": [
+                  0.2572614107883817,
+                  0.3381742738589212
+                ],
+                "MinCER": 0.1545068919658806,
+                "MinCER_ci": [
+                  0.13598077871747893,
+                  0.17322601122224948
+                ]
+              },
+              "by_tag": {
+                "context-dependent": {
+                  "n": 33,
+                  "accuracy@1": 0.30303030303030304,
+                  "MinCER": 0.1355241533720032
+                },
+                "functional-word": {
+                  "n": 35,
+                  "accuracy@1": 0.4,
+                  "MinCER": 0.11760383456108703
+                },
+                "general": {
+                  "n": 37,
+                  "accuracy@1": 0.2972972972972973,
+                  "MinCER": 0.17019396540213627
+                },
+                "homophone": {
+                  "n": 368,
+                  "accuracy@1": 0.28804347826086957,
+                  "MinCER": 0.15498256864869256
+                },
+                "number-notation": {
+                  "n": 75,
+                  "accuracy@1": 0.16,
+                  "MinCER": 0.17941687674983706
+                },
+                "orthographic-variant": {
+                  "n": 63,
+                  "accuracy@1": 0.3492063492063492,
+                  "MinCER": 0.1280647854802783
+                },
+                "proper-noun": {
+                  "n": 60,
+                  "accuracy@1": 0.16666666666666666,
+                  "MinCER": 0.19555171669188018
+                },
+                "unpredictable-name": {
+                  "n": 23,
+                  "accuracy@1": 0.13043478260869565,
+                  "MinCER": 0.1796642539713822
+                }
+              },
+              "width_normalized_accuracy@1": 0.3360995850622407
+            },
+            "business": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 25,
+                "accuracy@1": 0.72,
+                "accuracy@1_ci": [
+                  0.52,
+                  0.88
+                ],
+                "MinCER": 0.028746844319775592,
+                "MinCER_ci": [
+                  0.010289855072463766,
+                  0.052080177653108926
+                ]
+              },
+              "by_tag": {
+                "context-dependent": {
+                  "n": 9,
+                  "accuracy@1": 0.7777777777777778,
+                  "MinCER": 0.018055555555555557
+                },
+                "functional-word": {
+                  "n": 11,
+                  "accuracy@1": 0.45454545454545453,
+                  "MinCER": 0.059651918908580896
+                },
+                "homophone": {
+                  "n": 24,
+                  "accuracy@1": 0.75,
+                  "MinCER": 0.02647240727754402
+                },
+                "number-notation": {
+                  "n": 1,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                },
+                "orthographic-variant": {
+                  "n": 3,
+                  "accuracy@1": 0.3333333333333333,
+                  "MinCER": 0.10241545893719806
+                }
+              },
+              "width_normalized_accuracy@1": 0.72
+            },
+            "colloquial-chat": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 26,
+                "accuracy@1": 0.4230769230769231,
+                "accuracy@1_ci": [
+                  0.23076923076923078,
+                  0.6153846153846154
+                ],
+                "MinCER": 0.08315022395904749,
+                "MinCER_ci": [
+                  0.0421262749317048,
+                  0.1364997653176386
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 26,
+                  "accuracy@1": 0.4230769230769231,
+                  "MinCER": 0.08315022395904749
+                },
+                "context-dependent": {
+                  "n": 14,
+                  "accuracy@1": 0.42857142857142855,
+                  "MinCER": 0.09867595639654461
+                },
+                "functional-word": {
+                  "n": 2,
+                  "accuracy@1": 0.5,
+                  "MinCER": 0.03125
+                },
+                "homophone": {
+                  "n": 26,
+                  "accuracy@1": 0.4230769230769231,
+                  "MinCER": 0.08315022395904749
+                },
+                "number-notation": {
+                  "n": 2,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.1
+                },
+                "orthographic-variant": {
+                  "n": 1,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.058823529411764705
+                }
+              },
+              "width_normalized_accuracy@1": 0.4230769230769231
+            },
+            "colloquial-speech": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 25,
+                "accuracy@1": 0.6,
+                "accuracy@1_ci": [
+                  0.4,
+                  0.8
+                ],
+                "MinCER": 0.028310216939536427,
+                "MinCER_ci": [
+                  0.014190841087392814,
+                  0.04445038301600263
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 20,
+                  "accuracy@1": 0.5,
+                  "MinCER": 0.03538777117442053
+                },
+                "context-dependent": {
+                  "n": 7,
+                  "accuracy@1": 0.8571428571428571,
+                  "MinCER": 0.009852216748768473
+                },
+                "functional-word": {
+                  "n": 6,
+                  "accuracy@1": 0.5,
+                  "MinCER": 0.04335454224107458
+                },
+                "homophone": {
+                  "n": 25,
+                  "accuracy@1": 0.6,
+                  "MinCER": 0.028310216939536427
+                },
+                "number-notation": {
+                  "n": 1,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.037037037037037035
+                },
+                "orthographic-variant": {
+                  "n": 1,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.06666666666666667
+                }
+              },
+              "width_normalized_accuracy@1": 0.6
+            },
+            "production-feedback": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 40,
+                "accuracy@1": 0.675,
+                "accuracy@1_ci": [
+                  0.525,
+                  0.8
+                ],
+                "MinCER": 0.03792879452418926,
+                "MinCER_ci": [
+                  0.019800637958532697,
+                  0.05876262626262627
+                ]
+              },
+              "by_tag": {
+                "homophone": {
+                  "n": 40,
+                  "accuracy@1": 0.675,
+                  "MinCER": 0.03792879452418926
+                }
+              },
+              "width_normalized_accuracy@1": 0.675
+            },
+            "tech-web": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 30,
+                "accuracy@1": 0.7,
+                "accuracy@1_ci": [
+                  0.5333333333333333,
+                  0.8666666666666667
+                ],
+                "MinCER": 0.03202854921745476,
+                "MinCER_ci": [
+                  0.009622867137859642,
+                  0.059658087622855245
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 1,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                },
+                "context-dependent": {
+                  "n": 15,
+                  "accuracy@1": 0.7333333333333333,
+                  "MinCER": 0.0448093413610655
+                },
+                "functional-word": {
+                  "n": 6,
+                  "accuracy@1": 0.6666666666666666,
+                  "MinCER": 0.013888888888888888
+                },
+                "homophone": {
+                  "n": 27,
+                  "accuracy@1": 0.7407407407407407,
+                  "MinCER": 0.03250085715519665
+                },
+                "number-notation": {
+                  "n": 10,
+                  "accuracy@1": 0.6,
+                  "MinCER": 0.02452380952380952
+                },
+                "orthographic-variant": {
+                  "n": 1,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.2222222222222222
+                }
+              },
+              "width_normalized_accuracy@1": 0.7
+            }
+          },
+          "latency": {
+            "mean": 0.8511008964076429,
+            "median": 0.8028599789999964,
+            "p95_nearest_rank": 1.2132520830000004,
+            "mean_at_or_below_p95": 0.826923137463986,
+            "max": 1.6554233340000337
+          },
+          "blocked": 0,
+          "empty": 0
+        },
+        "hiragana_input": {
+          "quality": {
+            "primary_metric": "MinCER",
+            "overall": {
+              "n": 628,
+              "accuracy@1": 0.535031847133758,
+              "accuracy@1_ci": [
+                0.4984076433121019,
+                0.5780254777070064
+              ],
+              "MinCER": 0.08927997305618149,
+              "MinCER_ci": [
+                0.0753228751379126,
+                0.10450284504692992
+              ]
+            },
+            "by_tag": {
+              "colloquial-form": {
+                "n": 47,
+                "accuracy@1": 0.7659574468085106,
+                "MinCER": 0.03237523636945328
+              },
+              "context-dependent": {
+                "n": 78,
+                "accuracy@1": 0.6153846153846154,
+                "MinCER": 0.06330930194298476
+              },
+              "functional-word": {
+                "n": 60,
+                "accuracy@1": 0.48333333333333334,
+                "MinCER": 0.059189846067821815
+              },
+              "general": {
+                "n": 37,
+                "accuracy@1": 0.5135135135135135,
+                "MinCER": 0.1087390064067579
+              },
+              "homophone": {
+                "n": 510,
+                "accuracy@1": 0.5392156862745098,
+                "MinCER": 0.08896112192788079
+              },
+              "number-notation": {
+                "n": 89,
+                "accuracy@1": 0.3146067415730337,
+                "MinCER": 0.12162671494566675
+              },
+              "orthographic-variant": {
+                "n": 69,
+                "accuracy@1": 0.5507246376811594,
+                "MinCER": 0.07491788641591834
+              },
+              "proper-noun": {
+                "n": 60,
+                "accuracy@1": 0.4666666666666667,
+                "MinCER": 0.10576512400449947
+              },
+              "unpredictable-name": {
+                "n": 23,
+                "accuracy@1": 0.34782608695652173,
+                "MinCER": 0.1461753515364344
+              }
+            },
+            "width_normalized_accuracy@1": 0.5429936305732485
+          },
+          "by_source": {
+            "v1": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 200,
+                "accuracy@1": 0.57,
+                "accuracy@1_ci": [
+                  0.51,
+                  0.645
+                ],
+                "MinCER": 0.08937520814692215,
+                "MinCER_ci": [
+                  0.0632851006672499,
+                  0.11683019062367958
+                ]
+              },
+              "by_tag": {
+                "context-dependent": {
+                  "n": 6,
+                  "accuracy@1": 0.3333333333333333,
+                  "MinCER": 0.11203703703703705
+                },
+                "functional-word": {
+                  "n": 25,
+                  "accuracy@1": 0.56,
+                  "MinCER": 0.05806527974949028
+                },
+                "general": {
+                  "n": 37,
+                  "accuracy@1": 0.5135135135135135,
+                  "MinCER": 0.1087390064067579
+                },
+                "homophone": {
+                  "n": 93,
+                  "accuracy@1": 0.5913978494623656,
+                  "MinCER": 0.10184652586135308
+                },
+                "number-notation": {
+                  "n": 18,
+                  "accuracy@1": 0.4444444444444444,
+                  "MinCER": 0.0703395200875604
+                },
+                "orthographic-variant": {
+                  "n": 49,
+                  "accuracy@1": 0.5918367346938775,
+                  "MinCER": 0.06264721007779858
+                },
+                "proper-noun": {
+                  "n": 18,
+                  "accuracy@1": 0.6111111111111112,
+                  "MinCER": 0.02365648519866786
+                },
+                "unpredictable-name": {
+                  "n": 11,
+                  "accuracy@1": 0.5454545454545454,
+                  "MinCER": 0.08621735673807342
+                }
+              },
+              "width_normalized_accuracy@1": 0.57
+            },
+            "v2-add": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 428,
+                "accuracy@1": 0.5186915887850467,
+                "accuracy@1_ci": [
+                  0.4696261682242991,
+                  0.5654205607476636
+                ],
+                "MinCER": 0.08923547067733055,
+                "MinCER_ci": [
+                  0.07351400050549592,
+                  0.10699527643870102
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 47,
+                  "accuracy@1": 0.7659574468085106,
+                  "MinCER": 0.03237523636945328
+                },
+                "context-dependent": {
+                  "n": 72,
+                  "accuracy@1": 0.6388888888888888,
+                  "MinCER": 0.05924865735181373
+                },
+                "functional-word": {
+                  "n": 35,
+                  "accuracy@1": 0.42857142857142855,
+                  "MinCER": 0.059993107723772914
+                },
+                "homophone": {
+                  "n": 417,
+                  "accuracy@1": 0.5275779376498801,
+                  "MinCER": 0.08608739874847318
+                },
+                "number-notation": {
+                  "n": 71,
+                  "accuracy@1": 0.28169014084507044,
+                  "MinCER": 0.13462910237448242
+                },
+                "orthographic-variant": {
+                  "n": 20,
+                  "accuracy@1": 0.45,
+                  "MinCER": 0.1049810434443118
+                },
+                "proper-noun": {
+                  "n": 42,
+                  "accuracy@1": 0.40476190476190477,
+                  "MinCER": 0.14095454063557017
+                },
+                "unpredictable-name": {
+                  "n": 12,
+                  "accuracy@1": 0.16666666666666666,
+                  "MinCER": 0.20113684676826526
+                }
+              },
+              "width_normalized_accuracy@1": 0.530373831775701
+            }
+          },
+          "by_domain": {
+            "": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 482,
+                "accuracy@1": 0.475103734439834,
+                "accuracy@1_ci": [
+                  0.4315352697095436,
+                  0.5186721991701245
+                ],
+                "MinCER": 0.10620460611799477,
+                "MinCER_ci": [
+                  0.09016190463215852,
+                  0.12466058744992231
+                ]
+              },
+              "by_tag": {
+                "context-dependent": {
+                  "n": 33,
+                  "accuracy@1": 0.5151515151515151,
+                  "MinCER": 0.08943966321691682
+                },
+                "functional-word": {
+                  "n": 35,
+                  "accuracy@1": 0.45714285714285713,
+                  "MinCER": 0.06649755065863272
+                },
+                "general": {
+                  "n": 37,
+                  "accuracy@1": 0.5135135135135135,
+                  "MinCER": 0.1087390064067579
+                },
+                "homophone": {
+                  "n": 368,
+                  "accuracy@1": 0.46195652173913043,
+                  "MinCER": 0.11060136572321752
+                },
+                "number-notation": {
+                  "n": 75,
+                  "accuracy@1": 0.26666666666666666,
+                  "MinCER": 0.13883654124169736
+                },
+                "orthographic-variant": {
+                  "n": 63,
+                  "accuracy@1": 0.5555555555555556,
+                  "MinCER": 0.0767925904208697
+                },
+                "proper-noun": {
+                  "n": 60,
+                  "accuracy@1": 0.4666666666666667,
+                  "MinCER": 0.10576512400449947
+                },
+                "unpredictable-name": {
+                  "n": 23,
+                  "accuracy@1": 0.34782608695652173,
+                  "MinCER": 0.1461753515364344
+                }
+              },
+              "width_normalized_accuracy@1": 0.4854771784232365
+            },
+            "business": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 25,
+                "accuracy@1": 0.68,
+                "accuracy@1_ci": [
+                  0.48,
+                  0.84
+                ],
+                "MinCER": 0.036268583450210376,
+                "MinCER_ci": [
+                  0.01230621785881253,
+                  0.07010191678354372
+                ]
+              },
+              "by_tag": {
+                "context-dependent": {
+                  "n": 9,
+                  "accuracy@1": 0.7777777777777778,
+                  "MinCER": 0.0125
+                },
+                "functional-word": {
+                  "n": 11,
+                  "accuracy@1": 0.36363636363636365,
+                  "MinCER": 0.07674678056865995
+                },
+                "homophone": {
+                  "n": 24,
+                  "accuracy@1": 0.6666666666666666,
+                  "MinCER": 0.03777977442730248
+                },
+                "number-notation": {
+                  "n": 1,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                },
+                "orthographic-variant": {
+                  "n": 3,
+                  "accuracy@1": 0.3333333333333333,
+                  "MinCER": 0.07342995169082125
+                }
+              },
+              "width_normalized_accuracy@1": 0.68
+            },
+            "colloquial-chat": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 26,
+                "accuracy@1": 0.6923076923076923,
+                "accuracy@1_ci": [
+                  0.5,
+                  0.8461538461538461
+                ],
+                "MinCER": 0.050512873250429816,
+                "MinCER_ci": [
+                  0.013800904977375565,
+                  0.0939739370734846
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 26,
+                  "accuracy@1": 0.6923076923076923,
+                  "MinCER": 0.050512873250429816
+                },
+                "context-dependent": {
+                  "n": 14,
+                  "accuracy@1": 0.5714285714285714,
+                  "MinCER": 0.056640908111496344
+                },
+                "functional-word": {
+                  "n": 2,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                },
+                "homophone": {
+                  "n": 26,
+                  "accuracy@1": 0.6923076923076923,
+                  "MinCER": 0.050512873250429816
+                },
+                "number-notation": {
+                  "n": 2,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                },
+                "orthographic-variant": {
+                  "n": 1,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                }
+              },
+              "width_normalized_accuracy@1": 0.6923076923076923
+            },
+            "colloquial-speech": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 25,
+                "accuracy@1": 0.84,
+                "accuracy@1_ci": [
+                  0.68,
+                  0.96
+                ],
+                "MinCER": 0.011189199051268015,
+                "MinCER_ci": [
+                  0.0013333333333333333,
+                  0.02503849662470352
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 20,
+                  "accuracy@1": 0.85,
+                  "MinCER": 0.010415070242656449
+                },
+                "context-dependent": {
+                  "n": 7,
+                  "accuracy@1": 0.8571428571428571,
+                  "MinCER": 0.019704433497536946
+                },
+                "functional-word": {
+                  "n": 6,
+                  "accuracy@1": 0.8333333333333334,
+                  "MinCER": 0.011904761904761904
+                },
+                "homophone": {
+                  "n": 25,
+                  "accuracy@1": 0.84,
+                  "MinCER": 0.011189199051268015
+                },
+                "number-notation": {
+                  "n": 1,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.037037037037037035
+                },
+                "orthographic-variant": {
+                  "n": 1,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                }
+              },
+              "width_normalized_accuracy@1": 0.84
+            },
+            "production-feedback": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 40,
+                "accuracy@1": 0.8,
+                "accuracy@1_ci": [
+                  0.675,
+                  0.9
+                ],
+                "MinCER": 0.024306355606758832,
+                "MinCER_ci": [
+                  0.008541666666666666,
+                  0.04607718894009216
+                ]
+              },
+              "by_tag": {
+                "homophone": {
+                  "n": 40,
+                  "accuracy@1": 0.8,
+                  "MinCER": 0.024306355606758832
+                }
+              },
+              "width_normalized_accuracy@1": 0.8
+            },
+            "tech-web": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 30,
+                "accuracy@1": 0.6333333333333333,
+                "accuracy@1_ci": [
+                  0.4666666666666667,
+                  0.8
+                ],
+                "MinCER": 0.04683898130299929,
+                "MinCER_ci": [
+                  0.017381309345327337,
+                  0.0878442723082903
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 1,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                },
+                "context-dependent": {
+                  "n": 15,
+                  "accuracy@1": 0.6666666666666666,
+                  "MinCER": 0.06288086115672323
+                },
+                "functional-word": {
+                  "n": 6,
+                  "accuracy@1": 0.3333333333333333,
+                  "MinCER": 0.051388888888888894
+                },
+                "homophone": {
+                  "n": 27,
+                  "accuracy@1": 0.6666666666666666,
+                  "MinCER": 0.044327263176172055
+                },
+                "number-notation": {
+                  "n": 10,
+                  "accuracy@1": 0.5,
+                  "MinCER": 0.0375
+                },
+                "orthographic-variant": {
+                  "n": 1,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.1111111111111111
+                }
+              },
+              "width_normalized_accuracy@1": 0.6333333333333333
+            }
+          },
+          "latency": {
+            "mean": 0.8277031867277085,
+            "median": 0.7754468960000054,
+            "p95_nearest_rank": 1.1770029580000028,
+            "mean_at_or_below_p95": 0.804184624810722,
+            "max": 1.5226893750000272
+          },
+          "blocked": 0,
+          "empty": 0
+        },
+        "katakana_input": {
+          "quality": {
+            "primary_metric": "MinCER",
+            "overall": {
+              "n": 628,
+              "accuracy@1": 0.4585987261146497,
+              "accuracy@1_ci": [
+                0.42038216560509556,
+                0.5
+              ],
+              "MinCER": 0.17338378850694208,
+              "MinCER_ci": [
+                0.148082728681897,
+                0.20138873570426408
+              ]
+            },
+            "by_tag": {
+              "colloquial-form": {
+                "n": 47,
+                "accuracy@1": 0.5531914893617021,
+                "MinCER": 0.05758140152672163
+              },
+              "context-dependent": {
+                "n": 78,
+                "accuracy@1": 0.5128205128205128,
+                "MinCER": 0.10441187747930283
+              },
+              "functional-word": {
+                "n": 60,
+                "accuracy@1": 0.48333333333333334,
+                "MinCER": 0.12897482645989128
+              },
+              "general": {
+                "n": 37,
+                "accuracy@1": 0.5135135135135135,
+                "MinCER": 0.2158276099845559
+              },
+              "homophone": {
+                "n": 510,
+                "accuracy@1": 0.4549019607843137,
+                "MinCER": 0.16734225307411707
+              },
+              "number-notation": {
+                "n": 89,
+                "accuracy@1": 0.29213483146067415,
+                "MinCER": 0.21461068394017208
+              },
+              "orthographic-variant": {
+                "n": 69,
+                "accuracy@1": 0.463768115942029,
+                "MinCER": 0.2183070261204234
+              },
+              "proper-noun": {
+                "n": 60,
+                "accuracy@1": 0.36666666666666664,
+                "MinCER": 0.2834115593225418
+              },
+              "unpredictable-name": {
+                "n": 23,
+                "accuracy@1": 0.2608695652173913,
+                "MinCER": 0.2502615042827565
+              }
+            },
+            "width_normalized_accuracy@1": 0.46337579617834396
+          },
+          "by_source": {
+            "v1": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 200,
+                "accuracy@1": 0.495,
+                "accuracy@1_ci": [
+                  0.43,
+                  0.565
+                ],
+                "MinCER": 0.19702174577806644,
+                "MinCER_ci": [
+                  0.14676559416063004,
+                  0.24631599367252657
+                ]
+              },
+              "by_tag": {
+                "context-dependent": {
+                  "n": 6,
+                  "accuracy@1": 0.16666666666666666,
+                  "MinCER": 0.17262583095916428
+                },
+                "functional-word": {
+                  "n": 25,
+                  "accuracy@1": 0.48,
+                  "MinCER": 0.18361557673402704
+                },
+                "general": {
+                  "n": 37,
+                  "accuracy@1": 0.5135135135135135,
+                  "MinCER": 0.2158276099845559
+                },
+                "homophone": {
+                  "n": 93,
+                  "accuracy@1": 0.4946236559139785,
+                  "MinCER": 0.1939346677554448
+                },
+                "number-notation": {
+                  "n": 18,
+                  "accuracy@1": 0.2777777777777778,
+                  "MinCER": 0.23121611335602596
+                },
+                "orthographic-variant": {
+                  "n": 49,
+                  "accuracy@1": 0.46938775510204084,
+                  "MinCER": 0.2671252218584466
+                },
+                "proper-noun": {
+                  "n": 18,
+                  "accuracy@1": 0.5555555555555556,
+                  "MinCER": 0.12517694941353458
+                },
+                "unpredictable-name": {
+                  "n": 11,
+                  "accuracy@1": 0.45454545454545453,
+                  "MinCER": 0.14501416836243264
+                }
+              },
+              "width_normalized_accuracy@1": 0.495
+            },
+            "v2-add": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 428,
+                "accuracy@1": 0.441588785046729,
+                "accuracy@1_ci": [
+                  0.39485981308411217,
+                  0.4883177570093458
+                ],
+                "MinCER": 0.16233801408118287,
+                "MinCER_ci": [
+                  0.13122390165715514,
+                  0.19284912811811494
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 47,
+                  "accuracy@1": 0.5531914893617021,
+                  "MinCER": 0.05758140152672163
+                },
+                "context-dependent": {
+                  "n": 72,
+                  "accuracy@1": 0.5416666666666666,
+                  "MinCER": 0.09872738135598104
+                },
+                "functional-word": {
+                  "n": 35,
+                  "accuracy@1": 0.4857142857142857,
+                  "MinCER": 0.08994571912122282
+                },
+                "homophone": {
+                  "n": 417,
+                  "accuracy@1": 0.4460431654676259,
+                  "MinCER": 0.16141157066317338
+                },
+                "number-notation": {
+                  "n": 71,
+                  "accuracy@1": 0.29577464788732394,
+                  "MinCER": 0.21040085676432177
+                },
+                "orthographic-variant": {
+                  "n": 20,
+                  "accuracy@1": 0.45,
+                  "MinCER": 0.09870244656226665
+                },
+                "proper-noun": {
+                  "n": 42,
+                  "accuracy@1": 0.2857142857142857,
+                  "MinCER": 0.3512263921406877
+                },
+                "unpredictable-name": {
+                  "n": 12,
+                  "accuracy@1": 0.08333333333333333,
+                  "MinCER": 0.3467382288763867
+                }
+              },
+              "width_normalized_accuracy@1": 0.4485981308411215
+            }
+          },
+          "by_domain": {
+            "": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 482,
+                "accuracy@1": 0.41286307053941906,
+                "accuracy@1_ci": [
+                  0.36929460580912865,
+                  0.45228215767634855
+                ],
+                "MinCER": 0.20791988109580217,
+                "MinCER_ci": [
+                  0.17717951158731013,
+                  0.24157639558798982
+                ]
+              },
+              "by_tag": {
+                "context-dependent": {
+                  "n": 33,
+                  "accuracy@1": 0.45454545454545453,
+                  "MinCER": 0.17928564775987108
+                },
+                "functional-word": {
+                  "n": 35,
+                  "accuracy@1": 0.45714285714285713,
+                  "MinCER": 0.15991228512111608
+                },
+                "general": {
+                  "n": 37,
+                  "accuracy@1": 0.5135135135135135,
+                  "MinCER": 0.2158276099845559
+                },
+                "homophone": {
+                  "n": 368,
+                  "accuracy@1": 0.39402173913043476,
+                  "MinCER": 0.20870084938482805
+                },
+                "number-notation": {
+                  "n": 75,
+                  "accuracy@1": 0.25333333333333335,
+                  "MinCER": 0.24898704159136748
+                },
+                "orthographic-variant": {
+                  "n": 63,
+                  "accuracy@1": 0.47619047619047616,
+                  "MinCER": 0.23154506970922534
+                },
+                "proper-noun": {
+                  "n": 60,
+                  "accuracy@1": 0.36666666666666664,
+                  "MinCER": 0.2834115593225418
+                },
+                "unpredictable-name": {
+                  "n": 23,
+                  "accuracy@1": 0.2608695652173913,
+                  "MinCER": 0.2502615042827565
+                }
+              },
+              "width_normalized_accuracy@1": 0.4190871369294606
+            },
+            "business": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 25,
+                "accuracy@1": 0.76,
+                "accuracy@1_ci": [
+                  0.6,
+                  0.92
+                ],
+                "MinCER": 0.028583524027459953,
+                "MinCER_ci": [
+                  0.009543859649122806,
+                  0.05206178489702517
+                ]
+              },
+              "by_tag": {
+                "context-dependent": {
+                  "n": 9,
+                  "accuracy@1": 0.6666666666666666,
+                  "MinCER": 0.03640350877192982
+                },
+                "functional-word": {
+                  "n": 11,
+                  "accuracy@1": 0.6363636363636364,
+                  "MinCER": 0.04881422924901186
+                },
+                "homophone": {
+                  "n": 24,
+                  "accuracy@1": 0.75,
+                  "MinCER": 0.029774504195270782
+                },
+                "number-notation": {
+                  "n": 1,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                },
+                "orthographic-variant": {
+                  "n": 3,
+                  "accuracy@1": 0.3333333333333333,
+                  "MinCER": 0.07342995169082125
+                }
+              },
+              "width_normalized_accuracy@1": 0.76
+            },
+            "colloquial-chat": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 26,
+                "accuracy@1": 0.6153846153846154,
+                "accuracy@1_ci": [
+                  0.4230769230769231,
+                  0.8076923076923077
+                ],
+                "MinCER": 0.03579730036178,
+                "MinCER_ci": [
+                  0.016802268244575938,
+                  0.0594754321847082
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 26,
+                  "accuracy@1": 0.6153846153846154,
+                  "MinCER": 0.03579730036178
+                },
+                "context-dependent": {
+                  "n": 14,
+                  "accuracy@1": 0.5714285714285714,
+                  "MinCER": 0.04639490411549236
+                },
+                "functional-word": {
+                  "n": 2,
+                  "accuracy@1": 0.5,
+                  "MinCER": 0.03125
+                },
+                "homophone": {
+                  "n": 26,
+                  "accuracy@1": 0.6153846153846154,
+                  "MinCER": 0.03579730036178
+                },
+                "number-notation": {
+                  "n": 2,
+                  "accuracy@1": 0.5,
+                  "MinCER": 0.05
+                },
+                "orthographic-variant": {
+                  "n": 1,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                }
+              },
+              "width_normalized_accuracy@1": 0.6153846153846154
+            },
+            "colloquial-speech": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 25,
+                "accuracy@1": 0.44,
+                "accuracy@1_ci": [
+                  0.24,
+                  0.64
+                ],
+                "MinCER": 0.09537882084896383,
+                "MinCER_ci": [
+                  0.036175639206757794,
+                  0.19199300870453098
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 20,
+                  "accuracy@1": 0.45,
+                  "MinCER": 0.08877980311748185
+                },
+                "context-dependent": {
+                  "n": 7,
+                  "accuracy@1": 0.42857142857142855,
+                  "MinCER": 0.08646730026040371
+                },
+                "functional-word": {
+                  "n": 6,
+                  "accuracy@1": 0.3333333333333333,
+                  "MinCER": 0.2278505144358803
+                },
+                "homophone": {
+                  "n": 25,
+                  "accuracy@1": 0.44,
+                  "MinCER": 0.09537882084896383
+                },
+                "number-notation": {
+                  "n": 1,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.037037037037037035
+                },
+                "orthographic-variant": {
+                  "n": 1,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.03333333333333333
+                }
+              },
+              "width_normalized_accuracy@1": 0.44
+            },
+            "production-feedback": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 40,
+                "accuracy@1": 0.65,
+                "accuracy@1_ci": [
+                  0.5,
+                  0.8
+                ],
+                "MinCER": 0.08606060136100459,
+                "MinCER_ci": [
+                  0.026908649146552378,
+                  0.16918792766373414
+                ]
+              },
+              "by_tag": {
+                "homophone": {
+                  "n": 40,
+                  "accuracy@1": 0.65,
+                  "MinCER": 0.08606060136100459
+                }
+              },
+              "width_normalized_accuracy@1": 0.65
+            },
+            "tech-web": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 30,
+                "accuracy@1": 0.5666666666666667,
+                "accuracy@1_ci": [
+                  0.4,
+                  0.7333333333333333
+                ],
+                "MinCER": 0.039847466947529823,
+                "MinCER_ci": [
+                  0.019331964969896007,
+                  0.06388153721398389
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 1,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                },
+                "context-dependent": {
+                  "n": 15,
+                  "accuracy@1": 0.5333333333333333,
+                  "MinCER": 0.04301791526151926
+                },
+                "functional-word": {
+                  "n": 6,
+                  "accuracy@1": 0.5,
+                  "MinCER": 0.029166666666666664
+                },
+                "homophone": {
+                  "n": 27,
+                  "accuracy@1": 0.5925925925925926,
+                  "MinCER": 0.039645333645403506
+                },
+                "number-notation": {
+                  "n": 10,
+                  "accuracy@1": 0.5,
+                  "MinCER": 0.028928571428571425
+                },
+                "orthographic-variant": {
+                  "n": 1,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.2222222222222222
+                }
+              },
+              "width_normalized_accuracy@1": 0.5666666666666667
+            }
+          },
+          "latency": {
+            "mean": 0.8702721920843947,
+            "median": 0.8080743960000518,
+            "p95_nearest_rank": 1.2459651250001116,
+            "mean_at_or_below_p95": 0.8301594545695129,
+            "max": 9.028318249999984
+          },
+          "blocked": 0,
+          "empty": 0
+        }
+      },
+      "returned_models": {
+        "gemini-3.5-flash-lite": 1890
+      },
+      "known_reference_usd": 0.2811704000000009,
+      "unknown_cost_calls": 0,
+      "unitemized_token_gap": 0,
+      "unknown_token_gap_calls": 0,
+      "failed_attempts": 0,
+      "resume_sessions": 0
+    },
+    "gemini-3.6-flash": {
+      "modes": {
+        "romaji_direct_input": {
+          "quality": {
+            "primary_metric": "MinCER",
+            "overall": {
+              "n": 628,
+              "accuracy@1": 0.5509554140127388,
+              "accuracy@1_ci": [
+                0.5127388535031847,
+                0.589171974522293
+              ],
+              "MinCER": 0.05948862835108102,
+              "MinCER_ci": [
+                0.05093446432453284,
+                0.06910306009995174
+              ]
+            },
+            "by_tag": {
+              "colloquial-form": {
+                "n": 47,
+                "accuracy@1": 0.7446808510638298,
+                "MinCER": 0.0226081909008212
+              },
+              "context-dependent": {
+                "n": 78,
+                "accuracy@1": 0.5641025641025641,
+                "MinCER": 0.048985528128464226
+              },
+              "functional-word": {
+                "n": 60,
+                "accuracy@1": 0.6166666666666667,
+                "MinCER": 0.04125899732635901
+              },
+              "general": {
+                "n": 37,
+                "accuracy@1": 0.7297297297297297,
+                "MinCER": 0.06289510657559191
+              },
+              "homophone": {
+                "n": 510,
+                "accuracy@1": 0.5411764705882353,
+                "MinCER": 0.060464088737442974
+              },
+              "number-notation": {
+                "n": 89,
+                "accuracy@1": 0.39325842696629215,
+                "MinCER": 0.08475049190425372
+              },
+              "orthographic-variant": {
+                "n": 69,
+                "accuracy@1": 0.5507246376811594,
+                "MinCER": 0.0450477379077631
+              },
+              "proper-noun": {
+                "n": 60,
+                "accuracy@1": 0.4166666666666667,
+                "MinCER": 0.07340526636417075
+              },
+              "unpredictable-name": {
+                "n": 23,
+                "accuracy@1": 0.2608695652173913,
+                "MinCER": 0.09694495227329819
+              }
+            },
+            "width_normalized_accuracy@1": 0.5875796178343949
+          },
+          "by_source": {
+            "v1": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 200,
+                "accuracy@1": 0.6,
+                "accuracy@1_ci": [
+                  0.535,
+                  0.675
+                ],
+                "MinCER": 0.05845197528679532,
+                "MinCER_ci": [
+                  0.04065977923451946,
+                  0.08160914430160396
+                ]
+              },
+              "by_tag": {
+                "context-dependent": {
+                  "n": 6,
+                  "accuracy@1": 0.5,
+                  "MinCER": 0.08375420875420875
+                },
+                "functional-word": {
+                  "n": 25,
+                  "accuracy@1": 0.64,
+                  "MinCER": 0.043409491786985395
+                },
+                "general": {
+                  "n": 37,
+                  "accuracy@1": 0.7297297297297297,
+                  "MinCER": 0.06289510657559191
+                },
+                "homophone": {
+                  "n": 93,
+                  "accuracy@1": 0.5806451612903226,
+                  "MinCER": 0.06908251172503238
+                },
+                "number-notation": {
+                  "n": 18,
+                  "accuracy@1": 0.5,
+                  "MinCER": 0.05039236839267675
+                },
+                "orthographic-variant": {
+                  "n": 49,
+                  "accuracy@1": 0.6122448979591837,
+                  "MinCER": 0.03509189041413559
+                },
+                "proper-noun": {
+                  "n": 18,
+                  "accuracy@1": 0.4444444444444444,
+                  "MinCER": 0.04343255240971059
+                },
+                "unpredictable-name": {
+                  "n": 11,
+                  "accuracy@1": 0.36363636363636365,
+                  "MinCER": 0.06045563250581036
+                }
+              },
+              "width_normalized_accuracy@1": 0.635
+            },
+            "v2-add": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 428,
+                "accuracy@1": 0.5280373831775701,
+                "accuracy@1_ci": [
+                  0.47897196261682246,
+                  0.5771028037383178
+                ],
+                "MinCER": 0.059973045670840636,
+                "MinCER_ci": [
+                  0.050903100905656445,
+                  0.06916459976964108
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 47,
+                  "accuracy@1": 0.7446808510638298,
+                  "MinCER": 0.0226081909008212
+                },
+                "context-dependent": {
+                  "n": 72,
+                  "accuracy@1": 0.5694444444444444,
+                  "MinCER": 0.04608813807631885
+                },
+                "functional-word": {
+                  "n": 35,
+                  "accuracy@1": 0.6,
+                  "MinCER": 0.03972292985448301
+                },
+                "homophone": {
+                  "n": 417,
+                  "accuracy@1": 0.5323741007194245,
+                  "MinCER": 0.058541994402081306
+                },
+                "number-notation": {
+                  "n": 71,
+                  "accuracy@1": 0.36619718309859156,
+                  "MinCER": 0.0934610020902873
+                },
+                "orthographic-variant": {
+                  "n": 20,
+                  "accuracy@1": 0.4,
+                  "MinCER": 0.06943956426715048
+                },
+                "proper-noun": {
+                  "n": 42,
+                  "accuracy@1": 0.40476190476190477,
+                  "MinCER": 0.08625071520179652
+                },
+                "unpredictable-name": {
+                  "n": 12,
+                  "accuracy@1": 0.16666666666666666,
+                  "MinCER": 0.1303934953934954
+                }
+              },
+              "width_normalized_accuracy@1": 0.5654205607476636
+            }
+          },
+          "by_domain": {
+            "": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 482,
+                "accuracy@1": 0.4896265560165975,
+                "accuracy@1_ci": [
+                  0.44398340248962653,
+                  0.533195020746888
+                ],
+                "MinCER": 0.07144186790973955,
+                "MinCER_ci": [
+                  0.060619613607550756,
+                  0.08342886469189192
+                ]
+              },
+              "by_tag": {
+                "context-dependent": {
+                  "n": 33,
+                  "accuracy@1": 0.3333333333333333,
+                  "MinCER": 0.08755763895753844
+                },
+                "functional-word": {
+                  "n": 35,
+                  "accuracy@1": 0.6285714285714286,
+                  "MinCER": 0.04798030838969824
+                },
+                "general": {
+                  "n": 37,
+                  "accuracy@1": 0.7297297297297297,
+                  "MinCER": 0.06289510657559191
+                },
+                "homophone": {
+                  "n": 368,
+                  "accuracy@1": 0.45652173913043476,
+                  "MinCER": 0.07607646825392618
+                },
+                "number-notation": {
+                  "n": 75,
+                  "accuracy@1": 0.3333333333333333,
+                  "MinCER": 0.09606709473013846
+                },
+                "orthographic-variant": {
+                  "n": 63,
+                  "accuracy@1": 0.5714285714285714,
+                  "MinCER": 0.04464603247466433
+                },
+                "proper-noun": {
+                  "n": 60,
+                  "accuracy@1": 0.4166666666666667,
+                  "MinCER": 0.07340526636417075
+                },
+                "unpredictable-name": {
+                  "n": 23,
+                  "accuracy@1": 0.2608695652173913,
+                  "MinCER": 0.09694495227329819
+                }
+              },
+              "width_normalized_accuracy@1": 0.5373443983402489
+            },
+            "business": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 25,
+                "accuracy@1": 0.72,
+                "accuracy@1_ci": [
+                  0.56,
+                  0.88
+                ],
+                "MinCER": 0.027195652173913044,
+                "MinCER_ci": [
+                  0.009333333333333334,
+                  0.04875362318840579
+                ]
+              },
+              "by_tag": {
+                "context-dependent": {
+                  "n": 9,
+                  "accuracy@1": 0.6666666666666666,
+                  "MinCER": 0.023611111111111114
+                },
+                "functional-word": {
+                  "n": 11,
+                  "accuracy@1": 0.6363636363636364,
+                  "MinCER": 0.031818181818181815
+                },
+                "homophone": {
+                  "n": 24,
+                  "accuracy@1": 0.7083333333333334,
+                  "MinCER": 0.028328804347826086
+                },
+                "number-notation": {
+                  "n": 1,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.21739130434782608
+                },
+                "orthographic-variant": {
+                  "n": 3,
+                  "accuracy@1": 0.3333333333333333,
+                  "MinCER": 0.049999999999999996
+                }
+              },
+              "width_normalized_accuracy@1": 0.72
+            },
+            "colloquial-chat": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 26,
+                "accuracy@1": 0.8076923076923077,
+                "accuracy@1_ci": [
+                  0.6538461538461539,
+                  0.9615384615384616
+                ],
+                "MinCER": 0.023146536721197358,
+                "MinCER_ci": [
+                  0.00591715976331361,
+                  0.0433344935607379
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 26,
+                  "accuracy@1": 0.8076923076923077,
+                  "MinCER": 0.023146536721197358
+                },
+                "context-dependent": {
+                  "n": 14,
+                  "accuracy@1": 0.7857142857142857,
+                  "MinCER": 0.024886877828054297
+                },
+                "functional-word": {
+                  "n": 2,
+                  "accuracy@1": 0.5,
+                  "MinCER": 0.058823529411764705
+                },
+                "homophone": {
+                  "n": 26,
+                  "accuracy@1": 0.8076923076923077,
+                  "MinCER": 0.023146536721197358
+                },
+                "number-notation": {
+                  "n": 2,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                },
+                "orthographic-variant": {
+                  "n": 1,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                }
+              },
+              "width_normalized_accuracy@1": 0.8076923076923077
+            },
+            "colloquial-speech": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 25,
+                "accuracy@1": 0.68,
+                "accuracy@1_ci": [
+                  0.48,
+                  0.84
+                ],
+                "MinCER": 0.019859572132070027,
+                "MinCER_ci": [
+                  0.008049625980660464,
+                  0.034229203808682364
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 20,
+                  "accuracy@1": 0.65,
+                  "MinCER": 0.02303875087937325
+                },
+                "context-dependent": {
+                  "n": 7,
+                  "accuracy@1": 0.8571428571428571,
+                  "MinCER": 0.0049261083743842365
+                },
+                "functional-word": {
+                  "n": 6,
+                  "accuracy@1": 0.5,
+                  "MinCER": 0.04087477563087319
+                },
+                "homophone": {
+                  "n": 25,
+                  "accuracy@1": 0.68,
+                  "MinCER": 0.019859572132070027
+                },
+                "number-notation": {
+                  "n": 1,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.037037037037037035
+                },
+                "orthographic-variant": {
+                  "n": 1,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.034482758620689655
+                }
+              },
+              "width_normalized_accuracy@1": 0.68
+            },
+            "production-feedback": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 40,
+                "accuracy@1": 0.825,
+                "accuracy@1_ci": [
+                  0.7,
+                  0.925
+                ],
+                "MinCER": 0.016457799145299146,
+                "MinCER_ci": [
+                  0.004722222222222222,
+                  0.03220779914529914
+                ]
+              },
+              "by_tag": {
+                "homophone": {
+                  "n": 40,
+                  "accuracy@1": 0.825,
+                  "MinCER": 0.016457799145299146
+                }
+              },
+              "width_normalized_accuracy@1": 0.825
+            },
+            "tech-web": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 30,
+                "accuracy@1": 0.7,
+                "accuracy@1_ci": [
+                  0.5333333333333333,
+                  0.8333333333333334
+                ],
+                "MinCER": 0.016245858125724644,
+                "MinCER_ci": [
+                  0.007697044334975369,
+                  0.026811904467633048
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 1,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                },
+                "context-dependent": {
+                  "n": 15,
+                  "accuracy@1": 0.6666666666666666,
+                  "MinCER": 0.02240467068053275
+                },
+                "functional-word": {
+                  "n": 6,
+                  "accuracy@1": 0.6666666666666666,
+                  "MinCER": 0.013888888888888888
+                },
+                "homophone": {
+                  "n": 27,
+                  "accuracy@1": 0.7407407407407407,
+                  "MinCER": 0.014964533719940961
+                },
+                "number-notation": {
+                  "n": 10,
+                  "accuracy@1": 0.8,
+                  "MinCER": 0.008333333333333333
+                },
+                "orthographic-variant": {
+                  "n": 1,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.1111111111111111
+                }
+              },
+              "width_normalized_accuracy@1": 0.7
+            }
+          },
+          "latency": {
+            "mean": 1.105929711665605,
+            "median": 1.0134354375,
+            "p95_nearest_rank": 1.466731042,
+            "mean_at_or_below_p95": 1.0251292293551086,
+            "max": 24.70044800000001
+          },
+          "blocked": 0,
+          "empty": 0
+        },
+        "hiragana_input": {
+          "quality": {
+            "primary_metric": "MinCER",
+            "overall": {
+              "n": 628,
+              "accuracy@1": 0.660828025477707,
+              "accuracy@1_ci": [
+                0.6242038216560509,
+                0.6990445859872612
+              ],
+              "MinCER": 0.04110887627204396,
+              "MinCER_ci": [
+                0.03452293691358993,
+                0.047511507746085764
+              ]
+            },
+            "by_tag": {
+              "colloquial-form": {
+                "n": 47,
+                "accuracy@1": 0.723404255319149,
+                "MinCER": 0.027266480905587507
+              },
+              "context-dependent": {
+                "n": 78,
+                "accuracy@1": 0.7692307692307693,
+                "MinCER": 0.021401023113099472
+              },
+              "functional-word": {
+                "n": 60,
+                "accuracy@1": 0.7166666666666667,
+                "MinCER": 0.03028063874531266
+              },
+              "general": {
+                "n": 37,
+                "accuracy@1": 0.7297297297297297,
+                "MinCER": 0.03323337355187709
+              },
+              "homophone": {
+                "n": 510,
+                "accuracy@1": 0.6490196078431373,
+                "MinCER": 0.04306209479154445
+              },
+              "number-notation": {
+                "n": 89,
+                "accuracy@1": 0.43820224719101125,
+                "MinCER": 0.08195250382444731
+              },
+              "orthographic-variant": {
+                "n": 69,
+                "accuracy@1": 0.6231884057971014,
+                "MinCER": 0.03315615538184999
+              },
+              "proper-noun": {
+                "n": 60,
+                "accuracy@1": 0.55,
+                "MinCER": 0.06024917177088062
+              },
+              "unpredictable-name": {
+                "n": 23,
+                "accuracy@1": 0.5217391304347826,
+                "MinCER": 0.05222751881742095
+              }
+            },
+            "width_normalized_accuracy@1": 0.678343949044586
+          },
+          "by_source": {
+            "v1": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 200,
+                "accuracy@1": 0.745,
+                "accuracy@1_ci": [
+                  0.685,
+                  0.805
+                ],
+                "MinCER": 0.028500778537509826,
+                "MinCER_ci": [
+                  0.020092524202480356,
+                  0.03812839513157513
+                ]
+              },
+              "by_tag": {
+                "context-dependent": {
+                  "n": 6,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                },
+                "functional-word": {
+                  "n": 25,
+                  "accuracy@1": 0.72,
+                  "MinCER": 0.025870737957694484
+                },
+                "general": {
+                  "n": 37,
+                  "accuracy@1": 0.7297297297297297,
+                  "MinCER": 0.03323337355187709
+                },
+                "homophone": {
+                  "n": 93,
+                  "accuracy@1": 0.7526881720430108,
+                  "MinCER": 0.03236373163143362
+                },
+                "number-notation": {
+                  "n": 18,
+                  "accuracy@1": 0.6666666666666666,
+                  "MinCER": 0.0331393832010545
+                },
+                "orthographic-variant": {
+                  "n": 49,
+                  "accuracy@1": 0.6938775510204082,
+                  "MinCER": 0.023229178474509164
+                },
+                "proper-noun": {
+                  "n": 18,
+                  "accuracy@1": 0.6666666666666666,
+                  "MinCER": 0.01766923241903442
+                },
+                "unpredictable-name": {
+                  "n": 11,
+                  "accuracy@1": 0.7272727272727273,
+                  "MinCER": 0.017983304489463503
+                }
+              },
+              "width_normalized_accuracy@1": 0.75
+            },
+            "v2-add": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 428,
+                "accuracy@1": 0.6214953271028038,
+                "accuracy@1_ci": [
+                  0.5747663551401869,
+                  0.6682242990654206
+                ],
+                "MinCER": 0.04700051072743371,
+                "MinCER_ci": [
+                  0.03925931782583315,
+                  0.055999513409999584
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 47,
+                  "accuracy@1": 0.723404255319149,
+                  "MinCER": 0.027266480905587507
+                },
+                "context-dependent": {
+                  "n": 72,
+                  "accuracy@1": 0.75,
+                  "MinCER": 0.02318444170585776
+                },
+                "functional-word": {
+                  "n": 35,
+                  "accuracy@1": 0.7142857142857143,
+                  "MinCER": 0.03343056787932564
+                },
+                "homophone": {
+                  "n": 417,
+                  "accuracy@1": 0.6258992805755396,
+                  "MinCER": 0.04544806067617347
+                },
+                "number-notation": {
+                  "n": 71,
+                  "accuracy@1": 0.38028169014084506,
+                  "MinCER": 0.09432766116558913
+                },
+                "orthographic-variant": {
+                  "n": 20,
+                  "accuracy@1": 0.45,
+                  "MinCER": 0.05747724880483501
+                },
+                "proper-noun": {
+                  "n": 42,
+                  "accuracy@1": 0.5,
+                  "MinCER": 0.07849771720738616
+                },
+                "unpredictable-name": {
+                  "n": 12,
+                  "accuracy@1": 0.3333333333333333,
+                  "MinCER": 0.08361804861804863
+                }
+              },
+              "width_normalized_accuracy@1": 0.6448598130841121
+            }
+          },
+          "by_domain": {
+            "": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 482,
+                "accuracy@1": 0.6348547717842323,
+                "accuracy@1_ci": [
+                  0.5912863070539419,
+                  0.6763485477178424
+                ],
+                "MinCER": 0.045474751339353914,
+                "MinCER_ci": [
+                  0.03845409684627334,
+                  0.0531927977398771
+                ]
+              },
+              "by_tag": {
+                "context-dependent": {
+                  "n": 33,
+                  "accuracy@1": 0.7878787878787878,
+                  "MinCER": 0.02266737026095315
+                },
+                "functional-word": {
+                  "n": 35,
+                  "accuracy@1": 0.6857142857142857,
+                  "MinCER": 0.03342105358409706
+                },
+                "general": {
+                  "n": 37,
+                  "accuracy@1": 0.7297297297297297,
+                  "MinCER": 0.03323337355187709
+                },
+                "homophone": {
+                  "n": 368,
+                  "accuracy@1": 0.6086956521739131,
+                  "MinCER": 0.04976664182177351
+                },
+                "number-notation": {
+                  "n": 75,
+                  "accuracy@1": 0.41333333333333333,
+                  "MinCER": 0.08585792665321264
+                },
+                "orthographic-variant": {
+                  "n": 63,
+                  "accuracy@1": 0.6349206349206349,
+                  "MinCER": 0.032944669602367964
+                },
+                "proper-noun": {
+                  "n": 60,
+                  "accuracy@1": 0.55,
+                  "MinCER": 0.06024917177088062
+                },
+                "unpredictable-name": {
+                  "n": 23,
+                  "accuracy@1": 0.5217391304347826,
+                  "MinCER": 0.05222751881742095
+                }
+              },
+              "width_normalized_accuracy@1": 0.6576763485477178
+            },
+            "business": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 25,
+                "accuracy@1": 0.68,
+                "accuracy@1_ci": [
+                  0.48,
+                  0.88
+                ],
+                "MinCER": 0.02911250953470633,
+                "MinCER_ci": [
+                  0.011938596491228071,
+                  0.05040961098398169
+                ]
+              },
+              "by_tag": {
+                "context-dependent": {
+                  "n": 9,
+                  "accuracy@1": 0.5555555555555556,
+                  "MinCER": 0.028533138401559452
+                },
+                "functional-word": {
+                  "n": 11,
+                  "accuracy@1": 0.7272727272727273,
+                  "MinCER": 0.024242424242424242
+                },
+                "homophone": {
+                  "n": 24,
+                  "accuracy@1": 0.6666666666666666,
+                  "MinCER": 0.030325530765319093
+                },
+                "number-notation": {
+                  "n": 1,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.21739130434782608
+                },
+                "orthographic-variant": {
+                  "n": 3,
+                  "accuracy@1": 0.6666666666666666,
+                  "MinCER": 0.022222222222222223
+                }
+              },
+              "width_normalized_accuracy@1": 0.68
+            },
+            "colloquial-chat": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 26,
+                "accuracy@1": 0.7307692307692307,
+                "accuracy@1_ci": [
+                  0.5769230769230769,
+                  0.8846153846153846
+                ],
+                "MinCER": 0.03396855783733612,
+                "MinCER_ci": [
+                  0.011877828054298644,
+                  0.061927137718992914
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 26,
+                  "accuracy@1": 0.7307692307692307,
+                  "MinCER": 0.03396855783733612
+                },
+                "context-dependent": {
+                  "n": 14,
+                  "accuracy@1": 0.7857142857142857,
+                  "MinCER": 0.028388278388278388
+                },
+                "functional-word": {
+                  "n": 2,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                },
+                "homophone": {
+                  "n": 26,
+                  "accuracy@1": 0.7307692307692307,
+                  "MinCER": 0.03396855783733612
+                },
+                "number-notation": {
+                  "n": 2,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.175
+                },
+                "orthographic-variant": {
+                  "n": 1,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                }
+              },
+              "width_normalized_accuracy@1": 0.7307692307692307
+            },
+            "colloquial-speech": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 25,
+                "accuracy@1": 0.76,
+                "accuracy@1_ci": [
+                  0.56,
+                  0.92
+                ],
+                "MinCER": 0.015933683951674955,
+                "MinCER_ci": [
+                  0.004240102171136653,
+                  0.03060856873150726
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 20,
+                  "accuracy@1": 0.7,
+                  "MinCER": 0.019917104939593692
+                },
+                "context-dependent": {
+                  "n": 7,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                },
+                "functional-word": {
+                  "n": 6,
+                  "accuracy@1": 0.8333333333333334,
+                  "MinCER": 0.021739130434782608
+                },
+                "homophone": {
+                  "n": 25,
+                  "accuracy@1": 0.76,
+                  "MinCER": 0.015933683951674955
+                },
+                "number-notation": {
+                  "n": 1,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.037037037037037035
+                },
+                "orthographic-variant": {
+                  "n": 1,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.034482758620689655
+                }
+              },
+              "width_normalized_accuracy@1": 0.76
+            },
+            "production-feedback": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 40,
+                "accuracy@1": 0.775,
+                "accuracy@1_ci": [
+                  0.625,
+                  0.9
+                ],
+                "MinCER": 0.03338675213675214,
+                "MinCER_ci": [
+                  0.011645299145299144,
+                  0.061634615384615385
+                ]
+              },
+              "by_tag": {
+                "homophone": {
+                  "n": 40,
+                  "accuracy@1": 0.775,
+                  "MinCER": 0.03338675213675214
+                }
+              },
+              "width_normalized_accuracy@1": 0.775
+            },
+            "tech-web": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 30,
+                "accuracy@1": 0.7666666666666667,
+                "accuracy@1_ci": [
+                  0.6333333333333333,
+                  0.9
+                ],
+                "MinCER": 0.0184245575624886,
+                "MinCER_ci": [
+                  0.006506568144499179,
+                  0.034060846560846555
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 1,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                },
+                "context-dependent": {
+                  "n": 15,
+                  "accuracy@1": 0.7333333333333333,
+                  "MinCER": 0.017801496077358148
+                },
+                "functional-word": {
+                  "n": 6,
+                  "accuracy@1": 0.6666666666666666,
+                  "MinCER": 0.041666666666666664
+                },
+                "homophone": {
+                  "n": 27,
+                  "accuracy@1": 0.8148148148148148,
+                  "MinCER": 0.011212471365728071
+                },
+                "number-notation": {
+                  "n": 10,
+                  "accuracy@1": 0.8,
+                  "MinCER": 0.025
+                },
+                "orthographic-variant": {
+                  "n": 1,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.1111111111111111
+                }
+              },
+              "width_normalized_accuracy@1": 0.7666666666666667
+            }
+          },
+          "latency": {
+            "mean": 1.0551673865732474,
+            "median": 1.028524229000027,
+            "p95_nearest_rank": 1.2824204589999226,
+            "mean_at_or_below_p95": 1.027869061798994,
+            "max": 2.8088719579999406
+          },
+          "blocked": 0,
+          "empty": 0
+        },
+        "katakana_input": {
+          "quality": {
+            "primary_metric": "MinCER",
+            "overall": {
+              "n": 628,
+              "accuracy@1": 0.6528662420382165,
+              "accuracy@1_ci": [
+                0.6130573248407644,
+                0.6910828025477707
+              ],
+              "MinCER": 0.04098981402830006,
+              "MinCER_ci": [
+                0.03353193640485579,
+                0.04894455275315782
+              ]
+            },
+            "by_tag": {
+              "colloquial-form": {
+                "n": 47,
+                "accuracy@1": 0.851063829787234,
+                "MinCER": 0.014100568869461021
+              },
+              "context-dependent": {
+                "n": 78,
+                "accuracy@1": 0.7051282051282052,
+                "MinCER": 0.03554042842775901
+              },
+              "functional-word": {
+                "n": 60,
+                "accuracy@1": 0.6833333333333333,
+                "MinCER": 0.02940799146505669
+              },
+              "general": {
+                "n": 37,
+                "accuracy@1": 0.7567567567567568,
+                "MinCER": 0.07335619823991918
+              },
+              "homophone": {
+                "n": 510,
+                "accuracy@1": 0.6450980392156863,
+                "MinCER": 0.04026111535029085
+              },
+              "number-notation": {
+                "n": 89,
+                "accuracy@1": 0.43820224719101125,
+                "MinCER": 0.07268612012069023
+              },
+              "orthographic-variant": {
+                "n": 69,
+                "accuracy@1": 0.5942028985507246,
+                "MinCER": 0.037863504451466454
+              },
+              "proper-noun": {
+                "n": 60,
+                "accuracy@1": 0.38333333333333336,
+                "MinCER": 0.07796703395645214
+              },
+              "unpredictable-name": {
+                "n": 23,
+                "accuracy@1": 0.4782608695652174,
+                "MinCER": 0.05410517810951133
+              }
+            },
+            "width_normalized_accuracy@1": 0.6656050955414012
+          },
+          "by_source": {
+            "v1": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 200,
+                "accuracy@1": 0.725,
+                "accuracy@1_ci": [
+                  0.665,
+                  0.785
+                ],
+                "MinCER": 0.03712367327462187,
+                "MinCER_ci": [
+                  0.023687474475960674,
+                  0.05363687081727156
+                ]
+              },
+              "by_tag": {
+                "context-dependent": {
+                  "n": 6,
+                  "accuracy@1": 0.5,
+                  "MinCER": 0.06635802469135803
+                },
+                "functional-word": {
+                  "n": 25,
+                  "accuracy@1": 0.76,
+                  "MinCER": 0.027467801763453936
+                },
+                "general": {
+                  "n": 37,
+                  "accuracy@1": 0.7567567567567568,
+                  "MinCER": 0.07335619823991918
+                },
+                "homophone": {
+                  "n": 93,
+                  "accuracy@1": 0.7419354838709677,
+                  "MinCER": 0.03379120779658414
+                },
+                "number-notation": {
+                  "n": 18,
+                  "accuracy@1": 0.6111111111111112,
+                  "MinCER": 0.034774840919807
+                },
+                "orthographic-variant": {
+                  "n": 49,
+                  "accuracy@1": 0.7142857142857143,
+                  "MinCER": 0.016488983728612135
+                },
+                "proper-noun": {
+                  "n": 18,
+                  "accuracy@1": 0.5555555555555556,
+                  "MinCER": 0.020133660047935733
+                },
+                "unpredictable-name": {
+                  "n": 11,
+                  "accuracy@1": 0.6363636363636364,
+                  "MinCER": 0.029180381643987466
+                }
+              },
+              "width_normalized_accuracy@1": 0.725
+            },
+            "v2-add": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 428,
+                "accuracy@1": 0.6191588785046729,
+                "accuracy@1_ci": [
+                  0.5700934579439252,
+                  0.6658878504672897
+                ],
+                "MinCER": 0.042796421857121625,
+                "MinCER_ci": [
+                  0.03521440463253281,
+                  0.05015420211701736
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 47,
+                  "accuracy@1": 0.851063829787234,
+                  "MinCER": 0.014100568869461021
+                },
+                "context-dependent": {
+                  "n": 72,
+                  "accuracy@1": 0.7222222222222222,
+                  "MinCER": 0.03297229540579241
+                },
+                "functional-word": {
+                  "n": 35,
+                  "accuracy@1": 0.6285714285714286,
+                  "MinCER": 0.030793841251915786
+                },
+                "homophone": {
+                  "n": 417,
+                  "accuracy@1": 0.6235011990407674,
+                  "MinCER": 0.04170404437305996
+                },
+                "number-notation": {
+                  "n": 71,
+                  "accuracy@1": 0.39436619718309857,
+                  "MinCER": 0.08229743034063244
+                },
+                "orthographic-variant": {
+                  "n": 20,
+                  "accuracy@1": 0.3,
+                  "MinCER": 0.09023108022245954
+                },
+                "proper-noun": {
+                  "n": 42,
+                  "accuracy@1": 0.30952380952380953,
+                  "MinCER": 0.1027527656315306
+                },
+                "unpredictable-name": {
+                  "n": 12,
+                  "accuracy@1": 0.3333333333333333,
+                  "MinCER": 0.07695290820290819
+                }
+              },
+              "width_normalized_accuracy@1": 0.6378504672897196
+            }
+          },
+          "by_domain": {
+            "": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 482,
+                "accuracy@1": 0.6099585062240664,
+                "accuracy@1_ci": [
+                  0.5643153526970954,
+                  0.6514522821576764
+                ],
+                "MinCER": 0.048445474227071204,
+                "MinCER_ci": [
+                  0.039891252406368705,
+                  0.05875712151022076
+                ]
+              },
+              "by_tag": {
+                "context-dependent": {
+                  "n": 33,
+                  "accuracy@1": 0.6363636363636364,
+                  "MinCER": 0.0587934105285034
+                },
+                "functional-word": {
+                  "n": 35,
+                  "accuracy@1": 0.6857142857142857,
+                  "MinCER": 0.0331162352140613
+                },
+                "general": {
+                  "n": 37,
+                  "accuracy@1": 0.7567567567567568,
+                  "MinCER": 0.07335619823991918
+                },
+                "homophone": {
+                  "n": 368,
+                  "accuracy@1": 0.5842391304347826,
+                  "MinCER": 0.049526134591460734
+                },
+                "number-notation": {
+                  "n": 75,
+                  "accuracy@1": 0.4,
+                  "MinCER": 0.07942971922598879
+                },
+                "orthographic-variant": {
+                  "n": 63,
+                  "accuracy@1": 0.6190476190476191,
+                  "MinCER": 0.036777586308244195
+                },
+                "proper-noun": {
+                  "n": 60,
+                  "accuracy@1": 0.38333333333333336,
+                  "MinCER": 0.07796703395645214
+                },
+                "unpredictable-name": {
+                  "n": 23,
+                  "accuracy@1": 0.4782608695652174,
+                  "MinCER": 0.05410517810951133
+                }
+              },
+              "width_normalized_accuracy@1": 0.6265560165975104
+            },
+            "business": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 25,
+                "accuracy@1": 0.72,
+                "accuracy@1_ci": [
+                  0.56,
+                  0.88
+                ],
+                "MinCER": 0.027300915331807774,
+                "MinCER_ci": [
+                  0.009333333333333334,
+                  0.04963081617086194
+                ]
+              },
+              "by_tag": {
+                "context-dependent": {
+                  "n": 9,
+                  "accuracy@1": 0.6666666666666666,
+                  "MinCER": 0.023903508771929826
+                },
+                "functional-word": {
+                  "n": 11,
+                  "accuracy@1": 0.6363636363636364,
+                  "MinCER": 0.031818181818181815
+                },
+                "homophone": {
+                  "n": 24,
+                  "accuracy@1": 0.7083333333333334,
+                  "MinCER": 0.0284384534706331
+                },
+                "number-notation": {
+                  "n": 1,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.21739130434782608
+                },
+                "orthographic-variant": {
+                  "n": 3,
+                  "accuracy@1": 0.3333333333333333,
+                  "MinCER": 0.049999999999999996
+                }
+              },
+              "width_normalized_accuracy@1": 0.72
+            },
+            "colloquial-chat": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 26,
+                "accuracy@1": 0.8846153846153846,
+                "accuracy@1_ci": [
+                  0.7692307692307693,
+                  1.0
+                ],
+                "MinCER": 0.012721893491124263,
+                "MinCER_ci": [
+                  0.0,
+                  0.02958579881656805
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 26,
+                  "accuracy@1": 0.8846153846153846,
+                  "MinCER": 0.012721893491124263
+                },
+                "context-dependent": {
+                  "n": 14,
+                  "accuracy@1": 0.8571428571428571,
+                  "MinCER": 0.016483516483516484
+                },
+                "functional-word": {
+                  "n": 2,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                },
+                "homophone": {
+                  "n": 26,
+                  "accuracy@1": 0.8846153846153846,
+                  "MinCER": 0.012721893491124263
+                },
+                "number-notation": {
+                  "n": 2,
+                  "accuracy@1": 0.5,
+                  "MinCER": 0.05
+                },
+                "orthographic-variant": {
+                  "n": 1,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                }
+              },
+              "width_normalized_accuracy@1": 0.8846153846153846
+            },
+            "colloquial-speech": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 25,
+                "accuracy@1": 0.8,
+                "accuracy@1_ci": [
+                  0.64,
+                  0.96
+                ],
+                "MinCER": 0.014706871672388912,
+                "MinCER_ci": [
+                  0.002807881773399015,
+                  0.03037458327113499
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 20,
+                  "accuracy@1": 0.8,
+                  "MinCER": 0.016597875304771855
+                },
+                "context-dependent": {
+                  "n": 7,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                },
+                "functional-word": {
+                  "n": 6,
+                  "accuracy@1": 0.6666666666666666,
+                  "MinCER": 0.028679653679653676
+                },
+                "homophone": {
+                  "n": 25,
+                  "accuracy@1": 0.8,
+                  "MinCER": 0.014706871672388912
+                },
+                "number-notation": {
+                  "n": 1,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.1111111111111111
+                },
+                "orthographic-variant": {
+                  "n": 1,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.034482758620689655
+                }
+              },
+              "width_normalized_accuracy@1": 0.8
+            },
+            "production-feedback": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 40,
+                "accuracy@1": 0.875,
+                "accuracy@1_ci": [
+                  0.75,
+                  0.975
+                ],
+                "MinCER": 0.011533119658119659,
+                "MinCER_ci": [
+                  0.0025,
+                  0.022884615384615385
+                ]
+              },
+              "by_tag": {
+                "homophone": {
+                  "n": 40,
+                  "accuracy@1": 0.875,
+                  "MinCER": 0.011533119658119659
+                }
+              },
+              "width_normalized_accuracy@1": 0.875
+            },
+            "tech-web": {
+              "primary_metric": "MinCER",
+              "overall": {
+                "n": 30,
+                "accuracy@1": 0.6666666666666666,
+                "accuracy@1_ci": [
+                  0.5,
+                  0.8333333333333334
+                ],
+                "MinCER": 0.018286531337505848,
+                "MinCER_ci": [
+                  0.00888752052545156,
+                  0.02869795261099608
+                ]
+              },
+              "by_tag": {
+                "colloquial-form": {
+                  "n": 1,
+                  "accuracy@1": 1.0,
+                  "MinCER": 0.0
+                },
+                "context-dependent": {
+                  "n": 15,
+                  "accuracy@1": 0.6,
+                  "MinCER": 0.025738004013866087
+                },
+                "functional-word": {
+                  "n": 6,
+                  "accuracy@1": 0.6666666666666666,
+                  "MinCER": 0.013888888888888888
+                },
+                "homophone": {
+                  "n": 27,
+                  "accuracy@1": 0.7037037037037037,
+                  "MinCER": 0.01723194839969786
+                },
+                "number-notation": {
+                  "n": 10,
+                  "accuracy@1": 0.8,
+                  "MinCER": 0.008333333333333333
+                },
+                "orthographic-variant": {
+                  "n": 1,
+                  "accuracy@1": 0.0,
+                  "MinCER": 0.1111111111111111
+                }
+              },
+              "width_normalized_accuracy@1": 0.6666666666666666
+            }
+          },
+          "latency": {
+            "mean": 1.1027951659347135,
+            "median": 1.0626055830000496,
+            "p95_nearest_rank": 1.3792958750000253,
+            "mean_at_or_below_p95": 1.057867428254606,
+            "max": 4.861381166000001
+          },
+          "blocked": 0,
+          "empty": 0
+        }
+      },
+      "returned_models": {
+        "gemini-3.6-flash": 1890
+      },
+      "known_reference_usd": 0.6365834999999995,
+      "unknown_cost_calls": 1,
+      "unitemized_token_gap": 0,
+      "unknown_token_gap_calls": 1,
+      "failed_attempts": 1,
+      "resume_sessions": 1
+    }
+  },
+  "alias_checks": {}
+}
