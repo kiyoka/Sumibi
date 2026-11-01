@@ -179,6 +179,11 @@ MinCERのブートストラップ95%信頼区間（seed=42、1,000リサンプ�
 
 現在は取得済み4モデルの比較図。旧v1の画像には反映しない。前段階の単モデル・2モデル・3モデル画像も別フォルダーに保持している。
 
+### 入力タイプ別エラー率と応答時間（1000x600 棒グラフ＋折れ線）
+v1の `images/plot_errorrate_vs_inputtype_1000x600.png` と同様の形式（棒グラフ: 入力方式別CER、折れ線: 平均レスポンス時間）で描画したグラフです。
+
+![Error Rate and Response Time Comparison by Input Type (JWTD_v2)](figures-4models/plot_errorrate_vs_inputtype_jwtd_v2_1000x600.png)
+
 ### エラー率 vs コスト（1000x600 バブルチャート）
 v1の `images/plot_errorrate_vs_cost_1000x600.png` と同様の形式（X軸: コスト、Y軸: エラー率/MinCER、円サイズ: 平均応答時間）で描画したグラフです。
 
