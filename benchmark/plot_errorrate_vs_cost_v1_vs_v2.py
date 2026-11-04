@@ -8,7 +8,7 @@ JWTD_v1 (200件) と JWTD_v2 (628件) の両方でベンチマークを取得し
 - Y軸: Error Rate / MinCER (%)
 - 円サイズ: Mean Response Time (秒)
 - 区別の工夫:
-  - v1 (200件): 枠線のみの中空円 (dashed border)
+  - v1 (200件): 枠線のみの中空円 (solid border)
   - v2 (628件): 塗りつぶし円 (solid fill)
   - 同一モデルの v1 から v2 への変化を示す点線矢印
 - 1000x600 px 出力
@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 from pathlib import Path
 from typing import Dict, List, Tuple
 
@@ -136,8 +137,8 @@ def plot_v1_vs_v2(
             facecolors="none",
             edgecolors=color,
             linewidths=1.8,
-            linestyle="--",
-            alpha=0.8,
+            linestyle="-",
+            alpha=0.85,
             zorder=3 + idx / 20.0,
         )
 
@@ -204,11 +205,11 @@ def plot_v1_vs_v2(
 
     # 凡例 1: データセット凡例 (v1 vs v2)
     legend_dataset_handles = [
-        Line2D([], [], marker="o", color="gray", linestyle="--",
-               markerfacecolor="none", markeredgewidth=1.8, markersize=10,
+        Line2D([], [], marker="o", color="gray", linestyle="None",
+               markerfacecolor="none", markeredgecolor="gray", markeredgewidth=1.8, markersize=10,
                label="v1 (200 cases)"),
-        Line2D([], [], marker="o", color="white", markeredgecolor="gray",
-               markerfacecolor="gray", markersize=10,
+        Line2D([], [], marker="o", color="gray", linestyle="None",
+               markerfacecolor="gray", markeredgecolor="gray", markersize=10,
                label="v2 (628 cases)"),
         Line2D([], [], color="gray", linestyle="--", lw=1.5,
                label="v1 → v2 shift"),
@@ -246,6 +247,15 @@ def plot_v1_vs_v2(
     plt.savefig(output_path, dpi=150, bbox_inches="tight")
     plt.close(fig)
     print("Saved:", output_path)
+
+    # 1000x600 バージョンの生成
+    if "_1000x600" not in output_path.stem:
+        resized_path = output_path.parent / f"{output_path.stem}_1000x600.png"
+        try:
+            subprocess.run(["convert", str(output_path), "-resize", "1000x600", str(resized_path)], check=True)
+            print("Resized:", resized_path)
+        except Exception as e:
+            print(f"Warning: Failed to resize image ({e})")
 
 
 def main():
