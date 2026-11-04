@@ -40,8 +40,10 @@ Sumibiはローマ字かな漢字変換という性質上、**応答時間が約
   - `aggregate_results.py`: JSON 形式の結果を統合し、CSV に出力
   - `plot_mean_response_time.py`: 各モデルの平均応答時間＋エラー率
   - `plot_errorrate_vs_cost.py`: 文字誤り率と API コストの関係
+  - `plot_errorrate_vs_cost_v1_vs_v2.py`: v1 (200件) と v2 (628件) のエラー率・コスト統合比較
   - `plot_errorrate_vs_paramsize.py`: 文字誤り率とモデルパラメータ数の関係
   - `plot_errorrate_vs_inputtype.py` / `plot_errorrate_vs_inputtype_hiragana.py`: 入力形式別の文字誤り率比較
+  - `plot_errorrate_vs_inputtype_v1_vs_v2.py`: v1 (200件) と v2 (628件) の入力形式別エラー率・応答時間統合比較
   - `plot_context_length_vs_response_time.py`: Context Length 別の応答時間・CER
 - ユーティリティ
   - `katakana_to_hiragana_converter.py` / `katakana_to_romaji_converter.py`: 評価データの入力形式変換
