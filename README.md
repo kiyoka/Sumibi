@@ -91,6 +91,7 @@ Sumibiを快適に使うためには、応答速度と変換精度の両方を�
 
 ![plot_errorrate_vs_inputtype_hiragana_1000x600.png](./images/plot_errorrate_vs_inputtype_hiragana_1000x600.png)
 
+[PLaMo 3 Translate 0.8B・2B・8Bのローカル計測と比較グラフ](benchmark/issue209/REPORT.md)も参照できます。
 
 ## アンビエント変換の利用
 

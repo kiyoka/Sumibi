@@ -351,6 +351,14 @@ GPT-6系（Issue #182）は、GPT-5.6系の同名モデルと精度・速度が�
 
 # ローカルLLM
 
+## PLaMo 3 Translate 0.8B・2B・8B（Issue #209）
+
+macOSのLM Studioで公式GGUF `Q4_K_M` を使い、`JWTD_v2/v1` のひらがな・カタカナ各200件を計測した。ひらがなの平均MinCERは0.8Bの73.76%、2Bの54.19%、8Bの36.87%と改善した。8Bでは原文コピーが5.0%に減った一方、ひらがなの平均応答時間は3.28秒だった。
+
+[結果・再現手順・既存ローカルモデルとの比較](issue209/REPORT.md)
+
+![PLaMo 3 Translateのモデルサイズ・入力方式別の比較](issue209/figures/input-modes.png)
+
 ## ⭐ 2026年4月: ローカルLLMが実用段階に到達 (Issue #132, #141, #158)
 
 長らくローカルLLMはSumibiのIME用途には精度・速度ともに不十分でしたが、**2026年4月リリースの `google/gemma-4-e4b` (4.5Bパラメータ) により、ローカルLLMが初めて実用レベルに到達しました**。さらに同月リリースのMoEモデル `google/gemma-4-26b-a4b` では hiragana CER 15.6% まで改善し、クラウドAPIの上位モデルに迫る精度を達成しました。
