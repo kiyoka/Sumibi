@@ -21,6 +21,30 @@
 
 Jevの単価$0.042/100万入力トークンは既存調査の参考値です。同時期の再測定前に請求条件を確認してください。モデル・トークン化・評価値の校正は異なり、同じ0.8が同じ精度を保証するわけではありません。
 
+## Gemini Decisions API の追加計測（Issue #213）
+
+**全件計測完了。** [3者比較サマリー](SUMMARY.md)と[グラフ付き比較資料](report/REPORT.md)に結果を掲載しています。
+
+[Google公式仕様](https://aistudio.google.com/docs/decisions-api)の `gemini-decision-1` を使用します。既存の打鍵データと判定基準を変更せず、Googleの `noul`（「変換する」の確率）を記録します。`confidence` は判定値に使いません。使用量は `usage.total_input_tokens` を読み、レスポンスにモデル名がなければ指定モデルと返却モデルを区別します。
+
+リポジトリのルートで、普段のスクリプトを使って同じシェルに **Gemini用**の `SUMIBI_AI_API_KEY` を設定してください。OpenAI・Jevのキーは使用しません。まず挨拶の19打鍵で疎通を確認します。
+
+```sh
+python3 benchmark/decisions_trigger/run.py --backend gemini --dataset dev --case-id greeting_thanks --max-calls 19 --output benchmark/decisions_trigger/gemini_smoke.json
+```
+
+成功を確認してから全件計測を行います。必要なAPI呼び出しは1,207回、32打鍵は送信しません。入力600トークン/回と仮定すると、[公式の有料単価](https://blog.google/innovation-and-ai/technology/developers-tools/gemini-decisions-api/)で約 $0.07242（上限ではありません）。
+
+```sh
+python3 benchmark/decisions_trigger/run.py --backend gemini --max-calls 1207 --output benchmark/decisions_trigger/gemini_all.json
+```
+
+全件完了後に、保存済みのOpenAI・Jevと比較します。元のレポートを残して確認できるよう、まず別ディレクトリに生成し、確認後に既存レポートを更新します。
+
+```sh
+python3 benchmark/decisions_trigger/compare.py benchmark/decisions_trigger/decisions_all.json benchmark/jev_trigger/all_scores.json --gemini benchmark/decisions_trigger/gemini_all.json --output-dir benchmark/decisions_trigger/report_gemini_check
+```
+
 ## 実行場所・APIキー
 
 この作業のルートは次です。以前のJev実装worktreeとは別です。

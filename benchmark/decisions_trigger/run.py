@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Issue #191: comparable, checkpointed Decisions/Jev trigger measurements."""
+"""Comparable, checkpointed OpenAI, Gemini and Jev trigger measurements."""
 import argparse
 from collections import Counter
 from datetime import datetime, timezone
@@ -23,10 +23,17 @@ DATASETS = {
     "english": (bench.ENGLISH_CASES,), "punctuation": (bench.PUNCTUATION_CASES,),
     "all": (bench.CASES, bench.ADDITIONAL_CASES, bench.ENGLISH_CASES, bench.PUNCTUATION_CASES),
 }
-PRICES = {"decisions": 0.10, "jev": bench.INPUT_USD_PER_MILLION}
-ENDPOINTS = {"decisions": "https://api.openai.com/v1/decisions", "jev": bench.API_URL}
-MODELS = {"decisions": "gpt-6-luna", "jev": "jev-latest"}
+PRICES = {"decisions": 0.10, "jev": bench.INPUT_USD_PER_MILLION, "gemini": 0.10}
+ENDPOINTS = {"decisions": "https://api.openai.com/v1/decisions", "jev": bench.API_URL,
+             "gemini": "https://generativelanguage.googleapis.com/v1beta/decisions"}
+MODELS = {"decisions": "gpt-6-luna", "jev": "jev-latest", "gemini": "gemini-decision-1"}
+KEY_ENV = {"decisions": "OPENAI_API_KEY", "jev": "TYPESAFE_API_KEY", "gemini": "SUMIBI_AI_API_KEY"}
 THRESHOLDS = (0.5, 0.6, 0.7, 0.8, 0.9, 0.95)
+
+
+class NoRedirect(request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
 
 
 def utc_now():
@@ -47,11 +54,17 @@ def build_payload(row, backend):
     if backend == "jev":
         return jev
     question = bench.QUESTION_V2
+    evidence = json.dumps(jev["state"], ensure_ascii=False)
+    if backend == "gemini":
+        return {"model": MODELS[backend], "input": evidence, "questions": {
+            "convert_now": {"type": "noul", "instructions": question["instructions"],
+                            "criteria": {"true_description": question["criteria"]["true"],
+                                         "false_description": question["criteria"]["false"]}}}}
     # Preserve criteria semantics; Decisions has no Jev-style criteria field.
     instructions = (question["instructions"] + "\nTrue criteria: " + question["criteria"]["true"]
                     + "\nFalse criteria: " + question["criteria"]["false"])
     return {"model": MODELS[backend],
-            "input": json.dumps(jev["state"], ensure_ascii=False),
+            "input": evidence,
             "questions": [{"type": "predicate", "name": "convert_now", "instructions": instructions}]}
 
 
@@ -62,28 +75,39 @@ def parse_response(result, backend):
         if len(answers) != 1 or answers[0].get("type") != "predicate":
             raise ValueError("missing/refused/duplicate predicate")
         score = answers[0]["probability"]
+    elif backend == "gemini":
+        answer = result["answers"]["convert_now"]
+        if answer.get("type") != "noul":
+            raise ValueError("missing/refused noul")
+        score = answer["noul"]
     else:
         score = result["answers"]["convert_now"]["noul"]
-    tokens = result["usage"]["input_tokens"]
-    model = result["model"]
+    tokens = result["usage"]["total_input_tokens" if backend == "gemini" else "input_tokens"]
+    # Gemini's documented response may omit the model; don't invent a returned version.
+    model = result.get("model") if backend == "gemini" else result["model"]
     if type(score) not in (int, float) or not math.isfinite(score) or not 0 <= score <= 1:
         raise ValueError("invalid probability")
-    if type(tokens) is not int or tokens < 0 or not isinstance(model, str) or not model:
+    if type(tokens) is not int or tokens < 0:
+        raise ValueError("invalid usage/model")
+    if not (backend == "gemini" and model is None) and (not isinstance(model, str) or not model):
         raise ValueError("invalid usage/model")
     return float(score), tokens, model
 
 
 def fetch(row, backend, api_key, timeout):
     """One request, no automatic retries, no body or exception text in logs."""
+    google = backend == "gemini"
+    auth = {"x-goog-api-key": api_key} if google else {"Authorization": "Bearer " + api_key}
+    open_request = request.build_opener(NoRedirect()).open if google else request.urlopen
     req = request.Request(ENDPOINTS[backend], method="POST",
                           data=json.dumps(build_payload(row, backend), ensure_ascii=False).encode("utf-8"),
-                          headers={"Authorization": "Bearer " + api_key, "Content-Type": "application/json"})
+                          headers={**auth, "Content-Type": "application/json"})
     started = time.monotonic()
     tokens = None
     try:
-        with request.urlopen(req, timeout=timeout) as response:
+        with open_request(req, timeout=timeout) as response:
             result = json.load(response)
-        candidate = result.get("usage", {}).get("input_tokens")
+        candidate = result.get("usage", {}).get("total_input_tokens" if google else "input_tokens")
         if type(candidate) is int and candidate >= 0:
             tokens = candidate
         score, tokens, model = parse_response(result, backend)
@@ -157,7 +181,7 @@ def get_api_key(backend, source="environment"):
         if result.returncode != 0 or not result.stdout.strip():
             raise ValueError("keychain lookup failed")
         return result.stdout.rstrip("\r\n")
-    key = os.environ.get("OPENAI_API_KEY" if backend == "decisions" else "TYPESAFE_API_KEY")
+    key = os.environ.get(KEY_ENV[backend])
     if not key or not key.strip():
         raise ValueError("API key environment variable is required")
     return key
@@ -234,7 +258,7 @@ def run(args):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--backend", choices=("decisions", "jev"), default="decisions")
+    parser.add_argument("--backend", choices=tuple(MODELS), default="decisions")
     parser.add_argument("--dataset", choices=tuple(DATASETS), default="all")
     parser.add_argument("--case-id")
     parser.add_argument("--key-source", choices=("environment", "keychain"), default="environment",
