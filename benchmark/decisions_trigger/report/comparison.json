@@ -409,6 +409,199 @@
       "estimated_usd_per_1000_keystrokes": 0.020933,
       "unknown_usage_attempts": 0,
       "attempt_errors": {}
+    },
+    "gemini": {
+      "at_common_threshold_0.8": {
+        "measured_keystrokes": 1207,
+        "locally_excluded_keystrokes": 32,
+        "failed_keystrokes": 0,
+        "errors": {},
+        "attempt_errors": {},
+        "overall": {
+          "n": 1207,
+          "tp": 26,
+          "fp": 27,
+          "fn": 2,
+          "tn": 1152,
+          "precision": 0.4906,
+          "recall": 0.9286,
+          "f1": 0.642
+        },
+        "preference_summary": {
+          "preferred_detected": 26,
+          "preferred_total": 28,
+          "preferred_recall": 0.9286,
+          "acceptable_but_nonpreferred": 8,
+          "unwanted_triggers": 19,
+          "acceptable_precision": 0.6415
+        },
+        "english_safety": {
+          "keystrokes": 685,
+          "cases": 15,
+          "false_triggers": 0,
+          "cases_with_trigger": 0,
+          "false_triggers_per_1000_keystrokes": 0.0,
+          "affected_cases": []
+        },
+        "threshold_sweep": {
+          "0.5": {
+            "preferred_detected": 28,
+            "preferred_total": 28,
+            "preferred_recall": 1.0,
+            "acceptable_but_nonpreferred": 9,
+            "unwanted_triggers": 61,
+            "acceptable_precision": 0.3776
+          },
+          "0.6": {
+            "preferred_detected": 28,
+            "preferred_total": 28,
+            "preferred_recall": 1.0,
+            "acceptable_but_nonpreferred": 9,
+            "unwanted_triggers": 47,
+            "acceptable_precision": 0.4405
+          },
+          "0.7": {
+            "preferred_detected": 27,
+            "preferred_total": 28,
+            "preferred_recall": 0.9643,
+            "acceptable_but_nonpreferred": 9,
+            "unwanted_triggers": 34,
+            "acceptable_precision": 0.5143
+          },
+          "0.8": {
+            "preferred_detected": 26,
+            "preferred_total": 28,
+            "preferred_recall": 0.9286,
+            "acceptable_but_nonpreferred": 8,
+            "unwanted_triggers": 19,
+            "acceptable_precision": 0.6415
+          },
+          "0.9": {
+            "preferred_detected": 25,
+            "preferred_total": 28,
+            "preferred_recall": 0.8929,
+            "acceptable_but_nonpreferred": 6,
+            "unwanted_triggers": 8,
+            "acceptable_precision": 0.7949
+          },
+          "0.95": {
+            "preferred_detected": 16,
+            "preferred_total": 28,
+            "preferred_recall": 0.5714,
+            "acceptable_but_nonpreferred": 6,
+            "unwanted_triggers": 3,
+            "acceptable_precision": 0.88
+          }
+        },
+        "latency_ms": {
+          "p50": 373.37,
+          "p95": 680.475,
+          "p99": 1074.711
+        },
+        "latency_scope": "all completed API attempts including failures"
+      },
+      "dev_selected_threshold": 0.95,
+      "heldout_at_selected_threshold": {
+        "measured_keystrokes": 1042,
+        "locally_excluded_keystrokes": 0,
+        "failed_keystrokes": 0,
+        "errors": {},
+        "attempt_errors": {},
+        "overall": {
+          "n": 1042,
+          "tp": 12,
+          "fp": 6,
+          "fn": 9,
+          "tn": 1015,
+          "precision": 0.6667,
+          "recall": 0.5714,
+          "f1": 0.6154
+        },
+        "preference_summary": {
+          "preferred_detected": 12,
+          "preferred_total": 21,
+          "preferred_recall": 0.5714,
+          "acceptable_but_nonpreferred": 3,
+          "unwanted_triggers": 3,
+          "acceptable_precision": 0.8333
+        },
+        "english_safety": {
+          "keystrokes": 685,
+          "cases": 15,
+          "false_triggers": 0,
+          "cases_with_trigger": 0,
+          "false_triggers_per_1000_keystrokes": 0.0,
+          "affected_cases": []
+        },
+        "threshold_sweep": {
+          "0.5": {
+            "preferred_detected": 21,
+            "preferred_total": 21,
+            "preferred_recall": 1.0,
+            "acceptable_but_nonpreferred": 4,
+            "unwanted_triggers": 46,
+            "acceptable_precision": 0.3521
+          },
+          "0.6": {
+            "preferred_detected": 21,
+            "preferred_total": 21,
+            "preferred_recall": 1.0,
+            "acceptable_but_nonpreferred": 4,
+            "unwanted_triggers": 34,
+            "acceptable_precision": 0.4237
+          },
+          "0.7": {
+            "preferred_detected": 20,
+            "preferred_total": 21,
+            "preferred_recall": 0.9524,
+            "acceptable_but_nonpreferred": 4,
+            "unwanted_triggers": 24,
+            "acceptable_precision": 0.5
+          },
+          "0.8": {
+            "preferred_detected": 19,
+            "preferred_total": 21,
+            "preferred_recall": 0.9048,
+            "acceptable_but_nonpreferred": 4,
+            "unwanted_triggers": 14,
+            "acceptable_precision": 0.6216
+          },
+          "0.9": {
+            "preferred_detected": 18,
+            "preferred_total": 21,
+            "preferred_recall": 0.8571,
+            "acceptable_but_nonpreferred": 3,
+            "unwanted_triggers": 6,
+            "acceptable_precision": 0.7778
+          },
+          "0.95": {
+            "preferred_detected": 12,
+            "preferred_total": 21,
+            "preferred_recall": 0.5714,
+            "acceptable_but_nonpreferred": 3,
+            "unwanted_triggers": 3,
+            "acceptable_precision": 0.8333
+          }
+        },
+        "latency_ms": {
+          "p50": 316.391,
+          "p95": 648.766,
+          "p99": 1042.284
+        },
+        "latency_scope": "all completed API attempts including failures"
+      },
+      "model_versions": [],
+      "requested_model": "gemini-decision-1",
+      "started_at": "2026-11-13T14:33:55.032435+00:00",
+      "latency_p50_ms": 373.37,
+      "latency_p95_ms": 680.475,
+      "latency_p99_ms": 1074.711,
+      "api_calls": 1207,
+      "input_tokens": 394854,
+      "estimated_usd": 0.0394854,
+      "estimated_usd_per_1000_keystrokes": 0.031869,
+      "unknown_usage_attempts": 0,
+      "attempt_errors": {}
     }
   }
 }

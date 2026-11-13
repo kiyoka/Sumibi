@@ -44,6 +44,35 @@ class Tests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 run.get_api_key("jev", "keychain")
 
+    def test_gemini_request_matches_existing_evidence_and_uses_google_auth(self):
+        row = run.load_rows("dev")[0]
+        response = {"answers": {"convert_now": {"type": "noul", "noul": .03, "confidence": .97}},
+                    "usage": {"total_input_tokens": 500, "total_output_tokens": 0}}
+        with patch.dict(run.os.environ, {"SUMIBI_AI_API_KEY": "fake-google", "OPENAI_API_KEY": "fake-openai"},
+                        clear=True), patch.object(run.request, "build_opener") as opener:
+            opener.return_value.open.return_value.__enter__.return_value = io.BytesIO(json.dumps(response).encode())
+            result = run.fetch(row, "gemini", run.get_api_key("gemini"), 10)
+        req = opener.return_value.open.call_args.args[0]
+        self.assertEqual(req.full_url, "https://generativelanguage.googleapis.com/v1beta/decisions")
+        self.assertEqual(dict(req.header_items())["X-goog-api-key"], "fake-google")
+        self.assertIsNone(req.get_header("Authorization"))
+        self.assertIsInstance(opener.call_args.args[0], run.NoRedirect)
+        body = json.loads(req.data)
+        self.assertEqual(body["input"], run.build_payload(row, "decisions")["input"])
+        self.assertEqual(body["model"], "gemini-decision-1")
+        self.assertEqual(body["questions"]["convert_now"]["criteria"], {
+            "true_description": run.bench.QUESTION_V2["criteria"]["true"],
+            "false_description": run.bench.QUESTION_V2["criteria"]["false"],
+        })
+        self.assertEqual((result["status"], result["score"], result["input_tokens"], result["model"]),
+                         ("ok", .03, 500, None))
+        with patch.dict(run.os.environ, {"OPENAI_API_KEY": "fake-openai"}, clear=True):
+            with self.assertRaises(ValueError):
+                run.get_api_key("gemini")
+        response["answers"]["convert_now"]["type"] = "refusal"
+        with self.assertRaises(ValueError):
+            run.parse_response(response, "gemini")
+
     def test_refusals_and_invalid_probabilities_are_not_zero(self):
         base = {"answers": [{"name": "convert_now", "type": "predicate", "probability": .8}],
                 "usage": {"input_tokens": 500}, "model": "gpt-6-luna"}
@@ -158,6 +187,17 @@ class Tests(unittest.TestCase):
         decision["rows"][0]["buffer"] = "wrong"
         with self.assertRaises(ValueError):
             compare.build_comparison(decision, old)
+
+    def test_three_way_comparison_requires_matched_complete_gemini_rows(self):
+        jev = json.loads((run.bench.CASES.parent / "all_scores.json").read_text())
+        decisions = json.loads((Path(__file__).parent / "decisions_all.json").read_text())
+        gemini = {**jev, "backend": "gemini", "model": "gemini-decision-1", "model_versions": []}
+        report, rows = compare.build_comparison(decisions, jev, gemini)
+        self.assertEqual(tuple(rows), ("decisions", "jev", "gemini"))
+        self.assertEqual(report["backends"]["gemini"]["requested_model"], "gemini-decision-1")
+        self.assertEqual(report["backends"]["gemini"]["at_common_threshold_0.8"]["measured_keystrokes"], 1207)
+        with self.assertRaises(ValueError):
+            compare.build_comparison(decisions, jev, {**gemini, "complete_dataset": False})
 
 
 if __name__ == "__main__":
