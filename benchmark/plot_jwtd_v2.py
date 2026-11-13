@@ -7,13 +7,25 @@ from pathlib import Path
 from jwtd_v2 import IDENTITY, MODES, SCORING
 
 
-def plot(summary, directory):
+def validate_summary(summary):
     if (summary.get("schema") != "sumibi-jwtd-v2-summary-1"
             or summary.get("dataset") != IDENTITY or summary.get("scoring") != SCORING):
         raise ValueError("Not the pinned JWTD_v2/v2 summary")
     models = summary["models"]
     if not models or any(not (m.startswith("gemini-") or m.startswith("gpt-")) or m == "gemini-3.7-flash" for m in models):
         raise ValueError("Only independently measured Gemini or GPT models may be plotted")
+
+
+def load_summary(path):
+    summary = json.loads(path.read_text())
+    validate_summary(summary)
+    return summary
+
+
+def plot(summary, directory):
+    validate_summary(summary)
+    models = summary["models"]
+    family = "Gemini + GPT" if any(m.startswith("gpt-") for m in models) else "Gemini only"
     if directory.exists():
         raise ValueError("Choose a fresh plot directory; no overwrites")
     import matplotlib
@@ -29,7 +41,7 @@ def plot(summary, directory):
             axis.barh(names, values, color="steelblue")
             axis.invert_yaxis()
             axis.set_xlabel("Raw MinCER (%)" if metric == "cer" else "Mean response time (all cases, sec)")
-        fig.suptitle(f"JWTD_v2/v2 | 628 cases | Gemini only | {mode}\n"
+        fig.suptitle(f"JWTD_v2/v2 | 628 cases | {family} | {mode}\n"
                      f"{IDENTITY['revision'][:12]} / dataset {IDENTITY['sha256'][:12]}")
         fig.tight_layout()
         fig.savefig(directory / (mode + ".png"), dpi=150)

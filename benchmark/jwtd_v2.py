@@ -30,7 +30,7 @@ MODES = ("romaji_direct_input", "hiragana_input", "katakana_input")
 GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
 OPENAI_BASE_URL = "https://api.openai.com/v1/"
 BASE_URL = GEMINI_BASE_URL
-# Standard short-context prices, checked 2026-10-31. No guessed preview prices.
+# Standard short-context prices. Hydrogen checked 2026-11-13, others 2026-10-31.
 # Values: reasoning_effort, temperature, input/cached/output USD per million.
 MODELS = {
     "gemini-2.5-pro": (None, None, (1.25, .125, 10)),
@@ -41,6 +41,7 @@ MODELS = {
     "gemini-3.7-flash": ("low", 1.0, (.75, .075, 3.75)),
     "gemini-3.8-flash": ("low", 1.0, (.75, .075, 3.75)),
     "gemini-4-argon": ("low", None, (2, .10, 10)),
+    "gemini-4-hydrogen": ("low", None, (1.50, .075, 7.50)),
     "gpt-6.1-terra": ("none", 1.0, (1.0, 0.05, 5.0)),
     "gpt-6.1-sol": ("low", None, (2.0, 0.10, 10.0)),
 }

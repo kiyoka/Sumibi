@@ -102,12 +102,13 @@ class JWTDV2Test(unittest.TestCase):
         self.assertEqual(sum(e["source"] == "v2-add" for e in entries), 428)
 
     def test_model_scope_and_alias(self):
-        self.assertEqual(len(v2.MODELS), 10)
+        self.assertEqual(len(v2.MODELS), 11)
         self.assertEqual(len(v2.SKIPPED), 4)
         p = v2.plan()
         self.assertEqual(p["calls_per_model"], 1890)
         self.assertTrue(p["models"]["gemini-3.7-flash"]["alias_only"])
         self.assertAlmostEqual(p["models"]["gemini-4-argon"]["fixed_500_input_200_output_usd"], 5.67)
+        self.assertAlmostEqual(p["models"]["gemini-4-hydrogen"]["fixed_500_input_200_output_usd"], 4.2525)
         self.assertAlmostEqual(p["models"]["gpt-6.1-terra"]["fixed_500_input_200_output_usd"], 2.835)
         self.assertAlmostEqual(p["models"]["gpt-6.1-sol"]["fixed_500_input_200_output_usd"], 5.67)
 
@@ -161,6 +162,32 @@ class JWTDV2Test(unittest.TestCase):
                     with self.assertRaises(ValueError):
                         v2.run("gemini-3.5-flash-lite", 1, output)
                     self.assertEqual(client.call_count, 1)
+
+    def test_hydrogen_smoke_uses_low_and_gemini_endpoint(self):
+        model = "gemini-4-hydrogen"
+        with tempfile.TemporaryDirectory() as temp, \
+             patch.object(v2, "load_dataset", return_value=v2.load_dataset()), \
+             patch.object(v2, "ISSUE_DIR", Path(temp)), \
+             patch.dict(os.environ, {"SUMIBI_AI_API_KEY": "fake"}, clear=True), \
+             patch.object(v2, "datetime", wraps=datetime) as clock, \
+             patch("sumibi_typical_convert_client.SumibiTypicalConvertClient") as client, \
+             contextlib.redirect_stdout(io.StringIO()):
+            clock.now.return_value = datetime(2026, 11, 13, tzinfo=timezone.utc)
+            client.return_value.convert.return_value = "日本語"
+            client.return_value.last_response_metadata = {
+                "model": model, "finish_reason": "stop", "empty_choices": False,
+                "usage": {"prompt_tokens": 500, "completion_tokens": 200, "total_tokens": 700},
+            }
+            output = Path(temp) / "results" / "smoke.json"
+            v2.run(model, 1, output)
+            self.assertEqual(client.call_args.kwargs["base_url"], v2.GEMINI_BASE_URL)
+            self.assertEqual(client.call_args.kwargs["reasoning_effort"], "low")
+            self.assertIsNone(client.call_args.kwargs["temperature"])
+            self.assertEqual(client.call_args.kwargs["max_retries"], 0)
+            audit = json.loads(output.read_text())
+            self.assertTrue(audit["complete"])
+            self.assertEqual(len(audit["rows"]), 9)
+            self.assertAlmostEqual(sum(row["reference_usd"] for row in audit["rows"]), .02025)
 
     def test_cost_unknown_and_cache(self):
         self.assertIsNone(v2.cost(None, (1, .1, 5)))
