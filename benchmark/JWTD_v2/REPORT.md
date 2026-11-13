@@ -1,8 +1,12 @@
 # JWTD_v2/v2・628件・GeminiおよびGPT比較 — 計測結果
 
+Gemini 4 Hydrogen を追加した[最新版の7モデル集計](summary-7models.json)と比較グラフを掲載しています。
+
+最新版の元画像と1000×600版は [figures-7models/](figures-7models/) に保存し、既存の6モデル版は上書きしていません。
+
 ## 結論
 
-Gemini 4モデル（3.5 Flash-Lite・3.6 Flash・3.8 Flash・4 Argon）およびOpenAI 2モデル（GPT-6.1 Terra・GPT-6.1 Sol）の3入力方式全件計測（各628件×3方式＋ウォームアップ＝各1,890回、計11,340回）が完了した。
+Gemini 5モデル（3.5 Flash-Lite・3.6 Flash・3.8 Flash・4 Argon・4 Hydrogen）およびOpenAI 2モデル（GPT-6.1 Terra・GPT-6.1 Sol）の3入力方式全件計測（各628件×3方式＋ウォームアップ＝各1,890回）が完了した。
 
 - **精度最上位**: **Gemini 4 Argon**（ローマ字3.12%、ひらがな2.17%、カタカナ2.40%）と **GPT-6.1 Sol**（ローマ字3.68%、ひらがな2.25%、カタカナ2.96%）が全モデル中トップクラスの低エラー率・高完全一致率を記録した。
 - **実用性（速度＋精度）最優秀**: **GPT-6.1 Sol** は 4 Argon に迫る高精度を達成しながら、全件平均応答時間が **1.377〜1.602秒**（中央値 1.28〜1.49秒）と、Argon（3.32〜3.40秒）の半分以下の時間で応答した。Sumibiが実用条件とする「応答時間2秒以内」を完全にクリアしており、実環境での快適性と高精度を最も高水準で両立している。
@@ -10,12 +14,13 @@ Gemini 4モデル（3.5 Flash-Lite・3.6 Flash・3.8 Flash・4 Argon）および
 - **3.8 Flash の課題**: 3.8 Flash では「説明・候補列挙が付いた長文出力」が発生し、完全一致率は高いものの平均MinCERが8.51%〜16.60%と大幅に悪化した。4 Argon や GPT系モデルではこの現象は発生せず、安定した変換結果が得られた。
 - **コスト最安**: **Gemini 3.5 Flash-Lite**（\$0.28、0.83〜0.87秒）だが、MinCERは8.93%〜17.34%と高い。
 - **Gemini 3.6 Flash**: 1.05〜1.11秒、\$0.64、MinCER 4.10%〜5.95% と、Gemini Flash系の中で最もバランスが取れている。
+- **Gemini 4 Hydrogen**: 平均2.12〜2.30秒で4 Argonより約1.1〜1.3秒速いが、MinCERは3方式ともArgonに届かなかった。3.8 Flashより平均MinCERは低いが、平均応答は0.16〜0.40秒遅く、完全一致率が上回ったのはひらがなのみ。変換結果への説明混入も確認された。
 
 なお、その他の古いGeminiモデル（2.5系、3-flash-preview、提供終了済みモデル等）および3.8へ自動転送される3.7 Flashについては、旧世代モデルのためユーザー指示により計測不要として今回のベンチマーク対象外とした。
 
 旧v1のランキングやスコアとは混ぜない。計測時刻とモデル固有の推論条件は異なるため、同時刻・同じ思考量の厳密な統制実験とはしない。
 
-### v2全628件・6モデル比較
+### v2全628件・7モデル比較
 
 | 入力方式 | モデル | MinCER | 完全一致率 | 全件平均 |
 |---|---|---:|---:|---:|
@@ -23,22 +28,41 @@ Gemini 4モデル（3.5 Flash-Lite・3.6 Flash・3.8 Flash・4 Argon）および
 | ローマ字 | 3.6 Flash | 5.95% | 55.10% | 1.106秒 |
 | ローマ字 | 3.8 Flash | 8.51% | 67.99% | 2.068秒 |
 | ローマ字 | 4 Argon | 3.12% | 74.84% | 3.321秒 |
+| ローマ字 | 4 Hydrogen | 6.19% | 66.40% | 2.228秒 |
 | ローマ字 | GPT-6.1 Terra | 4.63% | 61.15% | 1.305秒 |
 | ローマ字 | GPT-6.1 Sol | 3.68% | 69.11% | 1.602秒 |
 | ひらがな | 3.5 Flash-Lite | 8.93% | 53.50% | 0.828秒 |
 | ひらがな | 3.6 Flash | 4.11% | 66.08% | 1.055秒 |
 | ひらがな | 3.8 Flash | 16.15% | 77.39% | 1.902秒 |
 | ひらがな | 4 Argon | 2.17% | 81.85% | 3.401秒 |
+| ひらがな | 4 Hydrogen | 5.52% | 79.46% | 2.120秒 |
 | ひらがな | GPT-6.1 Terra | 3.12% | 73.89% | 1.297秒 |
 | ひらがな | GPT-6.1 Sol | 2.25% | 80.57% | 1.377秒 |
 | カタカナ | 3.5 Flash-Lite | 17.34% | 45.86% | 0.870秒 |
 | カタカナ | 3.6 Flash | 4.10% | 65.29% | 1.103秒 |
 | カタカナ | 3.8 Flash | 16.60% | 75.16% | 1.900秒 |
 | カタカナ | 4 Argon | 2.40% | 81.05% | 3.379秒 |
+| カタカナ | 4 Hydrogen | 3.76% | 75.00% | 2.298秒 |
 | カタカナ | GPT-6.1 Terra | 4.12% | 66.88% | 1.293秒 |
 | カタカナ | GPT-6.1 Sol | 2.96% | 78.34% | 1.433秒 |
 
-[6モデルの集計JSON](summary-6models.json)に全統計・タグ・domain・出典別の内訳を保存した。[4モデル集計](summary-4models.json)、[3モデル集計](summary-3models.json)、[2モデル集計](summary-2models.json)、[単モデル集計](summary.json)も保持している。
+[7モデルの集計JSON](summary-7models.json)に全統計・タグ・domain・出典別の内訳を保存した。[6モデル集計](summary-6models.json)、[4モデル集計](summary-4models.json)、[3モデル集計](summary-3models.json)、[2モデル集計](summary-2models.json)、[単モデル集計](summary.json)も保持している。
+
+## Gemini 4 Hydrogen の詳細
+
+2026-11-13 19:55〜21:06（日本時間）に全1,890回（評価1,884回＋ウォームアップ6回）を実行。返却モデルはすべて `gemini-4-hydrogen`。Gemini Developer APIのOpenAI互換Chat Completionsを使用し、`reasoning_effort=low`、temperature省略。HTTPエラー・途中再開は0件。ブロックによる空出力も精度と応答時間の集計に含めた。
+
+| 入力方式 | 中央値 | p95 | 最大 | ブロック / 空出力 |
+|---|---:|---:|---:|---:|
+| ローマ字 | 2.124秒 | 3.456秒 | 11.255秒 | 1 / 1 |
+| ひらがな | 2.030秒 | 3.121秒 | 7.851秒 | 0 / 0 |
+| カタカナ | 1.899秒 | 3.631秒 | 75.170秒 | 4 / 4 |
+
+改行を含む出力は3件あり、すべて変換結果以外の文章が混入していた（方式別の評価位置: ローマ字326、ひらがな566、カタカナ375）。1行の説明混入まで網羅した件数ではない。
+
+入力800,416・出力26,555・総数997,102トークン。総数と入出力の和に差がある応答は827回で、差分は170,131トークン。内訳が確認できた分を[Standard有料料金](https://aistudio.google.com/docs/pricing#gemini-4-hydrogen)で換算すると、本計測は **\$1.399787**、スモークは **\$0.007539**。差分をすべて出力単価で仮換算した場合、本計測は **約\$2.68**。この仮換算は請求額でも確定した思考トークン費用でもない。
+
+原本: [本計測](results/gemini-4-hydrogen/full.json)／[疎通確認](results/gemini-4-hydrogen/smoke.json)。
 
 ## GPT-6.1 Sol の詳細
 
@@ -226,6 +250,8 @@ MinCERのブートストラップ95%信頼区間:
 
 旧版ベンチマーク（v1・200件）と新版ベンチマーク（v2・628件）の両方で計測されたモデルについて、データセットの拡張に伴うエラー率とコストの推移を1つのグラフに統合しました。
 
+Hydrogen はv2のみ実測したため、図中に「v2 only」と表示しています。v1の点・棒・応答時間・推移矢印はありません。
+
 - **表示の工夫**:
   - **v1（旧版 200件）**: 実線ボーダー・中空サークル（白抜き）
   - **v2（新版 628件）**: 実線ボーダー・塗りつぶしサークル
@@ -234,15 +260,15 @@ MinCERのブートストラップ95%信頼区間:
 
 ### エラー率 vs コスト（v1 vs v2 比較・1000x600 バブルチャート）
 
-![Error Rate vs Cost: v1 vs v2 Comparison](figures-6models/plot_errorrate_vs_cost_v1_vs_v2_1000x600.png)
+![Error Rate vs Cost: v1 vs v2 Comparison](figures-7models/plot_errorrate_vs_cost_v1_vs_v2_1000x600.png)
 
 ### エラー率 vs コスト（v1 vs v2 拡大図・実用コスト帯）
 
-![Error Rate vs Cost: v1 vs v2 Comparison - Zoomed](figures-6models/plot_errorrate_vs_cost_v1_vs_v2_zoomed_1000x600.png)
+![Error Rate vs Cost: v1 vs v2 Comparison - Zoomed](figures-7models/plot_errorrate_vs_cost_v1_vs_v2_zoomed_1000x600.png)
 
 ### 入力タイプ別エラー率と応答時間（v1 vs v2 比較・1000x600 棒グラフ＋折れ線）
 
-![Error Rate and Response Time Comparison by Input Type: v1 vs v2](figures-6models/plot_errorrate_vs_inputtype_v1_vs_v2_1000x600.png)
+![Error Rate and Response Time Comparison by Input Type: v1 vs v2](figures-7models/plot_errorrate_vs_inputtype_v1_vs_v2_1000x600.png)
 
 ### v1 vs v2 比較の主な示唆
 1. **データセット拡張による難易度上昇**:
@@ -252,35 +278,36 @@ MinCERのブートストラップ95%信頼区間:
 3. **最新世代の圧倒的安定性**:
    新世代の **GPT-6.1 Sol**（CER 3.68%）および **Gemini 4 Argon**（CER 3.12%）は、難化したv2データセットにおいても極めて低いエラー率を維持しています。
 4. **入力タイプ別の頑健性と応答時間**:
-   - **ひらがな入力の優位性**: 全モデル共通で「ひらがな入力」が最も低いエラー率を示しました（Argon: 0.75% → 2.17%、Sol: 0.55% → 2.25%、Terra: 2.20% → 3.12%）。
+   - **ひらがな入力の傾向**: Argon（0.75% → 2.17%）、Sol（0.55% → 2.25%）、Terra（2.20% → 3.12%）では両版とも、ひらがな入力のエラー率が最も低くなりました。
    - **カタカナ・ローマ字における顕著な差**: v2の新規428件において、3.8 Flashはカタカナ（3.54% → 16.60%）とひらがな（1.57% → 16.15%）の双方で解説や候補列挙の混入による急激な悪化が見られたのに対し、4 Argon（2.40%〜3.12%）や GPT-6.1 Sol（2.25%〜3.68%）は入力タイプを問わずv1からv2にかけて極めて安定した低エラー率を維持しました。
    - **応答時間の維持・短縮**: v1からv2にかけて各社APIの最適化もあり、多くのモデル（特に GPT-6.1 Sol: 1.86秒 → 1.47秒）で応答時間が維持または短縮傾向にあります。
 
 ---
 
-## v2専用グラフ（6モデル比較）
+## v2専用グラフ（7モデル比較）
 
-取得済み全6モデルを比較したv2専用の可視化グラフです。
+Gemini 4 Hydrogen を含む全7モデルの、v2実測値だけを比較したグラフです。
 
 ### 入力タイプ別エラー率と応答時間（1000x600 棒グラフ＋折れ線）
 v1の `images/plot_errorrate_vs_inputtype_1000x600.png` と同様の形式（棒グラフ: 入力方式別CER、折れ線: 平均レスポンス時間）で描画したグラフです。
 
-![Error Rate and Response Time Comparison by Input Type (JWTD_v2)](figures-6models/plot_errorrate_vs_inputtype_jwtd_v2_1000x600.png)
+![Error Rate and Response Time Comparison by Input Type (JWTD_v2)](figures-7models/plot_errorrate_vs_inputtype_jwtd_v2_1000x600.png)
 
 ### エラー率 vs コスト（1000x600 バブルチャート）
 v1の `images/plot_errorrate_vs_cost_1000x600.png` と同様の形式（X軸: コスト、Y軸: エラー率/MinCER、円サイズ: 平均応答時間）で描画したグラフです。
+コストの軸は入力500・出力200トークンと仮定した1回あたりの参考価格で、実測の請求額ではありません。v1/v2比較図でも同じ定義です。
 
-![Error Rate vs Cost of LLM Model (JWTD_v2)](figures-6models/plot_errorrate_vs_cost_jwtd_v2_1000x600.png)
+![Error Rate vs Cost of LLM Model (JWTD_v2)](figures-7models/plot_errorrate_vs_cost_jwtd_v2_1000x600.png)
 
-![Error Rate vs Cost of LLM Model (JWTD_v2) - Zoomed](figures-6models/plot_errorrate_vs_cost_jwtd_v2_zoomed_1000x600.png)
+![Error Rate vs Cost of LLM Model (JWTD_v2) - Zoomed](figures-7models/plot_errorrate_vs_cost_jwtd_v2_zoomed_1000x600.png)
 
 ### 入力方式別のMinCER・平均応答時間
 
-![JWTD_v2/v2・628件・6モデル：ひらがな](figures-6models/hiragana_input.png)
+![JWTD_v2/v2・628件・7モデル：ひらがな](figures-7models/hiragana_input.png)
 
-![JWTD_v2/v2・628件・6モデル：ローマ字](figures-6models/romaji_direct_input.png)
+![JWTD_v2/v2・628件・7モデル：ローマ字](figures-7models/romaji_direct_input.png)
 
-![JWTD_v2/v2・628件・6モデル：カタカナ](figures-6models/katakana_input.png)
+![JWTD_v2/v2・628件・7モデル：カタカナ](figures-7models/katakana_input.png)
 
 ---
 

@@ -21,7 +21,7 @@
 
 ## 結果を混ぜない仕組み
 
-- v2生結果は`issue205/results/`内の専用JSONのみ。旧`result_ver2.4.0/`は読み書きしない。
+- v2生結果は`JWTD_v2/results/`内の専用JSONのみ。旧`result_ver2.4.0/`は読み書きしない。
 - 結果ごとにデータセット出典・パス・版・ハッシュ・件数・評価条件を埋め込む。
 - 集計は専用スキーマ、固定データの完全一致、全628件のIDと順序、3方式の完走、プロンプト・文字種変換コードのハッシュを検査。旧JSON、部分計測、異なる版、重複モデルは拒否する。再開機能などランナーだけの変更は別途ハッシュを記録する。
 - 旧v1の200件はv2資料の「内訳」としてのみ掲載。過去のv1測定と混ぜたランキングは作らない。
@@ -69,13 +69,13 @@ python3 -m unittest discover -s benchmark -p 'test_*.py'
 まず3.5 Flash-Liteを9回だけ実行する（各方式1件＋各2回ウォームアップ、固定トークン参考\$0.005850）。
 
 ```sh
-python3 benchmark/jwtd_v2.py run --model gemini-3.5-flash-lite --limit 1 --output benchmark/issue205/results/gemini-3.5-flash-lite/smoke.json
+python3 benchmark/jwtd_v2.py run --model gemini-3.5-flash-lite --limit 1 --output benchmark/JWTD_v2/results/gemini-3.5-flash-lite/smoke.json
 ```
 
 完了後に結果を確認してから全件へ進む。未承認の全モデル一括実行はしない。
 
 ```sh
-python3 benchmark/jwtd_v2.py run --model gemini-3.5-flash-lite --output benchmark/issue205/results/gemini-3.5-flash-lite/full.json
+python3 benchmark/jwtd_v2.py run --model gemini-3.5-flash-lite --output benchmark/JWTD_v2/results/gemini-3.5-flash-lite/full.json
 ```
 
 既存ファイルは上書き・再開せず停止。SDK再試行0、タイムアウト既定120秒。失敗した場合も1回ごとの記録を保存。HTTPエラーはクラス・ステータスだけを保存し、生の例外本文・ヘッダー・キーを保存しない。
@@ -87,7 +87,7 @@ python3 benchmark/jwtd_v2.py run --model gemini-3.5-flash-lite --output benchmar
 Gemini 3.6 Flashはローマ字473件＋ウォームアップ2回の成功後、474件目で503となった。この記録から再開する場合:
 
 ```sh
-python3 benchmark/jwtd_v2.py run --model gemini-3.6-flash --resume-from benchmark/issue205/results/gemini-3.6-flash/full.json --output benchmark/issue205/results/gemini-3.6-flash/full-resumed.json
+python3 benchmark/jwtd_v2.py run --model gemini-3.6-flash --resume-from benchmark/JWTD_v2/results/gemini-3.6-flash/full.json --output benchmark/JWTD_v2/results/gemini-3.6-flash/full-resumed.json
 ```
 
 - 成功済み475回は再送しない。残り1,415回を行う（失敗した474件目の再送は含む）。後続方式の未実施ウォームアップは通常どおり行う。
@@ -106,15 +106,15 @@ python3 benchmark/jwtd_v2.py run --model gemini-3.6-flash --resume-from benchmar
 応答時間は全件平均・中央値・nearest-rank p95・p95以下平均・最大。ブロックや空出力は除外せず評価に含め、HTTPエラーを含む未完走はランキングに入れない。費用はウォームアップ込みの返却使用量から計算し、内訳不明差分・費用不明件数を併記する。
 
 ```sh
-python3 benchmark/jwtd_v2.py summarize benchmark/issue205/results/gemini-3.5-flash-lite/full.json --output benchmark/issue205/summary.json
-python3 benchmark/plot_jwtd_v2.py benchmark/issue205/summary.json --output-dir benchmark/issue205/figures
+python3 benchmark/jwtd_v2.py summarize benchmark/JWTD_v2/results/gemini-3.5-flash-lite/full.json --output benchmark/JWTD_v2/summary.json
+python3 benchmark/plot_jwtd_v2.py benchmark/JWTD_v2/summary.json --output-dir benchmark/JWTD_v2/figures
 ```
 
 2モデル版の再集計（既存出力は保持し、再生成時は新しい出力名を指定）:
 
 ```sh
-python3 benchmark/jwtd_v2.py summarize benchmark/issue205/results/gemini-3.5-flash-lite/full.json benchmark/issue205/results/gemini-3.6-flash/full-resumed.json --output benchmark/issue205/summary-2models.json
-python3 benchmark/plot_jwtd_v2.py benchmark/issue205/summary-2models.json --output-dir benchmark/issue205/figures-2models
+python3 benchmark/jwtd_v2.py summarize benchmark/JWTD_v2/results/gemini-3.5-flash-lite/full.json benchmark/JWTD_v2/results/gemini-3.6-flash/full-resumed.json --output benchmark/JWTD_v2/summary-2models.json
+python3 benchmark/plot_jwtd_v2.py benchmark/JWTD_v2/summary-2models.json --output-dir benchmark/JWTD_v2/figures-2models
 ```
 
 返却モデル、日時、設定、ソースハッシュも保存する。3.7の転送確認は`alias_checks`として独立モデルの`models`から分離する。結果資料・グラフの作成と結論は実測後に行う。
@@ -122,6 +122,6 @@ python3 benchmark/plot_jwtd_v2.py benchmark/issue205/summary-2models.json --outp
 最新の3モデル比較:
 
 ```sh
-python3 benchmark/jwtd_v2.py summarize benchmark/issue205/results/gemini-3.5-flash-lite/full.json benchmark/issue205/results/gemini-3.6-flash/full-resumed.json benchmark/issue205/results/gemini-3.8-flash/full.json --output benchmark/issue205/summary-3models.json
-python3 benchmark/plot_jwtd_v2.py benchmark/issue205/summary-3models.json --output-dir benchmark/issue205/figures-3models
+python3 benchmark/jwtd_v2.py summarize benchmark/JWTD_v2/results/gemini-3.5-flash-lite/full.json benchmark/JWTD_v2/results/gemini-3.6-flash/full-resumed.json benchmark/JWTD_v2/results/gemini-3.8-flash/full.json --output benchmark/JWTD_v2/summary-3models.json
+python3 benchmark/plot_jwtd_v2.py benchmark/JWTD_v2/summary-3models.json --output-dir benchmark/JWTD_v2/figures-3models
 ```

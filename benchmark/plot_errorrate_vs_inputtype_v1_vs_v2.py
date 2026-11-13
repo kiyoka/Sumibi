@@ -21,6 +21,7 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+from plot_jwtd_v2 import load_summary
 from typing import Dict, List, Tuple
 
 import matplotlib
@@ -129,15 +130,13 @@ def plot_errorrate_vs_inputtype_v1_vs_v2(
     v1_dir: Path = Path("benchmark/result_ver2.4.0"),
     figsize: Tuple[int, int] = (10, 6),
 ):
-    with open(summary_path, "r", encoding="utf-8") as f:
-        summary = json.load(f)
-
-    target_models = [m for m in DATA_V1_FALLBACK if m in summary["models"]]
+    summary = load_summary(summary_path)
+    target_models = list(summary["models"])
     v1_data = load_v1_data(v1_dir, target_models)
 
     models_data = []
     for m in target_models:
-        v1_info = v1_data[m]
+        v1_info = v1_data.get(m)
         v2_info = summary["models"][m]
 
         rq2 = v2_info["modes"]["romaji_direct_input"]["quality"]["overall"]["MinCER"]
@@ -148,16 +147,17 @@ def plot_errorrate_vs_inputtype_v1_vs_v2(
         hl2 = v2_info["modes"]["hiragana_input"]["latency"]["mean"]
         kl2 = v2_info["modes"]["katakana_input"]["latency"]["mean"]
 
-        v1_avg_time = (v1_info["romaji_time"] + v1_info["hiragana_time"] + v1_info["katakana_time"]) / 3
+        v1_avg_time = (sum(v1_info[f"{mode}_time"] for mode in ("romaji", "hiragana", "katakana")) / 3
+                       if v1_info else np.nan)
         v2_avg_time = (rl2 + hl2 + kl2) / 3
 
         models_data.append({
             "model": m,
-            "romaji_v1": v1_info["romaji"] * 100,
+            "romaji_v1": v1_info["romaji"] * 100 if v1_info else np.nan,
             "romaji_v2": rq2 * 100,
-            "katakana_v1": v1_info["katakana"] * 100,
+            "katakana_v1": v1_info["katakana"] * 100 if v1_info else np.nan,
             "katakana_v2": kq2 * 100,
-            "hiragana_v1": v1_info["hiragana"] * 100,
+            "hiragana_v1": v1_info["hiragana"] * 100 if v1_info else np.nan,
             "hiragana_v2": hq2 * 100,
             "avg_time_v1": v1_avg_time,
             "avg_time_v2": v2_avg_time,
@@ -246,7 +246,8 @@ def plot_errorrate_vs_inputtype_v1_vs_v2(
     ax1.set_xlabel("Model", fontsize=11, fontweight="bold")
     ax1.set_ylabel("Character Error Rate (%)", fontsize=11, fontweight="bold", color="black")
     ax1.set_xticks(x)
-    ax1.set_xticklabels(models, rotation=15, ha="right", fontsize=9.5)
+    ax1.set_xticklabels([m if m in v1_data else f"{m} (v2 only)" for m in models],
+                       rotation=15, ha="right", fontsize=9.5)
     ax1.set_ylim(0, 22)
     ax1.tick_params(axis="y", labelcolor="black")
     ax1.grid(axis="y", alpha=0.3, linestyle="--")
@@ -344,8 +345,8 @@ def main():
         "summary",
         type=Path,
         nargs="?",
-        default=Path("benchmark/issue205/summary-6models.json"),
-        help="Path to summary-6models.json",
+        default=Path("benchmark/JWTD_v2/summary-7models.json"),
+        help="Path to JWTD_v2 summary JSON",
     )
     parser.add_argument(
         "--v1-dir",
@@ -356,7 +357,7 @@ def main():
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=Path("benchmark/issue205/figures-6models"),
+        default=Path("benchmark/JWTD_v2/figures-7models"),
         help="Output directory for generated plots",
     )
     parser.add_argument(

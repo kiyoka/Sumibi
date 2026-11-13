@@ -14,7 +14,7 @@ import tempfile
 import time
 
 ROOT = Path(__file__).resolve().parent
-ISSUE_DIR = ROOT / "issue205"
+ISSUE_DIR = ROOT / "JWTD_v2"
 REVISION = "c0783bba1ec6b9a9e06d07fa52ce3e23d0a7dfe1"
 REPOSITORY = "https://github.com/nyanko3141592/AJIMEE-Bench"
 DATA_PATH = "JWTD_v2/v2/evaluation_items.json"
@@ -30,7 +30,7 @@ MODES = ("romaji_direct_input", "hiragana_input", "katakana_input")
 GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
 OPENAI_BASE_URL = "https://api.openai.com/v1/"
 BASE_URL = GEMINI_BASE_URL
-# Standard short-context prices, checked 2026-10-31. No guessed preview prices.
+# Standard short-context prices. Hydrogen checked 2026-11-13, others 2026-10-31.
 # Values: reasoning_effort, temperature, input/cached/output USD per million.
 MODELS = {
     "gemini-2.5-pro": (None, None, (1.25, .125, 10)),
@@ -41,6 +41,7 @@ MODELS = {
     "gemini-3.7-flash": ("low", 1.0, (.75, .075, 3.75)),
     "gemini-3.8-flash": ("low", 1.0, (.75, .075, 3.75)),
     "gemini-4-argon": ("low", None, (2, .10, 10)),
+    "gemini-4-hydrogen": ("low", None, (1.50, .075, 7.50)),
     "gpt-6.1-terra": ("none", 1.0, (1.0, 0.05, 5.0)),
     "gpt-6.1-sol": ("low", None, (2.0, 0.10, 10.0)),
 }
@@ -61,6 +62,8 @@ SCORING = {"primary": "raw_MinCER", "secondary": "raw_accuracy@1",
            "width_normalized_accuracy": True, "right_context": False,
            "prompt": "sumibi_typical_convert_client", "n": 1}
 LEGACY_RUNNER_HASH = "ba0e48c0092197d629cb512fdb8f5d41b4bb2bd5b817b72a1c85ef48b8c487a2"
+# The directory rename does not change measurement settings or the request payload.
+PRE_RENAME_RUNNER_HASH = "3883d8836dccb571dbd35b39d2e0812b97aa6dd7f7852df409ae99c1130f9d5b"
 MEASUREMENT_FILES = ("sumibi_typical_convert_client.py", "katakana_to_romaji_converter.py",
                      "katakana_to_hiragana_converter.py")
 
@@ -82,7 +85,7 @@ def schedule(entries, limit, converters):
 def resume_audit(path, model, limit, jobs, timeout):
     """Validate a checkpoint before any SDK construction or output mutation."""
     if not path.resolve().is_relative_to((ISSUE_DIR / "results").resolve()):
-        raise ValueError("Resume input must be in issue205/results")
+        raise ValueError("Resume input must be in JWTD_v2/results")
     a = json.loads(path.read_text())
     reasoning, temperature, prices = MODELS[model]
     base_url = base_url_for_model(model)
@@ -98,7 +101,8 @@ def resume_audit(path, model, limit, jobs, timeout):
         raise ValueError("Resume dataset/model/settings differ, or already complete")
     hashes = a.get("source_sha256", {})
     if (any(hashes.get(k) != v for k, v in measurement_hashes().items())
-            or hashes.get("jwtd_v2.py") not in (LEGACY_RUNNER_HASH, digest(ROOT / "jwtd_v2.py"))):
+            or hashes.get("jwtd_v2.py") not in
+            (LEGACY_RUNNER_HASH, PRE_RENAME_RUNNER_HASH, digest(ROOT / "jwtd_v2.py"))):
         raise ValueError("Resume measurement code changed")
     rows = a.get("rows")
     if not isinstance(rows, list) or not rows or len(rows) > len(jobs):
@@ -148,7 +152,7 @@ def load_dataset():
     if (len(entries) != 628 or len({str(e["index"]) for e in entries}) != 628
             or Counter(e["source"] for e in entries) != {"v1": 200, "v2-add": 428}):
         raise ValueError("Unexpected v2 dataset membership")
-    spec = importlib.util.spec_from_file_location("issue205_pinned_utils", ISSUE_DIR / "upstream/utils.py")
+    spec = importlib.util.spec_from_file_location("jwtd_v2_pinned_utils", ISSUE_DIR / "upstream/utils.py")
     utils = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(utils)
     return entries, utils
@@ -200,7 +204,7 @@ def run(model, limit, output, resume_from=None):
     if not 1 <= limit <= len(entries):
         raise ValueError("limit must be 1..628")
     if output.suffix != ".json" or not output.resolve().is_relative_to((ISSUE_DIR / "results").resolve()):
-        raise ValueError("Output must be a JSON inside issue205/results (not legacy folders)")
+        raise ValueError("Output must be a JSON inside JWTD_v2/results (not legacy folders)")
     if output.exists():
         raise ValueError("Output exists; no implicit overwrite or rerun")
     today = datetime.now(timezone.utc).date().isoformat()

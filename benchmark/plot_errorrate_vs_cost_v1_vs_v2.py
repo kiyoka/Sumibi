@@ -17,8 +17,6 @@ JWTD_v1 (200件) と JWTD_v2 (628件) の両方でベンチマークを取得し
 from __future__ import annotations
 
 import argparse
-import json
-import subprocess
 from pathlib import Path
 from typing import Dict, List, Tuple
 
@@ -26,25 +24,9 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+from PIL import Image
 
-# コスト (入力500トークン、出力200トークン想定の1リクエストあたりカタログコスト)
-MASTER_COST: Dict[str, float] = {
-    "gemini-3.5-flash-lite": 0.000650,
-    "gemini-3.6-flash":      0.001125,
-    "gemini-3.8-flash":      0.001125,
-    "gemini-4-argon":        0.003000,
-    "gpt-6.1-terra":         0.001500,
-    "gpt-6.1-sol":           0.003000,
-}
-
-COLOR_MAP: Dict[str, str] = {
-    "gemini-3.5-flash-lite": "darkcyan",
-    "gemini-3.6-flash":      "royalblue",
-    "gemini-3.8-flash":      "darkviolet",
-    "gemini-4-argon":        "firebrick",
-    "gpt-6.1-terra":         "teal",
-    "gpt-6.1-sol":           "mediumblue",
-}
+from plot_errorrate_vs_cost_jwtd_v2 import COLOR_MAP, MASTER_COST, load_v2_data
 
 # v1 (JWTD_v2/v1・200件・ローマ字入力) の実測値
 DATA_V1: Dict[str, Dict[str, float]] = {
@@ -71,21 +53,6 @@ def _darken_for_readability(color_name: str) -> str:
         "gold": "darkgoldenrod",
     }
     return override.get(color_name, color_name)
-
-
-def load_v2_data(summary_path: Path, mode: str = "romaji_direct_input") -> Dict[str, Dict[str, float]]:
-    with open(summary_path, "r", encoding="utf-8") as f:
-        summary = json.load(f)
-    v2_data = {}
-    for m in DATA_V1:
-        if m in summary["models"]:
-            q = summary["models"][m]["modes"][mode]["quality"]["overall"]
-            lat = summary["models"][m]["modes"][mode]["latency"]
-            v2_data[m] = {
-                "cer": q["MinCER"],
-                "elapsed": lat["mean"],
-            }
-    return v2_data
 
 
 def plot_v1_vs_v2(
@@ -123,7 +90,7 @@ def plot_v1_vs_v2(
         )
 
     # 2. v1 (中空・枠線のみの円) を描画
-    for idx, model in enumerate(DATA_V1):
+    for idx, model in enumerate(m for m in DATA_V1 if m in v2_data):
         cost = MASTER_COST[model]
         cer_pct = DATA_V1[model]["cer"] * 100
         elapsed = DATA_V1[model]["elapsed"]
@@ -168,16 +135,28 @@ def plot_v1_vs_v2(
         "gemini-3.6-flash":      (0.001125 - 0.0008, 5.95 + 1.2),
         "gemini-3.8-flash":      (0.001125 + 0.0004, 8.51 + 1.5),
         "gemini-4-argon":        (0.003000 + 0.0004, 3.12 + 1.2),
+        "gemini-4-hydrogen":     (0.00240, 8.35),
         "gpt-6.1-terra":         (0.001500 + 0.0004, 4.63 + 1.2),
         "gpt-6.1-sol":           (0.003000 + 0.0004, 3.68 - 1.8),
     }
+    if range_mode == 0:
+        label_positions = {
+            "gemini-3.5-flash-lite": (0.0012, 24),
+            "gemini-3.8-flash":      (0.0022, 19),
+            "gemini-3.6-flash":      (0.0036, 15),
+            "gemini-4-hydrogen":     (0.0049, 11),
+            "gpt-6.1-terra":         (0.0049, 7.5),
+            "gpt-6.1-sol":           (0.0049, 4.0),
+            "gemini-4-argon":        (0.0049, 0.8),
+        }
 
     for model, (lx, ly) in label_positions.items():
         if model in v2_data:
             cost = MASTER_COST[model]
             v2_cer = v2_data[model]["cer"] * 100
             color = COLOR_MAP.get(model, "blue")
-            ax.text(lx, ly, model, fontsize=8, color=LABEL_INK, zorder=6, fontweight="bold")
+            label = model if model in DATA_V1 else f"{model} (v2 only)"
+            ax.text(lx, ly, label, fontsize=8, color=LABEL_INK, zorder=6, fontweight="bold")
             ax.plot(
                 [cost, lx],
                 [v2_cer, ly],
@@ -187,7 +166,7 @@ def plot_v1_vs_v2(
                 zorder=2,
             )
 
-    ax.set_xlabel("Cost Per Request ($)", fontsize=10, fontweight="bold")
+    ax.set_xlabel("Reference Cost Per Request ($; 500 input / 200 output tokens)", fontsize=10, fontweight="bold")
     ax.set_ylabel("Error Rate - MinCER (%)", fontsize=10, fontweight="bold")
 
     if range_mode == 1:
@@ -251,11 +230,9 @@ def plot_v1_vs_v2(
     # 1000x600 バージョンの生成
     if "_1000x600" not in output_path.stem:
         resized_path = output_path.parent / f"{output_path.stem}_1000x600.png"
-        try:
-            subprocess.run(["convert", str(output_path), "-resize", "1000x600", str(resized_path)], check=True)
-            print("Resized:", resized_path)
-        except Exception as e:
-            print(f"Warning: Failed to resize image ({e})")
+        with Image.open(output_path) as img:
+            img.resize((1000, 600), Image.Resampling.LANCZOS).save(resized_path)
+        print("Resized:", resized_path)
 
 
 def main():
@@ -264,13 +241,13 @@ def main():
         "summary",
         type=Path,
         nargs="?",
-        default=Path("benchmark/issue205/summary-6models.json"),
-        help="Path to summary-6models.json",
+        default=Path("benchmark/JWTD_v2/summary-7models.json"),
+        help="Path to JWTD_v2 summary JSON",
     )
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=Path("benchmark/issue205/figures-6models"),
+        default=Path("benchmark/JWTD_v2/figures-7models"),
         help="Output directory",
     )
     args = parser.parse_args()

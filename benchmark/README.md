@@ -18,9 +18,9 @@ benchmark ディレクトリの README
 | **SHA-256** | - | `69a0dde4c1f67b3d06268c761ee3a7b7d38680a4f1c81360cc2d4f0f120e731f` |
 | **評価モデル** | GPT-4o, Claude 3.5, Gemini 2.x/3.x, ローカルIME 等 | Gemini 4モデル（3.5 Flash-Lite, 3.6 Flash, 3.8 Flash, 4 Argon）および OpenAI 2モデル（GPT-6.1 Terra, GPT-6.1 Sol） |
 | **入力方式** | 主にローマ字入力 | ローマ字直接入力、ひらがな入力、カタカナ入力の3方式 |
-| **資料リンク** | 本README以下のセクション・既存グラフ（`result_ver2.4.0` 等はプロンプト版でありデータセット版ではない） | [Issue #205 専用資料](issue205/README.md)／[結果レポートとグラフ](issue205/REPORT.md) |
+| **資料リンク** | 本README以下のセクション・既存グラフ（`result_ver2.4.0` 等はプロンプト版でありデータセット版ではない） | [Issue #205 専用資料](JWTD_v2/README.md)／[結果レポートとグラフ](JWTD_v2/REPORT.md) |
 
-※ 新版 v2 のデータセット詳細は [benchmark/issue205/dataset.json](issue205/dataset.json) および [benchmark/issue205/upstream/README.md](issue205/upstream/README.md) にも固定・保存されています。モデル入力には左文脈のみを使用し、右文脈や正解はモデルへ渡していません。ライセンスはWikipedia/JWTD由来部分がCC-BY-SA 3.0、創作例文・評価コードがCC0 1.0です。
+※ 新版 v2 のデータセット詳細は [benchmark/JWTD_v2/dataset.json](JWTD_v2/dataset.json) および [benchmark/JWTD_v2/upstream/README.md](JWTD_v2/upstream/README.md) にも固定・保存されています。モデル入力には左文脈のみを使用し、右文脈や正解はモデルへ渡していません。ライセンスはWikipedia/JWTD由来部分がCC-BY-SA 3.0、創作例文・評価コードがCC0 1.0です。
 
 このディレクトリには、Sumibi クライアントを用いて取得した各モデルの応答時間および文字誤り率（CER: Character Error Rate）を集計・可視化するスクリプトと測定結果が含まれています。
 

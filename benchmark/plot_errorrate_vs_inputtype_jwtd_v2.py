@@ -10,7 +10,6 @@ images/plot_errorrate_vs_inputtype_1000x600.png と同一のスタイルを採�
 from __future__ import annotations
 
 import argparse
-import json
 from pathlib import Path
 from typing import Dict, List, Tuple
 
@@ -18,6 +17,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
+from plot_jwtd_v2 import load_summary
 
 
 def plot_errorrate_vs_inputtype_jwtd_v2(
@@ -25,8 +25,7 @@ def plot_errorrate_vs_inputtype_jwtd_v2(
     output_path: Path,
     figsize: Tuple[int, int] = (10, 6),
 ):
-    with open(summary_path, "r", encoding="utf-8") as f:
-        summary = json.load(f)
+    summary = load_summary(summary_path)
 
     models_data = []
     for model_name, model_info in summary["models"].items():
@@ -157,14 +156,14 @@ def main():
         "summary",
         type=Path,
         nargs="?",
-        default=Path("benchmark/issue205/summary-4models.json"),
+        default=Path("benchmark/JWTD_v2/summary-7models.json"),
         help="Path to summary JSON",
     )
     parser.add_argument(
         "-o",
         "--output",
         type=Path,
-        default=Path("benchmark/issue205/figures-4models/plot_errorrate_vs_inputtype_jwtd_v2_1000x600.png"),
+        default=Path("benchmark/JWTD_v2/figures-7models/plot_errorrate_vs_inputtype_jwtd_v2.png"),
         help="Output image file path",
     )
     args = parser.parse_args()
