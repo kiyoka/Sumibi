@@ -241,13 +241,13 @@ def main():
         "summary",
         type=Path,
         nargs="?",
-        default=Path("benchmark/issue205/summary-7models.json"),
+        default=Path("benchmark/JWTD_v2/summary-7models.json"),
         help="Path to JWTD_v2 summary JSON",
     )
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=Path("benchmark/issue205/figures-7models"),
+        default=Path("benchmark/JWTD_v2/figures-7models"),
         help="Output directory",
     )
     args = parser.parse_args()

@@ -156,14 +156,14 @@ def main():
         "summary",
         type=Path,
         nargs="?",
-        default=Path("benchmark/issue205/summary-7models.json"),
+        default=Path("benchmark/JWTD_v2/summary-7models.json"),
         help="Path to summary JSON",
     )
     parser.add_argument(
         "-o",
         "--output",
         type=Path,
-        default=Path("benchmark/issue205/figures-7models/plot_errorrate_vs_inputtype_jwtd_v2.png"),
+        default=Path("benchmark/JWTD_v2/figures-7models/plot_errorrate_vs_inputtype_jwtd_v2.png"),
         help="Output image file path",
     )
     args = parser.parse_args()

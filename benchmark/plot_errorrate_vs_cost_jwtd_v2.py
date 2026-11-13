@@ -115,7 +115,7 @@ def build_legend(range_mode: int = 0):
 def main():
     parser = argparse.ArgumentParser(description="Plot error rate vs cost (JWTD_v2)")
     parser.add_argument("summary", type=Path, nargs="?",
-                        default=Path("benchmark/issue205/summary-7models.json"))
+                        default=Path("benchmark/JWTD_v2/summary-7models.json"))
     parser.add_argument("-o", "--output", help="Output image file path")
     parser.add_argument(
         "--range",
