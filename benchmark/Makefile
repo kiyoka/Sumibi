@@ -61,6 +61,7 @@ GOOGLE_IME_CGI_RESULTS := google_ime_cgi.json
 # `make -B plots` で強制再生成すること。
 RESULT_DIR_V23 := result_ver2.3.0
 RESULT_DIR_V24 := result_ver2.4.0
+RESULT_DIR_PCC := result_pcc_ios
 
 # Notification script to run after benchmark completion
 define run_notify
@@ -71,7 +72,7 @@ define run_notify
 endef
 
 .DEFAULT_GOAL := help
-.PHONY: help all aggregate clean plots
+.PHONY: help all aggregate clean plots pcc_comparison
 
 help:
 	@echo "Usage: make [target]"
@@ -84,6 +85,7 @@ help:
 	@echo "  aggregate perform aggregation on all result JSONs"
 	@echo "  clean     remove result JSONs"
 	@echo "  plots     generate plot PNG images"
+	@echo "  pcc_comparison  refresh the iOS PCC all-model report and plot"
 
 all: $(addprefix result_ver2.3.0/,$(RESULTS) result_ver2.4.0/,$(RESULTS))
 
@@ -215,7 +217,15 @@ ctx_plot: ../images/plot_context_length_vs_response_time.png
 
 # ---------------------------------------------------------------------------
 # Generate plot images in the project's images directory
-plots: ../images/plot_errorrate_vs_cost.png ../images/plot_errorrate_vs_cost_zoomed.png ../images/plot_errorrate_vs_paramsize.png ../images/plot_errorrate_vs_paramsize_zoomed.png ../images/plot_mean_response_time.png ../images/plot_errorrate_vs_inputtype.png ../images/plot_errorrate_vs_inputtype_hiragana.png ../images/plot_errorrate_vs_cost_1000x600.png ../images/plot_errorrate_vs_cost_zoomed_1000x600.png ../images/plot_errorrate_vs_paramsize_1000x600.png ../images/plot_errorrate_vs_paramsize_zoomed_1000x600.png ../images/plot_mean_response_time_1000x1800.png ../images/plot_errorrate_vs_inputtype_1000x600.png ../images/plot_errorrate_vs_inputtype_hiragana_1000x600.png
+plots: ../images/plot_errorrate_vs_cost.png ../images/plot_errorrate_vs_cost_zoomed.png ../images/plot_errorrate_vs_paramsize.png ../images/plot_errorrate_vs_paramsize_zoomed.png ../images/plot_mean_response_time.png ../images/plot_errorrate_vs_inputtype.png ../images/plot_errorrate_vs_inputtype_hiragana.png ../images/plot_errorrate_vs_cost_1000x600.png ../images/plot_errorrate_vs_cost_zoomed_1000x600.png ../images/plot_errorrate_vs_paramsize_1000x600.png ../images/plot_errorrate_vs_paramsize_zoomed_1000x600.png ../images/plot_mean_response_time_1000x1800.png ../images/plot_errorrate_vs_inputtype_1000x600.png ../images/plot_errorrate_vs_inputtype_hiragana_1000x600.png ../images/plot_pcc_all_models_v1.png
+
+pcc_comparison: PCC_IOS_COMPARISON.md ../images/plot_pcc_all_models_v1.png
+
+PCC_IOS_COMPARISON.md: generate_pcc_comparison.py import_pcc_ios.py $(RESULT_DIR_V23) $(RESULT_DIR_V24) $(RESULT_DIR_PCC)
+	python3 generate_pcc_comparison.py -o $@
+
+../images/plot_pcc_all_models_v1.png: plot_pcc_all_models.py generate_pcc_comparison.py $(RESULT_DIR_V23) $(RESULT_DIR_V24) $(RESULT_DIR_PCC)
+	python3 plot_pcc_all_models.py -o $@
 
 # plot_errorrate_vs_cost.py はスクリプト内の DATA_V24 に数値をハードコードしており
 # 結果JSONを読まないため、result JSON への依存は持たせない
@@ -230,13 +240,13 @@ plots: ../images/plot_errorrate_vs_cost.png ../images/plot_errorrate_vs_cost_zoo
 
 ../images/plot_errorrate_vs_paramsize_zoomed.png: ../images/plot_errorrate_vs_paramsize.png
 
-../images/plot_mean_response_time.png: plot_mean_response_time.py $(RESULT_DIR_V24)
+../images/plot_mean_response_time.png: plot_mean_response_time.py $(RESULT_DIR_V24) $(RESULT_DIR_PCC)
 	python3 $< -o $@
 
-../images/plot_errorrate_vs_inputtype.png: plot_errorrate_vs_inputtype.py $(RESULT_DIR_V24)
+../images/plot_errorrate_vs_inputtype.png: plot_errorrate_vs_inputtype.py $(RESULT_DIR_V24) $(RESULT_DIR_PCC)
 	python3 $< -o $@
 
-../images/plot_errorrate_vs_inputtype_hiragana.png: plot_errorrate_vs_inputtype_hiragana.py $(RESULT_DIR_V24)
+../images/plot_errorrate_vs_inputtype_hiragana.png: plot_errorrate_vs_inputtype_hiragana.py $(RESULT_DIR_V24) $(RESULT_DIR_PCC)
 	python3 $< -o $@
 
 ../images/plot_errorrate_vs_cost_1000x600.png: ../images/plot_errorrate_vs_cost.png

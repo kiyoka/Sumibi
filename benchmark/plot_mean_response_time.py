@@ -7,6 +7,7 @@
 1. X 軸 (主軸, ax1)
    • 各モデルの平均応答時間 mean_elapsed_sec_p95 (v2.4.0)
      -> 横向きバーで表示（95パーセンタイル以下の平均、外れ値除外）
+     -> iOS PCC は別プロンプト・別端末の参考値として追加
 
 2. X 軸 (副軸, ax2 – 上側)
    • 各モデルの誤り率 mean_cer (v2.4.0)
@@ -58,10 +59,19 @@ def load_all_results(result_dir: str = "result_ver2.4.0") -> Dict[str, Tuple[flo
         except Exception as e:
             print(f"Warning: Failed to load {json_file}: {e}")
 
+    if Path(result_dir).name == "result_ver2.4.0":
+        pcc_path = Path(result_dir).parent / "result_pcc_ios/apple-pcc-ios17e.json"
+        if pcc_path.exists():
+            data = json.loads(pcc_path.read_text(encoding="utf-8"))
+            mean_cer, _, _, _, _, _, mean_elapsed = summarize(data)
+            results["apple-pcc-ios17e (reference)"] = (mean_cer, mean_elapsed)
+
     return results
 
 def get_color_for_model(model_name: str) -> str:
     """モデル名に基づいて色を割り当てる"""
+    if model_name.startswith("apple-pcc-ios17e"):
+        return "darkorange"
     if model_name.startswith("gpt-3"):
         return "palegreen"
     elif model_name.startswith("gpt-4.1-mini"):
@@ -207,7 +217,7 @@ def main() -> None:
         markerfacecolor="teal",
         markeredgecolor="teal",
         color="teal",
-        label="Error Rate (v2.4.0)",
+        label="Error Rate (v2.4.0; PCC reference)",
     )
 
     ax2.set_xlabel("Error Rate (%)")
