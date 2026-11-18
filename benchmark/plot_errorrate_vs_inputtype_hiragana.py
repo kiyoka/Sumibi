@@ -77,6 +77,16 @@ def load_model_data(result_dir: str = "result_ver2.4.0") -> List[Dict[str, float
             "hiragana_time": hiragana_time
         })
 
+    if os.path.basename(result_dir) == "result_ver2.4.0":
+        pcc_path = os.path.join(os.path.dirname(result_dir),
+                                "result_pcc_ios/apple-pcc-ios17e_hiragana.json")
+        if os.path.exists(pcc_path):
+            with open(pcc_path, encoding="utf-8") as source:
+                pcc_data = json.load(source)
+            cer, _, _, _, _, _, elapsed = summarize(pcc_data)
+            models_data.append({"model": "apple-pcc-ios17e (reference)",
+                                "hiragana_cer": cer, "hiragana_time": elapsed})
+
     # ひらがな入力のエラー率でソート（小さい順）
     models_data.sort(key=lambda x: x['hiragana_cer'])
 

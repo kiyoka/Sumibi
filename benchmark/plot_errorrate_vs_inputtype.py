@@ -96,6 +96,24 @@ def load_model_data(result_dir: str = "result_ver2.4.0") -> List[Dict[str, float
                 "katakana_time": katakana_time
             })
 
+    if os.path.basename(result_dir) == "result_ver2.4.0":
+        pcc_dir = os.path.join(os.path.dirname(result_dir), "result_pcc_ios")
+        paths = [os.path.join(pcc_dir, f"apple-pcc-ios17e{suffix}.json")
+                 for suffix in ("", "_hiragana", "_katakana")]
+        if all(os.path.exists(path) for path in paths):
+            stats = []
+            for path in paths:
+                with open(path, encoding="utf-8") as source:
+                    data = json.load(source)
+                cer, _, _, _, _, _, elapsed = summarize(data)
+                stats.append((cer, elapsed))
+            models_with_variants.append({
+                "model": "apple-pcc-ios17e (reference)",
+                "romaji": stats[0][0], "romaji_time": stats[0][1],
+                "hiragana": stats[1][0], "hiragana_time": stats[1][1],
+                "katakana": stats[2][0], "katakana_time": stats[2][1],
+            })
+
     # ひらがな入力のエラー率でソート（小さい順）
     models_with_variants.sort(key=lambda x: x['hiragana'])
 
