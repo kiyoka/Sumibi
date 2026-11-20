@@ -10,7 +10,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-from generate_pcc_comparison import INPUT_TYPES, PCC_NAME, load_comparison
+from generate_pcc_comparison import INPUT_TYPES, load_comparison
 
 
 def plot(output: Path) -> None:
@@ -22,7 +22,6 @@ def plot(output: Path) -> None:
         entries = tables[kind]
         current = [e for e in entries if e["version"] == "v2.4.0"]
         older = [e for e in entries if e["version"] == "v2.3.0"]
-        pcc = next(e for e in entries if e["model"] == PCC_NAME)
         axis.scatter([e["cer"] * 100 for e in current],
                      [e["p95_mean"] for e in current],
                      s=24, alpha=0.7, color="#4676b7", label="v2.4.0")
@@ -30,12 +29,14 @@ def plot(output: Path) -> None:
                      [e["p95_mean"] for e in older],
                      s=32, alpha=0.7, marker="x", color="#888888",
                      label="v2.3.0 only")
-        axis.scatter([pcc["cer"] * 100], [pcc["p95_mean"]],
-                     s=240, marker="*", color="#f18a00", edgecolor="black",
-                     linewidth=0.6, zorder=10, label="iOS PCC")
-        axis.annotate("PCC", (pcc["cer"] * 100, pcc["p95_mean"]),
-                      xytext=(6, 7), textcoords="offset points", fontsize=9,
-                      fontweight="bold")
+        for number, pcc in enumerate(e for e in entries if e["version"] == "iOS PCC"):
+            label = pcc["model"].replace("apple-pcc-ios17e", "PCC")
+            axis.scatter([pcc["cer"] * 100], [pcc["p95_mean"]],
+                         s=240, marker="*", color=plt.get_cmap("tab10")(number + 1),
+                         edgecolor="black", linewidth=0.6, zorder=10, label=label)
+            axis.annotate(label, (pcc["cer"] * 100, pcc["p95_mean"]),
+                          xytext=(6, 7 + 12 * number), textcoords="offset points", fontsize=8,
+                          fontweight="bold")
         axis.axhline(2, color="#aa5555", linestyle="--", linewidth=1,
                      label="2-second guideline")
         axis.set_title(f"{english_labels[kind]} input ({len(entries)} runs)")

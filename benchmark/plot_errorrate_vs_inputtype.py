@@ -22,6 +22,8 @@ import numpy as np
 # aggregate_results.pyのsummarize関数をインポート
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from aggregate_results import summarize
+from pathlib import Path
+from import_pcc_ios import pcc_runs
 
 
 def calculate_mean_cer(data: List[Dict]) -> float:
@@ -97,18 +99,18 @@ def load_model_data(result_dir: str = "result_ver2.4.0") -> List[Dict[str, float
             })
 
     if os.path.basename(result_dir) == "result_ver2.4.0":
-        pcc_dir = os.path.join(os.path.dirname(result_dir), "result_pcc_ios")
-        paths = [os.path.join(pcc_dir, f"apple-pcc-ios17e{suffix}.json")
-                 for suffix in ("", "_hiragana", "_katakana")]
-        if all(os.path.exists(path) for path in paths):
+        pcc_dir = Path(result_dir).parent / "result_pcc_ios"
+        for name, variants in pcc_runs(pcc_dir).items():
+            if not all(kind in variants for kind in ("romaji", "hiragana", "katakana")):
+                continue
             stats = []
-            for path in paths:
+            for path in (variants[kind] for kind in ("romaji", "hiragana", "katakana")):
                 with open(path, encoding="utf-8") as source:
                     data = json.load(source)
                 cer, _, _, _, _, _, elapsed = summarize(data)
                 stats.append((cer, elapsed))
             models_with_variants.append({
-                "model": "apple-pcc-ios17e (reference)",
+                "model": name + " (reference)",
                 "romaji": stats[0][0], "romaji_time": stats[0][1],
                 "hiragana": stats[1][0], "hiragana_time": stats[1][1],
                 "katakana": stats[2][0], "katakana_time": stats[2][1],

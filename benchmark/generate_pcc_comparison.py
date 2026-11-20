@@ -12,7 +12,6 @@ from import_pcc_ios import prepare_cases
 
 
 HERE = Path(__file__).parent
-PCC_NAME = "apple-pcc-ios17e"
 INPUT_TYPES = ("romaji", "hiragana", "katakana")
 LABELS = {"romaji": "ローマ字", "hiragana": "ひらがな", "katakana": "カタカナ"}
 
@@ -69,8 +68,16 @@ def load_comparison() -> dict[str, list[dict]]:
 
 
 def render(tables: dict[str, list[dict]]) -> str:
+    dates = set()
+    sources = set()
+    for path in (HERE / "result_pcc_ios").glob("*.json"):
+        for row in json.loads(path.read_text(encoding="utf-8")):
+            dates.add(row.get("measurement_date", "不明"))
+            sources.add(row.get("measurement_date_source", "不明"))
     lines = [
         "# iOS PCCと既存全モデルの比較（AJIMEE-Bench v1・200問）", "",
+        f"PCCの記録上の計測日: {', '.join(sorted(dates))}。日付の根拠: {'; '.join(sorted(sources))}。"
+        "日付はモデルバージョンを特定するものではありません。", "",
         "この表は、各入力形式で保存済みの全モデル・設定の実測値を集計したものです。"
         "同じ200問・同じ許容解について文字誤り率（CER、各問を100%で上限処理）と"
         "Top-1完全一致率を比較します。応答時間は既存の `aggregate_results.py` と同様に"
@@ -85,19 +92,19 @@ def render(tables: dict[str, list[dict]]) -> str:
         "200問の分母に含めています。他モデルの拒否件数は保存形式が一律でないため"
         "この表では一律に比較しません。", "",
         "## PCCの位置（同じ入力形式のv2.4.0計測との参考比較）", "",
-        "| 入力形式 | PCC CER | 完全一致 | 応答時間（p95以下平均） | 安全制限・回答拒否 | CER順位 | 応答時間順位 |",
-        "|---|---:|---:|---:|---:|---:|---:|",
+        "| 入力形式 | PCC計測モデル・日付 | PCC CER | 完全一致 | 応答時間（p95以下平均） | 安全制限・回答拒否 | CER順位 | 応答時間順位 |",
+        "|---|---|---:|---:|---:|---:|---:|---:|",
     ]
     for kind in INPUT_TYPES:
         entries = [e for e in tables[kind] if e["version"] != "v2.3.0"]
-        pcc = next(e for e in entries if e["model"] == PCC_NAME)
-        cer_rank = 1 + sum(e["cer"] < pcc["cer"] for e in entries)
-        time_rank = 1 + sum(e["p95_mean"] < pcc["p95_mean"] for e in entries)
-        lines.append(
-            f'| {LABELS[kind]} | {pcc["cer"]:.2%} | {pcc["exact"]:.1%} '
-            f'| {pcc["p95_mean"]:.2f}秒 | {pcc["errors"]}/200 '
-            f'| {cer_rank}/{len(entries)} | {time_rank}/{len(entries)} |'
-        )
+        for pcc in (e for e in entries if e["version"] == "iOS PCC"):
+            cer_rank = 1 + sum(e["cer"] < pcc["cer"] for e in entries)
+            time_rank = 1 + sum(e["p95_mean"] < pcc["p95_mean"] for e in entries)
+            lines.append(
+                f'| {LABELS[kind]} | {pcc["model"]} | {pcc["cer"]:.2%} | {pcc["exact"]:.1%} '
+                f'| {pcc["p95_mean"]:.2f}秒 | {pcc["errors"]}/200 '
+                f'| {cer_rank}/{len(entries)} | {time_rank}/{len(entries)} |'
+            )
     for kind in INPUT_TYPES:
         entries = tables[kind]
         lines += ["", f"## {LABELS[kind]}入力: 全モデル・設定", "",
@@ -108,7 +115,7 @@ def render(tables: dict[str, list[dict]]) -> str:
             lines.append(f'| {model} | {entry["version"]} | {entry["cer"]:.2%} '
                          f'| {entry["exact"]:.1%} | {entry["p95_mean"]:.2f}秒 |')
     lines += ["", "## 補足: Gemini・ローカルAFM", "",
-              "- PCCのひらがな入力はCER 28.95%、46/200完全一致。"
+              "- 20261116のPCCのひらがな入力はCER 28.95%、46/200完全一致。"
               "Gemini 3.6 Flashの2.73%・149/200より大きく劣ります。"
               "ただしPCCの応答時間は0.76秒で、同モデルの約1.18秒より短い。",
               "- ローカルAFM 3 Core Advancedのひらがな入力はCER約93%、0/200完全一致。"
