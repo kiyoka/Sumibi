@@ -60,11 +60,14 @@ def load_all_results(result_dir: str = "result_ver2.4.0") -> Dict[str, Tuple[flo
             print(f"Warning: Failed to load {json_file}: {e}")
 
     if Path(result_dir).name == "result_ver2.4.0":
-        pcc_path = Path(result_dir).parent / "result_pcc_ios/apple-pcc-ios17e.json"
-        if pcc_path.exists():
+        from import_pcc_ios import pcc_runs
+        for name, variants in pcc_runs(Path(result_dir).parent / "result_pcc_ios").items():
+            if "romaji" not in variants:
+                continue
+            pcc_path = variants["romaji"]
             data = json.loads(pcc_path.read_text(encoding="utf-8"))
             mean_cer, _, _, _, _, _, mean_elapsed = summarize(data)
-            results["apple-pcc-ios17e (reference)"] = (mean_cer, mean_elapsed)
+            results[name + " (reference)"] = (mean_cer, mean_elapsed)
 
     return results
 

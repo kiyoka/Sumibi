@@ -9,6 +9,7 @@ dataset. We use that copy only to verify identity, not to score against v2.
 from __future__ import annotations
 
 import argparse
+from datetime import date
 import json
 from pathlib import Path
 
@@ -18,6 +19,22 @@ from katakana_to_romaji_converter import KatakanaToRomajiConverter
 
 INPUT_TYPES = ("romaji", "hiragana", "katakana")
 SOURCE = Path(__file__).parent / "JWTD_v2/upstream/JWTD_v2/v2/evaluation_items.json"
+
+
+def result_name(measured_on: str, input_type: str) -> str:
+    date.fromisoformat(measured_on)
+    suffix = "" if input_type == "romaji" else f"_{input_type}"
+    return f"apple-pcc-ios17e-{measured_on.replace('-', '')}{suffix}.json"
+
+
+def pcc_runs(directory: Path) -> dict[str, dict[str, Path]]:
+    """Group by the full model/date stem, never merging different dates."""
+    runs = {}
+    for path in sorted(directory.glob("apple-pcc-ios17e*.json")):
+        kind = next((k for k in ("hiragana", "katakana") if path.stem.endswith("_" + k)), "romaji")
+        name = path.stem if kind == "romaji" else path.stem.removesuffix("_" + kind)
+        runs.setdefault(name, {})[kind] = path
+    return runs
 
 
 def edit_distance(left: str, right: str) -> int:
@@ -50,7 +67,18 @@ def prepare_cases(source: Path = SOURCE) -> dict[str, dict]:
     }
 
 
-def normalize(rows: list[dict], input_type: str, cases: dict[str, dict]) -> list[dict]:
+def measurement_metadata(measured_on: str, source: str) -> dict[str, str]:
+    """Record the date's provenance without inventing a per-request timestamp."""
+    if date.fromisoformat(measured_on).isoformat() != measured_on:
+        raise ValueError("Expected measurement date in YYYY-MM-DD format")
+    if not source.strip():
+        raise ValueError("Measurement date source is required")
+    return {"measurement_date": measured_on, "measurement_date_source": source}
+
+
+def normalize(rows: list[dict], input_type: str, cases: dict[str, dict], *,
+              measured_on: str, date_source: str) -> list[dict]:
+    metadata = measurement_metadata(measured_on, date_source)
     if input_type not in INPUT_TYPES:
         raise ValueError(f"Unknown input type: {input_type}")
     if len(rows) != 200:
@@ -80,6 +108,7 @@ def normalize(rows: list[dict], input_type: str, cases: dict[str, dict]) -> list
         if error is not None and answer:
             raise ValueError(f"Error has a nonempty answer: {identifier}")
         normalized.append({
+            **metadata,
             "id": identifier,
             "surrounding_text": row["context"] + input_text,
             "henkan_text": input_text,
@@ -102,17 +131,28 @@ def main() -> None:
     parser.add_argument("katakana", type=Path)
     parser.add_argument("--output-dir", type=Path,
                         default=Path(__file__).parent / "result_pcc_ios")
+    parser.add_argument("--measurement-date", required=True, help="YYYY-MM-DD measurement date")
+    parser.add_argument("--measurement-date-source", required=True,
+                        help="Evidence or user-selected basis for the date; not an import timestamp")
     args = parser.parse_args()
+    measurement_metadata(args.measurement_date, args.measurement_date_source)
     cases = prepare_cases()
-    args.output_dir.mkdir(parents=True, exist_ok=True)
+    destinations = {kind: args.output_dir / result_name(args.measurement_date, kind)
+                    for kind in INPUT_TYPES}
+    if any(path.exists() for path in destinations.values()):
+        parser.error("Dated results already exist; preserve them and choose a new measurement date")
+    results = {}
     for input_type in INPUT_TYPES:
         source = getattr(args, input_type)
         rows = json.loads(source.read_text(encoding="utf-8"))
-        result = normalize(rows, input_type, cases)
-        suffix = "" if input_type == "romaji" else f"_{input_type}"
-        destination = args.output_dir / f"apple-pcc-ios17e{suffix}.json"
-        destination.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n",
-                               encoding="utf-8")
+        results[input_type] = normalize(rows, input_type, cases, measured_on=args.measurement_date,
+                                        date_source=args.measurement_date_source)
+    args.output_dir.mkdir(parents=True, exist_ok=True)
+    for input_type in INPUT_TYPES:
+        result = results[input_type]
+        destination = destinations[input_type]
+        with destination.open("x", encoding="utf-8") as output:
+            output.write(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
         print(f"{destination}: {len(result)} verified v1 cases")
 
 
